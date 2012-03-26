@@ -83,16 +83,37 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event,
 	double coordx, coordy;
 	double workx, worky;
 	double closex, closey;
+	// Length from click location to nearest dot
+	// Click must be closer than 3 steps
+	double dist_threshold = 9;
+	double distance;
 	if (event->button == 1)
 	{
 		coordx = event->x;
 		coordy = event->y;
 		printf("x = %g, y = %g\n", coordx, coordy);
+		// Adjust for various canvas offsets
 		coordx = (coordx-xo2)/step;
 		//coordy = (coordy-yo2-25)/step;
 		coordy = (coordy-yo2-50)/step;
 
 		printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
+		for (i=0; i<perfnum; i++)
+		{
+			// TODO: figure out better way to find closest dot
+			workx = perf[setnum][i][0]-coordx;
+			worky = perf[setnum][i][1]-coordy;
+			distance = pow(workx, 2) + pow(worky, 2);
+			if (distance < dist_threshold)
+			{
+				// Found a closer dot
+				perf_cur = i;
+				dist_threshold = distance;
+			}
+		}
+		if (dist_threshold != 9)
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		/*
 		closex = 10;
 		closey = 10;
 		for (i=0; i<perfnum; i++)
@@ -115,6 +136,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event,
 		}
 		if (closex != 10)
 			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		*/
 	}
 	return TRUE;
 }
