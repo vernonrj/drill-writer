@@ -34,6 +34,7 @@ GtkType gtk_drill_get_type(void)
 		};
 		gtk_drill_type = gtk_type_unique(GTK_TYPE_WIDGET, &gtk_drill_info);
 	}
+	printf("ping in get_type\n");
 	return gtk_drill_type;
 }
 

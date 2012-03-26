@@ -89,7 +89,8 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event,
 		coordy = event->y;
 		printf("x = %g, y = %g\n", coordx, coordy);
 		coordx = (coordx-xo2)/step;
-		coordy = (coordy-yo2-25)/step;
+		//coordy = (coordy-yo2-25)/step;
+		coordy = (coordy-yo2-50)/step;
 
 		printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 		closex = 10;
@@ -348,7 +349,6 @@ int main (int argc, char *argv[])
 		g_message ("building menus failed: %s", error->message);
 		g_error_free (error);
 	}
-	printf("ping\n");
 
 	// Get the menubar and toolbar and put them in vertical packing box
 	menubar = gtk_ui_manager_get_widget (menu_manager, "/MainMenu");

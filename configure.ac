@@ -16,7 +16,7 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
-AM_PATH_GTK_2_0([2.10.0],,AC_MSG_ERROR([Gtk+-2.10.0 or higher required.]))
+AM_PATH_GTK_2_0([2.24.0],,AC_MSG_ERROR([Gtk+-2.24.0 or higher required.]))
 AC_CHECK_HEADERS([math.h])
 #AC_SUBST(GTK_CFLAGS)
 #AC_SUBST(LDFLAGS)
