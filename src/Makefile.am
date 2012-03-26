@@ -24,7 +24,9 @@ bin_PROGRAMS = drillwriter
 
 ## included in distribution archives of the project.
 
-drillwriter_SOURCES = drill.h drill.c drawfield.c main.c
+drillwriter_SOURCES = drill.h count-con.c drawfield.c drill.c \
+		      entry-con.c file-ops.c main.c media.c \
+		      perf-con.c set-controls.c
 
 ## Define an independent executable script for inclusion in the distribution
 
