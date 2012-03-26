@@ -71,3 +71,82 @@ GtkWidget * gtk_drill_new();
 G_END_DECLS
 
 #endif // __DRILL_H
+
+
+
+
+// Functions
+// count-con.c
+void goto_count (GtkWidget *widget);
+void change_counts (GtkWidget *widget);
+
+// drawfield.c
+void def_canvas (GtkWidget *widget);
+void draw_dots (GtkWidget *widget);
+void draw_field (GtkWidget *widget);
+
+// drill.c
+GtkType gtk_drill_get_type(void);
+void gtk_drill_set_state(GtkDrill *drill, gint num);
+GtkWidget * gtk_drill_new(void);
+static void gtk_drill_class_init(GtkDrillClass *klass);
+static void gtk_drill_init (GtkDrill *drill);
+static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition);
+static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation);
+static void gtk_drill_realize(GtkWidget *widget);
+static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
+static void gtk_drill_paint(GtkWidget *widget);
+static void gtk_drill_destroy(GtkObject *object);
+
+// entry-con.c
+static void entry_toggle_editable(GtkWidget *checkbutton, GtkWidget *entry);
+static void entry_toggle_visibility(GtkWidget *checkbutton, GtkWidget *entry);
+
+// file-ops.c
+void open_file(void);
+void save_file(GtkWidget *widget);
+void absolute_dot (void);
+void relative_dot (void);
+void func_relative(void);
+void show_gen(GtkWidget *widget);
+
+// main.c
+void move_up(GtkWidget *widget);
+void move_down(GtkWidget *widget);
+void move_left(GtkWidget *widget);
+void move_right(GtkWidget *widget);
+void next_perf(GtkWidget *widget);
+void prev_perf(GtkWidget *widget);
+static void not_implemented ();
+void force_redraw(GtkWidget *widget);
+static void quit_action ();
+gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
+void calc_stepsize (GtkWidget *widget);
+int main (int argc, char *argv[]);
+
+// media.c
+gboolean play_show (GtkWidget *widget);
+void stop_show (GtkWidget *widget);
+void queue_show (GtkWidget *widget);
+void play_show_from_start (GtkWidget *widget);
+
+// perf-con.c
+void goto_perf (GtkWidget *widget);
+void xperf_change (GtkWidget *widget);
+void yperf_change (GtkWidget *widget);
+void add_perf (GtkWidget *widget);
+void delete_perf(GtkWidget *widget);
+
+// set-controls.c
+void set_first(GtkWidget *widget);
+void set_next(GtkWidget *widget);
+void set_next_count(GtkWidget *widget);
+void set_prev(GtkWidget *widget);
+void set_last (GtkWidget *widget);
+void goto_set (GtkWidget *widget);
+void add_set (GtkWidget *widget);
+void delete_set (GtkWidget *widget);
+
+
+
+

@@ -44,7 +44,7 @@ void gtk_drill_set_state(GtkDrill *drill, gint num)
 	gtk_drill_paint(GTK_WIDGET(drill));
 }
 
-GtkWidget * gtk_drill_new()
+GtkWidget * gtk_drill_new(void)
 {
 	return GTK_WIDGET(gtk_type_new(gtk_drill_get_type()));
 }

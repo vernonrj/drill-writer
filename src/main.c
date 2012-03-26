@@ -3,19 +3,19 @@
 #include <stdlib.h>
 
 #include "drill.h"		// header file, with most global variables
-#include "media.c"		// playback functions
-#include "set-controls.c"	// Various functions concerning the use of sets
-#include "perf-con.c"		// Various functions for performers/dots
-#include "file-ops.c"		// File operations
-#include "count-con.c"		// count structure
+//#include "media.c"		// playback functions
+//#include "set-controls.c"	// Various functions concerning the use of sets
+//#include "perf-con.c"		// Various functions for performers/dots
+//#include "file-ops.c"		// File operations
+//#include "count-con.c"		// count structure
 
 extern int expose_flag;		// might not be required
 //extern static GtkActionEntry entries;
 //extern static guint n_entries;
 
-GtkWidget *entry_perf;
-GtkWidget *entry_perf_x;
-GtkWidget *entry_perf_y;
+//GtkWidget *entry_perf;
+//GtkWidget *entry_perf_x;
+//GtkWidget *entry_perf_y;
 
 void move_up(GtkWidget *widget)
 {

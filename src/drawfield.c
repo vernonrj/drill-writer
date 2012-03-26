@@ -11,7 +11,7 @@ extern int playing;
 extern int set_step;
 extern GTimer * timer;
 
-def_canvas (GtkWidget *widget)
+void def_canvas (GtkWidget *widget)
 {
 	if (width != widget->allocation.width || height != widget->allocation.height)
 		do_field=1;
@@ -42,7 +42,7 @@ def_canvas (GtkWidget *widget)
 }
 
 
-draw_dots (GtkWidget *widget)
+void draw_dots (GtkWidget *widget)
 {
 	int i;		// loop variable
 	double x, y;	// x and y location
@@ -139,7 +139,7 @@ draw_dots (GtkWidget *widget)
 	cairo_surface_destroy(field_surface);
 }
 
-draw_field (GtkWidget *widget)
+void draw_field (GtkWidget *widget)
 {	// This function will draw the actual football field
 	int i, j, k;		// loop vars
 	def_canvas(widget);	// Refresh dimensions and such
