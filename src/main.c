@@ -140,7 +140,8 @@ int main (int argc, char *argv[])
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
 	GtkWidget *box1;
-	GtkWidget *box2;
+	GtkWidget *setbox;		// Set attributes go in this box
+	GtkWidget *perfbox;		// Dot attributes go in this box
 	GtkWidget *box3;
 	GtkWidget *menu_box;		// First-level packing box (for menus)
 	GtkWidget *media_box;		// For media buttons
@@ -363,13 +364,17 @@ int main (int argc, char *argv[])
 	//box3 = gtk_hbox_new (FALSE, 0);
 	//gtk_box_pack_start(GTK_BOX (box0), box3, FALSE, FALSE, 0);
 
+	setbox = gtk_hbox_new (FALSE, 0);	// Set attributes (set, counts, tempo, etc)
+	gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
+
 	// get and pack canvas
 	drill = gtk_drill_new();
 	gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 
-	box2 = gtk_hbox_new (FALSE, 0);	// Others (set number, bpm, counts)
-	gtk_box_pack_start(GTK_BOX (box0), box2, FALSE, FALSE, 0);
+	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
+	gtk_box_pack_start(GTK_BOX (box0), perfbox, FALSE, FALSE, 0);
+
 
 	media_box = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
@@ -378,7 +383,7 @@ int main (int argc, char *argv[])
 	gtk_box_pack_start(GTK_BOX (media_box), box1, FALSE, FALSE, 0);
 
 	label = gtk_label_new ("Set:");
-	gtk_box_pack_start (GTK_BOX (box2), label, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
 
 	// need to change these to spin buttons
 	sprintf(set_buf, "%i", setnum);
@@ -393,13 +398,13 @@ int main (int argc, char *argv[])
 			0, GTK_ENTRY (entry_sets)->text_length);
 	gtk_entry_set_alignment (GTK_ENTRY (entry_sets), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_sets), 4);
-	gtk_box_pack_start (GTK_BOX (box2), entry_sets, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (setbox), entry_sets, FALSE, TRUE, 0);
 
 	//separator = gtk_vseparator_new ();
-	//gtk_box_pack_start (GTK_BOX (box2), separator, FALSE, TRUE, 0);
+	//gtk_box_pack_start (GTK_BOX (setbox), separator, FALSE, TRUE, 0);
 
 	label = gtk_label_new ("Counts:");
-	gtk_box_pack_start (GTK_BOX (box2), label, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
 
 	// need to change these to spin buttons
 	//sprintf(count_buf, "%i", set_step);
@@ -415,10 +420,10 @@ int main (int argc, char *argv[])
 			0, GTK_ENTRY (entry_counts)->text_length);
 	gtk_entry_set_alignment (GTK_ENTRY (entry_counts), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_counts), 4);
-	gtk_box_pack_start (GTK_BOX (box2), entry_counts, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (setbox), entry_counts, FALSE, TRUE, 0);
 
 	label = gtk_label_new ("Performer:");
-	gtk_box_pack_start (GTK_BOX (box2), label, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
 	sprintf(perf_buf, "%i", perf_cur);
 	entry_perf = gtk_entry_new ();
@@ -429,10 +434,10 @@ int main (int argc, char *argv[])
 	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf), 4);
-	gtk_box_pack_start (GTK_BOX (box2), entry_perf, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 0);
 
 	label = gtk_label_new ("X:");
-	gtk_box_pack_start (GTK_BOX (box2), label, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
 	sprintf(perf_buf_x, "%g", perf[setnum][perf_cur][0]);
 	entry_perf_x = gtk_entry_new ();
@@ -442,10 +447,10 @@ int main (int argc, char *argv[])
 	gtk_entry_set_text (GTK_ENTRY (entry_perf_x), perf_buf_x);
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_x), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_x), 4);
-	gtk_box_pack_start (GTK_BOX (box2), entry_perf_x, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf_x, FALSE, TRUE, 0);
 
 	label = gtk_label_new ("Y:");
-	gtk_box_pack_start (GTK_BOX (box2), label, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
 	sprintf(perf_buf_y, "%g", perf[setnum][perf_cur][1]);
 	entry_perf_y = gtk_entry_new ();
@@ -455,7 +460,7 @@ int main (int argc, char *argv[])
 	gtk_entry_set_text (GTK_ENTRY (entry_perf_y), perf_buf_y);
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_y), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_y), 4);
-	gtk_box_pack_start (GTK_BOX (box2), entry_perf_y, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf_y, FALSE, TRUE, 0);
 
 	// Play
 	button = gtk_button_new_with_label ("Play");
@@ -532,7 +537,8 @@ int main (int argc, char *argv[])
 	gtk_widget_show(drill);
 	gtk_widget_show(box0);
 	gtk_widget_show(box1);
-	gtk_widget_show(box2);
+	gtk_widget_show(setbox);
+	gtk_widget_show(perfbox);
 	//gtk_widget_show(box3);
 	gtk_widget_show(media_box);
 	gtk_widget_show(menu_box);
