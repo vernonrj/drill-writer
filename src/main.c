@@ -348,6 +348,7 @@ int main (int argc, char *argv[])
 		g_message ("building menus failed: %s", error->message);
 		g_error_free (error);
 	}
+	printf("ping\n");
 
 	// Get the menubar and toolbar and put them in vertical packing box
 	menubar = gtk_ui_manager_get_widget (menu_manager, "/MainMenu");
@@ -368,7 +369,9 @@ int main (int argc, char *argv[])
 	gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
 
 	// get and pack canvas
+	printf("ping\n");
 	drill = gtk_drill_new();
+	printf("ping\n");
 	gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 
@@ -389,8 +392,7 @@ int main (int argc, char *argv[])
 	sprintf(set_buf, "%i", setnum);
 	entry_sets = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_sets), 50);
-	g_signal_connect(entry_sets, "activate",
-			G_CALLBACK (goto_set), entry_sets);
+	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set), entry_sets);
 	gtk_entry_set_text (GTK_ENTRY (entry_sets), set_buf);
 	tmp_pos = GTK_ENTRY (entry_sets)->text_length;
 	//gtk_editable_insert_text (GTK_EDITABLE (entry_sets), " world", -1, &tmp_pos);
@@ -411,8 +413,7 @@ int main (int argc, char *argv[])
 	sprintf(count_buf, "%i", counts[setnum]);
 	entry_counts = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_counts), 50);
-	g_signal_connect(entry_counts, "activate",
-			G_CALLBACK (change_counts), entry_counts);
+	g_signal_connect(entry_counts, "activate", G_CALLBACK (change_counts), entry_counts);
 	gtk_entry_set_text (GTK_ENTRY (entry_counts), count_buf);
 	tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	//gtk_editable_insert_text (GTK_EDITABLE (entry_counts), " world", -1, &tmp_pos);
@@ -428,8 +429,7 @@ int main (int argc, char *argv[])
 	sprintf(perf_buf, "%i", perf_cur);
 	entry_perf = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf), 5);
-	g_signal_connect (entry_perf, "activate",
-			G_CALLBACK (goto_perf), entry_perf);
+	g_signal_connect (entry_perf, "activate", G_CALLBACK (goto_perf), entry_perf);
 	gtk_entry_set_text (GTK_ENTRY (entry_perf), perf_buf);
 	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf), 1);
@@ -442,8 +442,7 @@ int main (int argc, char *argv[])
 	sprintf(perf_buf_x, "%g", perf[setnum][perf_cur][0]);
 	entry_perf_x = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_x), 5);
-	g_signal_connect (entry_perf_x, "activate",
-			G_CALLBACK (xperf_change), entry_perf_x);
+	g_signal_connect (entry_perf_x, "activate", G_CALLBACK (xperf_change), entry_perf_x);
 	gtk_entry_set_text (GTK_ENTRY (entry_perf_x), perf_buf_x);
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_x), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_x), 4);
@@ -455,8 +454,7 @@ int main (int argc, char *argv[])
 	sprintf(perf_buf_y, "%g", perf[setnum][perf_cur][1]);
 	entry_perf_y = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_y), 5);
-	g_signal_connect (entry_perf_y, "activate",
-			G_CALLBACK (yperf_change), entry_perf_y);
+	g_signal_connect (entry_perf_y, "activate", G_CALLBACK (yperf_change), entry_perf_y);
 	gtk_entry_set_text (GTK_ENTRY (entry_perf_y), perf_buf_y);
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_y), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_y), 4);
