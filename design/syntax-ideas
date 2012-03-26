@@ -1,0 +1,22 @@
+These are some ideas concerning the syntax for making a drill generator
+
+S: Set a variable like tempo, set number, ...
+example: S(set)=1, S(tempo)=120, S(counts)=8, S(perf)=number of performers
+
+P: change performer position
+syntax: P# = ([xdot], [ydot])
+where xdot could be: #.s[1,2].yardline
+	or it could be: P1, P2, etc
+ydot could be: #.[f/b].[fh, bh, fs, bs]
+ 	or it could be: P1, P2, P1+.. etc
+
+G: Group manipulation
+line: create a line
+syntax: G(line[P1, P2, ... Pn], (xi, yi), (xf, yf))
+	xi/yi can use absolute and relative positioning
+	xf/yf can use absolute, relative, and "function relative" positioning
+ex:
+G(line[P1, P2, P3, P4], (4.s1.30, 0.f.fh), (x+12, y))
+This will place the line from 4 steps inside the side-1 30, on the front hash, to 12 steps to the right (0.s1.40) and on the front hash.
+
+ftl: coming soon

@@ -1,0 +1,117 @@
+// Functions that change sets go here
+#include "drill.h"
+void set_first(GtkWidget *widget)
+{	// Move to first set
+	if (!playing)
+	{
+		setnum=0;
+		do_field=0;
+		set_step=0;
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+
+void set_next(GtkWidget *widget)
+{	// Move to the next set
+	if (!playing)
+	{
+		setnum++;
+		set_step=0;
+		if (setnum >= set_tot )
+			setnum = set_tot-1;
+		//int width, height;
+		do_field=0;
+		//gdk_drawable_get_size(widget->window, &width, &height);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+
+void set_next_count(GtkWidget *widget)
+{
+	if (!playing)
+	{	// shouldn't use this when playing
+		//printf("set_next setnum=%i\nset_tot=%i\nset_step=%i\n", setnum, set_tot, set_step);
+		if (setnum+1<set_tot)
+			set_step++;
+		else
+			setnum=set_tot-1;
+		if (set_step >= counts[setnum+1] && setnum+1<set_tot)
+		{
+			set_step=0;
+			setnum++;
+		}
+		do_field=0;
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+				
+void set_prev(GtkWidget *widget)
+{
+	if (!playing)	// shouldn't use this when playing
+	{
+		if (!set_step)
+			setnum--;
+		else	// go back to start of set, instead of set-1
+			set_step=0;
+		if (setnum < 0)
+			setnum = 0;
+		do_field=0;	// don't need to draw field
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+
+void set_last (GtkWidget *widget)
+{
+	if (!playing)
+	{
+		setnum=set_tot-1;
+		set_step=0;
+		do_field=0;
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+void goto_set (GtkWidget *widget)
+{	// Go to set specified in entry_sets
+	const gchar *entry_buffer;
+	int set_buffer;
+	if (!playing)
+	{
+		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_sets));
+		set_buffer = atoi(entry_buffer);
+		if (set_buffer<set_tot)
+			setnum=set_buffer;
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+void add_set (GtkWidget *widget)
+{
+	int i, j;
+	set_tot++;
+	for (i=set_tot-1; i>setnum; i--)
+	{
+		for (j=0; j<perfnum; j++)
+		{
+			perf[i][j][0] = perf[i-1][j][0];
+			perf[i][j][1] = perf[i-1][j][1];
+		}
+		counts[i] = counts[i-1];
+	}
+	counts[setnum+1]=1;
+}
+
+void delete_set (GtkWidget *widget)
+{
+	int i, j;
+	for (i=setnum; i<set_tot; i++)
+	{
+		for (j=0; j<perfnum; j++)
+		{
+			perf[i][j][0] = perf[i+1][j][0];
+			perf[i][j][1] = perf[i+1][j][1];
+		}
+		counts[i] = counts[i+1];
+	}
+	set_tot--;
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+}
+

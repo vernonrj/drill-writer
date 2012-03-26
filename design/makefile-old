@@ -1,0 +1,9 @@
+# This is my little makefile. It'll probably get bigger
+CC=gcc
+CFLAGS= -lm -I /usr/include/cairo -L /usr/lib -lcairo `pkg-config --cflags --libs gtk+-2.0 --libs gthread-2.0`
+SOURCES=drill.h drill.c drawfield.c main.c
+EXECUTABLE=drill-writer
+all: 
+	$(CC) $(CFLAGS) $(SOURCES) -o $(EXECUTABLE)
+clean:
+	\rm *.o drill-writer

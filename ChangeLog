@@ -1,0 +1,158 @@
+Drill Writer 0.0.0.7 Changelog:
+
+Hello November 9, 2010! This is March 25 2012!
+In a year and a half, I have gotten a LOT better at coding.
+So, with my recent experience with data structures, a lot of seemingly
+unsolved problems are suddenly trivial. Awesome. I'm going to modify this file
+and maybe keep some of this around just in case I actually want to do this and
+the reason hasn't shown up yet.
+
+It looks like the biggest problem was the performance issue, which I fixed
+looking at the code for like 30 minutes. *sigh* so now I can work on the
+harder stuff, including implementing forms with an adt, applying my new
+knowledge of storage and ADT's, and of course, my knowledge of debugging with
+valgrind.
+
+To-Dos
+> Git integration
+	Seriously, I should just do this now
+> External Files
+	Surprisingly, I like how I made saving done way back when. 
+	The line function in particular is done incredibly intelligently. 
+> Internal Structure
+	Dynamically allocate more memory
+	Make forms use graph ADT
+	Continue working on performance
+	Implement basic undo function using Stack ADT
+		This one is going to be hard
+> Interface
+	- Tempo Manipulation
+	- Better dot selection
+		More accurate
+		Have a selection cap distance
+> Set/Page Attributes
+	Tempo - How should tempo be handled internally?
+		1) Should tempo be set on each page
+		2) Or should it be based on "change tempo here"
+		I personally like (2), because it's easier to change tempos
+		Tempo management might be more complicated though
+> Separate program from interface more, if possible
+> Canvas
+	- Set Field complexity based on size of window (ie don't show 1-step intervals
+		with small windows)
+	- Support for performer names
+	- Display performer names on field
+	- Make the field more colorful?
+> Dot manipulation
+	- Drag dots to their spots
+	- Higher dot precision (did I already do this? I can't remember)
+	- Select multiple dots
+> Dot storage
+	- Dots should be stored using a graph for forms.
+> Forms 
+	- Forms will be implemented by graph ADT
+		Should there be multiple graphs?
+		Having multiple would probably easier for curves and FTL later
+	- Draw forms on canvas
+	- Select full form
+	- Use anchor points instead of dots (for curves)
+	- Dots are set based on form (easier to modify)
+
+-- Older stuff --
+- Make 3 pixmap layers and stack on top of each other (maybe)
+	> The three are:
+		Field layer (lowest)
+		Dots layer
+		Selected layer (highest)
+- Variable BPM (big)
+	> Specified in save file
+	> timer changes based on bpm
+	> tempo is stored in either array or struct
+	 0 means don't change, any other value will set tempo to new speed
+
+General Features:
+- Grouping/Forms (big)
+	> Once mouse support is implemented, being able to group players will be important
+	> This can be implemented by using a graph ADT to link the players
+	together. One graph per form
+
+
+File Ops:
+- Generate marching field image --> file (medium)
+- Can open arbitrary file, can save arbitrary file (ie under any name) (big)
+
+Interface: 
+- Need a toolbar (small)
+- Need a status bar (small)
+
+Canvas Interaction / Performance:
+- Mouse Support (Massive)
+	= Select single performer
+		> button1 selects single performer (done)
+	= Select multiple Performers
+		> ctrl+button1 selects another performer
+		> hold button1 to highlight multiple performers
+		> can move multiple performers at the same time
+		> scaling with multiple performers?
+	= Grouping performers 
+		> Use a graph adt
+		> Can make groups of performers that can be moved together as a group
+		> Group/Ungroup buttons
+		> Possibly a struct can do this
+
+- Zoom in/out on field (big)
+	> Need a way to tell canvas we're zooming
+	> Scrolling support
+	> How can I do this without horrible performance due to redrawing?
+	> Zoom in/out buttons on toolbar?
+	> Zoom in/out options in view menu
+- Find a way to only have to redraw field after a rescale (big) (Done-ish)
+- Need yard names in canvas field (medium)
+- Paint dots from previous set
+
+Changes:
+Proto 0.0.0.7: Changes from 6:
+05 Nov 2010 --
+- Created a programming language to input dots
+
+Proto 0.0.0.6: Changes from 5:
+01 Nov 2010 -- 05 Nov 2010
+- Performers' dots can be changed
+- Can Save and open from file (name can't be changed)
+- Current performer highlighted
+- Can add new performers
+- Can remove performers
+- Can add new sets
+- Can remove sets
+- Can change count structure
+- Ability to step through set counts
+- Media buttons included
+- Can stop playback
+- Some keyboard shortcuts added
+
+Proto 0.0.0.5: Changes from 4:
+31 Oct 2010 -- 01 Nov 2010
+- Actual animation finally implemented!
+- Field layers are stored as .png file, allows for much faster animation
+
+Proto 0.0.0.4: Changes from 3:
+28 Oct 2010 -- 30 Oct 2010
+- Makefile added
+- Menus added
+- Field-drawing algorithm's speed greatly increased
+- Dots can be hardcoded in and show on field
+- Can switch to next/prev set using buttons
+
+Proto 0.0.0.3: Changes from 2:
+28 Oct 2010
+- Another complete rewrite
+- Framework now supports packing
+- Classes referred to as "drill"
+- Program is split into three files: drill.h, drill.c and main.c for
+readability
+
+Proto 0.0.0.2: Changes from Start:
+26 Oct 2010 -- 27 Oct 2010
+- Complete rewrite, trying out another tutorial
+- Static Canvas achieved
+- Professional looking football field render achieved
