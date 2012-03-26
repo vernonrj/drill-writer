@@ -19,30 +19,35 @@ GtkWidget *entry_perf_y;
 
 void move_up(GtkWidget *widget)
 {
+	// Move a dot backfield
 	perf[setnum][perf_cur][1]--;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_down(GtkWidget *widget)
 {
+	// Move a dot frontfield
 	perf[setnum][perf_cur][1]++;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_left(GtkWidget *widget)
 {
+	// Move a dot toward left goal line
 	perf[setnum][perf_cur][0]--;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_right(GtkWidget *widget)
 {
+	// Move a dot toward right goal line
 	perf[setnum][perf_cur][0]++;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void next_perf(GtkWidget *widget)
 {
+	// Go to next sequential dot
 	if (perf_cur < perfnum-1)
 	{
 		perf_cur++;
@@ -52,6 +57,7 @@ void next_perf(GtkWidget *widget)
 
 void prev_perf(GtkWidget *widget)
 {
+	// Go to previous sequential dot
 	if (perf_cur > 0)
 	{
 		perf_cur--;
@@ -76,13 +82,12 @@ static void quit_action ()
 }
 
 
-gboolean clicked(GtkWidget *widget, GdkEventButton *event,
-		gpointer user_data)
+gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
 	int i, j;
 	double coordx, coordy;
 	double workx, worky;
-	double closex, closey;
+	//double closex, closey;
 	// Length from click location to nearest dot
 	// Click must be closer than 3 steps
 	double dist_threshold = 9;
