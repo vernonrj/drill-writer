@@ -10,9 +10,9 @@
 #include <gdk/gdkkeysyms.h>
 
 
-int setnum;	// current set
-int set_tot;	// Total amount of sets
-int do_field;	// whether or not to redraw field
+int setnum;			// current set
+int set_tot;			// Total amount of sets
+int do_field;			// whether or not to redraw field
 double xoff, yoff;		// x offset
 double xo2, yo2;		// y offset
 double width, height;

@@ -48,13 +48,14 @@ draw_dots (GtkWidget *widget)
 	double x, y;	// x and y location
 	cairo_t *dots;	// context for all dots
 	cairo_t *selected; // this will eventually have a struct to get dots
-	
+	cairo_surface_t *field_surface;
+	cairo_t *surface_write;
 
 	// Generate field
-	cairo_surface_t *field_surface;
+	// Only deallocate surface if it has been allocated
 	field_surface = cairo_image_surface_create_from_png("field.png");
-	cairo_t *surface_write;
 	surface_write = gdk_cairo_create(widget->window);
+
 	cairo_set_source_surface(surface_write, field_surface, 1, 1);
 	cairo_paint (surface_write);
 	cairo_destroy(surface_write);
@@ -135,6 +136,7 @@ draw_dots (GtkWidget *widget)
 	// Cleanup loose ends
 	cairo_destroy(dots);
 	cairo_destroy(selected);
+	cairo_surface_destroy(field_surface);
 }
 
 draw_field (GtkWidget *widget)
