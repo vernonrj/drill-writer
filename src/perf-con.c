@@ -64,10 +64,14 @@ void delete_perf(GtkWidget *widget)
 }
 
 // dot storage
-int dot_construct(struct ldot_proto **dots, int size)
+int dot_construct(struct ldot_proto ***dots_r, int size)
 {
 	// Build storage for dots
+	// give argument:
+	// excode = dot_construct(&dots, size);
 	int i;
+	struct ldot_proto **dots;
+
 	dots = (struct ldot_proto**) malloc(size * sizeof(struct ldot_proto*));
 	if (dots == NULL)
 	{
@@ -94,7 +98,45 @@ int dot_construct(struct ldot_proto **dots, int size)
 		dots[i]->symbol = '\0';
 		dots[i]->next = 0;
 	}
+	*dots_r = dots;
+
 	return 0;
 }
 
 
+
+int dot_realloc(struct ldot_proto ***dots_r, int oldsize, int newsize)
+{
+	// Change number of performers
+	return 0;
+}
+
+
+
+int dot_new_set(struct ldot_proto ***dots_r, int setnum)
+{
+	// Make a new set after setnum
+	return 0;
+}
+
+
+
+int dot_destroy(struct ldot_proto ***dots_r, int size)
+{
+	// Destroy list
+	int i;
+	struct ldot_proto **dots;
+
+	dots = *dots_r;
+
+	for (i=0; i<size; i++)
+	{
+		free(dots[i]->name);
+		free(dots[i]->symbol);
+		free(dots[i]);
+	}
+	free(dots);
+	*dots_r = 0;
+
+	return 0;
+}

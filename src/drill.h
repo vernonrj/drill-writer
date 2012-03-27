@@ -3,6 +3,7 @@
 #ifndef __DRILL_H
 #define __DRILL_H
 
+#include <string.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -84,7 +85,11 @@ struct ldot_proto
 	char *name;
 	char *symbol;
 
+	double x;
+	double y;
+
 	struct ldot_proto *next;
+	struct ldot_proto *prev;
 };
 
 
@@ -149,7 +154,8 @@ void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
 void add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
-int dot_construct(struct ldot_proto **dots, int size);
+int dot_construct(struct ldot_proto ***dots_r, int size);
+int dot_destroy(struct ldot_proto ***dots_r, int size);
 
 // set-controls.c
 void set_first(GtkWidget *widget);

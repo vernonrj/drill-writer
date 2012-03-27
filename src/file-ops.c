@@ -1,6 +1,5 @@
 // Functions that manipulate files go here
 #include "drill.h"
-#include <string.h>
 void open_file(void)
 {
 	// Open a file and use the stuff inside

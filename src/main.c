@@ -180,6 +180,8 @@ int main (int argc, char *argv[])
 	GtkWidget *separator;
 	GtkWidget *image;
 
+	struct ldot_proto **pshow;
+
 
 
 	gint tmp_pos;
@@ -320,6 +322,7 @@ int main (int argc, char *argv[])
 	//gtk_widget_set_app_paintable(window, TRUE);
 	//gtk_widget_set_double_buffered(window, FALSE);
 
+	dot_construct(pshow, 5);
 	// Hardcode tempo in
 	tempo = 120;
 
