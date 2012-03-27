@@ -3,7 +3,7 @@
 #ifndef __DRILL_H
 #define __DRILL_H
 
-//#include <gtk/gtk.h>
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <cairo.h>
@@ -77,6 +77,16 @@ G_END_DECLS
 
 
 
+// Dot LLL nodes
+struct ldot_proto
+{
+	// node with performer information
+	char *name;
+	char *symbol;
+
+	struct ldot_proto *next;
+};
+
 
 // Functions
 // count-con.c
@@ -139,6 +149,7 @@ void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
 void add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
+int dot_construct(struct ldot_proto **dots, int size);
 
 // set-controls.c
 void set_first(GtkWidget *widget);

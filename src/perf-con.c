@@ -63,3 +63,38 @@ void delete_perf(GtkWidget *widget)
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
+// dot storage
+int dot_construct(struct ldot_proto **dots, int size)
+{
+	// Build storage for dots
+	int i;
+	dots = (struct ldot_proto**) malloc(size * sizeof(struct ldot_proto*));
+	if (dots == NULL)
+	{
+		// allocation error
+		return -1;
+	}
+	for (i=0; i<size; i++)
+	{
+		// Initialize data
+		dots[i] = (struct ldot_proto*) malloc(sizeof(struct ldot_proto));
+		if (dots[i] == NULL)
+		{
+			// allocation error
+			return -1;
+		}
+		dots[i]->name = (char*) malloc(1 * sizeof(char));
+		dots[i]->symbol = (char*) malloc(1 * sizeof(char));
+		if (dots[i]->name == NULL || dots[i]->symbol == NULL)
+		{
+			// allocation error
+			return -1;
+		}
+		dots[i]->name[0] = '\0';
+		dots[i]->symbol = '\0';
+		dots[i]->next = 0;
+	}
+	return 0;
+}
+
+
