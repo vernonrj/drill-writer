@@ -115,3 +115,20 @@ void delete_set (GtkWidget *widget)
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
+void change_tempo (GtkWidget *widget)
+{
+	// Change the tempo internally
+	// TODO: Non-global tempo
+	const gchar *entry_buffer;
+	int tmpo;
+
+	entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_tempo));
+	tmpo = atoi(entry_buffer);
+	if (tmpo >= 30 && tmpo <= 250)
+	{
+		// Use a valid tempo
+		tempo = tmpo;
+	}
+
+	return;
+}

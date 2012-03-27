@@ -3,6 +3,7 @@
 #ifndef __DRILL_H
 #define __DRILL_H
 
+//#include <gtk/gtk.h>
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <cairo.h>
@@ -24,12 +25,14 @@ int expose_flag;
 int counts[50];
 char set_buf[5];
 char count_buf[5];
+char tempo_buf[5];
 char perf_buf[5];
 char perf_buf_x[5];
 char perf_buf_y[5];
 int tempo; // tempo
 GtkWidget *entry_sets;
 GtkWidget *entry_counts;
+GtkWidget *entry_tempo;
 GtkWidget *entry_perf;
 GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
@@ -146,6 +149,7 @@ void set_last (GtkWidget *widget);
 void goto_set (GtkWidget *widget);
 void add_set (GtkWidget *widget);
 void delete_set (GtkWidget *widget);
+void change_tempo (GtkWidget *widget);
 
 
 

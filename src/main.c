@@ -320,6 +320,9 @@ int main (int argc, char *argv[])
 	//gtk_widget_set_app_paintable(window, TRUE);
 	//gtk_widget_set_double_buffered(window, FALSE);
 
+	// Hardcode tempo in
+	tempo = 120;
+
 	// Hardcode dots in
 	perf[0][0][0] = 32;
 	perf[0][0][1] = 53;
@@ -450,6 +453,23 @@ int main (int argc, char *argv[])
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_counts), 4);
 	gtk_box_pack_start (GTK_BOX (setbox), entry_counts, FALSE, TRUE, 0);
 
+	// Tempo box (embedded in set attribute box)
+	label = gtk_label_new ("Tempo");
+	gtk_box_pack_start(GTK_BOX(setbox), label, FALSE, TRUE, 0);
+
+	// Tempo entry box
+	sprintf(tempo_buf, "%i", tempo);
+	entry_tempo = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(entry_tempo), 50);
+	g_signal_connect(entry_tempo, "activate", G_CALLBACK(change_tempo), entry_tempo);
+	gtk_entry_set_text(GTK_ENTRY(entry_tempo), tempo_buf);
+	tmp_pos = GTK_ENTRY(entry_tempo)->text_length;
+	gtk_editable_select_region(GTK_EDITABLE(entry_tempo),
+			0, GTK_ENTRY(entry_tempo)->text_length);
+	gtk_entry_set_alignment(GTK_ENTRY(entry_tempo), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY(entry_tempo), 4);
+	gtk_box_pack_start(GTK_BOX(setbox), entry_tempo, FALSE, TRUE, 0);
+
 	label = gtk_label_new ("Performer:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
@@ -569,7 +589,6 @@ int main (int argc, char *argv[])
 	gtk_widget_show(menu_box);
 	gtk_widget_show_all (window);
 
-	tempo = 120;
 	// Actual main loop for now
 	(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 
