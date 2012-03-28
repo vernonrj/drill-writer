@@ -403,6 +403,7 @@ int buildIfacegtk(void)
 	gtk_entry_set_alignment (GTK_ENTRY (entry_sets), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_sets), 4);
 	gtk_box_pack_start (GTK_BOX (setbox), entry_sets, FALSE, TRUE, 0);
+	gtk_widget_show(entry_sets);
 
 	//separator = gtk_vseparator_new ();
 	//gtk_box_pack_start (GTK_BOX (setbox), separator, FALSE, TRUE, 0);
@@ -424,6 +425,7 @@ int buildIfacegtk(void)
 	gtk_entry_set_alignment (GTK_ENTRY (entry_counts), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_counts), 4);
 	gtk_box_pack_start (GTK_BOX (setbox), entry_counts, FALSE, TRUE, 0);
+	gtk_widget_show(entry_counts);
 
 	// Tempo box (embedded in set attribute box)
 	label = gtk_label_new ("Tempo");
@@ -455,12 +457,12 @@ int buildIfacegtk(void)
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf), 4);
 	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 0);
 
+
 	label = gtk_label_new ("X:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
 	//sprintf(perf_buf_x, "%g", perf[setnum][perf_cur][0]);
 	sprintf(perf_buf_x, "%g", pshow->currset->coords[perf_cur]->x);
-	printf("x = %s\n", perf_buf_x);
 	entry_perf_x = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_x), 5);
 	g_signal_connect (entry_perf_x, "activate", G_CALLBACK (xperf_change), entry_perf_x);
@@ -689,6 +691,7 @@ int main (int argc, char *argv[])
 	startTk(argc, argv);
 	// Create gtk interface
 	buildIfacegtk();
+	printf("%s\n", perf_buf_x);
 
 	// Actual main loop for now
 	(void)g_timeout_add(50, (GSourceFunc)play_show, window);
