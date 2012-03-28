@@ -180,13 +180,15 @@ int main (int argc, char *argv[])
 	GtkWidget *separator;
 	GtkWidget *image;
 
-	struct ldot_proto **pshow;
-
-
+	struct headset_proto *pshow;
+	int excode;
 
 	gint tmp_pos;
 
 	int i;		// loop vars
+
+	// set show as uninitialized
+	pshow = 0;
 
 	// Start up gtk
 	gtk_init(&argc, &argv);
@@ -322,10 +324,14 @@ int main (int argc, char *argv[])
 	//gtk_widget_set_app_paintable(window, TRUE);
 	//gtk_widget_set_double_buffered(window, FALSE);
 
-	dot_construct(pshow, 5);
+	//dot_construct(&pshow);
 	// Hardcode tempo in
 	tempo = 120;
 
+	// Make a show with 5 performers
+	pshow = 0;
+	printf("0x%x @ 0x%x\n", pshow, &pshow);
+	excode = show_construct(&pshow, 5);
 	// Hardcode dots in
 	perf[0][0][0] = 32;
 	perf[0][0][1] = 53;

@@ -79,19 +79,48 @@ G_END_DECLS
 
 
 // Dot LLL nodes
-struct ldot_proto
+struct perf_proto
 {
 	// node with performer information
-	char *name;
-	char *symbol;
+	char *name;	// performer name
+	int index;	// index number for dots
+	char *symbol;	// symbol on field
 
-	double x;
-	double y;
-
-	struct ldot_proto *next;
-	struct ldot_proto *prev;
+	struct perf_proto *next;
 };
 
+
+struct coord_proto
+{
+	// stores dot for one performer on one set
+	float x;
+	float y;
+};
+	
+struct set_proto
+{
+	// node with set information
+	char *name;	// set name
+	char *info;	// set info
+	struct coord_proto **coords;
+	struct set_proto *next;
+};
+
+struct headset_proto
+{
+	// first node in sets,
+	// contains extended information
+	// that doesn't need to be duplicated
+	
+	// name of the show
+	char *showname;
+	// info about the show
+	char *showinfo;
+	// links to performers
+	struct perf_proto *perfs;
+	// link to first set
+	struct set_proto *firstset;
+};
 
 // Functions
 // count-con.c
@@ -154,8 +183,13 @@ void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
 void add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
-int dot_construct(struct ldot_proto ***dots_r, int size);
-int dot_destroy(struct ldot_proto ***dots_r, int size);
+int show_construct(struct headset_proto **dshow_r, int perfs);
+int set_construct(struct set_proto **sets_r, int perfs);
+int coord_construct(struct coord_proto *** coords_r, int perfs);
+int perf_construct(struct perf_proto **dots_r);
+int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize);
+int dot_new_set(struct perf_proto ***dots_r, int setnum);
+int dot_destroy(struct perf_proto ***dots_r, int size);
 
 // set-controls.c
 void set_first(GtkWidget *widget);

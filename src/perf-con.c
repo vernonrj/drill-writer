@@ -63,41 +63,168 @@ void delete_perf(GtkWidget *widget)
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
-// dot storage
-int dot_construct(struct ldot_proto ***dots_r, int size)
+int show_construct(struct headset_proto **dshow_r, int perfs)
 {
-	// Build storage for dots
-	// give argument:
-	// excode = dot_construct(&dots, size);
-	int i;
-	struct ldot_proto **dots;
+	// Create a show based on information given
+	int i, j;
+	int excode;
+	struct headset_proto *dshow;
+	// Performers
+	struct perf_proto *pcurr;
+	struct perf_proto *plast;
+	// Sets
+	struct set_proto *setcurr;
+	struct set_proto *setlast;
+	// coords
 
-	dots = (struct ldot_proto**) malloc(size * sizeof(struct ldot_proto*));
+	dshow = (struct headset_proto*) malloc(sizeof(struct headset_proto));
+	if (dshow == NULL)
+	{
+		// allocation error
+		return -1;
+	}
+	dshow->showname = (char*) malloc(sizeof(char));
+	dshow->showinfo = (char*) malloc(sizeof(char));
+	if (!dshow->showname || !dshow->showinfo)
+		return -1;
+	dshow->showname[0] = '\0';
+	dshow->showinfo[0] = '\0';
+
+	// Make the list of performers
+	excode = perf_construct(&dshow->perfs);
+	if (excode == -1)
+		return -1;
+	pcurr = dshow->perfs;
+	pcurr->index = 0;
+	for (i=0; i<perfs-1; i++)
+	{
+		// Build a linked list of performers
+		excode = perf_construct(&plast);
+		if (excode == -1)
+			return -1;
+		pcurr->next = plast;
+		pcurr = plast;
+		pcurr->index = i;
+	}
+
+	// Make the setlist
+	// Make the first set
+	setcurr = 0;
+	excode = set_construct(&setcurr, perfs);
+	if (excode == -1)
+		return -1;
+	dshow->firstset = setcurr;
+
+	// Make the index of dots for the first set
+	excode = coord_construct(&dshow->firstset->coords, perfs);
+	if (excode = -1)
+		return -1;
+
+	*dshow_r = dshow;
+	return 0;
+}
+
+
+
+// dot storage
+int set_construct(struct set_proto **sets_r, int perfs)
+{
+	// Build storage for set
+	int i;
+	int excode;
+	
+	struct set_proto *sets;
+	struct set_proto *last;
+
+	sets = (struct set_proto*) malloc(sizeof(struct set_proto));
+	if (sets == NULL)
+	{
+		// allocation error
+		return -1;
+	}
+	// allocate values inside set
+	sets->name = (char*) malloc(1*sizeof(char));
+	sets->info = (char*) malloc(1*sizeof(char));
+	// make coordinate system
+	excode = coord_construct(&sets->coords, perfs);
+
+
+	// link
+	last = *sets_r;
+	if (last)
+	{
+		// Link previous set
+		sets->next = last->next;
+		last->next = sets;
+		last = sets;
+	}
+	else
+		*sets_r = sets;
+
+	return 0;
+}
+
+
+int coord_construct(struct coord_proto *** coords_r, int perfs)
+{
+	// Build the coordinates for the set
+	
+	// loop var
+	int i;
+	// 2d coordinate array
+	struct coord_proto **coords;
+	// Piece of coordinate array
+	struct coord_proto *ccurr;
+
+	// Make the root pointer
+	coords = (struct coord_proto**) malloc(perfs*sizeof(struct coord_proto*));
+	if (!coords)
+		return -1;
+
+	for (i=0; i<perfs; i++)
+	{
+		// Make the first set of dots
+		ccurr = (struct coord_proto*) malloc(sizeof(struct coord_proto));
+		coords[i] = ccurr;
+		ccurr->x = 0;
+		ccurr->y = 0;
+	}
+
+	// link to reference
+	*coords_r = coords;
+
+	return 0;
+}
+
+
+// performer storage
+int perf_construct(struct perf_proto **dots_r)
+{
+	// Build storage for performer
+	// give argument:
+	// excode = dot_construct(&dots);
+
+	struct perf_proto *dots;
+
+	dots = (struct perf_proto*) malloc(sizeof(struct perf_proto));
 	if (dots == NULL)
 	{
 		// allocation error
 		return -1;
 	}
-	for (i=0; i<size; i++)
+	// allocate values inside struct
+	dots->name = (char*) malloc(1 * sizeof(char));
+	dots->symbol = (char*) malloc(1 * sizeof(char));
+	if (dots->name == NULL || dots->symbol == NULL)
 	{
-		// Initialize data
-		dots[i] = (struct ldot_proto*) malloc(sizeof(struct ldot_proto));
-		if (dots[i] == NULL)
-		{
-			// allocation error
-			return -1;
-		}
-		dots[i]->name = (char*) malloc(1 * sizeof(char));
-		dots[i]->symbol = (char*) malloc(1 * sizeof(char));
-		if (dots[i]->name == NULL || dots[i]->symbol == NULL)
-		{
-			// allocation error
-			return -1;
-		}
-		dots[i]->name[0] = '\0';
-		dots[i]->symbol = '\0';
-		dots[i]->next = 0;
+		// allocation error
+		return -1;
 	}
+	dots->name[0] = '\0';
+	dots->symbol = '\0';
+	dots->next = 0;
+
+	// pass by reference
 	*dots_r = dots;
 
 	return 0;
@@ -105,7 +232,7 @@ int dot_construct(struct ldot_proto ***dots_r, int size)
 
 
 
-int dot_realloc(struct ldot_proto ***dots_r, int oldsize, int newsize)
+int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize)
 {
 	// Change number of performers
 	return 0;
@@ -113,7 +240,7 @@ int dot_realloc(struct ldot_proto ***dots_r, int oldsize, int newsize)
 
 
 
-int dot_new_set(struct ldot_proto ***dots_r, int setnum)
+int dot_new_set(struct perf_proto ***dots_r, int setnum)
 {
 	// Make a new set after setnum
 	return 0;
@@ -121,11 +248,11 @@ int dot_new_set(struct ldot_proto ***dots_r, int setnum)
 
 
 
-int dot_destroy(struct ldot_proto ***dots_r, int size)
+int dot_destroy(struct perf_proto ***dots_r, int size)
 {
 	// Destroy list
 	int i;
-	struct ldot_proto **dots;
+	struct perf_proto **dots;
 
 	dots = *dots_r;
 
