@@ -223,15 +223,23 @@ int dot_destroy(struct perf_proto ***dots_r, int size);
 
 // set-controls.c
 int isLastSet(void);
-void set_first(GtkWidget *widget);
-void set_next(GtkWidget *widget);
-void set_next_count(GtkWidget *widget);
-void set_prev(GtkWidget *widget);
-void set_last (GtkWidget *widget);
+void add_set_gtk(GtkWidget *widget);
+void delete_set_gtk(GtkWidget *widget);
+void set_first_gtk(GtkWidget *widget);
+void set_last_gtk(GtkWidget *widget);
+void set_next_gtk(GtkWidget *widget);
+void set_next_count_gtk(GtkWidget *widget);
+void set_prev_gtk(GtkWidget *widget);
 void goto_set (GtkWidget *widget);
-void add_set (GtkWidget *widget);
-void delete_set (GtkWidget *widget);
 void change_tempo (GtkWidget *widget);
+
+void add_set(void);
+void delete_set(void);
+void set_first(void);
+void set_last(void);
+void set_next(void);
+void set_next_count(void);
+void set_prev(void);
 
 
 

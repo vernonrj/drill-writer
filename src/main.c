@@ -261,11 +261,11 @@ int buildIfacegtk(void)
 	{ "NextSetAction", NULL,
 		"_Next Set", "J",
 		"Go to next set",
-		G_CALLBACK(set_next) },
+		G_CALLBACK(set_next_gtk) },
 	{ "PrevSetAction", NULL,
 		"_Previous Set", "K",
 		"Go to previous set",
-		G_CALLBACK (set_prev) },
+		G_CALLBACK (set_prev_gtk) },
 	{ "PlayHereAction", NULL,
 		"_Play", "P",
 		"Play from current set",
@@ -289,11 +289,11 @@ int buildIfacegtk(void)
 	{ "AddSetAction", NULL,
 		"_Add Set", NULL,
 		"Add a set to the show",
-		G_CALLBACK (add_set) },
+		G_CALLBACK (add_set_gtk) },
 	{ "DelSetAction", NULL,
 		"_Delete Set", NULL,
 		"Delete a set from the show",
-		G_CALLBACK (delete_set) },
+		G_CALLBACK (delete_set_gtk) },
 	{ "ForceRedrawAction", NULL,
 		"_Force Redraw", "F5",
 		"Refresh the canvas",
@@ -516,7 +516,7 @@ int buildIfacegtk(void)
 
 	// First Set
 	button = gtk_button_new_with_label ("First");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_first), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(set_first_gtk), NULL);
 	image = gtk_image_new_from_stock (GTK_STOCK_GOTO_FIRST, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
 	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, TRUE, 0);
@@ -525,7 +525,7 @@ int buildIfacegtk(void)
 
 	// Previous Set
 	button = gtk_button_new_with_label ("Prev"); 
-	g_signal_connect(button, "clicked", G_CALLBACK(set_prev), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(set_prev_gtk), NULL);
 	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_REWIND, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
 	gtk_box_pack_start(GTK_BOX (box1), button, TRUE, TRUE, 0);
@@ -534,13 +534,13 @@ int buildIfacegtk(void)
 
 	// Step
 	button = gtk_button_new_with_label ("Step");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_next_count), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(set_next_count_gtk), NULL);
 	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);
 
 	// Next Set
 	button = gtk_button_new_with_label ("Next");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_next), NULL);//, window);
+	g_signal_connect(button, "clicked", G_CALLBACK(set_next_gtk), NULL);//, window);
 	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
 	gtk_box_pack_start(GTK_BOX (box1), button, TRUE, TRUE, 0);
@@ -551,7 +551,7 @@ int buildIfacegtk(void)
 	button = gtk_button_new_with_label ("Last");
 	image = gtk_image_new_from_stock (GTK_STOCK_GOTO_LAST, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
-	g_signal_connect(button, "clicked", G_CALLBACK(set_last), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(set_last_gtk), NULL);
 	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
