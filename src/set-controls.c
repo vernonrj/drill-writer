@@ -24,7 +24,7 @@ void set_first(GtkWidget *widget)
 		pshow->currset = pshow->firstset;
 		pshow->prevset = 0;
 		do_field=0;
-		//setnum=0;
+		setnum=0;
 		//set_step=0;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
@@ -34,11 +34,11 @@ void set_next(GtkWidget *widget)
 {	// Move to the next set
 	if (!playing)
 	{
-		//setnum++;
 		if (pshow->currset->next != NULL)
 		{
 			pshow->prevset = pshow->currset;
 			pshow->currset = pshow->currset->next;
+			setnum++;
 		}
 		/*
 		set_step=0;
@@ -69,6 +69,7 @@ void set_next_count(GtkWidget *widget)
 				pshow->step = 0;
 				pshow->prevset = pshow->currset;
 				pshow->currset = nextset;
+				setnum++;
 			}
 		}
 		/*
@@ -106,6 +107,7 @@ void set_prev(GtkWidget *widget)
 			{
 				// first set
 				pshow->prevset = 0;
+				setnum = 0;
 			}
 			else
 			{
@@ -115,9 +117,15 @@ void set_prev(GtkWidget *widget)
 					last = last->next;
 				}
 				if (last != NULL)
+				{
 					pshow->prevset = last;
+					setnum--;
+				}
 				else
-					pshow = 0;
+				{
+					pshow->prevset = 0;
+					setnum = 0;
+				}
 			}
 		}
 		/*
@@ -145,6 +153,7 @@ void set_last (GtkWidget *widget)
 			else
 				pshow->prevset = pshow->prevset->next;
 			pshow->currset = pshow->currset->next;
+			setnum++;
 		}
 		pshow->step = 0;
 
@@ -160,7 +169,7 @@ void goto_set (GtkWidget *widget)
 {	// Go to set specified in entry_sets
 	const gchar *entry_buffer;
 	int set_buffer;
-	int i;
+	int i = 0;
 	struct set_proto *last = pshow->firstset;
 	struct set_proto *curr = 0;
 	if (!playing)
@@ -172,6 +181,7 @@ void goto_set (GtkWidget *widget)
 			// go to current set
 			curr = last;
 			last = last->next;
+			i++;
 		}
 		/*
 		if (set_buffer<set_tot)
@@ -181,6 +191,7 @@ void goto_set (GtkWidget *widget)
 		{
 			pshow->currset = last;
 			pshow->prevset = curr;
+			setnum = i;
 		}
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}

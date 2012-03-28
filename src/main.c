@@ -155,6 +155,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 
 void calc_stepsize (GtkWidget *widget)
 {
+	/*
 	double dy, dx;
 	double stepsize;
 	dx = pow(perf[setnum][perf_cur][0] - perf[setnum-1][perf_cur][0], 2);
@@ -162,6 +163,7 @@ void calc_stepsize (GtkWidget *widget)
 	stepsize = 8*counts[setnum];
 	stepsize = stepsize/sqrt(dy + dx);
 	printf("stepsize = %g:5\n", stepsize);
+	*/
 }
 
 int startTk(int argc, char *argv[])
@@ -631,12 +633,15 @@ int main (int argc, char *argv[])
 		prevcr = prevset->coords[i];
 		set_coord(currset->coords[i], prevcr->x, prevcr->y-10);
 	}
+
+	// Start at first set
+	setnum = 0;
 	pshow->currset = pshow->firstset;
 	pshow->prevset = 0;
 
 
 	// load LLL into static array
-	currset = pshow->firstset;
+	//currset = pshow->firstset;
 	/*
 	for (i=0; i<3; i++)
 	{

@@ -125,9 +125,11 @@ void draw_dots (GtkWidget *widget)
 		}
 		if (pshow->step >= lastset->counts)
 		{
+			// Go to next set
 			pshow->step = 0;
 			pshow->prevset = pshow->currset;
 			pshow->currset = lastset;
+			setnum++;
 		}
 		/*
 		if (set_step >= counts[setnum+1])
@@ -183,6 +185,7 @@ void draw_dots (GtkWidget *widget)
 void draw_field (GtkWidget *widget)
 {	// This function will draw the actual football field
 	int i, j, k;		// loop vars
+	float x, y;
 	def_canvas(widget);	// Refresh dimensions and such
 	cairo_surface_t *surface =
 		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
@@ -269,10 +272,11 @@ void draw_field (GtkWidget *widget)
 	// Update all the entries
 	// Convert all numbers into strings first
 	sprintf(set_buf, "%i", setnum);
-	sprintf(count_buf, "%i", counts[setnum]);
+	sprintf(count_buf, "%i", pshow->currset->counts);
 	sprintf(perf_buf, "%i", perf_cur);
-	sprintf(perf_buf_x, "%g", perf[setnum][perf_cur][0]);
-	sprintf(perf_buf_y, "%g", perf[setnum][perf_cur][1]);
+	retr_coord(pshow->currset->coords[perf_cur], &x, &y);
+	sprintf(perf_buf_x, "%g", x);
+	sprintf(perf_buf_y, "%g", y);
 	// Now Update entries with new data
 	gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);

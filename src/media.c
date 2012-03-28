@@ -27,6 +27,8 @@ void stop_show (GtkWidget *widget)
 	playing=0;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
+
+
 void queue_show (GtkWidget *widget)//, GtkWidget *window)
 {
 	if (!playing)
