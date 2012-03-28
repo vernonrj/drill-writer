@@ -181,6 +181,12 @@ int main (int argc, char *argv[])
 	GtkWidget *image;
 
 	struct headset_proto *pshow;
+	// specific set
+	struct set_proto *currset;
+	// specific performer
+	struct perf_proto *currperf;
+	// coords
+	struct coord_proto *coords; 
 	int excode;
 
 	gint tmp_pos;
@@ -332,6 +338,20 @@ int main (int argc, char *argv[])
 	pshow = 0;
 	printf("0x%x @ 0x%x\n", pshow, &pshow);
 	excode = show_construct(&pshow, 5);
+	printf("0x%x\n", pshow);
+	if (excode == -1)
+	{
+		printf("Allocation error\n");
+		return -1;
+	}
+	if (!pshow || excode == -1)
+	{
+		printf("Error! pshow not initialized (0x%x)\n", pshow);
+		return -1;
+	}
+	coords[0]->x = 1;
+	coords[0]->y = 2;
+	printf("%g %g\n", coords[0]->x, coords[0]->y);
 	// Hardcode dots in
 	perf[0][0][0] = 32;
 	perf[0][0][1] = 53;

@@ -183,10 +183,18 @@ void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
 void add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
+// create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);
+// create a set with a given amount of performers
 int set_construct(struct set_proto **sets_r, int perfs);
+// create container for dots
 int coord_construct(struct coord_proto *** coords_r, int perfs);
+// create container for performers
 int perf_construct(struct perf_proto **dots_r);
+// set/retrieve coordinates from coord struct
+int set_coord(struct coord_proto *curr, float x, float y);
+int retr_coord(struct coord_proto *curr, float *x, float *y);
+// not used yet
 int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize);
 int dot_new_set(struct perf_proto ***dots_r, int setnum);
 int dot_destroy(struct perf_proto ***dots_r, int size);

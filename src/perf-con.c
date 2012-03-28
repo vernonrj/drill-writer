@@ -81,19 +81,28 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	if (dshow == NULL)
 	{
 		// allocation error
+		printf("headset allocation failure\n");
 		return -1;
 	}
 	dshow->showname = (char*) malloc(sizeof(char));
 	dshow->showinfo = (char*) malloc(sizeof(char));
 	if (!dshow->showname || !dshow->showinfo)
+	{
+		// internal allocation errors
+		printf("char allocation error\n");
 		return -1;
+	}
 	dshow->showname[0] = '\0';
 	dshow->showinfo[0] = '\0';
 
 	// Make the list of performers
 	excode = perf_construct(&dshow->perfs);
 	if (excode == -1)
+	{
+		// performers not allocated
+		printf("performer allocation error\n");
 		return -1;
+	}
 	pcurr = dshow->perfs;
 	pcurr->index = 0;
 	for (i=0; i<perfs-1; i++)
@@ -101,7 +110,11 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		// Build a linked list of performers
 		excode = perf_construct(&plast);
 		if (excode == -1)
+		{
+			// performers not allocated
+			printf("performers allocation error\n");
 			return -1;
+		}
 		pcurr->next = plast;
 		pcurr = plast;
 		pcurr->index = i;
@@ -112,13 +125,23 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	setcurr = 0;
 	excode = set_construct(&setcurr, perfs);
 	if (excode == -1)
+	{
+		// sets not allocated
+		printf("Set allocation error\n");
 		return -1;
+	}
 	dshow->firstset = setcurr;
 
 	// Make the index of dots for the first set
 	excode = coord_construct(&dshow->firstset->coords, perfs);
-	if (excode = -1)
+	struct coord_proto **coords = dshow->firstset->coords;
+	printf("coords = %g\n", coords[0]->x);
+	if (excode == -1)
+	{
+		// coordinate allocation error
+		printf("Coordinate allocation error\n");
 		return -1;
+	}
 
 	*dshow_r = dshow;
 	return 0;
@@ -179,7 +202,11 @@ int coord_construct(struct coord_proto *** coords_r, int perfs)
 	// Make the root pointer
 	coords = (struct coord_proto**) malloc(perfs*sizeof(struct coord_proto*));
 	if (!coords)
+	{
+		// coordinate allocation error
+		printf("Error: coords mapped to 0x%x\n", coords);
 		return -1;
+	}
 
 	for (i=0; i<perfs; i++)
 	{
@@ -231,6 +258,24 @@ int perf_construct(struct perf_proto **dots_r)
 }
 
 
+
+int set_coord(struct coord_proto *curr, float x, float y)
+{
+	// set coordinates from the coord struct
+	curr->x = x;
+	curr->y = y;
+	return 0;
+}
+
+
+int retr_coord(struct coord_proto *curr, float *x, float *y)
+{
+	// retrieve coordinates from the coord struct
+	*x = curr->x;
+	*y = curr->y;
+
+	return 0;
+}
 
 int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize)
 {
