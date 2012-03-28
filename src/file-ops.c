@@ -2,6 +2,7 @@
 #include "drill.h"
 void open_file(void)
 {
+	/*
 	// Open a file and use the stuff inside
 	FILE *fp;
 	int i, j;
@@ -126,10 +127,12 @@ void open_file(void)
 	fclose(fp);
 	setnum = 0;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	*/
 }
 
 void save_file(GtkWidget *widget)
 {
+	/*
 	FILE *fp;
 	int i, j;	// loop vars
 	char string_x[20];
@@ -152,6 +155,7 @@ void save_file(GtkWidget *widget)
 
 
 	fclose(fp);
+	*/
 }
 FILE *fp;
 char c;
@@ -168,6 +172,7 @@ int place;
 
 void absolute_dot (void)
 {
+	/*
 	int i, j;
 	i = 0;
 	do
@@ -241,10 +246,11 @@ void absolute_dot (void)
 	place++;
 	while (c == ',' || c == ' ' || c == '\n')
 		c = getc(fp);
-
+	*/
 }
 void relative_dot (void)
 {
+	/*
 	int i, j;
 	i = 0;
 	c = getc(fp);
@@ -302,10 +308,11 @@ void relative_dot (void)
 		//printf("c = %c\n", c);
 	}
 
-
+	*/
 }
 void func_relative(void)
 {
+	/*
 	int i;
 	while (c != '+' && c != '-' && c != ' ' && c != ')')
 		c = getc(fp);
@@ -341,11 +348,12 @@ void func_relative(void)
 	place++;
 	while (c == ',' || c == ' ' || c == ';')
 		c = getc(fp);
-
+	*/
 }
 
 void show_gen(GtkWidget *widget)
 {
+	/*
 	int i, j;
 	double intervalx, intervaly;
 	fp = fopen("new_save", "r");
@@ -512,4 +520,5 @@ void show_gen(GtkWidget *widget)
 	set_tot = wset+1;
 	fclose (fp);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	*/
 }

@@ -53,7 +53,7 @@ void move_right(GtkWidget *widget)
 void next_perf(GtkWidget *widget)
 {
 	// Go to next sequential dot
-	if (perf_cur < perfnum-1)
+	if (perf_cur < pshow->perfnum-1)
 	{
 		perf_cur++;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
@@ -458,7 +458,9 @@ int buildIfacegtk(void)
 	label = gtk_label_new ("X:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
-	sprintf(perf_buf_x, "%g", perf[setnum][perf_cur][0]);
+	//sprintf(perf_buf_x, "%g", perf[setnum][perf_cur][0]);
+	sprintf(perf_buf_x, "%g", pshow->currset->coords[perf_cur]->x);
+	printf("x = %s\n", perf_buf_x);
 	entry_perf_x = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_x), 5);
 	g_signal_connect (entry_perf_x, "activate", G_CALLBACK (xperf_change), entry_perf_x);
@@ -470,7 +472,8 @@ int buildIfacegtk(void)
 	label = gtk_label_new ("Y:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
-	sprintf(perf_buf_y, "%g", perf[setnum][perf_cur][1]);
+	//sprintf(perf_buf_y, "%g", perf[setnum][perf_cur][1]);
+	sprintf(perf_buf_y, "%g", pshow->currset->coords[perf_cur]->y);
 	entry_perf_y = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_y), 5);
 	g_signal_connect (entry_perf_y, "activate", G_CALLBACK (yperf_change), entry_perf_y);
@@ -632,6 +635,7 @@ int main (int argc, char *argv[])
 
 	// load LLL into static array
 	currset = pshow->firstset;
+	/*
 	for (i=0; i<3; i++)
 	{
 		for (j=0; j<6; j++)
@@ -643,7 +647,6 @@ int main (int argc, char *argv[])
 		currset = currset->next;
 	}
 
-	/*
 	// Hardcode dots in
 	perf[0][0][0] = 32;
 	perf[0][0][1] = 53;
@@ -674,13 +677,13 @@ int main (int argc, char *argv[])
 		perf[2][i][1]=perf[1][i][1]-10;
 	}
 	*/
-	perfnum = 6;
 	// Hard-coded total number of sets/count structure
-	set_tot = 3;
+	//set_tot = 3;
 	counts[0] = 0;
 	counts[1] = 8;
 	counts[2] = 8;
 
+	perf_cur = 0;
 
 	// Start up gtk
 	startTk(argc, argv);

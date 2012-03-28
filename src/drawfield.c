@@ -82,7 +82,7 @@ void draw_dots (GtkWidget *widget)
 	//if (setnum+1<set_tot)
 	if (currset->next != NULL)
 	{	// Not the last set, can step to next set
-		g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, perfnum);
+		g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
 		// get next set
 		lastset = currset->next;
 		// draw performers at certain point

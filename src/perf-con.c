@@ -8,7 +8,7 @@ void goto_perf (GtkWidget *widget)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf));
 		perf_buffer = atoi(entry_buffer);
-		if (perf_buffer<perfnum)
+		if (perf_buffer<pshow->perfnum)
 			perf_cur=perf_buffer;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
@@ -17,13 +17,17 @@ void goto_perf (GtkWidget *widget)
 void xperf_change (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
-	int perf_buffer;
+	float perf_buffer;
+	struct coord_proto *coords = pshow->currset->coords[perf_cur];
 	if (!playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf_x));
-		perf_buffer = atoi(entry_buffer);
+		perf_buffer = atof(entry_buffer);
 		if (perf_buffer>0 && perf_buffer<=160)
-			perf[setnum][perf_cur][0] = perf_buffer;
+		{
+			set_coord(coords, perf_buffer, coords->y);
+			//perf[setnum][perf_cur][0] = perf_buffer;
+		}
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 }
@@ -31,25 +35,32 @@ void xperf_change (GtkWidget *widget)
 void yperf_change (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
-	int perf_buffer;
+	float perf_buffer;
+	struct coord_proto *coords = pshow->currset->coords[perf_cur];
 	if (!playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf_y));
 		perf_buffer = atoi(entry_buffer);
 		if (perf_buffer>0 && perf_buffer<=85)
-			perf[setnum][perf_cur][1] = perf_buffer;
+		{
+			set_coord(coords, coords->x, perf_buffer);
+			//perf[setnum][perf_cur][1] = perf_buffer;
+		}
 		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	}
 }
 
 void add_perf (GtkWidget *widget)
 {
+	/*
 	perfnum++;
 	perf_cur=perfnum-1;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	*/
 }
 void delete_perf(GtkWidget *widget)
 {
+	/*
 	int i, j;
 	for (i=0; i<set_tot; i++)
 	{
@@ -61,6 +72,7 @@ void delete_perf(GtkWidget *widget)
 	}
 	perfnum--;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	*/
 }
 
 int show_construct(struct headset_proto **dshow_r, int perfs)

@@ -13,7 +13,7 @@
 
 
 int setnum;			// current set
-int set_tot;			// Total amount of sets
+//int set_tot;			// Total amount of sets
 int do_field;			// whether or not to redraw field
 double xoff, yoff;		// x offset
 double xo2, yo2;		// y offset
@@ -39,7 +39,7 @@ GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
 double perf[50][50][2];	// Set, performer, dot
 int perf_cur;	// current selected performer
-int perfnum;
+//int perfnum;
 
 gdouble time_elapsed;
 GTimer *timer;

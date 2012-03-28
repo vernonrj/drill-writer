@@ -160,12 +160,28 @@ void goto_set (GtkWidget *widget)
 {	// Go to set specified in entry_sets
 	const gchar *entry_buffer;
 	int set_buffer;
+	int i;
+	struct set_proto *last = pshow->firstset;
+	struct set_proto *curr = 0;
 	if (!playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_sets));
 		set_buffer = atoi(entry_buffer);
+		for (i=0; i<set_buffer && last != NULL; i++)
+		{
+			// go to current set
+			curr = last;
+			last = last->next;
+		}
+		/*
 		if (set_buffer<set_tot)
 			setnum=set_buffer;
+		*/
+		if (last != NULL)
+		{
+			pshow->currset = last;
+			pshow->prevset = curr;
+		}
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 }
@@ -175,6 +191,7 @@ void goto_set (GtkWidget *widget)
 void add_set (GtkWidget *widget)
 {
 	// TODO: Deprecated
+	/*
 	int i, j;
 	//newset_create
 	set_tot++;
@@ -188,12 +205,14 @@ void add_set (GtkWidget *widget)
 		counts[i] = counts[i-1];
 	}
 	counts[setnum+1]=1;
+	*/
 }
 
 
 void delete_set (GtkWidget *widget)
 {
 	// TODO: Deprecated
+	/*
 	int i, j;
 	for (i=setnum; i<set_tot; i++)
 	{
@@ -206,6 +225,7 @@ void delete_set (GtkWidget *widget)
 	}
 	set_tot--;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	*/
 }
 
 void change_tempo (GtkWidget *widget)

@@ -8,8 +8,10 @@ void goto_count (GtkWidget *widget)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_counts));
 		count_buffer = atoi(entry_buffer);
-		if (setnum+1<set_tot && count_buffer < counts[setnum+1])
-			set_step=count_buffer;
+		if (!isLastSet() && pshow->step < pshow->currset->counts)
+			pshow->step = count_buffer;
+		//if (setnum+1<set_tot && count_buffer < counts[setnum+1])
+			//set_step=count_buffer;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 }
