@@ -148,18 +148,20 @@ void draw_dots (GtkWidget *widget)
 	}
 	else
 	{	// We're on the last set
-		for (i=0; i< perfnum; i++)
+		for (i=0; i< pshow->perfnum; i++)
 		{	// Draw dots here
-			x = xo2+step*perf[setnum][i][0];
-			y = yo2+step*perf[setnum][i][1];
+			retr_coord(currset->coords[i], &x, &y);
+			x = xo2+step*x;
+			y = yo2+step*y;
 			//cairo_rectangle(dots, x, y, step, step);
 			cairo_new_sub_path(dots);
 			cairo_arc(dots, x, y, 2*step/3, 0, 360);
 		}
 		cairo_fill(dots);
 		// Draw selected dots
-		x = xo2+step*perf[setnum][perf_cur][0];
-		y = yo2+step*perf[setnum][perf_cur][1];
+		retr_coord(currset->coords[perf_cur], &x, &y);
+		x = xo2+step*x;
+		y = yo2+step*y;
 		//cairo_set_source_rgb(dots, 1, 0, 0);
 		//cairo_rectangle(selected, x, y, step, step);
 		cairo_new_sub_path(selected);
