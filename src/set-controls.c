@@ -93,8 +93,9 @@ void set_prev(GtkWidget *widget)
 		// go to beginning of set
 		if (pshow->step)
 			pshow->step = 0;
-		else
+		else if (pshow->prevset != NULL)
 		{
+			// not already at first set, move backwards
 			pshow->currset = pshow->prevset;
 			last = pshow->firstset;
 			if (pshow->currset == last)
@@ -130,8 +131,19 @@ void set_prev(GtkWidget *widget)
 
 void set_last (GtkWidget *widget)
 {
+	// Goto the last set
 	if (!playing)
 	{
+		while (pshow->currset->next != NULL)
+		{
+			if (pshow->prevset == NULL)
+				pshow->prevset = pshow->currset;
+			else
+				pshow->prevset = pshow->prevset->next;
+			pshow->currset = pshow->currset->next;
+		}
+		pshow->step = 0;
+
 		setnum=set_tot-1;
 		set_step=0;
 		do_field=0;

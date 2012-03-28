@@ -579,13 +579,14 @@ int main (int argc, char *argv[])
 
 	// Make a show with 5 performers
 	pshow = 0;
-	excode = show_construct(&pshow, 7);
+	excode = show_construct(&pshow, 21);
 	if (excode == -1)
 	{
 		printf("Allocation error\n");
 		return -1;
 	}
 	currset = pshow->firstset;
+	pshow->perfnum = 21;
 	currset->counts = 0;
 	set_coord(currset->coords[0], 32, 53);
 	set_coord(currset->coords[1], 36, 53);
@@ -593,11 +594,18 @@ int main (int argc, char *argv[])
 	set_coord(currset->coords[3], 34, 49);
 	set_coord(currset->coords[4], 38, 49);
 	set_coord(currset->coords[5], 36, 45);
+
+	set_coord(currset->coords[6], 32, 70);
+	set_coord(currset->coords[7], 36, 70);
+	set_coord(currset->coords[8], 40, 70);
+	set_coord(currset->coords[9], 34, 66);
+	set_coord(currset->coords[10], 38, 66);
+	set_coord(currset->coords[11], 36, 62);
 	newset_create(1);
 	prevset = currset;
 	currset = currset->next;
 	currset->counts = 8;
-	for (i=0; i<6; i++)
+	for (i=0; i<12; i++)
 	{
 		prevcr = prevset->coords[i];
 		set_coord(currset->coords[i], prevcr->x+4, prevcr->y);
@@ -606,7 +614,7 @@ int main (int argc, char *argv[])
 	prevset = currset;
 	currset = currset->next;
 	currset->counts = 8;
-	for (i=0; i<6; i++)
+	for (i=0; i<12; i++)
 	{
 		prevcr = prevset->coords[i];
 		set_coord(currset->coords[i], prevcr->x, prevcr->y-10);

@@ -86,6 +86,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	}
 	dshow->showname = (char*) malloc(sizeof(char));
 	dshow->showinfo = (char*) malloc(sizeof(char));
+	dshow->perfnum = perfs;
 	if (!dshow->showname || !dshow->showinfo)
 	{
 		// internal allocation errors
@@ -94,7 +95,6 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	}
 	dshow->showname[0] = '\0';
 	dshow->showinfo[0] = '\0';
-	dshow->perfnum = perfs;
 
 	// Make the list of performers
 	excode = perf_construct(&dshow->perfs);
@@ -190,7 +190,10 @@ int set_construct(struct set_proto **sets_r, int perfs)
 		last = sets;
 	}
 	else
+	{
+		sets->next = 0;
 		*sets_r = sets;
+	}
 
 	return 0;
 }

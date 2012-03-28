@@ -123,16 +123,25 @@ void draw_dots (GtkWidget *widget)
 			}
 
 		}
+		/*
 		if (set_step >= counts[setnum+1])
 		{	// step to the next set
 			set_step = 0;
 			setnum++;
 			//printf("setnum=%i\n", setnum);
 		}
+		*/
+		if (pshow->currset->next == NULL)
+		{
+			// At last set, playing is done
+			playing = 0;
+		}
+		/*
 		if (setnum+1>=set_tot)
 		{	// At last set, playingis done
 			playing=0;
 		}
+		*/
 		// Show all the dots
 		cairo_fill (dots);
 		cairo_fill (selected);
