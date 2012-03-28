@@ -109,28 +109,22 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->showinfo[0] = '\0';
 
 	// Make the list of performers
-	excode = perf_construct(&dshow->perfs);
-	if (excode == -1)
-	{
-		// performers not allocated
-		printf("performer allocation error\n");
+	dshow->perfs = (struct perf_proto**) malloc(perfs * sizeof(struct perf_proto*));
+	if (!dshow->perfs)
 		return -1;
-	}
-	pcurr = dshow->perfs;
-	pcurr->index = 0;
-	for (i=1; i<perfs; i++)
+	for (i=0; i<perfs; i++)
 	{
 		// Build a linked list of performers
-		excode = perf_construct(&plast);
+		pcurr = dshow->perfs[i];
+		excode = perf_construct(&pcurr);
 		if (excode == -1)
 		{
 			// performers not allocated
 			printf("performers allocation error\n");
 			return -1;
 		}
-		pcurr->next = plast;
-		pcurr = plast;
 		pcurr->index = i;
+		dshow->perfs[i] = pcurr;
 	}
 
 	// Make the setlist
@@ -305,8 +299,8 @@ int perf_construct(struct perf_proto **dots_r)
 {
 	// Build storage for performer
 	// give argument:
-	// excode = dot_construct(&dots);
-
+	// excode = perf_construct(&dots);
+	// piece of performer array
 	struct perf_proto *dots;
 
 	dots = (struct perf_proto*) malloc(sizeof(struct perf_proto));
@@ -325,7 +319,7 @@ int perf_construct(struct perf_proto **dots_r)
 	}
 	dots->name[0] = '\0';
 	dots->symbol = '\0';
-	dots->next = 0;
+	dots->valid = 0;
 
 	// pass by reference
 	*dots_r = dots;
@@ -335,6 +329,12 @@ int perf_construct(struct perf_proto **dots_r)
 
 
 
+int allow_perf(int index)
+{
+	// allow a performer to be drawn on the field
+	return -1;
+}
+
 int set_coord(struct coord_proto *curr, float x, float y)
 {
 	// set coordinates from the coord struct
@@ -343,6 +343,15 @@ int set_coord(struct coord_proto *curr, float x, float y)
 	return 0;
 }
 
+
+int set_coord_valid(struct coord_proto **curr, int index, float x, float y)
+{
+	// set coordinates and set performer valid
+	curr[index]->x = x;
+	curr[index]->y = y;
+	pshow->perfs[index]->valid = 1;
+	return 0;
+}
 
 int retr_coord(struct coord_proto *curr, float *x, float *y)
 {

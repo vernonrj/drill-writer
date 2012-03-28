@@ -85,8 +85,9 @@ struct perf_proto
 	char *name;	// performer name
 	int index;	// index number for dots
 	char *symbol;	// symbol on field
+	int valid;	// should be used by program
 
-	struct perf_proto *next;
+	//struct perf_proto *next;
 };
 
 
@@ -120,7 +121,7 @@ struct headset_proto
 	// number of performers
 	int perfnum;
 	// links to performers
-	struct perf_proto *perfs;
+	struct perf_proto **perfs;
 	// link to first set
 	struct set_proto *firstset;
 	// link to current set
@@ -141,7 +142,7 @@ void change_counts (GtkWidget *widget);
 
 // drawfield.c
 void def_canvas (GtkWidget *widget);
-void draw_dots (GtkWidget *widget);
+int draw_dots (GtkWidget *widget);
 void draw_field (GtkWidget *widget);
 
 // drill.c
@@ -210,6 +211,7 @@ int coord_construct(struct coord_proto *** coords_r, int perfs);
 int perf_construct(struct perf_proto **dots_r);
 // set/retrieve coordinates from coord struct
 int set_coord(struct coord_proto *curr, float x, float y);
+int set_coord_valid(struct coord_proto **curr, int index, float x, float y);
 int retr_coord(struct coord_proto *curr, float *x, float *y);
 // not used yet
 int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize);
