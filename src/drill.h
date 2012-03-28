@@ -165,10 +165,13 @@ static void entry_toggle_visibility(GtkWidget *checkbutton, GtkWidget *entry);
 // file-ops.c
 void open_file(void);
 void save_file(GtkWidget *widget);
+int wrap_load_dep(GtkWidget *widget);
+// TODO: Deprecated commands
 void absolute_dot (void);
 void relative_dot (void);
 void func_relative(void);
-void show_gen(GtkWidget *widget);
+void show_gen(void);
+// end deprecated commands
 
 // main.c
 void move_up(GtkWidget *widget);

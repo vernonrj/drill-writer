@@ -17,16 +17,26 @@ int isLastSet(void)
 	return 0;
 }
 
+void set_first_gtk(GtkWidget *widget)
+{
+	// Move to first set, do gtk stuff
+	if (!playing)
+	{
+		do_field=0;
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+	return;
+}
+
+//void set_first(void)
 void set_first(GtkWidget *widget)
 {	// Move to first set
 	if (!playing)
 	{
 		pshow->currset = pshow->firstset;
 		pshow->prevset = 0;
-		do_field=0;
 		setnum=0;
 		//set_step=0;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 }
 

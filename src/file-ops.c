@@ -157,6 +157,9 @@ void save_file(GtkWidget *widget)
 	fclose(fp);
 	*/
 }
+double perf[50][50][3];
+int perfnum;
+int set_tot;
 FILE *fp;
 char c;
 char comm[20];
@@ -170,9 +173,47 @@ int wset, wcount, wperf, work;
 double x, y;
 int place;
 
+int wrap_load_dep(GtkWidget *widget)
+{
+	// a wrapper for the deprecated load function
+	// interface with the old static array type
+	int i, j;
+	float x, y;
+	struct set_proto *currset;
+	struct set_proto *prevset;
+	show_gen();
+	show_construct(&pshow, perfnum);
+	for (i=0; i<set_tot; i++)
+	{
+		if (i != 0)
+		{
+			// not the first set
+			newset_create(currset);
+			prevset = currset;
+			currset = currset->next;
+			currset->counts = counts[i];
+		}
+		else
+		{
+			// first set
+			currset = pshow->firstset;
+			prevset = 0;
+			currset->counts = 0;
+		}
+		for (j=0; j<perfnum; j++)
+		{
+			x = perf[i][j][0];
+			y = perf[i][j][1];
+			set_coord_valid(currset->coords, j, x, y);
+		}
+	}
+	pshow->currset = pshow->firstset;
+	pshow->prevset = 0;
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+}
+	
 void absolute_dot (void)
 {
-	/*
 	int i, j;
 	i = 0;
 	do
@@ -246,11 +287,9 @@ void absolute_dot (void)
 	place++;
 	while (c == ',' || c == ' ' || c == '\n')
 		c = getc(fp);
-	*/
 }
 void relative_dot (void)
 {
-	/*
 	int i, j;
 	i = 0;
 	c = getc(fp);
@@ -308,11 +347,9 @@ void relative_dot (void)
 		//printf("c = %c\n", c);
 	}
 
-	*/
 }
 void func_relative(void)
 {
-	/*
 	int i;
 	while (c != '+' && c != '-' && c != ' ' && c != ')')
 		c = getc(fp);
@@ -348,12 +385,10 @@ void func_relative(void)
 	place++;
 	while (c == ',' || c == ' ' || c == ';')
 		c = getc(fp);
-	*/
 }
 
-void show_gen(GtkWidget *widget)
+void show_gen(void)
 {
-	/*
 	int i, j;
 	double intervalx, intervaly;
 	fp = fopen("new_save", "r");
@@ -519,6 +554,4 @@ void show_gen(GtkWidget *widget)
 	} while (c != EOF);
 	set_tot = wset+1;
 	fclose (fp);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	*/
 }
