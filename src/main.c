@@ -157,7 +157,15 @@ void calc_stepsize (GtkWidget *widget)
 	printf("stepsize = %g:5\n", stepsize);
 }
 
-int main (int argc, char *argv[])
+int startTk(int argc, char *argv[])
+{
+	// Start Toolkit of choice
+	// gtk
+	gtk_init(&argc, &argv);
+	return 0;
+}
+
+int buildIfacegtk(void)
 {
 	GtkActionGroup *action_group;	// menus
 	GtkUIManager *menu_manager;	// menus
@@ -180,24 +188,8 @@ int main (int argc, char *argv[])
 	GtkWidget *separator;
 	GtkWidget *image;
 
-	struct headset_proto *pshow;
-	// specific set
-	struct set_proto *currset;
-	// specific performer
-	struct perf_proto *currperf;
-	// coords
-	struct coord_proto *coords; 
-	int excode;
-
 	gint tmp_pos;
 
-	int i;		// loop vars
-
-	// set show as uninitialized
-	pshow = 0;
-
-	// Start up gtk
-	gtk_init(&argc, &argv);
 
 	// Build the menu
 	static GtkActionEntry entries[] =

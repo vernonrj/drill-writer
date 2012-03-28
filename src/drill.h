@@ -169,6 +169,10 @@ void force_redraw(GtkWidget *widget);
 static void quit_action ();
 gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
 void calc_stepsize (GtkWidget *widget);
+
+
+// Start toolkit of choice
+int startTk(int argc, char *argv[]);
 int main (int argc, char *argv[]);
 
 // media.c
