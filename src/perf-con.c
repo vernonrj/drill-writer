@@ -94,6 +94,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	}
 	dshow->showname[0] = '\0';
 	dshow->showinfo[0] = '\0';
+	dshow->perfnum = perfs;
 
 	// Make the list of performers
 	excode = perf_construct(&dshow->perfs);
@@ -105,7 +106,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	}
 	pcurr = dshow->perfs;
 	pcurr->index = 0;
-	for (i=0; i<perfs-1; i++)
+	for (i=1; i<perfs; i++)
 	{
 		// Build a linked list of performers
 		excode = perf_construct(&plast);
@@ -174,7 +175,7 @@ int set_construct(struct set_proto **sets_r, int perfs)
 
 	// link
 	last = *sets_r;
-	if (last)
+	if (last != NULL)
 	{
 		// Link previous set
 		sets->next = last->next;
@@ -186,6 +187,58 @@ int set_construct(struct set_proto **sets_r, int perfs)
 
 	return 0;
 }
+
+
+int newset_create(int index)
+{
+	// make a new set at a point right after index
+	int i;
+	int excode;
+
+	// set structures
+	struct set_proto *sets;
+	struct set_proto *last;
+	struct set_proto *curr;
+
+	// coordinates
+	struct coord_proto **coords;
+	struct coord_proto **pcoords;
+
+	last = pshow->firstset;
+	curr = pshow->firstset;
+	sets = 0;
+	if (index == 0)
+	{
+		set_construct(&last, pshow->perfnum);
+		pshow->firstset = last;
+	}
+	else
+	{
+		for (i=0; i<index && last != NULL; i++)
+		{
+			curr = last;
+			last = last->next;
+		}
+		// allocate new set
+		excode = set_construct(&sets, pshow->perfnum);
+		if (excode == -1)
+			return -1;
+		pcoords = curr->coords;
+		coords = sets->coords;
+		for (i=0; i<pshow->perfnum; i++)
+		{
+			// Copy previous dots into new set
+			coords[i]->x = pcoords[i]->x;
+			coords[i]->y = pcoords[i]->y;
+		}
+		// link
+		sets->next = curr->next;
+		curr->next = sets;
+	}
+
+	return 0;
+}
+
 
 
 int coord_construct(struct coord_proto *** coords_r, int perfs)

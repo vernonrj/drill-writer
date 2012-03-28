@@ -322,62 +322,6 @@ int buildIfacegtk(void)
 	//gtk_widget_set_app_paintable(window, TRUE);
 	//gtk_widget_set_double_buffered(window, FALSE);
 
-	//dot_construct(&pshow);
-	// Hardcode tempo in
-	tempo = 120;
-
-	// Make a show with 5 performers
-	pshow = 0;
-	printf("0x%x @ 0x%x\n", pshow, &pshow);
-	excode = show_construct(&pshow, 5);
-	printf("0x%x\n", pshow);
-	if (excode == -1)
-	{
-		printf("Allocation error\n");
-		return -1;
-	}
-	if (!pshow || excode == -1)
-	{
-		printf("Error! pshow not initialized (0x%x)\n", pshow);
-		return -1;
-	}
-	coords[0]->x = 1;
-	coords[0]->y = 2;
-	printf("%g %g\n", coords[0]->x, coords[0]->y);
-	// Hardcode dots in
-	perf[0][0][0] = 32;
-	perf[0][0][1] = 53;
-	
-	perf[0][1][0] = 36;
-	perf[0][1][1] = 53;
-
-	perf[0][2][0] = 40;
-	perf[0][2][1] = 53;
-
-	perf[0][3][0] = 34;
-	perf[0][3][1] = 49;
-	
-	perf[0][4][0] = 38;
-	perf[0][4][1] = 49;
-
-	perf[0][5][0] = 36;
-	perf[0][5][1] = 45;
-
-	// Hard-coded number of performers
-	perfnum = 6;
-	
-	for (i=0; i< perfnum; i++)
-	{
-		perf[1][i][0]=perf[0][i][0]+4;
-		perf[1][i][1]=perf[0][i][1];
-		perf[2][i][0]=perf[1][i][0];
-		perf[2][i][1]=perf[1][i][1]-10;
-	}
-	// Hard-coded total number of sets/count structure
-	set_tot = 3;
-	counts[0] = 0;
-	counts[1] = 8;
-	counts[2] = 8;
 
 	// Window Signals
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -609,6 +553,116 @@ int buildIfacegtk(void)
 	gtk_widget_show(media_box);
 	gtk_widget_show(menu_box);
 	gtk_widget_show_all (window);
+
+	return 0;
+}
+
+int main (int argc, char *argv[])
+{
+	// specific set
+	struct set_proto *currset;
+	struct set_proto *prevset;
+	// specific performer
+	struct perf_proto *currperf;
+	// coords
+	struct coord_proto *coords; 
+	struct coord_proto *prevcr;
+	int excode;
+	int i, j;		// loop vars
+	float x, y;
+
+	// set show as uninitialized
+	pshow = 0;
+	//dot_construct(&pshow);
+	// Hardcode tempo in
+	tempo = 120;
+
+	// Make a show with 5 performers
+	pshow = 0;
+	excode = show_construct(&pshow, 7);
+	if (excode == -1)
+	{
+		printf("Allocation error\n");
+		return -1;
+	}
+	currset = pshow->firstset;
+	set_coord(currset->coords[0], 32, 53);
+	set_coord(currset->coords[1], 36, 53);
+	set_coord(currset->coords[2], 40, 53);
+	set_coord(currset->coords[3], 34, 49);
+	set_coord(currset->coords[4], 38, 49);
+	set_coord(currset->coords[5], 36, 45);
+	newset_create(1);
+	prevset = currset;
+	currset = currset->next;
+	for (i=0; i<6; i++)
+	{
+		prevcr = prevset->coords[i];
+		set_coord(currset->coords[i], prevcr->x+4, prevcr->y);
+	}
+	newset_create(2);
+	prevset = currset;
+	currset = currset->next;
+	for (i=0; i<6; i++)
+	{
+		prevcr = prevset->coords[i];
+		set_coord(currset->coords[i], prevcr->x, prevcr->y-10);
+	}
+	currset = pshow->firstset;
+	for (i=0; i<3; i++)
+	{
+		for (j=0; j<6; j++)
+		{
+			retr_coord(currset->coords[j], &x, &y);
+			perf[i][j][0] = (int)x;
+			perf[i][j][1] = (int)y;
+		}
+		currset = currset->next;
+	}
+
+	/*
+	// Hardcode dots in
+	perf[0][0][0] = 32;
+	perf[0][0][1] = 53;
+	
+	perf[0][1][0] = 36;
+	perf[0][1][1] = 53;
+
+	perf[0][2][0] = 40;
+	perf[0][2][1] = 53;
+
+	perf[0][3][0] = 34;
+	perf[0][3][1] = 49;
+	
+	perf[0][4][0] = 38;
+	perf[0][4][1] = 49;
+
+	perf[0][5][0] = 36;
+	perf[0][5][1] = 45;
+
+	// Hard-coded number of performers
+	perfnum = 6;
+	
+	for (i=0; i< perfnum; i++)
+	{
+		perf[1][i][0]=perf[0][i][0]+4;
+		perf[1][i][1]=perf[0][i][1];
+		perf[2][i][0]=perf[1][i][0];
+		perf[2][i][1]=perf[1][i][1]-10;
+	}
+	*/
+	perfnum = 6;
+	// Hard-coded total number of sets/count structure
+	set_tot = 3;
+	counts[0] = 0;
+	counts[1] = 8;
+	counts[2] = 8;
+
+
+	// Start up gtk
+	startTk(argc, argv);
+	// Create gtk interface
+	buildIfacegtk();
 
 	// Actual main loop for now
 	(void)g_timeout_add(50, (GSourceFunc)play_show, window);

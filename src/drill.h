@@ -116,11 +116,16 @@ struct headset_proto
 	char *showname;
 	// info about the show
 	char *showinfo;
+	// number of performers
+	int perfnum;
 	// links to performers
 	struct perf_proto *perfs;
 	// link to first set
 	struct set_proto *firstset;
 };
+
+// main show container
+struct headset_proto *pshow;
 
 // Functions
 // count-con.c
@@ -191,6 +196,7 @@ void delete_perf(GtkWidget *widget);
 int show_construct(struct headset_proto **dshow_r, int perfs);
 // create a set with a given amount of performers
 int set_construct(struct set_proto **sets_r, int perfs);
+int newset_create(int index);
 // create container for dots
 int coord_construct(struct coord_proto *** coords_r, int perfs);
 // create container for performers
