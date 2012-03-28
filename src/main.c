@@ -640,59 +640,6 @@ int main (int argc, char *argv[])
 	pshow->currset = pshow->firstset;
 	pshow->prevset = 0;
 
-
-	// load LLL into static array
-	//currset = pshow->firstset;
-	/*
-	for (i=0; i<3; i++)
-	{
-		for (j=0; j<6; j++)
-		{
-			retr_coord(currset->coords[j], &x, &y);
-			perf[i][j][0] = (int)x;
-			perf[i][j][1] = (int)y;
-		}
-		currset = currset->next;
-	}
-
-	// Hardcode dots in
-	perf[0][0][0] = 32;
-	perf[0][0][1] = 53;
-	
-	perf[0][1][0] = 36;
-	perf[0][1][1] = 53;
-
-	perf[0][2][0] = 40;
-	perf[0][2][1] = 53;
-
-	perf[0][3][0] = 34;
-	perf[0][3][1] = 49;
-	
-	perf[0][4][0] = 38;
-	perf[0][4][1] = 49;
-
-	perf[0][5][0] = 36;
-	perf[0][5][1] = 45;
-
-	// Hard-coded number of performers
-	perfnum = 6;
-	
-	for (i=0; i< perfnum; i++)
-	{
-		perf[1][i][0]=perf[0][i][0]+4;
-		perf[1][i][1]=perf[0][i][1];
-		perf[2][i][0]=perf[1][i][0];
-		perf[2][i][1]=perf[1][i][1]-10;
-	}
-	*/
-	// Hard-coded total number of sets/count structure
-	//set_tot = 3;
-	/*
-	counts[0] = 0;
-	counts[1] = 8;
-	counts[2] = 8;
-	*/
-
 	perf_cur = 0;
 
 	// Start up gtk
