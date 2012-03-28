@@ -23,9 +23,9 @@ void set_first(GtkWidget *widget)
 	{
 		pshow->currset = pshow->firstset;
 		pshow->prevset = 0;
-		setnum=0;
 		do_field=0;
-		set_step=0;
+		//setnum=0;
+		//set_step=0;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 }
@@ -34,15 +34,17 @@ void set_next(GtkWidget *widget)
 {	// Move to the next set
 	if (!playing)
 	{
-		setnum++;
+		//setnum++;
 		if (pshow->currset->next != NULL)
 		{
 			pshow->prevset = pshow->currset;
 			pshow->currset = pshow->currset->next;
 		}
+		/*
 		set_step=0;
 		if (setnum >= set_tot )
 			setnum = set_tot-1;
+		*/
 		//int width, height;
 		do_field=0;
 		//gdk_drawable_get_size(widget->window, &width, &height);
@@ -146,12 +148,14 @@ void set_last (GtkWidget *widget)
 		}
 		pshow->step = 0;
 
-		setnum=set_tot-1;
-		set_step=0;
+		//setnum=set_tot-1;
+		//set_step=0;
 		do_field=0;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 }
+
+
 void goto_set (GtkWidget *widget)
 {	// Go to set specified in entry_sets
 	const gchar *entry_buffer;
@@ -165,6 +169,9 @@ void goto_set (GtkWidget *widget)
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 }
+
+
+
 void add_set (GtkWidget *widget)
 {
 	int i, j;
@@ -180,6 +187,7 @@ void add_set (GtkWidget *widget)
 	}
 	counts[setnum+1]=1;
 }
+
 
 void delete_set (GtkWidget *widget)
 {
