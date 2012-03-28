@@ -123,6 +123,12 @@ void draw_dots (GtkWidget *widget)
 			}
 
 		}
+		if (pshow->step >= lastset->counts)
+		{
+			pshow->step = 0;
+			pshow->prevset = pshow->currset;
+			pshow->currset = lastset;
+		}
 		/*
 		if (set_step >= counts[setnum+1])
 		{	// step to the next set
