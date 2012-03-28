@@ -143,6 +143,12 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		printf("Coordinate allocation error\n");
 		return -1;
 	}
+	// Set the current set to opening set
+	dshow->currset = dshow->firstset;
+	dshow->prevset = 0;
+
+	// start at the beginning of the set
+	dshow->step = 0;
 
 	*dshow_r = dshow;
 	return 0;
@@ -169,6 +175,7 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	// allocate values inside set
 	sets->name = (char*) malloc(1*sizeof(char));
 	sets->info = (char*) malloc(1*sizeof(char));
+	sets->counts = 0;
 	// make coordinate system
 	excode = coord_construct(&sets->coords, perfs);
 

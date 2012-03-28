@@ -103,6 +103,7 @@ struct set_proto
 	char *name;	// set name
 	char *info;	// set info
 	struct coord_proto **coords;
+	int counts;
 	struct set_proto *next;
 };
 
@@ -122,6 +123,12 @@ struct headset_proto
 	struct perf_proto *perfs;
 	// link to first set
 	struct set_proto *firstset;
+	// link to current set
+	struct set_proto *currset;
+	// count of the current set
+	int step;
+	// link to previous set
+	struct set_proto *prevset;
 };
 
 // main show container
@@ -210,6 +217,7 @@ int dot_new_set(struct perf_proto ***dots_r, int setnum);
 int dot_destroy(struct perf_proto ***dots_r, int size);
 
 // set-controls.c
+int isLastSet(void);
 void set_first(GtkWidget *widget);
 void set_next(GtkWidget *widget);
 void set_next_count(GtkWidget *widget);

@@ -586,6 +586,7 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 	currset = pshow->firstset;
+	currset->counts = 0;
 	set_coord(currset->coords[0], 32, 53);
 	set_coord(currset->coords[1], 36, 53);
 	set_coord(currset->coords[2], 40, 53);
@@ -595,6 +596,7 @@ int main (int argc, char *argv[])
 	newset_create(1);
 	prevset = currset;
 	currset = currset->next;
+	currset->counts = 8;
 	for (i=0; i<6; i++)
 	{
 		prevcr = prevset->coords[i];
@@ -603,11 +605,17 @@ int main (int argc, char *argv[])
 	newset_create(2);
 	prevset = currset;
 	currset = currset->next;
+	currset->counts = 8;
 	for (i=0; i<6; i++)
 	{
 		prevcr = prevset->coords[i];
 		set_coord(currset->coords[i], prevcr->x, prevcr->y-10);
 	}
+	pshow->currset = pshow->firstset;
+	pshow->prevset = 0;
+
+
+	// load LLL into static array
 	currset = pshow->firstset;
 	for (i=0; i<3; i++)
 	{

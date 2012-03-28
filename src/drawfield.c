@@ -45,14 +45,21 @@ void def_canvas (GtkWidget *widget)
 void draw_dots (GtkWidget *widget)
 {
 	int i;		// loop variable
-	double x, y;	// x and y location
+	// set containers
+	struct set_proto *currset;	
+	struct set_proto *lastset;
+	// coordinate containers
+	struct coord_proto *coords;
+	// coordinates
+	float x, y;	// x and y location
+	float xcalc, ycalc;
+	// canvases
 	cairo_t *dots;	// context for all dots
 	cairo_t *selected; // this will eventually have a struct to get dots
 	cairo_surface_t *field_surface;
 	cairo_t *surface_write;
 
 	// Generate field
-	// Only deallocate surface if it has been allocated
 	field_surface = cairo_image_surface_create_from_png("field.png");
 	surface_write = gdk_cairo_create(widget->window);
 
@@ -66,23 +73,40 @@ void draw_dots (GtkWidget *widget)
 	dots = gdk_cairo_create(widget->window);
 	selected = gdk_cairo_create(widget->window);
 
+	// grab sets from data structure
+	currset = pshow->currset;
+
 	// Draw dots
 	cairo_set_source_rgb(dots, 0, 0, 0);
 	cairo_set_source_rgb(selected, 1, 0, 0);
-	if (setnum+1<set_tot)
+	//if (setnum+1<set_tot)
+	if (currset->next != NULL)
 	{	// Not the last set, can step to next set
 		g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, perfnum);
-		for (i=0; i<perfnum; i++)
+		// get next set
+		lastset = currset->next;
+		// draw performers at certain point
+		for (i=0; i<pshow->perfnum; i++)
 		{	// Draw performers
-			double xcalc, ycalc;
-			x=((perf[setnum+1][i][0]-perf[setnum][i][0])/counts[setnum+1]);
-			x=x*set_step+perf[setnum][i][0];
-			xcalc = x;
-			x=xo2+step*x;
-			y=((perf[setnum+1][i][1]-perf[setnum][i][1])/counts[setnum+1]);
-			y=y*set_step+perf[setnum][i][1];
-			ycalc = y;
-			y=yo2+step*y;
+			// Get dots for current set and next set
+			retr_coord(currset->coords[i], &x, &y);
+			retr_coord(lastset->coords[i], &xcalc, &ycalc);
+			// Build horizontal location
+			xcalc = (xcalc - x) / lastset->counts;
+			xcalc = xcalc*pshow->step + x;
+			x = xo2 + step*xcalc;
+			//x=((perf[setnum+1][i][0]-perf[setnum][i][0])/counts[setnum+1]);
+			//x=x*set_step+perf[setnum][i][0];
+			//xcalc = x;
+			//x=xo2+step*x;
+			// y location (even if mid-set)
+			ycalc = (ycalc - y) / lastset->counts;
+			ycalc = ycalc*pshow->step + y;
+			y = yo2 + step*ycalc;
+			//y=((perf[setnum+1][i][1]-perf[setnum][i][1])/counts[setnum+1]);
+			//y=y*set_step+perf[setnum][i][1];
+			//ycalc = y;
+			//y=yo2+step*y;
 			//printf("Drawing Performer %i at:\t\tX = %g\t\tY = %g\n", i, xcalc, ycalc);
 			if (i==perf_cur)
 			{	// This is the highlighted performer

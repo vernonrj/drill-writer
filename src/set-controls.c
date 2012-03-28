@@ -1,5 +1,22 @@
 // Functions that change sets go here
 #include "drill.h"
+
+int isLastSet(void)
+{
+	// check to see if we're at the last set
+	if (pshow->currset->next == NULL)
+	{
+		// at the last set
+		return 1;
+	}
+	else
+	{
+		// not at the last set
+		return 0;
+	}
+	return 0;
+}
+
 void set_first(GtkWidget *widget)
 {	// Move to first set
 	if (!playing)
@@ -16,6 +33,11 @@ void set_next(GtkWidget *widget)
 	if (!playing)
 	{
 		setnum++;
+		if (pshow->currset->next != NULL)
+		{
+			pshow->prevset = pshow->currset;
+			pshow->currset = pshow->currset->next;
+		}
 		set_step=0;
 		if (setnum >= set_tot )
 			setnum = set_tot-1;
@@ -28,9 +50,24 @@ void set_next(GtkWidget *widget)
 
 void set_next_count(GtkWidget *widget)
 {
+	struct set_proto *nextset;
 	if (!playing)
 	{	// shouldn't use this when playing
 		//printf("set_next setnum=%i\nset_tot=%i\nset_step=%i\n", setnum, set_tot, set_step);
+		if (!isLastSet())
+		{
+			pshow->step++;
+			nextset = pshow->currset;
+			nextset = nextset->next;
+			if (pshow->step >= nextset->counts)
+			{
+				// to the next set
+				pshow->step = 0;
+				pshow->prevset = pshow->currset;
+				pshow->currset = nextset;
+			}
+		}
+		/*
 		if (setnum+1<set_tot)
 			set_step++;
 		else
@@ -40,6 +77,7 @@ void set_next_count(GtkWidget *widget)
 			set_step=0;
 			setnum++;
 		}
+		*/
 		do_field=0;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
