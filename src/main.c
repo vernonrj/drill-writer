@@ -20,28 +20,33 @@ extern int expose_flag;		// might not be required
 void move_up(GtkWidget *widget)
 {
 	// Move a dot backfield
-	perf[setnum][perf_cur][1]--;
+	struct set_proto *coord;
+	pshow->currset->coords[perf_cur]->y--;
+	//perf[setnum][perf_cur][1]--;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_down(GtkWidget *widget)
 {
 	// Move a dot frontfield
-	perf[setnum][perf_cur][1]++;
+	pshow->currset->coords[perf_cur]->y++;
+	//perf[setnum][perf_cur][1]++;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_left(GtkWidget *widget)
 {
 	// Move a dot toward left goal line
-	perf[setnum][perf_cur][0]--;
+	pshow->currset->coords[perf_cur]->x--;
+	//perf[setnum][perf_cur][0]--;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_right(GtkWidget *widget)
 {
 	// Move a dot toward right goal line
-	perf[setnum][perf_cur][0]++;
+	pshow->currset->coords[perf_cur]->x++;
+	//perf[setnum][perf_cur][0]++;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
@@ -85,8 +90,8 @@ static void quit_action ()
 gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
 	int i, j;
-	double coordx, coordy;
-	double workx, worky;
+	float coordx, coordy;
+	float workx, worky;
 	//double closex, closey;
 	// Length from click location to nearest dot
 	// Click must be closer than 3 steps
@@ -103,11 +108,13 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 		coordy = (coordy-yo2-50)/step;
 
 		printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
-		for (i=0; i<perfnum; i++)
+		//for (i=0; i<perfnum; i++)
+		for (i=0; i<pshow->perfnum; i++)
 		{
-			// TODO: figure out better way to find closest dot
-			workx = perf[setnum][i][0]-coordx;
-			worky = perf[setnum][i][1]-coordy;
+			// TODO: Maybe use a BST later
+			retr_coord(pshow->currset->coords[i], &workx, &worky);
+			workx = workx - coordx;
+			worky = worky - coordy;
 			distance = pow(workx, 2) + pow(worky, 2);
 			if (distance < dist_threshold)
 			{
