@@ -21,6 +21,8 @@ void set_first(GtkWidget *widget)
 {	// Move to first set
 	if (!playing)
 	{
+		pshow->currset = pshow->firstset;
+		pshow->prevset = 0;
 		setnum=0;
 		do_field=0;
 		set_step=0;
