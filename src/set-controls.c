@@ -85,14 +85,44 @@ void set_next_count(GtkWidget *widget)
 				
 void set_prev(GtkWidget *widget)
 {
+	struct set_proto *last;
+
 	if (!playing)	// shouldn't use this when playing
 	{
+		// if in the middle of set,
+		// go to beginning of set
+		if (pshow->step)
+			pshow->step = 0;
+		else
+		{
+			pshow->currset = pshow->prevset;
+			last = pshow->firstset;
+			if (pshow->currset == last)
+			{
+				// first set
+				pshow->prevset = 0;
+			}
+			else
+			{
+				// find previous set
+				while (last->next != pshow->currset && last != NULL)
+				{
+					last = last->next;
+				}
+				if (last != NULL)
+					pshow->prevset = last;
+				else
+					pshow = 0;
+			}
+		}
+		/*
 		if (!set_step)
 			setnum--;
 		else	// go back to start of set, instead of set-1
 			set_step=0;
 		if (setnum < 0)
 			setnum = 0;
+		*/
 		do_field=0;	// don't need to draw field
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
