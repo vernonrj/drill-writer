@@ -172,6 +172,7 @@ int array[100];
 int wset, wcount, wperf, work;
 double x, y;
 int place;
+int counts[50];
 
 int wrap_load_dep(GtkWidget *widget)
 {

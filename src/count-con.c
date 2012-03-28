@@ -25,7 +25,10 @@ void change_counts (GtkWidget *widget)
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_counts));
 		count_buffer = atoi(entry_buffer);
 		if (count_buffer > 0)
-			counts[setnum] = count_buffer;
+		{
+			pshow->currset->counts = count_buffer;
+			//counts[setnum] = count_buffer;
+		}
 	}
 }
 

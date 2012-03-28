@@ -23,7 +23,6 @@ int playing;
 int set_step;
 double step;
 int expose_flag;
-int counts[50];
 char set_buf[5];
 char count_buf[5];
 char tempo_buf[5];
@@ -222,7 +221,6 @@ int dot_new_set(struct perf_proto ***dots_r, int setnum);
 int dot_destroy(struct perf_proto ***dots_r, int size);
 
 // set-controls.c
-int isLastSet(void);
 void add_set_gtk(GtkWidget *widget);
 void delete_set_gtk(GtkWidget *widget);
 void set_first_gtk(GtkWidget *widget);
@@ -233,6 +231,7 @@ void set_prev_gtk(GtkWidget *widget);
 void goto_set (GtkWidget *widget);
 void change_tempo (GtkWidget *widget);
 
+int isLastSet(void);
 void add_set(void);
 void delete_set(void);
 void set_first(void);

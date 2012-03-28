@@ -415,7 +415,8 @@ int buildIfacegtk(void)
 
 	// need to change these to spin buttons
 	//sprintf(count_buf, "%i", set_step);
-	sprintf(count_buf, "%i", counts[setnum]);
+	//sprintf(count_buf, "%i", counts[setnum]);
+	sprintf(count_buf, "%i", pshow->currset->counts);
 	entry_counts = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_counts), 50);
 	g_signal_connect(entry_counts, "activate", G_CALLBACK (change_counts), entry_counts);
@@ -686,9 +687,11 @@ int main (int argc, char *argv[])
 	*/
 	// Hard-coded total number of sets/count structure
 	//set_tot = 3;
+	/*
 	counts[0] = 0;
 	counts[1] = 8;
 	counts[2] = 8;
+	*/
 
 	perf_cur = 0;
 
