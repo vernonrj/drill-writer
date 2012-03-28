@@ -199,7 +199,7 @@ int set_construct(struct set_proto **sets_r, int perfs)
 }
 
 
-int newset_create(int index)
+int newset_create(struct set_proto *curr)
 {
 	// make a new set at a point right after index
 	int i;
@@ -208,27 +208,28 @@ int newset_create(int index)
 	// set structures
 	struct set_proto *sets;
 	struct set_proto *last;
-	struct set_proto *curr;
+	//struct set_proto *curr;
 
 	// coordinates
 	struct coord_proto **coords;
 	struct coord_proto **pcoords;
 
-	last = pshow->firstset;
-	curr = pshow->firstset;
 	sets = 0;
-	if (index == 0)
+	if (curr == 0)
 	{
+		// place at beginning of list
 		set_construct(&last, pshow->perfnum);
 		pshow->firstset = last;
 	}
 	else
 	{
+		/*
 		for (i=0; i<index && last != NULL; i++)
 		{
 			curr = last;
 			last = last->next;
 		}
+		*/
 		// allocate new set
 		excode = set_construct(&sets, pshow->perfnum);
 		if (excode == -1)

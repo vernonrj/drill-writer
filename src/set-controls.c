@@ -174,7 +174,9 @@ void goto_set (GtkWidget *widget)
 
 void add_set (GtkWidget *widget)
 {
+	// TODO: Deprecated
 	int i, j;
+	//newset_create
 	set_tot++;
 	for (i=set_tot-1; i>setnum; i--)
 	{
@@ -191,6 +193,7 @@ void add_set (GtkWidget *widget)
 
 void delete_set (GtkWidget *widget)
 {
+	// TODO: Deprecated
 	int i, j;
 	for (i=setnum; i<set_tot; i++)
 	{

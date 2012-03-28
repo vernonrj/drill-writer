@@ -601,7 +601,7 @@ int main (int argc, char *argv[])
 	set_coord(currset->coords[9], 34, 66);
 	set_coord(currset->coords[10], 38, 66);
 	set_coord(currset->coords[11], 36, 62);
-	newset_create(1);
+	newset_create(currset);
 	prevset = currset;
 	currset = currset->next;
 	currset->counts = 8;
@@ -610,7 +610,7 @@ int main (int argc, char *argv[])
 		prevcr = prevset->coords[i];
 		set_coord(currset->coords[i], prevcr->x+4, prevcr->y);
 	}
-	newset_create(2);
+	newset_create(currset);
 	prevset = currset;
 	currset = currset->next;
 	currset->counts = 8;

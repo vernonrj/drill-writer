@@ -203,7 +203,7 @@ void delete_perf(GtkWidget *widget);
 int show_construct(struct headset_proto **dshow_r, int perfs);
 // create a set with a given amount of performers
 int set_construct(struct set_proto **sets_r, int perfs);
-int newset_create(int index);
+int newset_create(struct set_proto *curr);
 // create container for dots
 int coord_construct(struct coord_proto *** coords_r, int perfs);
 // create container for performers
