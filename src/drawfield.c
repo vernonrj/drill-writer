@@ -285,7 +285,10 @@ void draw_field (GtkWidget *widget)
 
 	// Update all the entries
 	// Convert all numbers into strings first
-	sprintf(set_buf, "%i", setnum);
+	if (!pshow->currset->name[0])
+		sprintf(set_buf, "%i", setnum);
+	else
+		strcpy(set_buf, pshow->currset->name);
 	sprintf(count_buf, "%i", pshow->currset->counts);
 	sprintf(perf_buf, "%i", perf_cur);
 	retr_coord(pshow->currset->coords[perf_cur], &x, &y);
