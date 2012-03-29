@@ -206,9 +206,12 @@ int buildIfacegtk(void)
 	{ "FileMenuAction", NULL, "_File" },	// name, stock id, label
 	{ "ToolsMenuAction", NULL, "_Tools"},
 	{ "HelpMenuAction", NULL, "_Help"},
-	{ "RunMenuAction", NULL, "_Run" },
-	{ "AddMenuAction", NULL, "_Add"},
-	{ "MoveMenuAction", NULL, "_Move"},
+	//{ "RunMenuAction", NULL, "_Run" },
+	{ "SetMenuAction", NULL, "_Set" },
+	//{ "AddMenuAction", NULL, "_Add"},
+	{ "EditMenuAction", NULL, "_Edit"},
+	//{ "MoveMenuAction", NULL, "_Move"},
+	{ "DotMenuAction", NULL, "_Dot"},
 		
 	{ "NewAction", GTK_STOCK_NEW,
 		"_New", "<control>N",
