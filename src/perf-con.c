@@ -362,6 +362,50 @@ int retr_coord(struct coord_proto *curr, float *x, float *y)
 	return 0;
 }
 
+
+int retr_midset(struct set_proto *currset, int index, float *x_r, float *y_r)
+{
+	// retrieve midset coordinates from set struct
+	struct set_proto *last;
+	float xcurr, ycurr;
+	float xnext, ynext;
+	float xbias, ybias;
+	int cstep;
+	int countnum;
+
+	struct set_proto *nextset;
+
+	retr_coord(currset->coords[index], &xcurr, &ycurr);
+	if (currset->next != NULL)
+	{
+		// not last set,
+		// need to check to see if midset should be found
+		nextset = currset->next;
+		retr_coord(nextset->coords[index], &xnext, &ynext);
+		cstep = pshow->step;
+		if (cstep != 0)
+		{
+			// there is a bias that should be calculated
+			countnum = nextset->counts;
+			xbias = (xnext - xcurr) / countnum;
+			ybias = (ynext - ycurr) / countnum;
+			xbias = xbias * cstep;
+			ybias = ybias * cstep;
+			// find new locations based on bias
+			xcurr = xcurr + xbias;
+			ycurr = ycurr + ybias;
+		}
+	}
+
+	// store reference
+	*x_r = xcurr;
+	*y_r = ycurr;
+
+	return 0;
+}
+
+
+
 int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize)
 {
 	// Change number of performers

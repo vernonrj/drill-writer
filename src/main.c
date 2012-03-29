@@ -112,7 +112,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 		for (i=0; i<pshow->perfnum; i++)
 		{
 			// TODO: Maybe use a BST later
-			retr_coord(pshow->currset->coords[i], &workx, &worky);
+			retr_midset(pshow->currset, i, &workx, &worky);
 			workx = workx - coordx;
 			worky = worky - coordy;
 			distance = pow(workx, 2) + pow(worky, 2);
