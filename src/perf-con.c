@@ -149,6 +149,14 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		printf("Coordinate allocation error\n");
 		return -1;
 	}
+	// Construct tempo
+	excode = tempo_construct(&dshow->firsttempo, 0);
+	if (excode == -1)
+	{
+		// tempo allocation error
+		return -1;
+	}
+	dshow->currtempo = dshow->firsttempo;
 	// Set the current set to opening set
 	dshow->currset = dshow->firstset;
 	dshow->prevset = 0;
@@ -157,6 +165,28 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->step = 0;
 
 	*dshow_r = dshow;
+	return 0;
+}
+
+// Tempo storage
+int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint)
+{
+	// Add a new tempo at anchorpoint
+	struct tempo_proto *tempo;
+	tempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
+	if (tempo == NULL)
+	{
+		// allocation error
+		return -1;
+	}
+	tempo->prev = 0;
+	tempo->next = 0;
+	tempo->tempo = 120;
+	tempo->anchorpoint = anchorpoint;
+
+	// pass by reference back
+	*tempo_r = tempo;
+
 	return 0;
 }
 

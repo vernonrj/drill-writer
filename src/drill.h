@@ -76,8 +76,21 @@ G_END_DECLS
 #endif // __DRILL_H
 
 
+// tempo LLL node
+struct tempo_proto
+{
+	// node with tempo information
+	// speed
+	int tempo;
+	// Set anchor point
+	int anchorpoint;
 
-// Dot LLL nodes
+	struct tempo_proto *prev;
+	struct tempo_proto *next;
+};
+
+
+// Performer LLL nodes
 struct perf_proto
 {
 	// node with performer information
@@ -129,6 +142,9 @@ struct headset_proto
 	int step;
 	// link to previous set
 	struct set_proto *prevset;
+	// Tempo control
+	struct tempo_proto *firsttempo;
+	struct tempo_proto *currtempo;
 };
 
 // main show container
@@ -204,6 +220,7 @@ void add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);
+int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);
 // create a set with a given amount of performers
 int set_construct(struct set_proto **sets_r, int perfs);
 int newset_create(struct set_proto *curr);

@@ -150,6 +150,7 @@ void change_tempo (GtkWidget *widget)
 	// Change the tempo internally
 	// TODO: Non-global tempo
 	const gchar *entry_buffer;
+	struct tempo_proto *stempo;
 	int tmpo;
 
 	entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_tempo));
