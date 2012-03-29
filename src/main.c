@@ -89,8 +89,15 @@ static void quit_action ()
 
 gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
+	// Handle click event on canvas
+	
+	// loop vars
 	int i, j;
+	// number of performers
+	int perfnum;
+	// location of click
 	float coordx, coordy;
+	// dot of performer being checked
 	float workx, worky;
 	//double closex, closey;
 	// Length from click location to nearest dot
@@ -108,15 +115,16 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 		coordy = (coordy-yo2-50)/step;
 
 		printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
+		perfnum = pshow->perfnum;
 		//for (i=0; i<perfnum; i++)
-		for (i=0; i<pshow->perfnum; i++)
+		for (i=0; i<perfnum; i++)
 		{
 			// TODO: Maybe use a BST later
 			retr_midset(pshow->currset, i, &workx, &worky);
 			workx = workx - coordx;
 			worky = worky - coordy;
 			distance = pow(workx, 2) + pow(worky, 2);
-			if (distance < dist_threshold)
+			if (distance < dist_threshold && pshow->perfs[i]->valid == 1)
 			{
 				// Found a closer dot
 				perf_cur = i;
