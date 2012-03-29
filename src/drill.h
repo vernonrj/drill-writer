@@ -228,6 +228,7 @@ void set_last_gtk(GtkWidget *widget);
 void set_next_gtk(GtkWidget *widget);
 void set_next_count_gtk(GtkWidget *widget);
 void set_prev_gtk(GtkWidget *widget);
+void set_set_name_gtk(GtkWidget *widget);
 void goto_set (GtkWidget *widget);
 void change_tempo (GtkWidget *widget);
 

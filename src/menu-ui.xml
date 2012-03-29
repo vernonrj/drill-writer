@@ -14,7 +14,7 @@
 			<menuitem name="DelPerf" action="DelPerfAction"/>
 			<menuitem name="AddSet" action="AddSetAction"/>
 			<menuitem name="DelSet" action="DelSetAction"/>
-			<placeholder name="AddMenuAddition"/>
+			<placeholder name="EditMenuAddition"/>
 		</menu>
 		<menu name="DotMenu" action="DotMenuAction">
 			<menuitem name="MoveUp" action="MoveUpAction"/>
@@ -23,15 +23,16 @@
 			<menuitem name="MoveRight" action="MoveRightAction"/>
 			<menuitem name="NextPerf" action="NextPerfAction"/>
 			<menuitem name="PrevPerf" action="PrevPerfAction"/>
-			<placeholder name="MoveMenuAdditioin"/>
+			<placeholder name="DotMenuAdditioin"/>
 		</menu>
 		<menu name="SetMenu" action="SetMenuAction">
+			<menuitem name="SetSetName" action="SetSetNameAction"/>
 			<menuitem name="NextSet" action="NextSetAction"/>
 			<menuitem name="PrevSet" action="PrevSetAction"/>
 			<menuitem name="PlayHere" action="PlayHereAction"/>
 			<menuitem name="PlayFromStart" action="PlayFromStartAction"/>
 			<menuitem name="StopPlay" action="StopPlayAction"/>
-			<placeholder name="RunMenuAdditions" />
+			<placeholder name="SetMenuAdditions" />
 		</menu>
 		<menu name="ToolsMenu" action="ToolsMenuAction">
 			<menuitem name="Force Redraw" action="ForceRedrawAction"/>

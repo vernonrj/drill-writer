@@ -83,6 +83,34 @@ void set_prev_gtk(GtkWidget *widget)
 
 
 
+void set_set_name_gtk(GtkWidget *widget)
+{
+	// Set the name of the set
+	// Name hard-limited to 4 chars currently
+	// name is currently taken from entry_sets
+	const gchar *entry_buffer;
+	int set_buffer;
+	struct set_proto *setcurr = pshow->currset;
+	int size;
+
+	if (!playing)
+	{	
+		entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_sets));
+		size = strlen(entry_buffer);
+		if (size < 5)
+		{
+			// set the name of the current set
+			free(setcurr->name);
+			setcurr->name = (char*)malloc(size*sizeof(char)+1);
+			strcpy(setcurr->name, entry_buffer);
+		}
+		do_field = 0;	// don't need to redraw field yet
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+	return;
+}
+
+
 void goto_set (GtkWidget *widget)
 {	// Go to set specified in entry_sets
 	const gchar *entry_buffer;
