@@ -380,6 +380,8 @@ void update_tempo(void)
 			othertempo = othertempo->next;
 		}
 	}
+	// interface with deprecated tempo system
+	tempo = currtempo->tempo;
 	return;
 }
 
