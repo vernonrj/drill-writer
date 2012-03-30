@@ -173,12 +173,14 @@ void change_tempo (GtkWidget *widget)
 		{
 			// making a new node
 			stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
+			// store data to new node
+			stempo->tempo = tmpo;
+			stempo->anchorpoint = setnum;
+			// link new node
 			stempo->next = currtempo->next;
 			currtempo->next = stempo;
 			stempo->prev = currtempo;
 			currtempo = currtempo->next;
-			currtempo->tempo = tmpo;
-			currtempo->anchorpoint = setnum;
 		}
 		// Now check to see if node is unneccesary
 		// Check to see if node can be deleted
@@ -410,25 +412,35 @@ void update_tempo(void)
 	// to the correct tempo
 	struct tempo_proto *currtempo;
 	struct tempo_proto *othertempo;
+	int cset;
+	int nset;
 
 	currtempo = pshow->currtempo;
 	// Go back to general location
-	while (currtempo->anchorpoint > setnum)
-		currtempo = currtempo->prev;
-	// Get next tempo
-	othertempo = currtempo->next;
-	while (othertempo)
+	if (currtempo->anchorpoint > setnum)
 	{
-		// find correct tempo forward
-		if (othertempo->anchorpoint < setnum)
+		// Go backward to tempo
+		while (currtempo->anchorpoint > setnum)
+			currtempo = currtempo->prev;
+	}
+	else
+	{
+		// Go forward to tempo
+		othertempo = currtempo->next;
+		while (othertempo)
 		{
-			// go to next tempo
-			currtempo = othertempo;
-			othertempo = othertempo->next;
-			printf("looking at tempo = %i\n", currtempo->tempo);
+			cset = currtempo->anchorpoint;
+			nset = othertempo->anchorpoint;
+			// find correct tempo forward
+			if (nset <= setnum)
+			{
+				// go to next tempo
+				currtempo = othertempo;
+				othertempo = othertempo->next;
+			}
+			else
+				othertempo = 0;
 		}
-		else
-			othertempo = 0;
 	}
 	// interface with deprecated tempo system
 	tempo = currtempo->tempo;

@@ -210,6 +210,10 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	// allocate values inside set
 	sets->name = (char*) malloc(1*sizeof(char));
 	sets->info = (char*) malloc(1*sizeof(char));
+	if (!sets->name || !sets->info)
+		return -1;
+	sets->name[0] = '\0';
+	sets->info[0] = '\0';
 	sets->counts = 0;
 	// make coordinate system
 	excode = coord_construct(&sets->coords, perfs);
