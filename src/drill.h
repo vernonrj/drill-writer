@@ -257,6 +257,7 @@ void set_last(void);
 void set_next(void);
 void set_next_count(void);
 void set_prev(void);
+void update_tempo(void);
 
 
 

@@ -357,3 +357,30 @@ void set_prev(void)
 }
 
 
+void update_tempo(void)
+{
+	// if the tempo is out of date, change it
+	// to the correct tempo
+	struct tempo_proto *currtempo;
+	struct tempo_proto *othertempo;
+
+	currtempo = pshow->currtempo;
+	// Go back to general location
+	while (currtempo->anchorpoint > setnum)
+		currtempo = currtempo->prev;
+	// Get next tempo
+	othertempo = currtempo->next;
+	while (othertempo)
+	{
+		// find correct tempo forward
+		if (othertempo->anchorpoint < setnum)
+		{
+			// go to next tempo
+			currtempo = othertempo;
+			othertempo = othertempo->next;
+		}
+	}
+	return;
+}
+
+
