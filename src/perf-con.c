@@ -150,13 +150,12 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		return -1;
 	}
 	// Construct tempo
-	excode = tempo_construct(&dshow->firsttempo, 0);
+	excode = tempo_construct(&dshow->currtempo, 0);
 	if (excode == -1)
 	{
 		// tempo allocation error
 		return -1;
 	}
-	dshow->currtempo = dshow->firsttempo;
 	// Set the current set to opening set
 	dshow->currset = dshow->firstset;
 	dshow->prevset = 0;

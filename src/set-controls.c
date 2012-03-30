@@ -150,16 +150,63 @@ void change_tempo (GtkWidget *widget)
 	// Change the tempo internally
 	// TODO: Non-global tempo
 	const gchar *entry_buffer;
+	struct tempo_proto *prevtempo;
+	struct tempo_proto *currtempo;
+	struct tempo_proto *nexttempo;
 	struct tempo_proto *stempo;
 	int tmpo;
 
 	entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_tempo));
 	tmpo = atoi(entry_buffer);
+	currtempo = pshow->currtempo;
 	if (tmpo >= 30 && tmpo <= 250)
 	{
-		// Use a valid tempo
+		// Tempo is valid. Make changes thusly
+
 		tempo = tmpo;
+		if (currtempo->anchorpoint == setnum)
+		{
+			// changing an existing tempo
+			currtempo->tempo = tmpo;
+		}
+		else
+		{
+			// making a new node
+			stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
+			stempo->next = currtempo->next;
+			currtempo->next = stempo;
+			stempo->prev = currtempo;
+			currtempo = currtempo->next;
+			currtempo->tempo = tmpo;
+			currtempo->anchorpoint = setnum;
+		}
+		// Now check to see if node is unneccesary
+		// Check to see if node can be deleted
+		prevtempo = currtempo->prev;
+		if (prevtempo)
+		{
+			if (prevtempo->tempo == tmpo)
+			{
+				// current node is redundant, can be deleted
+				prevtempo->next = currtempo->next;
+				pshow->currtempo = prevtempo;
+				free(currtempo);
+				currtempo = prevtempo;
+			}
+		}
+		nexttempo = currtempo->next;
+		if (nexttempo)
+		{
+			if (nexttempo->tempo == tmpo)
+			{
+				// next node is redundant, can be deleted
+				currtempo->next = nexttempo->next;
+				free(nexttempo);
+			}
+		}
+		pshow->currtempo = currtempo;
 	}
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 
 	return;
 }
@@ -378,10 +425,14 @@ void update_tempo(void)
 			// go to next tempo
 			currtempo = othertempo;
 			othertempo = othertempo->next;
+			printf("looking at tempo = %i\n", currtempo->tempo);
 		}
+		else
+			othertempo = 0;
 	}
 	// interface with deprecated tempo system
 	tempo = currtempo->tempo;
+	pshow->currtempo = currtempo;
 	return;
 }
 

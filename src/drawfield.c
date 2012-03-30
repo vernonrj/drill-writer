@@ -289,6 +289,9 @@ void draw_field (GtkWidget *widget)
 		sprintf(set_buf, "%i", setnum);
 	else
 		strcpy(set_buf, pshow->currset->name);
+	update_tempo();
+	sprintf(tempo_buf, "%i", tempo);
+	printf("tempo = %i\n", tempo);
 	sprintf(count_buf, "%i", pshow->currset->counts);
 	sprintf(perf_buf, "%i", perf_cur);
 	retr_coord(pshow->currset->coords[perf_cur], &x, &y);
@@ -296,6 +299,7 @@ void draw_field (GtkWidget *widget)
 	sprintf(perf_buf_y, "%g", y);
 	// Now Update entries with new data
 	gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
+	gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_perf_x), perf_buf_x);

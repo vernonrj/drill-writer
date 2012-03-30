@@ -143,7 +143,6 @@ struct headset_proto
 	// link to previous set
 	struct set_proto *prevset;
 	// Tempo control
-	struct tempo_proto *firsttempo;
 	struct tempo_proto *currtempo;
 };
 
