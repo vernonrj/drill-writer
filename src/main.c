@@ -104,19 +104,33 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 	// Click must be closer than 3 steps
 	double dist_threshold = 9;
 	double distance;
+	// store type of click
+	guint state;
+	int found_dot = 0;
+
+
+	//printf("Event = %i\n", event->button);
+	//g_print("Event = %i\n", event->state);
+	state = event->state;
 	if (event->button == 1)
 	{
+		if (state == 0)
+		{
+			// normal click; discard other clicks
+			select_discard();
+		}
 		coordx = event->x;
 		coordy = event->y;
-		printf("x = %g, y = %g\n", coordx, coordy);
+		//printf("x = %g, y = %g\n", coordx, coordy);
 		// Adjust for various canvas offsets
 		coordx = (coordx-xo2)/step;
 		//coordy = (coordy-yo2-25)/step;
 		coordy = (coordy-yo2-50)/step;
 
-		printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
+		//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 		perfnum = pshow->perfnum;
 		//for (i=0; i<perfnum; i++)
+		perf_cur = 0;
 		for (i=0; i<perfnum; i++)
 		{
 			// TODO: Maybe use a BST later
@@ -129,10 +143,12 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 				// Found a closer dot
 				perf_cur = i;
 				dist_threshold = distance;
+				found_dot = 1;
 			}
 		}
-		if (dist_threshold != 9)
-			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		if (found_dot == 1)
+			select_add(perf_cur);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 		/*
 		closex = 10;
 		closey = 10;
@@ -388,9 +404,9 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
 
 	// get and pack canvas
-	printf("ping\n");
+	//printf("ping\n");
 	drill = gtk_drill_new();
-	printf("ping\n");
+	//printf("ping\n");
 	gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 
@@ -661,7 +677,7 @@ int main (int argc, char *argv[])
 	startTk(argc, argv);
 	// Create gtk interface
 	buildIfacegtk();
-	printf("%s\n", perf_buf_x);
+	//printf("%s\n", perf_buf_x);
 
 	// Actual main loop for now
 	(void)g_timeout_add(50, (GSourceFunc)play_show, window);

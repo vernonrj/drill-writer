@@ -145,7 +145,7 @@ void absolute_dot (void)
 	} while (c != '.');
 	c = getc(fp);
 	string[i] = '\0';
-	printf("string = %s\n", string);
+	//printf("string = %s\n", string);
 	if (!place)
 	{
 		xdot = atol(string);
@@ -188,7 +188,7 @@ void absolute_dot (void)
 		x=xdot+yardline/5*8;
 	else if (side == 2)
 		x=50/5*8-xdot+(50-yardline)/5*8;
-	printf("x = %g\n", xdot);
+	//printf("x = %g\n", xdot);
 	// y conversion
 	if (!strcmp(hash, "fs"))
 		y = 85;

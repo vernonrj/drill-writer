@@ -77,12 +77,12 @@ G_END_DECLS
 
 
 // selection LLL node
-struct select_node
+struct select_proto
 {
 	// node with selection information
 	int index;
 
-	struct select_node *next;
+	struct select_proto *next;
 };
 
 
@@ -154,6 +154,8 @@ struct headset_proto
 	struct set_proto *prevset;
 	// Tempo control
 	struct tempo_proto *currtempo;
+	// selection list
+	struct select_proto *select;
 };
 
 // main show container
@@ -245,6 +247,8 @@ int retr_coord(struct coord_proto *curr, float *x, float *y);
 int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize);
 int dot_new_set(struct perf_proto ***dots_r, int setnum);
 int dot_destroy(struct perf_proto ***dots_r, int size);
+void select_discard(void);
+int select_add(int index);
 
 // set-controls.c
 void add_set_gtk(GtkWidget *widget);

@@ -142,7 +142,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// Make the index of dots for the first set
 	excode = coord_construct(&dshow->firstset->coords, perfs);
 	struct coord_proto **coords = dshow->firstset->coords;
-	printf("coords = %g\n", coords[0]->x);
+	//printf("coords = %g\n", coords[0]->x);
 	if (excode == -1)
 	{
 		// coordinate allocation error
@@ -156,6 +156,8 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		// tempo allocation error
 		return -1;
 	}
+	// Set the selection to "none"
+	dshow->select = 0;
 	// Set the current set to opening set
 	dshow->currset = dshow->firstset;
 	dshow->prevset = 0;
@@ -474,3 +476,112 @@ int dot_destroy(struct perf_proto ***dots_r, int size)
 
 	return 0;
 }
+
+
+void select_discard(void)
+{
+	// remove all selections from selection list
+	struct select_proto *selects;
+	struct select_proto *last;
+	if (pshow->select != 0)
+	{
+		selects = pshow->select;
+		last = pshow->select;
+		while (selects != NULL)
+		{
+			// remove
+			last = selects->next;
+			free(selects);
+			selects = last;
+		}
+		pshow->select = 0;
+	}
+	return;
+}
+
+int select_add(int index)
+{
+	// add a selection if it's not selected;
+	// remove a selection if it is selected
+	
+	struct select_proto *selects;
+	struct select_proto *last;
+	struct select_proto *curr;
+	int matched = 0;
+	int loop_done = 0;
+
+	if (!pshow->select)
+	{
+		// no selection yet
+		curr = (struct select_proto*)malloc(sizeof(struct select_proto));
+		if (!curr)
+			return -1;
+		curr->next = 0;
+		curr->index = index;
+		pshow->select = curr;
+	}
+	else
+	{
+		// have some selections; 
+		// add inorder or remove if already selected
+		last = pshow->select;
+		selects = 0;
+		while (loop_done == 0)
+		{
+			if (last->index == index)
+			{
+				// found a match, toggle off
+				if (selects == NULL)
+				{
+					// match is first node
+					pshow->select = last->next;
+					free(last);
+				}
+				else
+				{
+					// match is not first node, remove
+					selects->next = last->next;
+					free(last);
+				}
+				loop_done = 1;
+				matched = 1;
+			}
+			else if (last->index > index)
+			{
+				// no match found
+				// exit to create new node
+				loop_done = 1;
+			}
+			else
+			{
+				// continue searching
+				selects = last;
+				last = last->next;
+				if (last == NULL)
+					loop_done = 1;
+			}
+		}
+		if (matched == 0)
+		{
+			// create a new node
+			curr = (struct select_proto*)malloc(sizeof(struct select_proto));
+			if (!curr)
+				return -1;
+			curr->index = index;
+			if (selects == NULL)
+			{
+				// insert at beginning
+				curr->next = pshow->select;
+				pshow->select = curr;
+			}
+			else
+			{
+				// insert in the middle
+				curr->next = selects->next;
+				selects->next = curr;
+			}
+		}
+	}
+	return;
+}
+

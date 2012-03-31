@@ -60,6 +60,8 @@ int draw_dots (GtkWidget *widget)
 	cairo_t *selected; // this will eventually have a struct to get dots
 	cairo_surface_t *field_surface;
 	cairo_t *surface_write;
+	struct select_proto *selects;
+	int was_selected;
 
 	// Generate field
 	field_surface = cairo_image_surface_create_from_png("field.png");
@@ -85,9 +87,11 @@ int draw_dots (GtkWidget *widget)
 	//if (setnum+1<set_tot)
 	if (currset->next != NULL)
 	{	// Not the last set, can step to next set
-		g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
+		//g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
 		// get next set
 		lastset = currset->next;
+		// get first selected dot
+		selects = pshow->select;
 		// draw performers at certain point
 		for (i=0; i<pshow->perfnum; i++)
 		{	// Draw performers only if they have valid dots
@@ -116,19 +120,40 @@ int draw_dots (GtkWidget *widget)
 				//ycalc = y;
 				//y=yo2+step*y;
 				//printf("Drawing Performer %i at:\t\tX = %g\t\tY = %g\n", i, xcalc, ycalc);
+				// print selection if dot is selected
+				was_selected = 0;
+				if (selects)
+				{
+					// check to see if dot is selected
+					if (selects->index == i)
+					{
+						// dot is selected
+						cairo_new_sub_path(selected);
+						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						selects = selects->next;
+						was_selected = 1;
+					}
+				}
+				if (was_selected == 0)
+				{
+					// dot is not selected
+					cairo_new_sub_path(dots);
+					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+				}
+				/*
 				if (i==perf_cur)
 				{	// This is the highlighted performer
 					//cairo_rectangle(selected, x, y, step, step);
 					cairo_new_sub_path(selected);
 					cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
 				}
-				
 				else
 				{
 					//cairo_rectangle(dots, xo2-step/2+step*x, yo2-step/2+step*y, step, step);
 					cairo_new_sub_path(dots);
 					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
 				}
+				*/
 			}
 		}
 		if (pshow->step >= lastset->counts)
@@ -291,7 +316,7 @@ void draw_field (GtkWidget *widget)
 		strcpy(set_buf, pshow->currset->name);
 	update_tempo();
 	sprintf(tempo_buf, "%i", tempo);
-	printf("tempo = %i\n", tempo);
+	//printf("tempo = %i\n", tempo);
 	sprintf(count_buf, "%i", pshow->currset->counts);
 	sprintf(perf_buf, "%i", perf_cur);
 	retr_coord(pshow->currset->coords[perf_cur], &x, &y);
