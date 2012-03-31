@@ -29,6 +29,8 @@
 			<menuitem name="SetSetName" action="SetSetNameAction"/>
 			<menuitem name="NextSet" action="NextSetAction"/>
 			<menuitem name="PrevSet" action="PrevSetAction"/>
+			<menuitem name="FirstSet" action="FirstSetAction"/>
+			<menuitem name="LastSet" action = "LastSetAction"/>
 			<menuitem name="PlayHere" action="PlayHereAction"/>
 			<menuitem name="PlayFromStart" action="PlayFromStartAction"/>
 			<menuitem name="StopPlay" action="StopPlayAction"/>
