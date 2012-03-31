@@ -236,6 +236,7 @@ int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);
 // create a set with a given amount of performers
 int set_construct(struct set_proto **sets_r, int perfs);
 int newset_create(struct set_proto *curr);
+int set_destroy(void);
 // create container for dots
 int coord_construct(struct coord_proto *** coords_r, int perfs);
 // create container for performers

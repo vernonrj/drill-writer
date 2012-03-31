@@ -15,6 +15,8 @@ void delete_set_gtk(GtkWidget *widget)
 	if (!playing)
 	{
 		delete_set();
+		do_field = 0;
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 	return;
 }
@@ -240,21 +242,8 @@ void add_set(void)
 
 void delete_set(void)
 {
-	// TODO: Deprecated
-	/*
-	int i, j;
-	for (i=setnum; i<set_tot; i++)
-	{
-		for (j=0; j<perfnum; j++)
-		{
-			perf[i][j][0] = perf[i+1][j][0];
-			perf[i][j][1] = perf[i+1][j][1];
-		}
-		counts[i] = counts[i+1];
-	}
-	set_tot--;
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	*/
+	// delete a set
+	set_destroy();
 }
 
 

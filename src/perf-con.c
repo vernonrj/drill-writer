@@ -306,6 +306,67 @@ int newset_create(struct set_proto *curr)
 
 
 
+int set_destroy(void)
+{
+	// destroy current set
+	int i;
+	int perfnum;
+	struct set_proto *last;
+	struct set_proto *prevset;
+	struct set_proto *before;
+	int excode;
+
+	last = pshow->currset;
+	prevset = pshow->prevset;
+	perfnum = pshow->perfnum;
+
+	// free memory in nodes
+	free(last->name);
+	free(last->info);
+	for (i=0; i<perfnum; i++)
+		free(last->coords[i]);
+	free(last->coords);
+
+	// unlink node
+	if (prevset != NULL)
+	{
+		// Not at first set
+		prevset->next = last->next;
+		pshow->currset = prevset->next;
+		// delete node
+		free(last);
+		// put current set on next set if it exists
+		if (prevset->next == NULL)
+		{
+			// next set does not exist. Put current set
+			// at new last set
+			set_first();
+			set_last();
+		}
+		else
+		{
+			// next set does exist. Put current set there
+			pshow->currset = prevset->next;
+		}
+	}
+	else
+	{
+		// At first set
+		pshow->firstset = last->next;
+		free(last);
+		if (last == NULL)
+		{
+			// No sets now, make a new first set
+			excode = set_construct(&pshow->firstset, pshow->perfnum);
+			if (excode == -1)
+				return -1;
+		}
+		pshow->currset = pshow->firstset;
+	}
+	return;
+}
+
+
 int coord_construct(struct coord_proto *** coords_r, int perfs)
 {
 	// Build the coordinates for the set
