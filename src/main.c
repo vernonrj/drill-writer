@@ -384,7 +384,7 @@ int buildIfacegtk(void)
 	// Window Actions
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_add_events (window, GDK_BUTTON_PRESS_MASK);
-	gtk_window_set_title(GTK_WINDOW(window), "Drill-Writer-Proto 0.0.0.7");
+	gtk_window_set_title(GTK_WINDOW(window), "Drill-Writer Pre-Alpha");
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 500);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	
