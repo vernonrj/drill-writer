@@ -662,7 +662,7 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 	currset = pshow->firstset;
-	pshow->perfnum = 21;
+	pshow->perfnum = 15;
 	currset->counts = 0;
 	set_coord_valid(currset->coords, 0, 32, 53);
 	set_coord_valid(currset->coords, 1, 36, 53);

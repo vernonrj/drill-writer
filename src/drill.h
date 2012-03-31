@@ -228,7 +228,7 @@ void play_show_from_start (GtkWidget *widget);
 void goto_perf (GtkWidget *widget);
 void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
-void add_perf (GtkWidget *widget);
+int add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);

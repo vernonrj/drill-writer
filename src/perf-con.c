@@ -50,14 +50,103 @@ void yperf_change (GtkWidget *widget)
 	}
 }
 
-void add_perf (GtkWidget *widget)
+int add_perf (GtkWidget *widget)
 {
-	/*
-	perfnum++;
-	perf_cur=perfnum-1;
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	*/
+	// Add a performer
+	// TODO: have an "add mode"
+	// 	where dots are placed by clicking on the field
+	// TODO: Keep track of valid dots and allocated dots
+	
+	int i;
+	int index;
+	int perfnum = pshow->perfnum;
+	int found_dot = 0;
+	// nodes used for reallocation
+	struct perf_proto **newperfs;
+	struct coord_proto **newcoords;
+	// nodes used for checking
+	struct perf_proto *perf;
+	struct coord_proto *coord;
+	struct set_proto *last;
+
+	// find an open node
+	for (i=0; i<perfnum && found_dot == 0; i++)
+	{
+		// check this performer
+		perf = pshow->perfs[i];
+		if (perf->valid == 0)
+		{
+			found_dot = 1;
+			index = i;
+		}
+	}
+	if (!found_dot)
+	{
+		// no open nodes found, 
+		// have to make more nodes
+		// in every set
+		last = pshow->firstset;
+		newperfs = (struct perf_proto**)malloc((perfnum+5)*sizeof(struct perf_proto*));
+		for (i=0; i<perfnum; i++)
+		{
+			// copy old performers
+			newperfs[i] = pshow->perfs[i];
+		}
+		// allocate the rest
+		for (i=perfnum; i<perfnum+5; i++)
+		{
+			// make new performers
+			newperfs[i] = (struct perf_proto*)malloc(sizeof(struct perf_proto));
+			if (newperfs[i] == NULL)
+				return -1;
+			newperfs[i]->name = (char*)malloc(1*sizeof(char));
+			newperfs[i]->symbol = (char*)malloc(1*sizeof(char));
+			if (newperfs[i]->name == NULL || newperfs[i]->symbol == NULL)
+				return -1;
+			newperfs[i]->name[0] = '\0';
+			newperfs[i]->symbol[0] = '\0';
+			newperfs[i]->valid = 0;
+		}
+		// set new performers
+		free(pshow->perfs);
+		pshow->perfs = newperfs;
+		// allocate coords for every set
+		while (last != NULL)
+		{
+			newcoords = (struct coord_proto**)
+				malloc((perfnum+5)*sizeof(struct coord_proto*));
+			if (newcoords == NULL)
+				return -1;
+			for (i=0; i<perfnum; i++)
+			{
+				// copy old coords
+				newcoords[i] = last->coords[i];
+			}
+			for (i=perfnum; i<perfnum+5; i++)
+			{
+				// copy the rest
+				newcoords[i] = (struct coord_proto*)
+					malloc(sizeof(struct coord_proto));
+				if (newcoords[i] == NULL)
+					return -1;
+				newcoords[i]->x = 0;
+				newcoords[i]->y = 0;
+			}
+			// hook up new coords
+			free(last->coords);
+			last->coords = newcoords;
+			// go to next set
+			last = last->next;
+		}
+		index = perfnum;
+		pshow->perfnum = perfnum+5;
+	}
+	pshow->perfs[index]->valid = 1;
+	return 0;
 }
+
+
+
 void delete_perf(GtkWidget *widget)
 {
 	// Delete selected performers
@@ -434,7 +523,7 @@ int perf_construct(struct perf_proto **dots_r)
 		return -1;
 	}
 	dots->name[0] = '\0';
-	dots->symbol = '\0';
+	dots->symbol[0] = '\0';
 	dots->valid = 0;
 
 	// pass by reference
