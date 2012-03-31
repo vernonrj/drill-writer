@@ -37,47 +37,42 @@ int movexy(float xoff, float yoff)
 
 void move_up(GtkWidget *widget)
 {
-	// Move a dot backfield
-	/*
-	struct set_proto *coord;
-	pshow->currset->coords[perf_cur]->y--;
-	//perf[setnum][perf_cur][1]--;
-	*/
-	movexy(0, -1);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	// Move a dot backfield if not stepped
+	if (pshow->step == 0)
+	{
+		movexy(0, -1);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
 }
 
 void move_down(GtkWidget *widget)
 {
 	// Move a dot frontfield
-	/*
-	pshow->currset->coords[perf_cur]->y++;
-	//perf[setnum][perf_cur][1]++;
-	*/
-	movexy(0, 1);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	if (pshow->step == 0)
+	{
+		movexy(0, 1);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
 }
 
 void move_left(GtkWidget *widget)
 {
 	// Move a dot toward left goal line
-	/*
-	pshow->currset->coords[perf_cur]->x--;
-	//perf[setnum][perf_cur][0]--;
-	*/
-	movexy(-1, 0);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	if (pshow->step == 0)
+	{
+		movexy(-1, 0);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
 }
 
 void move_right(GtkWidget *widget)
 {
 	// Move a dot toward right goal line
-	/*
-	pshow->currset->coords[perf_cur]->x++;
-	//perf[setnum][perf_cur][0]++;
-	*/
-	movexy(1, 0);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	if (pshow->step == 0)
+	{
+		movexy(1, 0);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
 }
 
 void next_perf(GtkWidget *widget)
@@ -179,30 +174,6 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 		if (found_dot == 1)
 			select_add(perf_cur);
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-		/*
-		closex = 10;
-		closey = 10;
-		for (i=0; i<perfnum; i++)
-		{
-			workx = perf[setnum][i][0]-coordx;
-			printf("at %i workx = %g worky = %g\n", i, workx, worky);
-			if (labs(workx) <= closex)
-			{
-				printf("ping\n");
-				worky = perf[setnum][i][1] - coordy;
-				if (labs(worky) <= closey)
-				{
-					perf_cur = i;
-					printf("found dot: %i\n", i);
-					closex = labs(workx);
-					closey = labs(worky);
-					printf("closex = %g closey = %g\n", closex, closey);
-				}
-			}
-		}
-		if (closex != 10)
-			gtk_widget_queue_draw_area(window, 0, 0, width, height);
-		*/
 	}
 	return TRUE;
 }
@@ -379,7 +350,7 @@ int buildIfacegtk(void)
 	g_timer_stop(timer);
 
 	// draw the field the first time
-	do_field=1;
+	do_field=0;
 
 	// Window Actions
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -434,9 +405,7 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
 
 	// get and pack canvas
-	//printf("ping\n");
 	drill = gtk_drill_new();
-	//printf("ping\n");
 	gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 

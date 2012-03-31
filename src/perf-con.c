@@ -377,7 +377,6 @@ int newset_create(struct set_proto *curr)
 	else
 	{
 		// allocate new set
-		printf("ping\n");
 		pcoords = curr->coords;
 		coords = last->coords;
 		for (i=0; i<pshow->perfnum; i++)

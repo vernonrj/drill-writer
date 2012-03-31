@@ -258,6 +258,7 @@ void draw_field (GtkWidget *widget)
 	//printf("do_field %i\n", do_field);
 	if (do_field)
 	{
+		printf("Redrawing\n");
 		// Set background to White
 		cairo_set_source_rgb(field, 1, 1, 1);	
 		cairo_paint (field);
@@ -327,8 +328,8 @@ void draw_field (GtkWidget *widget)
 	draw_dots(widget);
 	
 	cairo_surface_destroy(surface);
-	// Make sure field will be redrawn by default
-	do_field=0;
+	// Make sure field won't be redrawn by default
+	do_field = 0;
 
 	// Update all the entries
 	// Convert all numbers into strings first
