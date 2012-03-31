@@ -60,19 +60,25 @@ void add_perf (GtkWidget *widget)
 }
 void delete_perf(GtkWidget *widget)
 {
-	/*
-	int i, j;
-	for (i=0; i<set_tot; i++)
+	// Delete selected performers
+	int index;
+	struct select_proto *last;
+	struct perf_proto *perf;
+	if (!playing)
 	{
-		for (j=perf_cur; j<perfnum; j++)
+		last = pshow->select;
+		while (last)
 		{
-			perf[i][j][0] = perf[i][j+1][0];
-			perf[i][j][1] = perf[i][j+1][1];
+			// set dots as invalid
+			index = last->index;
+			perf = pshow->perfs[index];
+			perf->valid = 0;
+			// go to next performer
+			last = last->next;
 		}
+		select_discard();
+		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	}
-	perfnum--;
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	*/
 }
 
 int show_construct(struct headset_proto **dshow_r, int perfs)
