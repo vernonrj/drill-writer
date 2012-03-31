@@ -17,36 +17,66 @@ extern int expose_flag;		// might not be required
 //GtkWidget *entry_perf_x;
 //GtkWidget *entry_perf_y;
 
+int movexy(float xoff, float yoff)
+{
+	// move selected dots by xoff and yoff
+	float x, y;
+	struct coord_proto **coords = pshow->currset->coords;
+	struct select_proto *selects = pshow->select;
+	while(selects != NULL)
+	{
+		retr_coord(coords[selects->index], &x, &y);
+		x = x + xoff;
+		y = y + yoff;
+		set_coord(coords[selects->index], x, y);
+		selects = selects->next;
+	}
+	return 0;
+}
+
+
 void move_up(GtkWidget *widget)
 {
 	// Move a dot backfield
+	/*
 	struct set_proto *coord;
 	pshow->currset->coords[perf_cur]->y--;
 	//perf[setnum][perf_cur][1]--;
+	*/
+	movexy(0, -1);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_down(GtkWidget *widget)
 {
 	// Move a dot frontfield
+	/*
 	pshow->currset->coords[perf_cur]->y++;
 	//perf[setnum][perf_cur][1]++;
+	*/
+	movexy(0, 1);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_left(GtkWidget *widget)
 {
 	// Move a dot toward left goal line
+	/*
 	pshow->currset->coords[perf_cur]->x--;
 	//perf[setnum][perf_cur][0]--;
+	*/
+	movexy(-1, 0);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 
 void move_right(GtkWidget *widget)
 {
 	// Move a dot toward right goal line
+	/*
 	pshow->currset->coords[perf_cur]->x++;
 	//perf[setnum][perf_cur][0]++;
+	*/
+	movexy(1, 0);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 }
 

@@ -200,6 +200,7 @@ void show_gen(void);
 // end deprecated commands
 
 // main.c
+int movexy(float xoff, float yoff);
 void move_up(GtkWidget *widget);
 void move_down(GtkWidget *widget);
 void move_left(GtkWidget *widget);

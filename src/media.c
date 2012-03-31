@@ -10,10 +10,10 @@ gboolean play_show (GtkWidget *widget)
 		//set_step++;
 		pshow->step++;
 		do_field=0;	// don't need to redraw field
-		g_print("width=%i\theight=%i\n", width, height);
+		//g_print("width=%i\theight=%i\n", width, height);
 		expose_flag =1;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-		g_print("Play_show %i %i %i\n", setnum, set_step, playing);
+		//g_print("Play_show %i %i %i\n", setnum, set_step, playing);
 		if (playing)
 			g_timer_start(timer);
 	}
@@ -41,7 +41,7 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 		if (setnum+1<set_tot)
 			playing=1;	// start playback
 		*/
-		g_print("queue_show playing=%i\n", playing);
+		//g_print("queue_show playing=%i\n", playing);
 		g_timer_start(timer);	// start up the timer
 	}
 	else
