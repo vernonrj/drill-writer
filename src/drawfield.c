@@ -189,6 +189,7 @@ int draw_dots (GtkWidget *widget)
 	}
 	else
 	{	// We're on the last set
+		selects = pshow->select;
 		for (i=0; i< pshow->perfnum; i++)
 		{	// Draw dots here
 			if (!perf[i])
@@ -199,20 +200,41 @@ int draw_dots (GtkWidget *widget)
 				retr_coord(currset->coords[i], &x, &y);
 				x = xo2+step*x;
 				y = yo2+step*y;
+				// print selection if dot is selected
+				was_selected = 0;
+				if (selects)
+				{
+					// check to see if dot is selected
+					if (selects->index == i)
+					{
+						// dot is selected
+						cairo_new_sub_path(selected);
+						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						selects = selects->next;
+						was_selected = 1;
+					}
+				}
+				if (was_selected == 0)
+				{
+					// dot is not selected
+					cairo_new_sub_path(dots);
+					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+				}
+
 				//cairo_rectangle(dots, x, y, step, step);
-				cairo_new_sub_path(dots);
-				cairo_arc(dots, x, y, 2*step/3, 0, 360);
+				//cairo_new_sub_path(dots);
+				//cairo_arc(dots, x, y, 2*step/3, 0, 360);
 			}
 		}
-		cairo_fill(dots);
 		// Draw selected dots
-		retr_coord(currset->coords[perf_cur], &x, &y);
-		x = xo2+step*x;
-		y = yo2+step*y;
+		//retr_coord(currset->coords[perf_cur], &x, &y);
+		//x = xo2+step*x;
+		//y = yo2+step*y;
 		//cairo_set_source_rgb(dots, 1, 0, 0);
 		//cairo_rectangle(selected, x, y, step, step);
-		cairo_new_sub_path(selected);
-		cairo_arc(selected, x, y, 2*step/3, 0, 360);
+		//cairo_new_sub_path(selected);
+		//cairo_arc(selected, x, y, 2*step/3, 0, 360);
+		cairo_fill(dots);
 		cairo_fill(selected);
 	}
 	// Cleanup loose ends
