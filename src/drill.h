@@ -148,10 +148,10 @@ struct headset_proto
 	struct set_proto *firstset;
 	// link to current set
 	struct set_proto *currset;
-	// count of the current set
-	int step;
 	// link to previous set
 	struct set_proto *prevset;
+	// count of the current set
+	int step;
 	// Tempo control
 	struct tempo_proto *currtempo;
 	// selection list

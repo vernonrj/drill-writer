@@ -232,22 +232,9 @@ int isLastSet(void)
 
 void add_set(void)
 {
-	// TODO: Deprecated
-	/*
-	int i, j;
-	//newset_create
-	set_tot++;
-	for (i=set_tot-1; i>setnum; i--)
-	{
-		for (j=0; j<perfnum; j++)
-		{
-			perf[i][j][0] = perf[i-1][j][0];
-			perf[i][j][1] = perf[i-1][j][1];
-		}
-		counts[i] = counts[i-1];
-	}
-	counts[setnum+1]=1;
-	*/
+	// Add a set after the current one
+	newset_create(pshow->currset);
+	return;
 }
 
 

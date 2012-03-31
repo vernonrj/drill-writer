@@ -140,8 +140,8 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->firstset = setcurr;
 
 	// Make the index of dots for the first set
-	excode = coord_construct(&dshow->firstset->coords, perfs);
-	struct coord_proto **coords = dshow->firstset->coords;
+	//excode = coord_construct(&dshow->firstset->coords, perfs);
+	//struct coord_proto **coords = dshow->firstset->coords;
 	//printf("coords = %g\n", coords[0]->x);
 	if (excode == -1)
 	{
@@ -193,7 +193,6 @@ int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint)
 
 
 
-// dot storage
 int set_construct(struct set_proto **sets_r, int perfs)
 {
 	// Build storage for set
@@ -249,34 +248,43 @@ int newset_create(struct set_proto *curr)
 	// set structures
 	struct set_proto *sets;
 	struct set_proto *last;
-	//struct set_proto *curr;
+	struct set_proto *fset;
 
 	// coordinates
 	struct coord_proto **coords;
 	struct coord_proto **pcoords;
 
 	sets = 0;
-	if (curr == 0)
+	last = 0;
+	excode = set_construct(&last, pshow->perfnum);
+	if (excode == -1)
+		return -1;
+	if (curr == 0 && pshow->firstset == NULL)
 	{
-		// place at beginning of list
-		set_construct(&last, pshow->perfnum);
+		// Make the first set
 		pshow->firstset = last;
+	}
+	else if (curr == 0 && pshow->firstset != NULL)
+	{
+		// Replace the first set with this set
+		curr = pshow->firstset;
+		pshow->firstset = last;
+		pcoords = curr->coords;
+		coords = last->coords;
+		for (i=0; i<pshow->perfnum; i++)
+		{
+			// copy old first set dots into new first set
+			coords[i]->x = pcoords[i]->x;
+			coords[i]->y = pcoords[i]->y;
+		}
+		last->counts = curr->counts;
 	}
 	else
 	{
-		/*
-		for (i=0; i<index && last != NULL; i++)
-		{
-			curr = last;
-			last = last->next;
-		}
-		*/
 		// allocate new set
-		excode = set_construct(&sets, pshow->perfnum);
-		if (excode == -1)
-			return -1;
+		printf("ping\n");
 		pcoords = curr->coords;
-		coords = sets->coords;
+		coords = last->coords;
 		for (i=0; i<pshow->perfnum; i++)
 		{
 			// Copy previous dots into new set
@@ -284,8 +292,13 @@ int newset_create(struct set_proto *curr)
 			coords[i]->y = pcoords[i]->y;
 		}
 		// link
-		sets->next = curr->next;
-		curr->next = sets;
+		last->next = curr->next;
+		curr->next = last;
+		// set counts
+		if (curr->counts == 0)
+			last->counts = 1;
+		else
+			last->counts = curr->counts;
 	}
 
 	return 0;
