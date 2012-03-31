@@ -354,6 +354,7 @@ int set_destroy(void)
 		// At first set
 		pshow->firstset = last->next;
 		free(last);
+		last = pshow->firstset;
 		if (last == NULL)
 		{
 			// No sets now, make a new first set
