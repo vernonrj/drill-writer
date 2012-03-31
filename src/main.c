@@ -226,6 +226,7 @@ int buildIfacegtk(void)
 
 
 	// Build the menu
+	// TODO: Gtk errors have something to do with menu
 	static GtkActionEntry entries[] =
 	{
 	{ "FileMenuAction", NULL, "_File" },	// name, stock id, label
@@ -686,8 +687,6 @@ int main (int argc, char *argv[])
 	buildIfacegtk();
 	//printf("%s\n", perf_buf_x);
 
-	// Actual main loop for now
-	(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 
 	// Run Main Loop
 	gtk_main();
