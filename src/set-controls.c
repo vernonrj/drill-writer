@@ -313,6 +313,7 @@ void set_next(void)
 			pshow->prevset = pshow->currset;
 			pshow->currset = pshow->currset->next;
 			setnum++;
+			pshow->step = 0;
 		}
 	}
 }
