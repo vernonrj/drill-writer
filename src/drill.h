@@ -76,6 +76,16 @@ G_END_DECLS
 #endif // __DRILL_H
 
 
+// selection LLL node
+struct select_node
+{
+	// node with selection information
+	int index;
+
+	struct select_node *next;
+};
+
+
 // tempo LLL node
 struct tempo_proto
 {

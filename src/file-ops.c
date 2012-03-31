@@ -1,133 +1,53 @@
 // Functions that manipulate files go here
 #include "drill.h"
+int getInParen(FILE *fp, char **opt_r)
+{
+	/*
+	// get a value inside paren
+	char c;
+	int i = 0;
+	char *opt;
+	c = getc(fp);
+	opt = (char*) malloc(50*sizeof(char));
+	if (c != '(')
+		return -1;
+	while ((c = getc(fp)) != ')' && i < 49)
+	{
+		// get what's inside the parens
+		opt[i] = c;
+		i++;
+	}
+	opt[i] = '\0';
+	*/
+	return 0;
+}
+
 void open_file(void)
 {
 	/*
 	// Open a file and use the stuff inside
 	FILE *fp;
-	int i, j;
-	int work;
-	char buffer[20];
-	double dbuff;
 	char c;
-	int wset;
-	int wperf;
-	fp = fopen("save_file", "r");
+	char *opt;
+	fp = fopen("new_save", "r");
 	c = getc (fp);
-	i = 0;
-	if (c == 'I')
-	{	// Show Defs
-		c = getc (fp);
-		c = getc (fp);
-		while (c != ' ' && c != '\n')
-		{	// Get set number
-			buffer[i] = c;
-			c = getc (fp);
-			i++;
-		}
-		if (c == '\n')
-			gtk_main_quit();
-		buffer[i] = '\0';
-		setnum = atoi(buffer);
-		c = getc(fp);
-		i=0;
-		while (c != ' ')
-		{	// get set total
-			buffer[i] = c;
-			c = getc (fp);
-			i++;
-		}
-		buffer[i] = '\0';
-		set_tot = atoi(buffer);
-
-		c = getc(fp);
-		i = 0;
-		while (c != '\n')
-		{
-			// get performer total
-			buffer[i] = c;
-			c = getc (fp);
-			i++;
-		}
-		buffer[i] = '\0';
-		perfnum = atoi(buffer);
-
-	}
-	c = getc(fp);
-	//printf("Hit 1\n");
-
-
-	while (c != EOF)
+	// allocate
+	opt = (char*) malloc(sizeof(char));
+	do
 	{
-		// have to figure out how to advance to next set
 		if (c == 'S')
 		{
-			c = getc(fp);
-			c = getc (fp);
-			i=0;
-			while (c != ' ')
-			{
-				buffer[i] = c;
-				c = getc(fp);
-				i++;
-			}
-			buffer[i] = '\0';
-			//printf("buffer = %s\n\n", buffer);
-			work = atoi(buffer);
-			wset = work;
-			c = getc(fp);
-			i=0;
-			//printf("Hit 2\n");
-			while (c != '\n')
-			{
-				buffer[i] = c;
-				c = getc(fp);
-				i++;
-			}
-			buffer[i] = '\0';
-			work = atoi(buffer);
-			counts[wset] = work;
+			getInParen(fp, &opt);
 		}
-		//printf("Hit 3\n");
+	} whi
 
-		c = getc(fp);
-		j=0;
-		while (c != 'S' && c != EOF)
-		{
 
-			i=0;
-			while (c != ' ' && c != '\n' && c != EOF)
-			{
-				buffer[i] = c;
-				i++;
-				c = getc (fp);
-			}
-			buffer[i] = '\0';
-			dbuff = atol (buffer);
-			work = atoi (buffer);
-			if (j==0)
-			{
-				//printf("\n");
-				wperf = work;
-			}
-			if (j==1)
-				perf[wset][wperf][0] = dbuff;
-			if (j==2)
-				perf[wset][wperf][1] = dbuff;
-			//printf("perf %i at set %i: X = %g\tY = %g\n", wperf, wset, perf[wset][wperf][0], perf[wset][wperf][1]);
-			j++;
-			if (j==3)
-				j=0;
-			c = getc (fp);
-		}
-		if (c != EOF && c != 'S')
-			c = getc(fp);
-	}
+
 
 	fclose(fp);
-	setnum = 0;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	*/
+	return;
 }
 
 void save_file(GtkWidget *widget)
