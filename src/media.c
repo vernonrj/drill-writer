@@ -55,6 +55,7 @@ void play_show_from_start (GtkWidget *widget)
 	{
 		pshow->currset = pshow->firstset;
 		pshow->prevset = 0;
+		pshow->step = 0;
 		setnum=0;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 		playing=1;
