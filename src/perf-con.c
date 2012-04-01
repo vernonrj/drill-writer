@@ -311,6 +311,8 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	sets->name[0] = '\0';
 	sets->info[0] = '\0';
 	sets->counts = 0;
+	// make sure not classified as midset
+	sets->midset = 0;
 	// make coordinate system
 	excode = coord_construct(&sets->coords, perfs);
 

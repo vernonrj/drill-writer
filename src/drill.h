@@ -127,6 +127,7 @@ struct set_proto
 	char *info;	// set info
 	struct coord_proto **coords;
 	int counts;
+	int midset;
 	struct set_proto *next;
 };
 
