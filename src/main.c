@@ -113,12 +113,69 @@ static void quit_action ()
 	gtk_main_quit();
 }
 
+void xy_to_relation(float *x, float *y, gchar **buffer_r)
+{
+	// convert event to side-side and front-back relation
+	int yardline;
+	int relation;
+
+	float ssrel;
+	gchar *buffer;
+	gchar *sideside_relation;
+	gchar *side;
+	gchar *hash;
+	gchar *frontback_relation;
+	float coordx, coordy;
+	coordx = *x;
+	coordy = *y;
+	relation = (int)coordx % 8;
+	ssrel = coordx / 8;
+	ssrel = 8*(ssrel - (int)ssrel);
+	if (ssrel > 4)
+	{
+		// to the right
+		ssrel = 8 - ssrel;
+		if (coordx > 80)
+			sideside_relation = g_strdup_printf("inside side 2");
+		else
+			sideside_relation = g_strdup_printf("outside side 1");
+	}
+	else
+	{
+		// to the left
+		if (coordx > 80)
+			sideside_relation = g_strdup_printf("outside side 2");
+		else
+			sideside_relation = g_strdup_printf("inside side 1");
+	}
+	ssrel = (int)(ssrel*4);
+	ssrel = ssrel / 4;
+	//ssrel = labs(8 - ssrel);
+	// Get yardline relation
+	yardline = (coordx+4)/8;
+	yardline = abs(yardline - 10);
+	yardline = 5 * abs(10 - yardline);
+
+	buffer = g_strdup_printf("%.2f %s %i", ssrel, sideside_relation, yardline);
+	g_free(sideside_relation);
+
+	*buffer_r = buffer;
+	return;
+}
+	
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 {
 	float coordx, coordy;
+	gchar *buffer;
 	coordx = event->x;
 	coordy = event->y;
-	//printf("%g, %g\n", coordx, coordy);
+	coordx = (coordx-xo2)/step;
+	coordy = (coordy-yo2)/step;
+	xy_to_relation(&coordx, &coordy, &buffer);
+	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id));
+	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buffer);
+	g_free(buffer);
+
 	return TRUE;
 }
 
@@ -146,6 +203,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 
 	//printf("Event = %i\n", event->button);
 	//g_print("Event = %i\n", event->state);
+	g_print("%g, %g\n", event->x, event->y-54);
 	state = event->state;
 	if (event->button == 1)
 	{
@@ -160,9 +218,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 		// Adjust for various canvas offsets
 		coordx = (coordx-xo2)/step;
 		//coordy = (coordy-yo2-25)/step;
-		coordy = (coordy-yo2-50)/step;
+		coordy = (coordy-yo2-54)/step;
 
-		//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
+		printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 		perfnum = pshow->perfnum;
 		//for (i=0; i<perfnum; i++)
 		perf_cur = 0;
@@ -231,6 +289,7 @@ int buildIfacegtk(void)
 	GtkWidget *label;
 	GtkWidget *separator;
 	GtkWidget *image;
+	gchar *sbinfo;
 
 	gint tmp_pos;
 
@@ -607,6 +666,15 @@ int buildIfacegtk(void)
 	gtk_widget_show(button);
 	gtk_widget_show(image);
 
+	// status bar
+	statusbar = gtk_statusbar_new();
+	gtk_box_pack_start(GTK_BOX (box0), statusbar, FALSE, FALSE, 0);
+	context_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "statusbar");
+	sbinfo = g_strdup_printf("status bar");
+	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), sbinfo);
+	g_free(sbinfo);
+	gtk_widget_show(statusbar);
+	context_id = 0;
 
 	// Show everything
 	gtk_widget_show(drill);

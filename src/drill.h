@@ -36,6 +36,8 @@ GtkWidget *entry_tempo;
 GtkWidget *entry_perf;
 GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
+GtkWidget *statusbar;
+gint context_id;
 //double perf[50][50][2];	// Set, performer, dot
 int perf_cur;	// current selected performer
 //int perfnum;
