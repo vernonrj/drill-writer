@@ -211,6 +211,7 @@ void prev_perf(GtkWidget *widget);
 static void not_implemented ();
 void force_redraw(GtkWidget *widget);
 static void quit_action ();
+gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
 void calc_stepsize (GtkWidget *widget);
 

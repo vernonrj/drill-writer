@@ -17,6 +17,8 @@ extern int expose_flag;		// might not be required
 //GtkWidget *entry_perf_x;
 //GtkWidget *entry_perf_y;
 
+
+
 int movexy(float xoff, float yoff)
 {
 	// move selected dots by xoff and yoff
@@ -111,6 +113,14 @@ static void quit_action ()
 	gtk_main_quit();
 }
 
+gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
+{
+	float coordx, coordy;
+	coordx = event->x;
+	coordy = event->y;
+	//printf("%g, %g\n", coordx, coordy);
+	return TRUE;
+}
 
 gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
@@ -417,6 +427,7 @@ int buildIfacegtk(void)
 	drill = gtk_drill_new();
 	gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
+	//g_signal_connect(drill, "motion-notify-event", G_CALLBACK(xy_movement), NULL);
 
 	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
 	gtk_box_pack_start(GTK_BOX (box0), perfbox, FALSE, FALSE, 0);

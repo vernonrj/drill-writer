@@ -12,6 +12,7 @@ static gboolean timer_exec(GtkWidget *window, GtkWidget *widget);
 static void gtk_drill_paint(GtkWidget *widget);
 static void gtk_drill_destroy(GtkObject *object);
 
+
 //extern int do_field;
 extern double width, height;
 extern int expose_flag;
@@ -74,6 +75,7 @@ static void gtk_drill_class_init(GtkDrillClass *klass)
 	widget_class->size_request = gtk_drill_size_request;
 	widget_class->size_allocate = gtk_drill_size_allocate;
 	widget_class->expose_event = gtk_drill_expose;
+	widget_class->motion_notify_event = xy_movement;
 	
 	object_class->destroy = gtk_drill_destroy;
 	drill_signals[DOT_RIGHT] =
@@ -138,7 +140,9 @@ static void gtk_drill_realize(GtkWidget *widget)
 	attributes.height = 100;
 
 	attributes.wclass = GDK_INPUT_OUTPUT;
-	attributes.event_mask = gtk_widget_get_events (widget) | GDK_EXPOSURE_MASK;
+	attributes.event_mask = gtk_widget_get_events (widget) 
+		| GDK_EXPOSURE_MASK
+		| GDK_POINTER_MOTION_MASK;
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y;
 
