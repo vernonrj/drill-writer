@@ -23,6 +23,8 @@
 			<menuitem name="MoveRight" action="MoveRightAction"/>
 			<menuitem name="NextPerf" action="NextPerfAction"/>
 			<menuitem name="PrevPerf" action="PrevPerfAction"/>
+			<menuitem name="ExpandPerf" action="ExpandPerfAction"/>
+			<menuitem name="ContractPerf" action="ContractPerfAction"/>
 			<placeholder name="DotMenuAdditioin"/>
 		</menu>
 		<menu name="SetMenu" action="SetMenuAction">

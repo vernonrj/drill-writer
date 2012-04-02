@@ -163,7 +163,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	yardline = abs(yardline - 10);
 	yardline = 5 * abs(10 - yardline);
 
-	buffer = g_strdup_printf("%.2f %s %i", ssrel, sideside_relation, yardline);
+	buffer = g_strdup_printf("%.2f %s %i (%.2f, %.2f)", ssrel, sideside_relation, yardline, pshow->center->x, pshow->center->y);
 	g_free(sideside_relation);
 
 	*buffer_r = buffer;
@@ -363,6 +363,14 @@ int buildIfacegtk(void)
 		"_Previous Performer", "bracketleft",
 		"Highlight previous performer",
 		G_CALLBACK (prev_perf) },
+	{ "ExpandPerfAction", NULL,
+		"_Expand Form", "<control>bracketright",
+		"Expand the form around weighted center",
+		G_CALLBACK (expand_form) },
+	{ "ContractPerfAction", NULL,
+		"_Contract Form", "<control>bracketleft",
+		"Contract the form around weighted center",
+		G_CALLBACK (contract_form) },
 	{ "SetSetNameAction", NULL,
 		"_Set setname", NULL,
 		"Set current page name",

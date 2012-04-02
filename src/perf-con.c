@@ -1,5 +1,73 @@
 // Functions that manipulate performers go here
 #include "drill.h"
+
+void scale_form(float s_step)
+{
+	float cx, cy;
+	float distx, disty;
+	int signx, signy;
+	float hypo;
+	float angle;
+	// selection
+	struct select_proto *last;
+	// coordinates
+	struct coord_proto **coords;
+	struct coord_proto *coord;
+	// index
+	int index;
+
+	last = pshow->select;
+	coords = pshow->currset->coords;
+	cx = pshow->center->x;
+	cy = pshow->center->y;
+	while (last != NULL)
+	{
+		// get coords for selected dot
+		index = last->index;
+		coord = coords[index];
+		distx = cx - coord->x;
+		disty = cy - coord->y;
+		signx = distx < 0;
+		signy = disty < 0;
+		angle = atanf(disty / distx);
+		if (angle < 0)
+			angle = -1 * angle;
+		hypo = powf(distx, 2) + powf(disty, 2);
+		hypo = sqrtf(hypo);
+		// don't contract if too close to center
+		if (s_step > 0 || hypo > -1 * s_step)
+		{
+			// expand or contract
+			distx = (hypo+s_step)*cosf(angle);
+			disty = (hypo+s_step)*sinf(angle);
+			if (signx)
+				distx = -1 * distx;
+			if (signy)
+				disty = -1 * disty;
+			// return to cartesian space
+			coord->x = cx - distx;
+			coord->y = cy - disty;
+			// expand next dot
+		}
+		last = last->next;
+	}
+	return;
+}
+
+void expand_form(GtkWidget *widget)
+{
+	scale_form(1);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	return;
+}
+
+void contract_form(GtkWidget *widget)
+{
+	scale_form(-1);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	return;
+}
+
 void goto_perf (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
@@ -654,15 +722,21 @@ int dot_destroy(struct perf_proto ***dots_r, int size)
 void update_sel_center(void)
 {
 	// update the center of the form based on dot selection
+	// TODO: Use heaps to keep track of max, min values?
 	int index;
 	int selnum = 0;
 	float cx, cy;
+	float minx, miny, maxx, maxy;
 	struct select_proto *last;
 	struct coord_proto **coords;
 	struct coord_proto *coord;
 
 	cx = 0;
 	cy = 0;
+	minx = -1;
+	miny = -1;
+	maxx = 0;
+	maxy = 0;
 	last = pshow->select;
 	coords = pshow->currset->coords;
 	while (last)
