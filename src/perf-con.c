@@ -3,10 +3,16 @@
 
 void scale_form(float s_step)
 {
+	// basic expansion or contraction of form
+	// center
 	float cx, cy;
+	// distance
 	float distx, disty;
+	// sign
 	int signx, signy;
+	// hypotenuse
 	float hypo;
+	// angle
 	float angle;
 	// selection
 	struct select_proto *last;
@@ -56,6 +62,7 @@ void scale_form(float s_step)
 
 void expand_form(GtkWidget *widget)
 {
+	// expand the form by 1 step
 	scale_form(1);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return;
@@ -63,6 +70,7 @@ void expand_form(GtkWidget *widget)
 
 void contract_form(GtkWidget *widget)
 {
+	// contract the form by 1 step
 	scale_form(-1);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return;

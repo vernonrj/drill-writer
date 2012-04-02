@@ -3,6 +3,7 @@
 
 void add_set_gtk(GtkWidget *widget)
 {
+	// add a set from a Gtk entry
 	if (!playing)
 	{
 		add_set();
@@ -12,6 +13,7 @@ void add_set_gtk(GtkWidget *widget)
 
 void delete_set_gtk(GtkWidget *widget)
 {
+	// delete a set from a Gtk entry
 	if (!playing)
 	{
 		delete_set();
@@ -37,6 +39,7 @@ void set_first_gtk(GtkWidget *widget)
 
 void set_last_gtk(GtkWidget *widget)
 {
+	// Go to last set from Gtk button
 	if (!playing)
 	{
 		set_last();
@@ -49,6 +52,7 @@ void set_last_gtk(GtkWidget *widget)
 
 void set_next_gtk(GtkWidget *widget)
 {
+	// Go to next set from Gtk button
 	if (!playing)
 	{
 		set_next();
@@ -62,6 +66,7 @@ void set_next_gtk(GtkWidget *widget)
 
 void set_next_count_gtk(GtkWidget *widget)
 {
+	// Go to next count from gtk button
 	if (!playing)
 	{
 		set_next_count();
@@ -74,6 +79,7 @@ void set_next_count_gtk(GtkWidget *widget)
 				
 void set_prev_gtk(GtkWidget *widget)
 {
+	// Go to previous set from Gtk button
 	if (!playing)
 	{
 		set_prev();
