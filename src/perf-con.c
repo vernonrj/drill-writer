@@ -675,11 +675,23 @@ void update_sel_center(void)
 		selnum++;
 		last = last->next;
 	}
-	cx = cx / selnum;
-	cy = cy / selnum;
+	if (selnum == 0)
+	{
+		// no selections
+		cx = 0;
+		cy = 0;
+	}
+	else
+	{
+		// have selections
+		cx = cx / selnum;
+		cy = cy / selnum;
+	}
+	// store
 	pshow->center->x = cx;
 	pshow->center->y = cy;
 	pshow->selnum = selnum;
+
 	return;
 }
 
@@ -764,6 +776,7 @@ void select_discard(void)
 		pshow->select = 0;
 	}
 	pshow->selnum = 0;
+	update_sel_center();
 	return;
 }
 
@@ -852,6 +865,7 @@ int select_add(int index)
 				selects->next = curr;
 			}
 		}
+		add_sel_center(pshow->currset->coords[index]);
 	}
 	return;
 }
