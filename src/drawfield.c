@@ -82,7 +82,18 @@ int draw_dots (GtkWidget *widget)
 	perf = pshow->perfs;
 
 	// Draw dots
-	cairo_set_source_rgb(dots, 0, 0, 0);
+	if (pshow)
+	{
+		// draw grayed out if stepped
+		if (pshow->step)
+		{
+			cairo_set_source_rgb(dots, 0.3, 0.3, 0.3);
+		}
+		else
+			cairo_set_source_rgb(dots, 0, 0, 0);
+	}
+	else
+		cairo_set_source_rgb(dots, 0, 0, 0);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 	//if (setnum+1<set_tot)
 	if (currset->next != NULL)
