@@ -294,7 +294,8 @@ void draw_field (GtkWidget *widget)
 			{
 				// Light Stroke
 				cairo_set_line_width (gaks, 0.5);
-				cairo_set_source_rgb(gaks, 0.9, 0.9, 0.9);
+				//cairo_set_source_rgb(gaks, 0.9, 0.9, 0.9);
+				cairo_set_source_rgb(gaks, 0.9, 0.9, 1);
 				for (j=i; j<i+(int)step*4; j+=(int)step)
 				{	// 1-step yardlines
 					cairo_move_to (gaks, j, height-yheight-yo2);
@@ -316,7 +317,8 @@ void draw_field (GtkWidget *widget)
 				// Med Stroke
 
 				// 4-step X
-				cairo_set_source_rgb(gaks, 0.5, 0.5, 0.5);
+				//cairo_set_source_rgb(gaks, 0.5, 0.5, 0.5);
+				cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
 				cairo_move_to (gaks, i+(int)step*4, height-yheight-yo2);
 				cairo_line_to (gaks, i+(int)step*4, yheight+yo2);
 				
