@@ -711,6 +711,40 @@ void add_sel_center(struct coord_proto *coord)
 
 
 
+void rem_sel_center(struct coord_proto *coord)
+{
+	// remove a selection from center weight
+	int index;
+	int selnum;
+	float x, y;
+
+	// open up weight
+	selnum = pshow->selnum;
+	if (selnum == 0)
+		return;
+	else if (selnum == 1)
+	{
+		pshow->selnum = 0;
+		pshow->center->x = 0;
+		pshow->center->y = 0;
+		return;
+	}
+	x = pshow->center->x * selnum;
+	y = pshow->center->y * selnum;
+
+	// remove dot from center
+	x = x - coord->x;
+	y = y - coord->y;
+	selnum--;
+
+	// take mean of new set if not 0
+	pshow->center->x = x / selnum;
+	pshow->center->y = y / selnum;
+	pshow->selnum = selnum;
+	
+	return;
+}
+
 void select_discard(void)
 {
 	// remove all selections from selection list

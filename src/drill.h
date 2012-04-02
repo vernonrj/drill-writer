@@ -258,6 +258,7 @@ int dot_new_set(struct perf_proto ***dots_r, int setnum);
 int dot_destroy(struct perf_proto ***dots_r, int size);
 void update_sel_center(void);
 void add_sel_center(struct coord_proto *coord);
+void rem_sel_center(struct coord_proto *coord);
 void select_discard(void);
 int select_add(int index);
 
