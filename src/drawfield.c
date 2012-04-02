@@ -269,7 +269,7 @@ void draw_field (GtkWidget *widget)
 	//printf("do_field %i\n", do_field);
 	if (do_field)
 	{
-		printf("Redrawing\n");
+		printf("Redrawing %.2f, %.2f\n", width-xo2, height-yo2);
 		// Set background to White
 		cairo_set_source_rgb(field, 1, 1, 1);	
 		cairo_paint (field);
@@ -293,42 +293,49 @@ void draw_field (GtkWidget *widget)
 			if (i<((int)xo2+(int)step*160))
 			{
 				// Light Stroke
+				// only draw if window is large enough
 				cairo_set_line_width (gaks, 0.5);
 				//cairo_set_source_rgb(gaks, 0.9, 0.9, 0.9);
 				cairo_set_source_rgb(gaks, 0.9, 0.9, 1);
-				for (j=i; j<i+(int)step*4; j+=(int)step)
-				{	// 1-step yardlines
-					cairo_move_to (gaks, j, height-yheight-yo2);
-					cairo_line_to (gaks, j, yheight+yo2);
-					
-					cairo_move_to (gaks, j+step*5, height-yheight-yo2);
-					cairo_line_to (gaks, j+step*5, yheight+yo2);
+				if (width-xo2 > 800)
+				{
+					for (j=i; j<i+(int)step*4; j+=(int)step)
+					{	// 1-step yardlines
+						cairo_move_to (gaks, j, height-yheight-yo2);
+						cairo_line_to (gaks, j, yheight+yo2);
+						
+						cairo_move_to (gaks, j+step*5, height-yheight-yo2);
+						cairo_line_to (gaks, j+step*5, yheight+yo2);
+					}
+					for (j=yo2+yheight; j>=yo2; j-=(int)step)
+					{	// 1-step y-grid
+						if (((int)(j-yo2-step)%(int)(step*4)) == 0)
+							continue;
+						cairo_move_to (gaks, i, j);
+						cairo_line_to (gaks, i+step*8, j);
+					}
+					// Light Stroke Draw
+					cairo_stroke (gaks);
 				}
-				for (j=yo2+yheight; j>=yo2; j-=(int)step)
-				{	// 1-step y-grid
-					if (((int)(j-yo2-step)%(int)(step*4)) == 0)
-						continue;
-					cairo_move_to (gaks, i, j);
-					cairo_line_to (gaks, i+step*8, j);
-				}
-				// Light Stroke Draw
-				cairo_stroke (gaks);
 
 				// Med Stroke
-
-				// 4-step X
-				//cairo_set_source_rgb(gaks, 0.5, 0.5, 0.5);
-				cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
-				cairo_move_to (gaks, i+(int)step*4, height-yheight-yo2);
-				cairo_line_to (gaks, i+(int)step*4, yheight+yo2);
-				
-				for (j=yo2+yheight; j>=yo2; j-=4*(int)step)
-				{	// 4-Step Gaks
-					cairo_move_to (gaks, i, j);
-					cairo_line_to (gaks, i+(int)step*8, j);
+				// only draw if window is large enough
+				if (width-xo2 > 600)
+				{
+					// 4-step X
+					//cairo_set_source_rgb(gaks, 0.5, 0.5, 0.5);
+					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
+					cairo_move_to (gaks, i+(int)step*4, height-yheight-yo2);
+					cairo_line_to (gaks, i+(int)step*4, yheight+yo2);
+					
+					for (j=yo2+yheight; j>=yo2; j-=4*(int)step)
+					{	// 4-Step Gaks
+						cairo_move_to (gaks, i, j);
+						cairo_line_to (gaks, i+(int)step*8, j);
+					}
+					// Med Stroke Draw
+					cairo_stroke(gaks);
 				}
-				// Med Stroke Draw
-				cairo_stroke(gaks);
 			}
 		}
 		// Maybe I can write this to a pixmap instead...
