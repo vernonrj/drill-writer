@@ -127,6 +127,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	int relation;
 
 	float ssrel;
+	float fbrel;
 	gchar *buffer;
 	gchar *sideside_relation;
 	gchar *side;
@@ -186,14 +187,14 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	else if (coordy < bhbs)
 	{
 		// coord is close to back sideline
-		ssrel = coordy;
-		frontback_relation = g_strdup_printf("%.2f inside back sideline", ssrel);
+		fbrel = coordy;
+		frontback_relation = g_strdup_printf("%.2f inside back sideline", fbrel);
 	}
 	else if (coordy < back_hash)
 	{
 		// coord is behind back hash
-		ssrel = back_hash - coordy;
-		frontback_relation = g_strdup_printf("%.2f outside back hash", ssrel);
+		fbrel = back_hash - coordy;
+		frontback_relation = g_strdup_printf("%.2f outside back hash", fbrel);
 	}
 	else if (coordy == back_hash)
 	{
@@ -203,14 +204,14 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	else if (coordy < bhfh)
 	{
 		// coord is close, but in front of, back hash
-		ssrel = coordy - back_hash;
-		frontback_relation = g_strdup_printf("%.2f inside back hash", ssrel);
+		fbrel = coordy - back_hash;
+		frontback_relation = g_strdup_printf("%.2f inside back hash", fbrel);
 	}
 	else if (coordy < front_hash)
 	{
 		// coord is close to, but behind, front hash
-		ssrel = front_hash - coordy;
-		frontback_relation = g_strdup_printf("%.2f inside front hash", ssrel);
+		fbrel = front_hash - coordy;
+		frontback_relation = g_strdup_printf("%.2f inside front hash", fbrel);
 	}
 	else if (coordy == front_hash)
 	{
@@ -220,14 +221,14 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	else if (coordy < fhfs)
 	{
 		// coord is close to, but in front of, front hash
-		ssrel = coordy - front_hash;
-		frontback_relation = g_strdup_printf("%.2f outside front hash", ssrel);
+		fbrel = coordy - front_hash;
+		frontback_relation = g_strdup_printf("%.2f outside front hash", fbrel);
 	}
 	else if (coordy < front_side)
 	{
 		// coord is close to, but behind, front sideline
-		ssrel = front_side - coordy;
-		frontback_relation = g_strdup_printf("%.2f inside front sideline", ssrel);
+		fbrel = front_side - coordy;
+		frontback_relation = g_strdup_printf("%.2f inside front sideline", fbrel);
 	}
 	else
 	{
@@ -237,7 +238,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 
 	
 
-	buffer = g_strdup_printf("%.2f %s %i %s (%.2f, %.2f)", ssrel, sideside_relation, yardline, frontback_relation, pshow->center->x, pshow->center->y);
+	buffer = g_strdup_printf("(%.2f, %.2f): %.2f %s %i %s", coordx, coordy, ssrel, sideside_relation, yardline, frontback_relation);
 	g_free(sideside_relation);
 	g_free(frontback_relation);
 
@@ -566,17 +567,14 @@ int buildIfacegtk(void)
 	box0 = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (menu_box), box0, TRUE, TRUE, 0);
 
-	//box3 = gtk_hbox_new (FALSE, 0);
-	//gtk_box_pack_start(GTK_BOX (box0), box3, FALSE, FALSE, 0);
-
-	setbox = gtk_hbox_new (FALSE, 0);	// Set attributes (set, counts, tempo, etc)
+	// Set attributes (set, counts, tempo, etc)
+	setbox = gtk_hbox_new (FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
 
 	// get and pack canvas
 	drill = gtk_drill_new();
 	gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
-	//g_signal_connect(drill, "motion-notify-event", G_CALLBACK(xy_movement), NULL);
 
 	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
 	gtk_box_pack_start(GTK_BOX (box0), perfbox, FALSE, FALSE, 0);
@@ -585,7 +583,8 @@ int buildIfacegtk(void)
 	media_box = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
 
-	box1 = gtk_hbox_new (FALSE, 0);	// Media Controls (First, prev, next, last)
+	// Media Controls (First, prev, next, last)
+	box1 = gtk_hbox_new (FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX (media_box), box1, FALSE, FALSE, 0);
 
 	label = gtk_label_new ("Set:");
@@ -598,7 +597,6 @@ int buildIfacegtk(void)
 	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set), entry_sets);
 	gtk_entry_set_text (GTK_ENTRY (entry_sets), set_buf);
 	tmp_pos = GTK_ENTRY (entry_sets)->text_length;
-	//gtk_editable_insert_text (GTK_EDITABLE (entry_sets), " world", -1, &tmp_pos);
 	gtk_editable_select_region (GTK_EDITABLE (entry_sets),
 			0, GTK_ENTRY (entry_sets)->text_length);
 	gtk_entry_set_alignment (GTK_ENTRY (entry_sets), 1);
@@ -613,8 +611,6 @@ int buildIfacegtk(void)
 	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
 
 	// need to change these to spin buttons
-	//sprintf(count_buf, "%i", set_step);
-	//sprintf(count_buf, "%i", counts[setnum]);
 	sprintf(count_buf, "%i", pshow->currset->counts);
 	entry_counts = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_counts), 50);
@@ -663,8 +659,8 @@ int buildIfacegtk(void)
 	label = gtk_label_new ("X:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
-	//sprintf(perf_buf_x, "%g", perf[setnum][perf_cur][0]);
-	sprintf(perf_buf_x, "%g", pshow->currset->coords[perf_cur]->x);
+	//sprintf(perf_buf_x, "%g", pshow->currset->coords[perf_cur]->x);
+	sprintf(perf_buf_x, "%g", pshow->center->x);
 	entry_perf_x = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_x), 5);
 	g_signal_connect (entry_perf_x, "activate", G_CALLBACK (xperf_change), entry_perf_x);
@@ -676,8 +672,8 @@ int buildIfacegtk(void)
 	label = gtk_label_new ("Y:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
-	//sprintf(perf_buf_y, "%g", perf[setnum][perf_cur][1]);
-	sprintf(perf_buf_y, "%g", pshow->currset->coords[perf_cur]->y);
+	//sprintf(perf_buf_y, "%g", pshow->currset->coords[perf_cur]->y);
+	sprintf(perf_buf_y, "%g", pshow->center->y);
 	entry_perf_y = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_y), 5);
 	g_signal_connect (entry_perf_y, "activate", G_CALLBACK (yperf_change), entry_perf_y);
