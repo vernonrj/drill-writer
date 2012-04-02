@@ -159,6 +159,8 @@ struct headset_proto
 	struct tempo_proto *currtempo;
 	// selection list
 	struct select_proto *select;
+	// dot moments
+	struct coord_proto *center;
 };
 
 // main show container

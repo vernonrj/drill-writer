@@ -251,6 +251,10 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		// tempo allocation error
 		return -1;
 	}
+	// Construct selection moments
+	dshow->center = (struct coord_proto*)malloc(sizeof(struct coord_proto));
+	dshow->center->x = 0;
+	dshow->center->y = 0;
 	// Set the selection to "none"
 	dshow->select = 0;
 	// Set the current set to opening set
