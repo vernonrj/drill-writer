@@ -33,6 +33,13 @@ int movexy(float xoff, float yoff)
 		set_coord(coords[selects->index], x, y);
 		selects = selects->next;
 	}
+	// move center of selection
+	x = pshow->center->x;
+	y = pshow->center->y;
+	x = x + xoff;
+	y = y + yoff;
+	pshow->center->x = x;
+	pshow->center->y = y;
 	return 0;
 }
 

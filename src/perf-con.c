@@ -651,6 +651,64 @@ int dot_destroy(struct perf_proto ***dots_r, int size)
 
 	return 0;
 }
+void update_sel_center(void)
+{
+	// update the center of the form based on dot selection
+	int index;
+	int selnum = 0;
+	float cx, cy;
+	struct select_proto *last;
+	struct coord_proto **coords;
+	struct coord_proto *coord;
+
+	cx = 0;
+	cy = 0;
+	last = pshow->select;
+	coords = pshow->currset->coords;
+	while (last)
+	{
+		// get coordinates for selected dot
+		index = last->index;
+		coord = coords[index];
+		cx = cx + coord->x;
+		cy = cy + coord->y;
+		selnum++;
+		last = last->next;
+	}
+	cx = cx / selnum;
+	cy = cy / selnum;
+	pshow->center->x = cx;
+	pshow->center->y = cy;
+	pshow->selnum = selnum;
+	return;
+}
+
+
+void add_sel_center(struct coord_proto *coord)
+{
+	// add a selection to center weight
+	int index;
+	int selnum;
+	float x, y;
+	
+	// open up weight
+	selnum = pshow->selnum;
+	x = pshow->center->x * selnum;
+	y = pshow->center->y * selnum;
+
+	// add new dot to center
+	x = x + coord->x;
+	y = y + coord->y;
+	selnum++;
+
+	// take mean of new set
+	pshow->center->x = x / selnum;
+	pshow->center->y = y / selnum;
+	pshow->selnum = selnum;
+
+	return;
+}
+
 
 
 void select_discard(void)
@@ -671,6 +729,7 @@ void select_discard(void)
 		}
 		pshow->select = 0;
 	}
+	pshow->selnum = 0;
 	return;
 }
 
@@ -682,6 +741,7 @@ int select_add(int index)
 	struct select_proto *selects;
 	struct select_proto *last;
 	struct select_proto *curr;
+	struct coord_proto *coord;
 	int matched = 0;
 	int loop_done = 0;
 
@@ -694,6 +754,8 @@ int select_add(int index)
 		curr->next = 0;
 		curr->index = index;
 		pshow->select = curr;
+		// update selection center
+		add_sel_center(pshow->currset->coords[index]);
 	}
 	else
 	{
