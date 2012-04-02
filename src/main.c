@@ -248,6 +248,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 {
+	// caught a mouse movement event
 	float coordx, coordy;
 	gchar *buffer;
 	coordx = event->x;
