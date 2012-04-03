@@ -360,6 +360,7 @@ int buildIfacegtk(void)
 	GtkWidget *toolbar;
 	GtkWidget *drill;		// custom cairo widget
 	// Container Widgets
+	GtkWidget *scrolled_window;	// for the field
 	GtkWidget *box0;		// second-level packing box (for canvas)
 	GtkWidget *box1;
 	GtkWidget *setbox;		// Set attributes go in this box
@@ -572,9 +573,19 @@ int buildIfacegtk(void)
 	setbox = gtk_hbox_new (FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
 
+	// create field canvas scroll container
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+	gtk_box_pack_start(GTK_BOX(box0), scrolled_window, TRUE, TRUE, 0);
+	gtk_widget_show(scrolled_window);
+
 	// get and pack canvas
 	drill = gtk_drill_new();
-	gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
+	gtk_scrolled_window_add_with_viewport(
+			GTK_SCROLLED_WINDOW(scrolled_window), drill);
+	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 
 	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
