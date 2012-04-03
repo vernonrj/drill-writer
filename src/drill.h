@@ -43,6 +43,14 @@ gint context_id;
 //double perf[50][50][2];	// Set, performer, dot
 int perf_cur;	// current selected performer
 //int perfnum;
+// field surface
+cairo_surface_t *surface;
+cairo_t *field;
+cairo_t *gaks;
+cairo_t *fnums;
+cairo_t *dots;
+// check to make sure void surface isn't destroyed
+int first_time;
 
 gdouble time_elapsed;
 GTimer *timer;

@@ -379,6 +379,8 @@ int buildIfacegtk(void)
 
 	gint tmp_pos;
 
+	first_time = 1;
+
 
 	// Build the menu
 	// TODO: Gtk errors have something to do with menu

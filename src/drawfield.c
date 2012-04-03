@@ -33,6 +33,7 @@ void def_canvas (GtkWidget *widget)
 		// Warning: this could cause performance issues:
 		// watch closely
 		//printf("ping\n");
+		//do_field = 1;
 		if (zoom_x < width)
 		{
 			c_width = zoom_x;
@@ -97,7 +98,7 @@ int draw_dots (GtkWidget *widget)
 	float x, y;	// x and y location
 	float xcalc, ycalc;
 	// canvases
-	cairo_t *dots;	// context for all dots
+	//cairo_t *dots;	// context for all dots
 	cairo_t *selected; // this will eventually have a struct to get dots
 	cairo_surface_t *field_surface;
 	cairo_surface_t *bak_surface;
@@ -117,10 +118,11 @@ int draw_dots (GtkWidget *widget)
 	cairo_surface_destroy(bak_surface);
 	*/
 
-	field_surface = cairo_image_surface_create_from_png("field.png");
+	//field_surface = cairo_image_surface_create_from_png("field.png");
 	surface_write = gdk_cairo_create(widget->window);
 
-	cairo_set_source_surface(surface_write, field_surface, 1, 1);
+	//cairo_set_source_surface(surface_write, field_surface, 1, 1);
+	cairo_set_source_surface(surface_write, surface, 1, 1);
 	cairo_paint (surface_write);
 	cairo_destroy(surface_write);
 
@@ -312,13 +314,16 @@ void draw_field (GtkWidget *widget)
 {	// This function will draw the actual football field
 	int i, j, k;		// loop vars
 	float x, y;
-	def_canvas(widget);	// Refresh dimensions and such
-	cairo_surface_t *surface =
-		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
-	cairo_t *field = cairo_create (surface);
-	cairo_t *gaks = cairo_create (surface);
+	char text[3];		// text for yardline names
+	int ynum = 0;		// yardline numbering
+	int past_fifty = 0;	// check to see if past 50 yardline
+	float x_bear;		// text centering
+	float y_bear;		// text centering
+	cairo_text_extents_t te;
+	cairo_font_options_t *fopts;
 
-	
+
+	def_canvas(widget);	// Refresh dimensions and such
 	// Set up to redraw the field
 	//printf("do_field %i\n", do_field);
 	if (do_field)
@@ -326,6 +331,23 @@ void draw_field (GtkWidget *widget)
 		//printf("Redrawing: (width, height) = (%.2f, %.2f)\n", width, height);
 		//printf(">>>>>zoom: (width, height) = (%.2f, %.2f)\n\n", zoom_x, zoom_y);
 		// Set background to White
+		// (Re)allocate field
+		if (!first_time)
+		{
+			cairo_destroy(fnums);
+			cairo_destroy(gaks);
+			cairo_destroy(field);
+			cairo_surface_destroy(surface);
+		}
+		else
+			first_time = 0;
+		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
+		field = cairo_create (surface);
+		gaks = cairo_create (surface);
+		fnums = cairo_create (surface);
+		cairo_set_source_rgb(fnums, .7, .7, .7);
+		cairo_set_font_size(fnums, 20);
+
 		cairo_set_source_rgb(field, 1, 1, 1);	
 		cairo_paint (field);
 
@@ -335,6 +357,29 @@ void draw_field (GtkWidget *widget)
 			cairo_set_source_rgb(field, 0, 0, 0);
 			cairo_move_to (field, i, height-yheight-yo2);
 			cairo_line_to (field, i, yheight+yo2);
+			// Yardline Numbers
+			sprintf(text, "%i", ynum);
+			cairo_text_extents (fnums, text, &te);
+			//cairo_get_font_options(fnums, fopts);
+			//cairo_font_options_set_height(fopts, 4*step);
+			x_bear = te.x_bearing + te.width / 2;
+			y_bear = te.y_bearing + te.height / 2;
+			cairo_move_to (fnums, i - x_bear, height-yo2-step*12);
+			cairo_show_text(fnums, text);
+			cairo_move_to (fnums, i - x_bear, height-yo2-step*73);
+			cairo_show_text(fnums, text);
+			if (ynum == 50)
+				past_fifty = 1;
+			if (past_fifty == 0)
+			{
+				// not past fifty yet; add 5
+				ynum = ynum + 5;
+			}
+			else
+			{
+				// past fifty; sub 5
+				ynum = ynum - 5;
+			}
 			// Front Hash
 			cairo_move_to (field, i-2*step, height-yo2-step*32);
 			cairo_line_to (field, i+2*step, height-yo2-step*32);
@@ -397,12 +442,9 @@ void draw_field (GtkWidget *widget)
 		cairo_surface_write_to_png(surface, "field.png");
 	}
 	// Cleanup
-	cairo_destroy(gaks);
-	cairo_destroy(field);
 	// Show the dots
 	draw_dots(widget);
 	
-	cairo_surface_destroy(surface);
 	// Make sure field won't be redrawn by default
 	do_field = 0;
 
