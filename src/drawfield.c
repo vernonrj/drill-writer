@@ -13,8 +13,13 @@ extern GTimer * timer;
 
 void def_canvas (GtkWidget *widget)
 {
+	// define the canvas
+	
+	// use default values for width and height
 	if (width != widget->allocation.width || height != widget->allocation.height)
-		do_field=1;
+	{
+		do_field=0;
+	}
 	width = widget->allocation.width;	// Get the width
 	height = widget->allocation.height;	// Get the height
 	//printf("width=%g\theight=%g\tstep=%g\n", width, height, step);
@@ -59,18 +64,27 @@ int draw_dots (GtkWidget *widget)
 	cairo_t *dots;	// context for all dots
 	cairo_t *selected; // this will eventually have a struct to get dots
 	cairo_surface_t *field_surface;
+	cairo_surface_t *bak_surface;
 	cairo_t *surface_write;
 	struct select_proto *selects;
 	int was_selected;
 
 	// Generate field
+	def_canvas(widget);
+
+	bak_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
+	surface_write = cairo_create(bak_surface);
+	cairo_set_source_rgb(surface_write, 1, 1, 1);	
+	cairo_paint (surface_write);
+	cairo_destroy(surface_write);
+	cairo_surface_destroy(bak_surface);
+
 	field_surface = cairo_image_surface_create_from_png("field.png");
 	surface_write = gdk_cairo_create(widget->window);
 
 	cairo_set_source_surface(surface_write, field_surface, 1, 1);
 	cairo_paint (surface_write);
 	cairo_destroy(surface_write);
-	def_canvas(widget);
 
 
 	// Define canvases
@@ -117,7 +131,7 @@ int draw_dots (GtkWidget *widget)
 				// Build horizontal location
 				xcalc = (xcalc - x) / lastset->counts;
 				xcalc = xcalc*pshow->step + x;
-				x = xo2 + step*xcalc;
+				x = c_xo2 + c_step*xcalc;
 				//x=((perf[setnum+1][i][0]-perf[setnum][i][0])/counts[setnum+1]);
 				//x=x*set_step+perf[setnum][i][0];
 				//xcalc = x;
@@ -125,7 +139,7 @@ int draw_dots (GtkWidget *widget)
 				// y location (even if mid-set)
 				ycalc = (ycalc - y) / lastset->counts;
 				ycalc = ycalc*pshow->step + y;
-				y = yo2 + step*ycalc;
+				y = c_yo2 + c_step*ycalc;
 				//y=((perf[setnum+1][i][1]-perf[setnum][i][1])/counts[setnum+1]);
 				//y=y*set_step+perf[setnum][i][1];
 				//ycalc = y;
@@ -140,7 +154,7 @@ int draw_dots (GtkWidget *widget)
 					{
 						// dot is selected
 						cairo_new_sub_path(selected);
-						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						cairo_arc(selected, x, y, 2*(float)c_step/3, 0, 360);
 						selects = selects->next;
 						was_selected = 1;
 					}
@@ -149,7 +163,7 @@ int draw_dots (GtkWidget *widget)
 				{
 					// dot is not selected
 					cairo_new_sub_path(dots);
-					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					cairo_arc(dots, x, y, 2*(float)c_step/3, 0, 360);
 				}
 				/*
 				if (i==perf_cur)
@@ -209,8 +223,8 @@ int draw_dots (GtkWidget *widget)
 			{
 				// draw only if valid
 				retr_coord(currset->coords[i], &x, &y);
-				x = xo2+step*x;
-				y = yo2+step*y;
+				x = c_xo2+c_step*x;
+				y = c_yo2+c_step*y;
 				// print selection if dot is selected
 				was_selected = 0;
 				if (selects)
@@ -220,7 +234,7 @@ int draw_dots (GtkWidget *widget)
 					{
 						// dot is selected
 						cairo_new_sub_path(selected);
-						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						cairo_arc(selected, x, y, 2*(float)c_step/3, 0, 360);
 						selects = selects->next;
 						was_selected = 1;
 					}
@@ -229,7 +243,7 @@ int draw_dots (GtkWidget *widget)
 				{
 					// dot is not selected
 					cairo_new_sub_path(dots);
-					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					cairo_arc(dots, x, y, 2*(float)c_step/3, 0, 360);
 				}
 
 				//cairo_rectangle(dots, x, y, step, step);
@@ -269,6 +283,32 @@ void draw_field (GtkWidget *widget)
 	//printf("do_field %i\n", do_field);
 	if (do_field)
 	{
+		// define canvas sizes as window sizes for now...
+		c_width = width;
+		c_height = height;
+		// define horizontal margin
+		c_xoff = (int)c_width % 160;
+		if (!c_xoff)	// make sure there's a margin
+			c_xoff = (int)(c_width-1) % 160;
+		c_xo2 = c_xoff / 2;
+		c_step = (c_width-c_xoff) / 160;	// make the length of 8:5 step
+		c_yheight = c_step * 85;		// height of canvas
+		if (c_yheight > c_height)
+		{
+			// limiting factor is height, adjust
+			c_yoff = (int)c_height % 85;
+			c_yo2 = c_yoff / 2;
+			c_step = (c_height - c_yoff) / 85;
+			c_yheight = c_step * 85;
+			c_xoff = c_width - (160*c_step);
+			c_xo2 = c_xoff / 2;
+		}
+		else
+		{
+			// limiting factor is width, continue
+			c_yoff = c_height - c_yheight;
+			c_yo2 = c_yoff / 2;
+		}
 		printf("Redrawing %.2f, %.2f\n", width-xo2, height-yo2);
 		// Set background to White
 		cairo_set_source_rgb(field, 1, 1, 1);	

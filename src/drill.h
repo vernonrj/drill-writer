@@ -16,12 +16,17 @@ int setnum;			// current set
 //int set_tot;			// Total amount of sets
 int do_field;			// whether or not to redraw field
 double xoff, yoff;		// x offset
+double c_xoff, c_yoff;
 double xo2, yo2;		// y offset
-double width, height;
+double c_xo2, c_yo2;
+double width, height;		// window width, height
+double c_width, c_height;	// canvas width, height
+double c_yheight;
 GtkWidget *window;		// Everything goes in here
 int playing;
 int set_step;
-double step;
+double step;			// size of 8:5 step in window
+double c_step;			// size of 8:5 step on canvas
 int expose_flag;
 char set_buf[5];
 char count_buf[5];

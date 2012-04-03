@@ -89,6 +89,8 @@ static void gtk_drill_class_init(GtkDrillClass *klass)
 	gtk_binding_entry_add_signal(binding_set, GDK_KEY_D, 0, "dotright", 0);
 	
 	binding_set = gtk_binding_set_by_class(klass);
+	c_width = 800;
+	c_height = 450;
 }
 
 static void gtk_drill_init (GtkDrill *drill)
