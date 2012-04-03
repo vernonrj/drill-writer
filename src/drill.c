@@ -124,8 +124,8 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 static void gtk_drill_init (GtkDrill *drill)
 {
 	drill->sel = 0;
-	//zoom_x = 850;
-	//zoom_y = 450;
+	zoom_x = 850;
+	zoom_y = 450;
 }
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)

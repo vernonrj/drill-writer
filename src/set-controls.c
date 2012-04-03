@@ -4,18 +4,26 @@
 gboolean zoom_in(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
+	// propagate everything except control modifier
+	if (event->state == 0)
+		return FALSE;
+	else if (event->state != 4)
+		return FALSE;
 	if (event->direction == GDK_SCROLL_DOWN)
 	{
-		printf("scrolled down\n");
-		zoom_x = zoom_x + 100;
-		zoom_y = zoom_y + 100;
-		//gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+		// zoom in
+		zoom_x = zoom_x + 10;
+		zoom_y = zoom_y + 10;
+		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
 	}
 	else if (event->direction == GDK_SCROLL_UP)
 	{
-		printf("scrolled up\n");
+		// zoom out
+		zoom_x = zoom_x - 10;
+		zoom_y = zoom_y - 10;
+		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
 	}
-	return FALSE;
+	return TRUE;
 }
 
 void add_set_gtk(GtkWidget *widget)
