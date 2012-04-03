@@ -97,7 +97,6 @@ void rot_form(float s_step)
 		angle = atanf(disty / distx);
 		hypo = powf(distx, 2) + powf(disty, 2);
 		hypo = sqrtf(hypo);
-		printf("angle = %g\n", angle);
 		if (distx < 0)
 			angle = angle + M_PI;
 		angle = angle + s_step;

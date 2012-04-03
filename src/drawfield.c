@@ -83,6 +83,17 @@ void def_canvas (GtkWidget *widget)
 	return;
 }
 
+void drawing_method(cairo_t *cdots, float x, float y)
+{
+	cairo_move_to(cdots, x-step, y-step);
+	cairo_rel_line_to(cdots, 2*step, 2*step);
+	cairo_move_to(cdots, x-step, y+step);
+	cairo_rel_line_to(cdots, 2*step, -2*step);
+	//cairo_new_sub_path(cdots);
+	//cairo_arc(cdots, x, y, 2*(float)step/3, 0, 360);
+	return;
+}
+
 
 int draw_dots (GtkWidget *widget)
 {
@@ -195,17 +206,21 @@ int draw_dots (GtkWidget *widget)
 					if (selects->index == i)
 					{
 						// dot is selected
+						/*
 						cairo_new_sub_path(selected);
 						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						*/
+						drawing_method(selected, x, y);
 						selects = selects->next;
 						was_selected = 1;
 					}
 				}
 				if (was_selected == 0)
 				{
+					drawing_method(dots, x, y);
 					// dot is not selected
-					cairo_new_sub_path(dots);
-					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					//cairo_new_sub_path(dots);
+					//cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
 				}
 				/*
 				if (i==perf_cur)
@@ -251,6 +266,8 @@ int draw_dots (GtkWidget *widget)
 		}
 		*/
 		// Show all the dots
+		cairo_stroke(dots);
+		cairo_stroke(selected);
 		cairo_fill (dots);
 		cairo_fill (selected);
 	}
@@ -275,8 +292,11 @@ int draw_dots (GtkWidget *widget)
 					if (selects->index == i)
 					{
 						// dot is selected
+						/*
 						cairo_new_sub_path(selected);
 						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						*/
+						drawing_method(selected, x, y);
 						selects = selects->next;
 						was_selected = 1;
 					}
@@ -284,8 +304,15 @@ int draw_dots (GtkWidget *widget)
 				if (was_selected == 0)
 				{
 					// dot is not selected
-					cairo_new_sub_path(dots);
-					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					drawing_method(dots, x, y);
+					/*
+					cairo_move_to(dots, x-step, y-step);
+					cairo_rel_line_to(dots, 2*step, 2*step);
+					cairo_move_to(dots, x-step, y+step);
+					cairo_rel_line_to(dots, 2*step, -2*step);
+					//cairo_new_sub_path(dots);
+					//cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					*/
 				}
 
 				//cairo_rectangle(dots, x, y, step, step);
@@ -301,6 +328,8 @@ int draw_dots (GtkWidget *widget)
 		//cairo_rectangle(selected, x, y, step, step);
 		//cairo_new_sub_path(selected);
 		//cairo_arc(selected, x, y, 2*step/3, 0, 360);
+		cairo_stroke(dots);
+		cairo_stroke(selected);
 		cairo_fill(dots);
 		cairo_fill(selected);
 	}

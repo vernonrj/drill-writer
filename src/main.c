@@ -267,7 +267,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// Handle click event on canvas
 	
-	printf("ping\n");
+	//printf("ping\n");
 	// loop vars
 	int i, j;
 	// number of performers
