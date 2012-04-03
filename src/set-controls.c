@@ -340,10 +340,13 @@ void set_next_count(void)
 			if (pshow->step >= nextset->counts)
 			{
 				// to the next set
+				set_next();
+				/*
 				pshow->step = 0;
 				pshow->prevset = pshow->currset;
 				pshow->currset = nextset;
 				setnum++;
+				*/
 			}
 		}
 		/*

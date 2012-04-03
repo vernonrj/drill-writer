@@ -3,23 +3,38 @@
 gboolean play_show (GtkWidget *widget)
 {	// Play the show
 	gulong dumb_API;
+	struct set_proto *nextset;
 	time_elapsed = g_timer_elapsed(timer, &dumb_API);
 	if (playing == 1 && time_elapsed >= (double)60/(double)tempo && !expose_flag)
-	{	// animate (currently at 120 bpm)
+	{	
 		//set_step++;
 		pshow->step++;
 		do_field=0;	// don't need to redraw field
+		nextset = pshow->currset->next;
+		if (pshow->step >= nextset->counts)
+		{
+			// next set
+			set_next();
+			if (pshow->currset->next == NULL)
+			{
+				// last set
+				playing = 0;
+			}
+		}
 		//g_print("width=%i\theight=%i\n", width, height);
 		expose_flag =1;
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 		//g_print("Play_show %i %i %i\n", setnum, set_step, playing);
 		if (playing)
+		{
 			g_timer_start(timer);
-		return TRUE;
+			return TRUE;
+		}
+		else
+			return FALSE;
 	}
 	else if (playing == 0)
 		return FALSE;
-
 }
 
 
