@@ -60,6 +60,58 @@ void scale_form(float s_step)
 	return;
 }
 
+
+void rot_form(float s_step)
+{
+	// basic rotation around center
+	// center
+	float cx, cy;
+	// distance
+	float distx, disty;
+	// sign
+	int signx, signy;
+	// hypotenuse
+	float hypo;
+	// angle
+	float angle;
+	// selection
+	struct select_proto *last;
+	// coordinates
+	struct coord_proto **coords;
+	struct coord_proto *coord;
+	// index
+	int index;
+	last = pshow->select;
+	coords = pshow->currset->coords;
+	cx = pshow->center->x;
+	cy = pshow->center->y;
+	while (last != NULL)
+	{
+		// get coords for selected dot
+		index = last->index;
+		coord = coords[index];
+		distx = cx - coord->x;
+		disty = cy - coord->y;
+		signx = distx < 0;
+		signy = disty < 0;
+		angle = atanf(disty / distx);
+		hypo = powf(distx, 2) + powf(disty, 2);
+		hypo = sqrtf(hypo);
+		printf("angle = %g\n", angle);
+		if (distx < 0)
+			angle = angle + M_PI;
+		angle = angle + s_step;
+		distx = hypo*cosf(angle);
+		disty = hypo*sinf(angle);
+		coord->x = cx - distx;
+		coord->y = cy - disty;
+		last = last->next;
+	}
+	return;
+}
+
+
+
 void expand_form(GtkWidget *widget)
 {
 	// expand the form by 1 step
@@ -72,6 +124,22 @@ void contract_form(GtkWidget *widget)
 {
 	// contract the form by 1 step
 	scale_form(-1);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	return;
+}
+
+void rot_cw(GtkWidget *widget)
+{
+	// rotate form clockwise
+	rot_form(M_PI/8);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	return;
+}
+
+void rot_countercw(GtkWidget *widget)
+{
+	// rotate form clockwise
+	rot_form(-M_PI/8);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return;
 }

@@ -250,8 +250,11 @@ void play_show_from_start (GtkWidget *widget);
 
 // perf-con.c
 void scale_form(float s_step);
+void rot_form(float s_step);
 void expand_form(GtkWidget *widget);
 void contract_form(GtkWidget *widget);
+void rot_cw(GtkWidget *widget);
+void rot_countercw(GtkWidget *widget);
 void goto_perf (GtkWidget *widget);
 void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
