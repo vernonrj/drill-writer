@@ -16,6 +16,10 @@
 			<menuitem name="DelSet" action="DelSetAction"/>
 			<placeholder name="EditMenuAddition"/>
 		</menu>
+		<menu name="ViewMenu" action="ViewMenuAction">
+			<menuitem name="ZoomIn" action="ZoomInAction"/>
+			<placeholder name="ViewMenuAddition"/>
+		</menu>
 		<menu name="DotMenu" action="DotMenuAction">
 			<menuitem name="MoveUp" action="MoveUpAction"/>
 			<menuitem name="MoveDown" action="MoveDownAction"/>

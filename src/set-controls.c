@@ -1,6 +1,23 @@
 // Functions that change sets go here
 #include "drill.h"
 
+gboolean zoom_in(GtkWidget *widget, GdkEventScroll *event)
+{
+	// handle zoom events
+	if (event->direction == GDK_SCROLL_DOWN)
+	{
+		printf("scrolled down\n");
+		zoom_x = zoom_x + 100;
+		zoom_y = zoom_y + 100;
+		//gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+	}
+	else if (event->direction == GDK_SCROLL_UP)
+	{
+		printf("scrolled up\n");
+	}
+	return FALSE;
+}
+
 void add_set_gtk(GtkWidget *widget)
 {
 	// add a set from a Gtk entry

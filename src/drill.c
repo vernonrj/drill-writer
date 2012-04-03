@@ -105,6 +105,7 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	widget_class->expose_event = gtk_drill_expose;
 	widget_class->motion_notify_event = xy_movement;
 	widget_class->button_press_event = clicked;
+	widget_class->scroll_event = zoom_in;
 	
 	object_class->destroy = gtk_drill_destroy;
 	drill_signals[DOT_RIGHT] =
@@ -118,8 +119,6 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	gtk_binding_entry_add_signal(binding_set, GDK_KEY_D, 0, "dotright", 0);
 	
 	binding_set = gtk_binding_set_by_class(class);
-	c_width = 800;
-	c_height = 450;
 }
 
 static void gtk_drill_init (GtkDrill *drill)
@@ -134,8 +133,8 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 	g_return_if_fail(GTK_IS_DRILL(widget));
 	g_return_if_fail(requisition != NULL);
 
-	requisition->width = 800;
-	requisition->height = 500;
+	requisition->width = 850;
+	requisition->height = 450;
 }
 
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
@@ -179,7 +178,8 @@ static void gtk_drill_realize(GtkWidget *widget)
 	attributes.event_mask = gtk_widget_get_events (widget) 
 		| GDK_EXPOSURE_MASK
 		| GDK_POINTER_MOTION_MASK
-		| GDK_BUTTON_PRESS_MASK;
+		| GDK_BUTTON_PRESS_MASK
+		| GDK_SCROLL_MASK;
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y;
 

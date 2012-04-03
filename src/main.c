@@ -267,6 +267,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// Handle click event on canvas
 	
+	printf("ping\n");
 	// loop vars
 	int i, j;
 	// number of performers
@@ -390,6 +391,7 @@ int buildIfacegtk(void)
 	{ "SetMenuAction", NULL, "_Set" },
 	//{ "AddMenuAction", NULL, "_Add"},
 	{ "EditMenuAction", NULL, "_Edit"},
+	{ "ViewMenuAction", NULL, "_View"},
 	//{ "MoveMenuAction", NULL, "_Move"},
 	{ "DotMenuAction", NULL, "_Dot"},
 		
@@ -417,6 +419,10 @@ int buildIfacegtk(void)
 		"_Quit", "<control>Q",		// label, accelerator
 		"Exit Program",			// tooltip
 		G_CALLBACK (gtk_main_quit) },
+	{ "ZoomInAction", NULL,
+		"_Zoom In", "<control>plus",
+		"Zoom the field in",
+		G_CALLBACK(zoom_in) },
 	{ "MoveUpAction", NULL,
 		"_Move Up", "<control>Up",
 		"Move performer up 1 step",
@@ -581,7 +587,7 @@ int buildIfacegtk(void)
 
 	// get and pack canvas
 	drill = gtk_drill_new();
-	gtk_widget_set_size_request(drill, 1000, 800);
+	gtk_widget_set_size_request(drill, 800, 400);
 	gtk_scrolled_window_add_with_viewport(
 			GTK_SCROLLED_WINDOW(scrolled_window), drill);
 	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
