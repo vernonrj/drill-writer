@@ -124,6 +124,8 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 static void gtk_drill_init (GtkDrill *drill)
 {
 	drill->sel = 0;
+	//zoom_x = 850;
+	//zoom_y = 450;
 }
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
@@ -132,6 +134,9 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_DRILL(widget));
 	g_return_if_fail(requisition != NULL);
+
+	//requisition->width = zoom_x;
+	//requisition->height = zoom_y;
 
 	requisition->width = 850;
 	requisition->height = 450;
