@@ -263,7 +263,7 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	return TRUE;
 }
 
-gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// Handle click event on canvas
 	
@@ -287,7 +287,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 
 	//printf("Event = %i\n", event->button);
 	//g_print("Event = %i\n", event->state);
-	g_print("%g, %g\n", event->x, event->y-54);
+	//g_print("%g, %g\n", (event->x-xo2)/step, (event->y-yo2)/step);
 	state = event->state;
 	if (event->button == 1)
 	{
@@ -302,9 +302,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 		// Adjust for various canvas offsets
 		coordx = (coordx-xo2)/step;
 		//coordy = (coordy-yo2-25)/step;
-		coordy = (coordy-yo2-54)/step;
+		coordy = (coordy-yo2)/step;
 
-		printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
+		//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 		perfnum = pshow->perfnum;
 		//for (i=0; i<perfnum; i++)
 		perf_cur = 0;
@@ -520,8 +520,6 @@ int buildIfacegtk(void)
 	timer = g_timer_new();
 	g_timer_stop(timer);
 
-	// draw the field the first time
-	do_field=0;
 
 	// Window Actions
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -583,10 +581,13 @@ int buildIfacegtk(void)
 
 	// get and pack canvas
 	drill = gtk_drill_new();
+	gtk_widget_set_size_request(drill, 1000, 800);
 	gtk_scrolled_window_add_with_viewport(
 			GTK_SCROLLED_WINDOW(scrolled_window), drill);
 	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
-	g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
+	//g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
+	// draw the field the first time
+	do_field=1;
 
 	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
 	gtk_box_pack_start(GTK_BOX (box0), perfbox, FALSE, FALSE, 0);

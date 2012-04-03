@@ -52,9 +52,16 @@ GTimer *timer;
 
 G_BEGIN_DECLS
 
-#define GTK_DRILL(obj) GTK_CHECK_CAST(obj, gtk_drill_get_type (), GtkDrill)
-#define GTK_DRILL_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, gtk_drill_get_type(), GtkDrillClass)
-#define GTK_IS_DRILL(obj) GTK_CHECK_TYPE(obj, gtk_drill_get_type())
+#define GTK_DRILL_TYPE		(gtk_drill_get_type())
+#define GTK_DRILL(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_DRILL_TYPE, GtkDrill))
+#define GTK_DRILL_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_DRILL_TYPE, GtkDrillClass))
+#define GTK_IS_DRILL(obj)	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_DRILL_TYPE))
+#define GTK_IS_DRILL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_DRILL_TYPE))
+
+
+//#define GTK_DRILL_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, gtk_drill_get_type(), GtkDrillClass)
+//#define GTK_IS_DRILL(obj) GTK_CHECK_TYPE(obj, gtk_drill_get_type())
+//#define GTK_DRILL(obj) 		GTK_CHECK_CAST(obj, gtk_drill_get_type (), GtkDrill)
 
 
 typedef struct _GtkDrill GtkDrill;
@@ -74,7 +81,7 @@ struct _GtkDrillClass {
 };
 
 
-GtkType gtk_drill_get_type(void);
+GType gtk_drill_get_type(void);
 
 GtkWidget * gtk_drill_new();
 
@@ -222,7 +229,7 @@ static void not_implemented ();
 void force_redraw(GtkWidget *widget);
 static void quit_action ();
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
-gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
+gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 void calc_stepsize (GtkWidget *widget);
 
 

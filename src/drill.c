@@ -17,6 +17,7 @@ static void gtk_drill_destroy(GtkObject *object);
 extern double width, height;
 extern int expose_flag;
 
+/*
 GtkType gtk_drill_get_type(void)
 {
 	static GtkType gtk_drill_type = 0;
@@ -37,6 +38,32 @@ GtkType gtk_drill_get_type(void)
 	}
 	return gtk_drill_type;
 }
+*/
+GType gtk_drill_get_type(void)
+{
+	static GType gtk_drill_type = 0;
+	if (!gtk_drill_type)
+	{
+		const GTypeInfo gtk_drill_info =
+		{
+			sizeof(GtkDrillClass),
+			NULL, 	// base_init
+			NULL, 	// base_finalize
+			(GClassInitFunc) gtk_drill_class_init,
+			NULL,	// class_finalize
+			NULL,	// class_data
+			sizeof(GtkDrill),
+			0,	// n_preallocs
+			(GInstanceInitFunc) gtk_drill_init,
+		};
+		gtk_drill_type = g_type_register_static(GTK_TYPE_WIDGET,
+				"GtkDrill",
+				&gtk_drill_info,
+				0);
+	}
+	return gtk_drill_type;
+}
+
 
 void gtk_drill_set_state(GtkDrill *drill, gint num)
 {
@@ -46,7 +73,8 @@ void gtk_drill_set_state(GtkDrill *drill, gint num)
 
 GtkWidget * gtk_drill_new(void)
 {
-	return GTK_WIDGET(gtk_type_new(gtk_drill_get_type()));
+	//return GTK_WIDGET(g_object_new(gtk_drill_get_type()));
+	return GTK_WIDGET(g_object_new(GTK_DRILL_TYPE, NULL));
 }
 
 //G_DEFINE_TYPE (GtkDrill, gtk_drill, G_TYPE_NONE);
@@ -60,15 +88,15 @@ enum {
 
 static guint drill_signals[LAST_SIGNAL] = {0};
 
-static void gtk_drill_class_init(GtkDrillClass *klass)
+static void gtk_drill_class_init(GtkDrillClass *class)
 {
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
 	GtkBindingSet *binding_set;
 	gchar *binder;
 
-	widget_class = (GtkWidgetClass *) klass;
-	object_class = (GtkObjectClass *) klass;
+	widget_class = (GtkWidgetClass *) class;
+	object_class = (GtkObjectClass *) class;
 	binding_set = gtk_binding_set_new(binder);
 
 	widget_class->realize = gtk_drill_realize;
@@ -76,6 +104,7 @@ static void gtk_drill_class_init(GtkDrillClass *klass)
 	widget_class->size_allocate = gtk_drill_size_allocate;
 	widget_class->expose_event = gtk_drill_expose;
 	widget_class->motion_notify_event = xy_movement;
+	widget_class->button_press_event = clicked;
 	
 	object_class->destroy = gtk_drill_destroy;
 	drill_signals[DOT_RIGHT] =
@@ -88,7 +117,7 @@ static void gtk_drill_class_init(GtkDrillClass *klass)
 				G_TYPE_NONE, 0);
 	gtk_binding_entry_add_signal(binding_set, GDK_KEY_D, 0, "dotright", 0);
 	
-	binding_set = gtk_binding_set_by_class(klass);
+	binding_set = gtk_binding_set_by_class(class);
 	c_width = 800;
 	c_height = 450;
 }
@@ -100,16 +129,18 @@ static void gtk_drill_init (GtkDrill *drill)
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
 {
+	//printf("ping size request\n");
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_DRILL(widget));
 	g_return_if_fail(requisition != NULL);
 
-	requisition->width = 80;
-	requisition->height = 100;
+	requisition->width = 800;
+	requisition->height = 500;
 }
 
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 {
+	//printf("ping allocate\n");
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_DRILL(widget));
 	g_return_if_fail(allocation != NULL);
@@ -127,6 +158,8 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 }
 static void gtk_drill_realize(GtkWidget *widget)
 {
+	//printf("ping realize\n");
+	GtkDrill *drill;
 	GdkWindowAttr attributes;
 	guint attributes_mask;
 
@@ -134,17 +167,19 @@ static void gtk_drill_realize(GtkWidget *widget)
 	g_return_if_fail(GTK_IS_DRILL(widget));
 
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
+	drill = GTK_DRILL(widget);
 
 	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.x = widget->allocation.x;
 	attributes.y = widget->allocation.y;
-	attributes.width = 80;
-	attributes.height = 100;
+	attributes.width = widget->allocation.width;
+	attributes.height = widget->allocation.height;
 
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.event_mask = gtk_widget_get_events (widget) 
 		| GDK_EXPOSURE_MASK
-		| GDK_POINTER_MOTION_MASK;
+		| GDK_POINTER_MOTION_MASK
+		| GDK_BUTTON_PRESS_MASK;
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y;
 
@@ -162,6 +197,7 @@ static void gtk_drill_realize(GtkWidget *widget)
 
 static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
 {
+	//printf("ping expose\n");
 	g_return_val_if_fail(widget != NULL, FALSE);
 	g_return_val_if_fail(GTK_IS_DRILL(widget), FALSE);
 	g_return_val_if_fail(event != NULL, FALSE);

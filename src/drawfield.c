@@ -72,12 +72,14 @@ int draw_dots (GtkWidget *widget)
 	// Generate field
 	def_canvas(widget);
 
+	/*
 	bak_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
 	surface_write = cairo_create(bak_surface);
 	cairo_set_source_rgb(surface_write, 1, 1, 1);	
 	cairo_paint (surface_write);
 	cairo_destroy(surface_write);
 	cairo_surface_destroy(bak_surface);
+	*/
 
 	field_surface = cairo_image_surface_create_from_png("field.png");
 	surface_write = gdk_cairo_create(widget->window);
@@ -94,6 +96,11 @@ int draw_dots (GtkWidget *widget)
 	// grab sets from data structure
 	currset = pshow->currset;
 	perf = pshow->perfs;
+
+	c_xo2 = xo2;
+	c_yo2 = yo2;
+	c_step = step;
+
 
 	// Draw dots
 	if (pshow)
@@ -154,7 +161,7 @@ int draw_dots (GtkWidget *widget)
 					{
 						// dot is selected
 						cairo_new_sub_path(selected);
-						cairo_arc(selected, x, y, 2*(float)c_step/3, 0, 360);
+						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
 						selects = selects->next;
 						was_selected = 1;
 					}
