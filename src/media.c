@@ -4,8 +4,9 @@ gboolean play_show (GtkWidget *widget)
 {	// Play the show
 	gulong dumb_API;
 	struct set_proto *nextset;
+	int local_tempo = pshow->currtempo->tempo;
 	time_elapsed = g_timer_elapsed(timer, &dumb_API);
-	if (playing == 1 && time_elapsed >= (double)60/(double)tempo && !expose_flag)
+	if (playing == 1 && time_elapsed >= (double)60/(double)local_tempo && !expose_flag)
 	{	
 		//set_step++;
 		pshow->step++;
