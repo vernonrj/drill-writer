@@ -130,16 +130,17 @@ static void gtk_drill_init (GtkDrill *drill)
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
 {
-	//printf("ping size request\n");
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_DRILL(widget));
 	g_return_if_fail(requisition != NULL);
+	//printf("ping size request\n");
+
 
 	//requisition->width = zoom_x;
 	//requisition->height = zoom_y;
 
-	requisition->width = 850;
-	requisition->height = 450;
+	//requisition->width = 850;
+	//requisition->height = 450;
 }
 
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation)

@@ -9,14 +9,14 @@ gboolean zoom_in(GtkWidget *widget, GdkEventScroll *event)
 		return FALSE;
 	else if (event->state != 4)
 		return FALSE;
-	if (event->direction == GDK_SCROLL_DOWN)
+	if (event->direction == GDK_SCROLL_UP)
 	{
 		// zoom in
 		zoom_x = zoom_x + 10;
 		zoom_y = zoom_y + 10;
 		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
 	}
-	else if (event->direction == GDK_SCROLL_UP)
+	else if (event->direction == GDK_SCROLL_DOWN)
 	{
 		// zoom out
 		zoom_x = zoom_x - 10;

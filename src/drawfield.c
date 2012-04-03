@@ -15,35 +15,71 @@ void def_canvas (GtkWidget *widget)
 {
 	// define the canvas
 	
+	double c_width;
+	double c_height;
 	// use default values for width and height
 	if (width != widget->allocation.width || height != widget->allocation.height)
 	{
 		do_field=1;
 	}
+	// update width and height
 	width = widget->allocation.width;	// Get the width
 	height = widget->allocation.height;	// Get the height
+	if (width != zoom_x || height != zoom_y)
+	{
+		// Catch zoom < 100% and handle
+		// TODO: narrow scope of conditional to only catch
+		// zoom < 100%
+		// Warning: this could cause performance issues:
+		// watch closely
+		//printf("ping\n");
+		if (zoom_x < width)
+		{
+			c_width = zoom_x;
+		}
+		else
+			c_width = width;
+		if (zoom_y < height)
+		{
+			c_height = zoom_y;
+		}
+		else
+			c_height = height;
+	}	
+	else
+	{
+		c_width = width;
+		c_height = height;
+	}
 	//printf("width=%g\theight=%g\tstep=%g\n", width, height, step);
-	xoff = (int)width % 160; 		// extra margin for the width
+	xoff = (int)c_width % 160; 		// extra margin for the width
 	if (!xoff)	// need some margin
-		xoff = (int)(width-1) % 160;
+		xoff = (int)(c_width-1) % 160;
 	xo2 = xoff / 2;			// half of the offset
-	step = (width-xoff) / 160;	// length of one 8:5 step
+	step = (c_width-xoff) / 160;	// length of one 8:5 step
 	yheight = step * 85;		// height of the field
 	//printf("yheight = %g height = %g\n", yheight, height);
-	if (yheight > height)
+	if (yheight > c_height)
 	{	// limiting factor is height, adjust
-		yoff = (int)height % 85;
+		yoff = (int)c_height % 85;
 		yo2 = yoff / 2;
-		step = (height - yoff) / 85;
+		step = (c_height - yoff) / 85;
 		yheight = step * 85;
-		xoff = width - (160*step);
+		xoff = c_width - (160*step);
 		xo2 = xoff / 2;
 	}
 	else
 	{
-		yoff = height - yheight;	// y offset
+		yoff = c_height - yheight;	// y offset
 		yo2 = yoff / 2;			// half of the offset
 	}
+	// account for zooming
+	xoff = xoff + (width - c_width);
+	yoff = yoff + (height - c_height);
+	xo2 = xoff / 2;
+	yo2 = yoff / 2;
+	
+	return;
 }
 
 
@@ -287,7 +323,8 @@ void draw_field (GtkWidget *widget)
 	//printf("do_field %i\n", do_field);
 	if (do_field)
 	{
-		printf("Redrawing %.2f, %.2f\n", width-xo2, height-yo2);
+		//printf("Redrawing: (width, height) = (%.2f, %.2f)\n", width, height);
+		//printf(">>>>>zoom: (width, height) = (%.2f, %.2f)\n\n", zoom_x, zoom_y);
 		// Set background to White
 		cairo_set_source_rgb(field, 1, 1, 1);	
 		cairo_paint (field);
