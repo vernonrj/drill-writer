@@ -114,6 +114,71 @@ void move_right(GtkWidget *widget)
 	}
 }
 
+
+int movexy_grid(float xoff, float yoff)
+{
+	// move selected dots by xoff and yoff on 1-step intervals
+	float x, y;
+	struct coord_proto **coords = pshow->currset->coords;
+	struct select_proto *selects = pshow->select;
+	while(selects != NULL)
+	{
+		retr_coord(coords[selects->index], &x, &y);
+		x = floorf(x + xoff);
+		y = floorf(y + yoff);
+		set_coord(coords[selects->index], x, y);
+		selects = selects->next;
+	}
+	// move center of selection
+	x = pshow->center->x;
+	y = pshow->center->y;
+	x = x + xoff;
+	y = y + yoff;
+	pshow->center->x = x;
+	pshow->center->y = y;
+	return 0;
+}
+
+void move_up_small(GtkWidget *widget)
+{
+	// Move a dot toward back sideline (0.25)
+	if (pshow->step == 0)
+	{
+		movexy(0, -0.25);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+
+void move_down_small(GtkWidget *widget)
+{
+	// Move a dot toward front sideline (0.25)
+	if (pshow->step == 0)
+	{
+		movexy(0, 0.25);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+	
+void move_left_small(GtkWidget *widget)
+{
+	// Move a dot toward left goal line (0.25)
+	if (pshow->step == 0)
+	{
+		movexy(-0.25, 0);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+
+void move_right_small(GtkWidget *widget)
+{
+	// Move a dot toward right goal line (0.25)
+	if (pshow->step == 0)
+	{
+		movexy(0.25, 0);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+
 void next_perf(GtkWidget *widget)
 {
 	// Go to next sequential dot
@@ -536,6 +601,10 @@ int buildIfacegtk(void)
 		"Zoom the field to 100%",
 		G_CALLBACK(zoom_standard) },
 	// Dot Menu
+	{ "AlignGridAction", NULL,
+		"_Align to Grid", "<control>G",
+		"Align selected dots to 8:5 grid",
+		G_CALLBACK(dot_align_to_grid) },
 	{ "MoveUpAction", NULL,
 		"_Move Up", "<control>Up",
 		"Move performer up 1 step",
@@ -552,6 +621,22 @@ int buildIfacegtk(void)
 		"_Move Right", "<control>Right",
 		"Move performer right 1 step",
 		G_CALLBACK (move_right) },
+	{ "MoveUpSmallAction", NULL,
+		"_Move Up (small)", "<control><shift>Up",
+		"Move performer up 0.25 steps",
+		G_CALLBACK (move_up_small) },
+	{ "MoveDownSmallAction", NULL,
+		"_Move Down (small)", "<control><shift>Down",
+		"Move performer down 0.25 steps",
+		G_CALLBACK (move_down_small) },
+	{ "MoveLeftSmallAction", NULL,
+		"_Move Left (small)", "<control><shift>Left",
+		"Move performer Left 0.25 steps",
+		G_CALLBACK (move_left_small) },
+	{ "MoveRightSmallAction", NULL,
+		"_Move Right (small)", "<control><shift>Right",
+		"Move performer right 0.25 steps",
+		G_CALLBACK (move_right_small) },
 	{ "NextPerfAction", NULL,
 		"_Next Performer", "bracketright",
 		"Highlight next performer",

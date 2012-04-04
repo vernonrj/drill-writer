@@ -220,10 +220,17 @@ void show_gen(void);
 
 // main.c
 int movexy(float xoff, float yoff);
+int movexy_grid(float xoff, float yoff);
+void dot_align_to_grid(GtkWidget *widget);
+int align_dots(void);
 void move_up(GtkWidget *widget);
 void move_down(GtkWidget *widget);
 void move_left(GtkWidget *widget);
 void move_right(GtkWidget *widget);
+void move_up_small(GtkWidget *widget);
+void move_down_small(GtkWidget *widget);
+void move_left_small(GtkWidget *widget);
+void move_right_small(GtkWidget *widget);
 void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 static void not_implemented ();
