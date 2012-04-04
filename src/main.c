@@ -232,22 +232,6 @@ int isInsideYard(float *x, float *y, int *field_side)
 		// to the right of yardline
 		if (coordx > 80)
 		{
-			// outside side 2
-			*field_side = 2;
-			return -1;
-		}
-		else
-		{
-			// inside side 1
-			*field_side = 1;
-			return 1;
-		}
-	}
-	else if (ssrel < 4)
-	{
-		// to the left of yardline
-		if (coordx > 80)
-		{
 			// inside side 2
 			*field_side = 2;
 			return 1;
@@ -257,6 +241,22 @@ int isInsideYard(float *x, float *y, int *field_side)
 			// outside side 1
 			*field_side = 1;
 			return -1;
+		}
+	}
+	else if (ssrel < 4)
+	{
+		// to the left of yardline
+		if (coordx > 80)
+		{
+			// outside side 2
+			*field_side = 2;
+			return -1;
+		}
+		else
+		{
+			// inside side 1
+			*field_side = 1;
+			return 1;
 		}
 	}
 	else
@@ -331,7 +331,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	relation = (int)coordx % 8;
 	relation = isInsideYard(x, y, &sidetoside);
 	ssrel = getSidetoSide(x, y);
-	if (relation == -1)
+	if (relation == 1)
 	{
 		// inside
 		if (sidetoside == 2)
@@ -339,7 +339,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 		else
 			sideside_relation = g_strdup_printf("inside side 1");
 	}
-	else if (relation == 1)
+	else if (relation == -1)
 	{
 		// outside
 		if (sidetoside == 2)
