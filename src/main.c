@@ -215,6 +215,68 @@ static void quit_action ()
 	gtk_main_quit();
 }
 
+int isInsideYard(float *x, float *y)
+{
+	// check to see if a dot is inside or outside
+	// a yardline
+	float ssrel;
+	float coordx, coordy;
+	int relation;
+	coordx = *x;
+	coordy = *y;
+	// get side-to-side
+	ssrel = coordx / 8;
+	ssrel = 8*(ssrel - (int)ssrel);
+	if (ssrel > 4)
+	{
+		// to the right of yardline
+		if (coordx > 80)
+		{
+			// inside side 2
+			return 1;
+		}
+		else
+		{
+			// outside side 1
+			return -1;
+		}
+	}
+	else if (ssrel < 4)
+	{
+		// to the left of yardline
+		if (coordx > 80)
+		{
+			// outside side 2
+			return -1;
+		}
+		else
+		{
+			// outside side 1
+			return 1;
+		}
+	}
+	else
+	{
+		// on the yardline
+		return 0;
+	}
+}
+
+int getYardline(float *x, float *y)
+{
+	// get yardline number
+	int yardline;
+	float coordx, coordy;
+	coordx = *x;
+	coordy = *y;
+	yardline = (coordx+4)/8;
+	yardline = abs(yardline - 10);
+	yardline = 5 * abs(10 - yardline);
+	return yardline;
+}
+
+
+
 void xy_to_relation(float *x, float *y, gchar **buffer_r)
 {
 	// convert event to side-side and front-back relation
@@ -269,9 +331,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	ssrel = ssrel / 4;
 	//ssrel = labs(8 - ssrel);
 	// Get yardline relation
-	yardline = (coordx+4)/8;
-	yardline = abs(yardline - 10);
-	yardline = 5 * abs(10 - yardline);
+	yardline = getYardline(x, y);
 
 	// Get front-to-back
 	if (coordy == back_side)
