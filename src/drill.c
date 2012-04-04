@@ -92,12 +92,12 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 {
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
-	GtkBindingSet *binding_set;
-	gchar *binder;
+	//GtkBindingSet *binding_set;
+	//gchar *binder;
 
 	widget_class = (GtkWidgetClass *) class;
 	object_class = (GtkObjectClass *) class;
-	binding_set = gtk_binding_set_new(binder);
+	//binding_set = gtk_binding_set_new(binder);
 
 	widget_class->realize = gtk_drill_realize;
 	widget_class->size_request = gtk_drill_size_request;
@@ -108,6 +108,7 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	widget_class->scroll_event = zoom_scroll;
 	
 	object_class->destroy = gtk_drill_destroy;
+	/*
 	drill_signals[DOT_RIGHT] =
 		g_signal_new ("dotright",
 				G_OBJECT_CLASS_TYPE (object_class),
@@ -119,6 +120,7 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	gtk_binding_entry_add_signal(binding_set, GDK_KEY_D, 0, "dotright", 0);
 	
 	binding_set = gtk_binding_set_by_class(class);
+	*/
 }
 
 static void gtk_drill_init (GtkDrill *drill)
@@ -198,7 +200,7 @@ static void gtk_drill_realize(GtkWidget *widget)
 
 	widget->style = gtk_style_attach(widget->style, widget->window);
 	gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
-	g_signal_connect(widget, "dotright", G_CALLBACK (gtk_main_quit), NULL);
+	//g_signal_connect(widget, "dotright", G_CALLBACK (gtk_main_quit), NULL);
 }
 
 static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
