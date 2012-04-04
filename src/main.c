@@ -613,6 +613,7 @@ int buildIfacegtk(void)
 	char perf_buf_x[5];
 	char perf_buf_y[5];
 	char ss_buf[20];
+	char fb_buf[20];
 
 	first_time = 1;
 
@@ -1001,6 +1002,44 @@ int buildIfacegtk(void)
 	gtk_widget_show(sidesideBtns.ssYdLine);
 
 
+	// Front-To-Back
+	// Field Step entry
+	sprintf(fb_buf, "%i", 0);
+	frbkBtns.fbStepEntry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(frbkBtns.fbStepEntry), 50);
+	g_signal_connect(frbkBtns.fbStepEntry, "activate",
+		       	G_CALLBACK(change_fb_entry), frbkBtns.fbStepEntry);
+	gtk_entry_set_text(GTK_ENTRY(frbkBtns.fbStepEntry), fb_buf);
+	tmp_pos = GTK_ENTRY(frbkBtns.fbStepEntry)->text_length;
+	gtk_editable_select_region(GTK_EDITABLE(frbkBtns.fbStepEntry),
+			0, GTK_ENTRY(frbkBtns.fbStepEntry)->text_length);
+	gtk_entry_set_alignment(GTK_ENTRY(frbkBtns.fbStepEntry), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY(frbkBtns.fbStepEntry), 4);
+	gtk_box_pack_start(GTK_BOX(perfbox), frbkBtns.fbStepEntry, FALSE, TRUE, 0);
+
+	// Hash relation button
+	frbkBtns.fbHashRelButton = gtk_button_new_with_label ("inside");
+	g_signal_connect(frbkBtns.fbHashRelButton,
+		       	"clicked", G_CALLBACK(toggle_fbHashRel), NULL);
+	gtk_box_pack_start(GTK_BOX (perfbox), 
+			frbkBtns.fbHashRelButton, FALSE, FALSE, 0);
+	gtk_widget_show(frbkBtns.fbHashRelButton);
+
+	// Front/Back toggle button
+	frbkBtns.fbToggleButton = gtk_button_new_with_label ("Front");
+	g_signal_connect(frbkBtns.fbToggleButton,
+		       	"clicked", G_CALLBACK(toggle_fbFrontBack), NULL);
+	gtk_box_pack_start(GTK_BOX (perfbox), 
+			frbkBtns.fbToggleButton, FALSE, FALSE, 0);
+	gtk_widget_show(frbkBtns.fbToggleButton);
+
+	// Hash/Sideline toggle button
+	frbkBtns.HashSideButton = gtk_button_new_with_label ("Sideline");
+	g_signal_connect(frbkBtns.HashSideButton,
+		       	"clicked", G_CALLBACK(toggle_HashSide), NULL);
+	gtk_box_pack_start(GTK_BOX (perfbox), 
+			frbkBtns.HashSideButton, FALSE, FALSE, 0);
+	gtk_widget_show(frbkBtns.HashSideButton);
 
 
 	/*

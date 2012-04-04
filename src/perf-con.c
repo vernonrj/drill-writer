@@ -19,6 +19,25 @@ void toggle_ssYdLine(GtkWidget *widget)
 {
 	return;
 }
+// Front-to-back relations
+void change_fb_entry(GtkWidget *widget)
+{
+	return;
+}
+void toggle_fbHashRel(GtkWidget *widget)
+{
+	return;
+}
+
+void toggle_fbFrontBack(GtkWidget *widget)
+{
+	return;
+}
+
+void toggle_HashSide(GtkWidget *widget)
+{
+	return;
+}
 void scale_form(float s_step)
 {
 	// basic expansion or contraction of form
