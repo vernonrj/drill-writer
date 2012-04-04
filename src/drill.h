@@ -260,6 +260,8 @@ void expand_form(GtkWidget *widget);
 void contract_form(GtkWidget *widget);
 void rot_cw(GtkWidget *widget);
 void rot_countercw(GtkWidget *widget);
+void rot_cw_small(GtkWidget *widget);
+void rot_countercw_small(GtkWidget *widget);
 void goto_perf (GtkWidget *widget);
 void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);

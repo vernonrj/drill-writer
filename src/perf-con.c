@@ -130,7 +130,7 @@ void contract_form(GtkWidget *widget)
 void rot_cw(GtkWidget *widget)
 {
 	// rotate form clockwise
-	rot_form(M_PI/8);
+	rot_form(M_PI/16);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return;
 }
@@ -138,7 +138,23 @@ void rot_cw(GtkWidget *widget)
 void rot_countercw(GtkWidget *widget)
 {
 	// rotate form clockwise
-	rot_form(-M_PI/8);
+	rot_form(-M_PI/16);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	return;
+}
+
+void rot_cw_small(GtkWidget *widget)
+{
+	// rotate form clockwise
+	rot_form(M_PI/64);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	return;
+}
+
+void rot_countercw_small(GtkWidget *widget)
+{
+	// rotate form clockwise
+	rot_form(-M_PI/64);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return;
 }

@@ -39,6 +39,8 @@
 			<menuitem name="ContractPerf" action="ContractPerfAction"/>
 			<menuitem name="RotCWPerf" action="RotCWPerfAction"/>
 			<menuitem name="RotCCWPerf" action="RotCCWPerfAction"/>
+			<menuitem name="RotCWSPerf" action="RotCWSPerfAction"/>
+			<menuitem name="RotCCWSPerf" action="RotCCWSPerfAction"/>
 			<placeholder name="DotMenuAdditioin"/>
 		</menu>
 		<menu name="SetMenu" action="SetMenuAction">
