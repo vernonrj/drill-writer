@@ -542,6 +542,16 @@ int update_entries(void)
 	char perf_buf[5];
 	char perf_buf_x[5];
 	char perf_buf_y[5];
+	// side-to-side entries/buttons
+	char ss_buf[20];
+	char ss_ydrel[10];
+	char ss_siderel[8];
+	char ss_ydline[3];
+	// front-to-back entries/buttons
+	char fb_buf[20];
+	char fb_hashrel[10];
+	char fb_frontback[8];
+	char fb_hashside[10];
 	// Update all the entries
 	// Convert all numbers into strings first
 	if (!pshow->currset->name[0])

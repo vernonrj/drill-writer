@@ -1,6 +1,7 @@
 // Functions that manipulate performers go here
 #include "drill.h"
 
+// Side-to-Side relations
 void change_ss_entry(GtkWidget *widget)
 {
 	return;
