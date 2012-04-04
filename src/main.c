@@ -280,6 +280,22 @@ int getYardline(float *x, float *y)
 }
 
 
+float getSidetoSide(float *x, float *y)
+{
+	// get the side-to-side relation
+	float ssrel;
+	float coordx, coordy;
+
+	coordx = *x;
+	coordy = *y;
+	ssrel = coordx / 8;
+	ssrel = 8*(ssrel - (int)ssrel);
+	ssrel = (int)(ssrel*4);
+	ssrel = ssrel / 4;
+	if (ssrel > 4)
+		ssrel = 8 - ssrel;
+	return ssrel;
+}
 
 void xy_to_relation(float *x, float *y, gchar **buffer_r)
 {
@@ -313,10 +329,9 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	coordy = *y;
 	// Get side-to-side
 	relation = (int)coordx % 8;
-	ssrel = coordx / 8;
-	ssrel = 8*(ssrel - (int)ssrel);
 	relation = isInsideYard(x, y, &sidetoside);
-	if (relation == 1)
+	ssrel = getSidetoSide(x, y);
+	if (relation == -1)
 	{
 		// inside
 		if (sidetoside == 2)
@@ -324,13 +339,13 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 		else
 			sideside_relation = g_strdup_printf("inside side 1");
 	}
-	else if (relation == -1)
+	else if (relation == 1)
 	{
 		// outside
 		if (sidetoside == 2)
 			sideside_relation = g_strdup_printf("outside side 2");
 		else
-			sideside_relation = g_strdup_printf("inside side 1");
+			sideside_relation = g_strdup_printf("outside side 1");
 	}
 	else
 	{
@@ -340,8 +355,6 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 		else
 			sideside_relation = g_strdup_printf("on side 1");
 	}
-	ssrel = (int)(ssrel*4);
-	ssrel = ssrel / 4;
 	//ssrel = labs(8 - ssrel);
 	// Get yardline relation
 	yardline = getYardline(x, y);
