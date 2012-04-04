@@ -55,6 +55,12 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 		if (pshow->currset->next != NULL)
 			playing = 1;
+		else
+		{
+			// play the last set
+			set_prev();
+			playing = 1;
+		}
 		g_timer_start(timer);	// start up the timer
 	}
 	else
