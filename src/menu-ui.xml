@@ -39,6 +39,8 @@
 		<menu name="SetMenu" action="SetMenuAction">
 			<menuitem name="SetSetName" action="SetSetNameAction"/>
 			<menuitem name="NextSet" action="NextSetAction"/>
+			<menuitem name="StepNextSet" action="StepNextSetAction"/>
+			<menuitem name="StepPrevSet" action="StepPrevSetAction"/>
 			<menuitem name="PrevSet" action="PrevSetAction"/>
 			<menuitem name="FirstSet" action="FirstSetAction"/>
 			<menuitem name="LastSet" action = "LastSetAction"/>

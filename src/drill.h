@@ -297,18 +297,21 @@ void set_first_gtk(GtkWidget *widget);
 void set_last_gtk(GtkWidget *widget);
 void set_next_gtk(GtkWidget *widget);
 void set_next_count_gtk(GtkWidget *widget);
+void set_prev_count_gtk(GtkWidget *widget);
 void set_prev_gtk(GtkWidget *widget);
 void set_set_name_gtk(GtkWidget *widget);
 void goto_set (GtkWidget *widget);
 void change_tempo (GtkWidget *widget);
 
 int isLastSet(void);
+int isFirstSet(void);
 void add_set(void);
 void delete_set(void);
 void set_first(void);
 void set_last(void);
 void set_next(void);
 void set_next_count(void);
+void set_prev_count(void);
 void set_prev(void);
 void update_tempo(void);
 

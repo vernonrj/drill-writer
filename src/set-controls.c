@@ -143,6 +143,17 @@ void set_next_count_gtk(GtkWidget *widget)
 	return;
 }
 
+void set_prev_count_gtk(GtkWidget *widget)
+{
+	// Go to next count from gtk button
+	if (!playing)
+	{
+		set_prev_count();
+		do_field=0;
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+	return;
+}
 				
 void set_prev_gtk(GtkWidget *widget)
 {
@@ -304,6 +315,22 @@ int isLastSet(void)
 	return 0;
 }
 
+int isFirstSet(void)
+{
+	// check to see if we're at the first set
+	if (pshow->currset == pshow->firstset)
+	{
+		// at the first set
+		return 1;
+	}
+	else
+	{
+		// not at the first set
+		return 0;
+	}
+	return 0;
+}
+
 void add_set(void)
 {
 	// Add a set after the current one
@@ -325,6 +352,7 @@ void set_first(void)
 	{
 		pshow->currset = pshow->firstset;
 		pshow->prevset = 0;
+		pshow->step = 0;
 		setnum=0;
 		//set_step=0;
 	}
@@ -404,6 +432,23 @@ void set_next_count(void)
 	}
 }
 
+void set_prev_count(void)
+{
+	// go to the previous count
+	struct set_proto *nextset;
+	if (!isFirstSet() || pshow->step)
+	{
+		pshow->step--;
+		if (pshow->step < 0)
+		{
+			// to the next set
+			pshow->step = 0;
+			set_prev();
+			pshow->step = pshow->currset->next->counts-1;
+		}
+	}
+	return;
+}
 
 
 void set_prev(void)
