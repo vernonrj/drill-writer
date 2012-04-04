@@ -359,6 +359,7 @@ void add_set(void)
 {
 	// Add a set after the current one
 	newset_create(pshow->currset);
+	set_next();
 	return;
 }
 
