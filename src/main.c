@@ -215,7 +215,7 @@ static void quit_action ()
 	gtk_main_quit();
 }
 
-int isInsideYard(float *x, float *y)
+int isInsideYard(float *x, float *y, int *field_side)
 {
 	// check to see if a dot is inside or outside
 	// a yardline
@@ -232,13 +232,15 @@ int isInsideYard(float *x, float *y)
 		// to the right of yardline
 		if (coordx > 80)
 		{
-			// inside side 2
-			return 1;
+			// outside side 2
+			*field_side = 2;
+			return -1;
 		}
 		else
 		{
-			// outside side 1
-			return -1;
+			// inside side 1
+			*field_side = 1;
+			return 1;
 		}
 	}
 	else if (ssrel < 4)
@@ -246,13 +248,15 @@ int isInsideYard(float *x, float *y)
 		// to the left of yardline
 		if (coordx > 80)
 		{
-			// outside side 2
-			return -1;
+			// inside side 2
+			*field_side = 2;
+			return 1;
 		}
 		else
 		{
 			// outside side 1
-			return 1;
+			*field_side = 1;
+			return -1;
 		}
 	}
 	else
@@ -282,6 +286,7 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	// convert event to side-side and front-back relation
 	int yardline;
 	int relation;
+	int sidetoside;
 
 	float ssrel;
 	float fbrel;
@@ -310,22 +315,30 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	relation = (int)coordx % 8;
 	ssrel = coordx / 8;
 	ssrel = 8*(ssrel - (int)ssrel);
-	if (ssrel > 4)
+	relation = isInsideYard(x, y, &sidetoside);
+	if (relation == 1)
 	{
-		// to the right
-		ssrel = 8 - ssrel;
-		if (coordx > 80)
+		// inside
+		if (sidetoside == 2)
 			sideside_relation = g_strdup_printf("inside side 2");
 		else
-			sideside_relation = g_strdup_printf("outside side 1");
+			sideside_relation = g_strdup_printf("inside side 1");
 	}
-	else
+	else if (relation == -1)
 	{
-		// to the left
-		if (coordx > 80)
+		// outside
+		if (sidetoside == 2)
 			sideside_relation = g_strdup_printf("outside side 2");
 		else
 			sideside_relation = g_strdup_printf("inside side 1");
+	}
+	else
+	{
+		// on yardline
+		if (sidetoside == 2)
+			sideside_relation = g_strdup_printf("on side 2");
+		else
+			sideside_relation = g_strdup_printf("on side 1");
 	}
 	ssrel = (int)(ssrel*4);
 	ssrel = ssrel / 4;

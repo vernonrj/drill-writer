@@ -237,7 +237,7 @@ static void not_implemented ();
 void force_redraw(GtkWidget *widget);
 static void quit_action ();
 int getYardline(float *x, float *y);
-int isInsideYard(float *x, float *y);
+int isInsideYard(float *x, float *y, int *field_side);
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 void calc_stepsize (GtkWidget *widget);
