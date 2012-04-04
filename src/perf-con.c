@@ -1,6 +1,24 @@
 // Functions that manipulate performers go here
 #include "drill.h"
 
+void change_ss_entry(GtkWidget *widget)
+{
+	return;
+}
+void toggle_ssYdRel(GtkWidget *widget)
+{
+	return;
+}
+
+void toggle_ssSide(GtkWidget *widget)
+{
+	return;
+}
+
+void toggle_ssYdLine(GtkWidget *widget)
+{
+	return;
+}
 void scale_form(float s_step)
 {
 	// basic expansion or contraction of form

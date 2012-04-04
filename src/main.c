@@ -570,9 +570,9 @@ int update_entries(void)
 	gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_perf_x), perf_buf_x);
-	gtk_entry_set_text(GTK_ENTRY (entry_perf_y), perf_buf_y);
+	//gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
+	//gtk_entry_set_text(GTK_ENTRY (entry_perf_x), perf_buf_x);
+	//gtk_entry_set_text(GTK_ENTRY (entry_perf_y), perf_buf_y);
 	return 0;
 }
 
@@ -599,6 +599,10 @@ int buildIfacegtk(void)
 	GtkWidget *image;
 	gchar *sbinfo;
 
+	// Field relation buttons
+	struct gtk_ssRel sidesideBtns;
+	struct gtk_fbRel frbkBtns;
+
 	gint tmp_pos;
 
 	int tempo;
@@ -608,6 +612,7 @@ int buildIfacegtk(void)
 	char perf_buf[5];
 	char perf_buf_x[5];
 	char perf_buf_y[5];
+	char ss_buf[20];
 
 	first_time = 1;
 
@@ -955,6 +960,50 @@ int buildIfacegtk(void)
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_tempo), 4);
 	gtk_box_pack_start(GTK_BOX(setbox), entry_tempo, FALSE, TRUE, 0);
 
+
+	// Side-to-Side
+	// Field Step entry
+	sprintf(ss_buf, "%i", 0);
+	sidesideBtns.ssStepEntry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(sidesideBtns.ssStepEntry), 50);
+	g_signal_connect(sidesideBtns.ssStepEntry, "activate",
+		       	G_CALLBACK(change_ss_entry), sidesideBtns.ssStepEntry);
+	gtk_entry_set_text(GTK_ENTRY(sidesideBtns.ssStepEntry), ss_buf);
+	tmp_pos = GTK_ENTRY(sidesideBtns.ssStepEntry)->text_length;
+	gtk_editable_select_region(GTK_EDITABLE(sidesideBtns.ssStepEntry),
+			0, GTK_ENTRY(sidesideBtns.ssStepEntry)->text_length);
+	gtk_entry_set_alignment(GTK_ENTRY(sidesideBtns.ssStepEntry), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY(sidesideBtns.ssStepEntry), 4);
+	gtk_box_pack_start(GTK_BOX(perfbox), sidesideBtns.ssStepEntry, FALSE, TRUE, 0);
+
+	// yardline relation
+	sidesideBtns.ssYdRelButton = gtk_button_new_with_label ("inside");
+	g_signal_connect(sidesideBtns.ssYdRelButton,
+		       	"clicked", G_CALLBACK(toggle_ssYdRel), NULL);
+	gtk_box_pack_start(GTK_BOX (perfbox), 
+			sidesideBtns.ssYdRelButton, FALSE, FALSE, 0);
+	gtk_widget_show(sidesideBtns.ssYdRelButton);
+
+	// side of the field
+	sidesideBtns.ssSide = gtk_button_new_with_label ("Side 1");
+	g_signal_connect(sidesideBtns.ssSide,
+		       	"clicked", G_CALLBACK(toggle_ssSide), NULL);
+	gtk_box_pack_start(GTK_BOX (perfbox), 
+			sidesideBtns.ssSide, FALSE, FALSE, 0);
+	gtk_widget_show(sidesideBtns.ssSide);
+
+	// yardline
+	sidesideBtns.ssYdLine = gtk_button_new_with_label ("50");
+	g_signal_connect(sidesideBtns.ssYdLine,
+		       	"clicked", G_CALLBACK(toggle_ssYdLine), NULL);
+	gtk_box_pack_start(GTK_BOX (perfbox), 
+			sidesideBtns.ssYdLine, FALSE, FALSE, 0);
+	gtk_widget_show(sidesideBtns.ssYdLine);
+
+
+
+
+	/*
 	label = gtk_label_new ("Performer:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
@@ -994,6 +1043,7 @@ int buildIfacegtk(void)
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_y), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_y), 4);
 	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf_y, FALSE, TRUE, 0);
+	*/
 
 	// Play
 	button = gtk_button_new_with_label ("Play");

@@ -35,6 +35,30 @@ GtkWidget *entry_perf;
 GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
 GtkWidget *statusbar;
+// Side-to-Side relation buttons
+struct gtk_ssRel
+{
+	// steps from yardline entry
+	GtkWidget *ssStepEntry;		
+	// inside or outside yardline toggle button
+	GtkWidget *ssYdRelButton;	
+	// side 1 or side 2 toggle button
+	GtkWidget *ssSide;		
+	// Yardline button
+	GtkWidget *ssYdLine;		
+};
+// Front-to-Back relations buttons
+struct gtk_fbRel
+{
+	// Steps from hash/sideline entry
+	GtkWidget *fbStepEntry;
+	// inside or outside hash/sideline toggle button
+	GtkWidget *fbHashRelButton;
+	// Front/Back toggle button
+	GtkWidget *fbToggleButton;
+	// Hash/Sideline
+	GtkWidget *HashSideButton;
+};
 gint context_id;
 //double perf[50][50][2];	// Set, performer, dot
 int perf_cur;	// current selected performer
@@ -257,6 +281,10 @@ void queue_show (GtkWidget *widget);
 void play_show_from_start (GtkWidget *widget);
 
 // perf-con.c
+void change_ss_entry(GtkWidget *widget);
+void toggle_ssYdRel(GtkWidget *widget);
+void toggle_ssSide(GtkWidget *widget);
+void toggle_ssYdLine(GtkWidget *widget);
 void scale_form(float s_step);
 void rot_form(float s_step);
 void expand_form(GtkWidget *widget);
