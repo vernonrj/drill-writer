@@ -1,6 +1,6 @@
 D(perf)=12;
 S(set)=0;
-S(tempo)=180;
+S(tempo)=120;
 G(line[P0, P1, P2], (0.s1.20, 0.f.fh), (0.s1.25, 0.f.fh));
 G(line[P0, P3, P5], (P0, P0), (4.s1.20, 8.b.fh));
 G(line[P2, P4, P5], (P2, P2), (P5, P5));
@@ -22,6 +22,7 @@ P6 = (0.s1.20, 20.f.fh);
 P8 = (P2, P6);
 
 S(set)=2;
+S(tempo)=180;
 S(counts)=8;
 G(line[P3, P0, P9, P6], (0.s1.20, 4.b.fh), (0.s1.20, 16.f.fh));
 G(line[P5, P4, P11, P7], (0.s1.25, P3), (0.s1.25, P6));

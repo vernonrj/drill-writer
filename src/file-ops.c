@@ -102,8 +102,11 @@ int wrap_load_dep(GtkWidget *widget)
 	float x, y;
 	struct set_proto *currset;
 	struct set_proto *prevset;
-	show_gen();
+	struct tempo_proto *stempo;
+	show_gen(&stempo);
 	show_construct(&pshow, perfnum);
+	free(pshow->currtempo);
+	pshow->currtempo = stempo;
 	for (i=0; i<set_tot; i++)
 	{
 		if (i != 0)
@@ -308,19 +311,19 @@ void func_relative(void)
 		c = getc(fp);
 }
 
-void show_gen(void)
+void show_gen(struct tempo_proto **stempo_r)
 {
 	int i, j;
 	//int tempo;
 	double intervalx, intervaly;
-	struct tempo_proto *tempo;
-	tempo = (struct tempo_proto*)malloc(sizeof(struct tempo_proto));
-	tempo->anchorpoint = 0;
-	tempo->tempo = 120;
+	struct tempo_proto *stempo;
+	int tempo;
+	tempo_construct(&stempo, 0);
 	fp = fopen("new_save", "r");
 	c = getc(fp);
 	do	// while c != EOF
 	{
+		setnum = wset;
 		//printf("%c\n\n", c);
 		if (c == 'S' || c == 'D') 
 		{	// set/define something
@@ -363,7 +366,10 @@ void show_gen(void)
 			else if (!(strcmp(comm, "perf")))
 				perfnum=atoi(string);
 			else if (!(strcmp(comm, "tempo")))
+			{
 				tempo = atoi(string);
+				change_tempo(tempo, &stempo);
+			}
 		}
 		else if (c=='G')
 		{
@@ -480,4 +486,6 @@ void show_gen(void)
 	} while (c != EOF);
 	set_tot = wset+1;
 	fclose (fp);
+	*stempo_r = stempo;
+	setnum = 0;
 }

@@ -215,7 +215,7 @@ int wrap_load_dep(GtkWidget *widget);
 void absolute_dot (void);
 void relative_dot (void);
 void func_relative(void);
-void show_gen(void);
+void show_gen(struct tempo_proto **stempo_r);
 // end deprecated commands
 
 // main.c
