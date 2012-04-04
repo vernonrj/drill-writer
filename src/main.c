@@ -44,6 +44,36 @@ int movexy(float xoff, float yoff)
 }
 
 
+void dot_align_to_grid(GtkWidget *widget)
+{
+	// align dots to 8:5 grid (called from gtk)
+	align_dots();
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	return;
+}
+
+
+int align_dots(void)
+{
+	// align selected dots to 8:5 grid
+	struct coord_proto **coords = pshow->currset->coords;
+	struct select_proto *select = pshow->select;
+	float x, y;
+	while (select != NULL)
+	{
+		retr_coord(coords[select->index], &x, &y);
+		x = floorf(x);
+		y = floorf(y);
+		set_coord(coords[select->index], x, y);
+		select = select->next;
+	}
+	// move center of selection
+	update_sel_center();
+	return 0;
+}
+
+
+
 void move_up(GtkWidget *widget)
 {
 	// Move a dot backfield if not stepped
@@ -737,7 +767,7 @@ int buildIfacegtk(void)
 	sprintf(tempo_buf, "%i", tempo);
 	entry_tempo = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entry_tempo), 50);
-	g_signal_connect(entry_tempo, "activate", G_CALLBACK(change_tempo), entry_tempo);
+	g_signal_connect(entry_tempo, "activate", G_CALLBACK(change_tempo_gtk), entry_tempo);
 	gtk_entry_set_text(GTK_ENTRY(entry_tempo), tempo_buf);
 	tmp_pos = GTK_ENTRY(entry_tempo)->text_length;
 	gtk_editable_select_region(GTK_EDITABLE(entry_tempo),

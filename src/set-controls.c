@@ -230,36 +230,29 @@ void goto_set (GtkWidget *widget)
 }
 
 
-
-void change_tempo (GtkWidget *widget)
+void change_tempo(int tempo, struct tempo_proto **currtempo_r)
 {
-	// Change the tempo internally
-	// TODO: Non-global tempo
-	const gchar *entry_buffer;
 	struct tempo_proto *prevtempo;
 	struct tempo_proto *currtempo;
 	struct tempo_proto *nexttempo;
 	struct tempo_proto *stempo;
-	int tmpo;
-
-	entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_tempo));
-	tmpo = atoi(entry_buffer);
-	currtempo = pshow->currtempo;
-	if (tmpo >= 30 && tmpo <= 250)
+	struct tempo_proto *othertempo;
+	currtempo = *currtempo_r;
+	if (tempo >= 30 && tempo <= 250)
 	{
 		// Tempo is valid. Make changes thusly
 
 		if (currtempo->anchorpoint == setnum)
 		{
 			// changing an existing tempo
-			currtempo->tempo = tmpo;
+			currtempo->tempo = tempo;
 		}
 		else
 		{
 			// making a new node
 			stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
 			// store data to new node
-			stempo->tempo = tmpo;
+			stempo->tempo = tempo;
 			stempo->anchorpoint = setnum;
 			// link new node
 			stempo->next = currtempo->next;
@@ -272,11 +265,17 @@ void change_tempo (GtkWidget *widget)
 		prevtempo = currtempo->prev;
 		if (prevtempo)
 		{
-			if (prevtempo->tempo == tmpo)
+			if (prevtempo->tempo == tempo)
 			{
 				// current node is redundant, can be deleted
 				prevtempo->next = currtempo->next;
-				pshow->currtempo = prevtempo;
+				nexttempo = currtempo->next;
+				if (nexttempo)
+				{
+					// link previously
+					nexttempo->prev = prevtempo;
+				}
+				//pshow->currtempo = prevtempo;
 				free(currtempo);
 				currtempo = prevtempo;
 			}
@@ -284,15 +283,40 @@ void change_tempo (GtkWidget *widget)
 		nexttempo = currtempo->next;
 		if (nexttempo)
 		{
-			if (nexttempo->tempo == tmpo)
+			if (nexttempo->tempo == tempo)
 			{
 				// next node is redundant, can be deleted
 				currtempo->next = nexttempo->next;
+				othertempo = nexttempo->next;
+				if (othertempo)
+				{
+					// link next to prv
+					othertempo->prev = currtempo;
+				}
 				free(nexttempo);
 			}
 		}
-		pshow->currtempo = currtempo;
 	}
+	*currtempo_r = currtempo;
+	return;
+}
+
+
+void change_tempo_gtk (GtkWidget *widget)
+{
+	// Change the tempo internally
+	// TODO: Non-global tempo
+	struct tempo_proto *currtempo;
+	struct tempo_proto *stempo;
+	struct tempo_proto *nexttempo;
+	const gchar *entry_buffer;
+	int tmpo;
+
+	entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_tempo));
+	tmpo = atoi(entry_buffer);
+	currtempo = pshow->currtempo;
+	change_tempo(tmpo, &currtempo);
+	pshow->currtempo = currtempo;
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 
 	return;

@@ -301,7 +301,8 @@ void set_prev_count_gtk(GtkWidget *widget);
 void set_prev_gtk(GtkWidget *widget);
 void set_set_name_gtk(GtkWidget *widget);
 void goto_set (GtkWidget *widget);
-void change_tempo (GtkWidget *widget);
+void change_tempo(int tempo, struct tempo_proto **currtempo_r);
+void change_tempo_gtk (GtkWidget *widget);
 
 int isLastSet(void);
 int isFirstSet(void);
