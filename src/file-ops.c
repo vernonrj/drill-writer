@@ -311,8 +311,12 @@ void func_relative(void)
 void show_gen(void)
 {
 	int i, j;
-	int tempo;
+	//int tempo;
 	double intervalx, intervaly;
+	struct tempo_proto *tempo;
+	tempo = (struct tempo_proto*)malloc(sizeof(struct tempo_proto));
+	tempo->anchorpoint = 0;
+	tempo->tempo = 120;
 	fp = fopen("new_save", "r");
 	c = getc(fp);
 	do	// while c != EOF
