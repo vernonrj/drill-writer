@@ -17,6 +17,8 @@ void def_canvas (GtkWidget *widget)
 	
 	double c_width;
 	double c_height;
+	double z_x;
+	double z_y;
 	// use default values for width and height
 	if (width != widget->allocation.width || height != widget->allocation.height)
 	{
@@ -25,6 +27,10 @@ void def_canvas (GtkWidget *widget)
 	// update width and height
 	width = widget->allocation.width;	// Get the width
 	height = widget->allocation.height;	// Get the height
+	z_x = 100 * width / (double)scrolled_window->allocation.width;
+	z_y = 100 * height / (double)scrolled_window->allocation.height;
+	//printf("width = %.2f\n", z_x);
+	//printf("height = %.2f\n", z_y);
 	if (width != zoom_x || height != zoom_y)
 	{
 		// Catch zoom < 100% and handle

@@ -105,7 +105,7 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	widget_class->expose_event = gtk_drill_expose;
 	widget_class->motion_notify_event = xy_movement;
 	widget_class->button_press_event = clicked;
-	widget_class->scroll_event = zoom_in;
+	widget_class->scroll_event = zoom_scroll;
 	
 	object_class->destroy = gtk_drill_destroy;
 	drill_signals[DOT_RIGHT] =

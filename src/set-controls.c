@@ -1,7 +1,24 @@
 // Functions that change sets go here
 #include "drill.h"
+void zoom_amnt(float x, float y)
+{
+	if (x == 0 && y == 0)
+	{
+		// zoom to 100%
+		zoom_x = (float)scrolled_window->allocation.width;
+		zoom_y = (float)scrolled_window->allocation.height;
+		//zoom_x = width;
+		//zoom_y = height;
+	}
+	else
+	{
+		zoom_x = zoom_x + x;
+		zoom_y = zoom_y + y;
+	}
+	return;
+}
 
-gboolean zoom_in(GtkWidget *widget, GdkEventScroll *event)
+gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
 	// propagate everything except control modifier
@@ -12,19 +29,44 @@ gboolean zoom_in(GtkWidget *widget, GdkEventScroll *event)
 	if (event->direction == GDK_SCROLL_UP)
 	{
 		// zoom in
-		zoom_x = zoom_x + 10;
-		zoom_y = zoom_y + 10;
+		zoom_amnt(10, 10);
+		//zoom_x = zoom_x + 10;
+		//zoom_y = zoom_y + 10;
 		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
 	{
 		// zoom out
-		zoom_x = zoom_x - 10;
-		zoom_y = zoom_y - 10;
+		zoom_amnt(-10, -10);
+		//zoom_x = zoom_x - 10;
+		//zoom_y = zoom_y - 10;
 		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
 	}
 	return TRUE;
 }
+
+void zoom_in(GtkWidget *widget)
+{
+	// zoom in
+	zoom_amnt(10, 10);
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+}
+
+void zoom_out(GtkWidget *widget)
+{
+	// zoom out
+	zoom_amnt(-10, -10);
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+}
+
+void zoom_standard(GtkWidget *widget)
+{
+	// zoom to 100%
+	zoom_amnt(0, 0);
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+}
+
+
 
 void add_set_gtk(GtkWidget *widget)
 {

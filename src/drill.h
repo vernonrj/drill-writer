@@ -12,6 +12,8 @@
 #include <gdk/gdkkeysyms.h>
 
 
+GtkWidget *drill;		// custom cairo widget
+GtkWidget *scrolled_window;	// for the field
 int setnum;			// current set
 //int set_tot;			// Total amount of sets
 int do_field;			// whether or not to redraw field
@@ -284,7 +286,11 @@ int select_add(int index);
 int select_all(void);
 
 // set-controls.c
-gboolean zoom_in(GtkWidget *widget, GdkEventScroll *event);
+void zoom_amnt(float x, float y);
+gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
+void zoom_in(GtkWidget *widget);
+void zoom_out(GtkWidget *widget);
+void zoom_standard(GtkWidget *widget);
 void add_set_gtk(GtkWidget *widget);
 void delete_set_gtk(GtkWidget *widget);
 void set_first_gtk(GtkWidget *widget);

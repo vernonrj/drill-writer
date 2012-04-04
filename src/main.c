@@ -393,9 +393,7 @@ int buildIfacegtk(void)
 	GError *error;	
 	GtkWidget *menubar;		// for menus
 	GtkWidget *toolbar;
-	GtkWidget *drill;		// custom cairo widget
 	// Container Widgets
-	GtkWidget *scrolled_window;	// for the field
 	GtkWidget *box0;		// second-level packing box (for canvas)
 	GtkWidget *box1;
 	GtkWidget *setbox;		// Set attributes go in this box
@@ -464,9 +462,17 @@ int buildIfacegtk(void)
 		"Exit Program",			// tooltip
 		G_CALLBACK (gtk_main_quit) },
 	{ "ZoomInAction", NULL,
-		"_Zoom In", "<control>plus",
+		"_Zoom In", "<control>equal",
 		"Zoom the field in",
 		G_CALLBACK(zoom_in) },
+	{ "ZoomOutAction", NULL,
+		"_Zoom Out", "<control>minus",
+		"Zoom the field out",
+		G_CALLBACK(zoom_out) },
+	{ "ZoomStandardAction", NULL,
+		"_Zoom Standard", "<control>0",
+		"Zoom the field to 100%",
+		G_CALLBACK(zoom_standard) },
 	{ "MoveUpAction", NULL,
 		"_Move Up", "<control>Up",
 		"Move performer up 1 step",
