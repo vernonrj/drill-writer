@@ -371,7 +371,16 @@ int update_entries(void)
 	tempo = pshow->currtempo->tempo;
 	sprintf(tempo_buf, "%i", tempo);
 	//printf("tempo = %i\n", tempo);
-	sprintf(count_buf, "%i", pshow->currset->counts);
+	if (pshow->step)
+	{
+		// take the counts from the next set
+		sprintf(count_buf, "%i", pshow->currset->next->counts);
+	}
+	else
+	{
+		// Take the counts from this set
+		sprintf(count_buf, "%i", pshow->currset->counts);
+	}
 	sprintf(perf_buf, "%i", perf_cur);
 	//retr_coord(pshow->currset->coords[perf_cur], &x, &y);
 	sprintf(perf_buf_x, "%g", pshow->center->x);
