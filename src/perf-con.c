@@ -92,18 +92,21 @@ void rot_form(float s_step)
 		coord = coords[index];
 		distx = cx - coord->x;
 		disty = cy - coord->y;
-		signx = distx < 0;
-		signy = disty < 0;
-		angle = atanf(disty / distx);
-		hypo = powf(distx, 2) + powf(disty, 2);
-		hypo = sqrtf(hypo);
-		if (distx < 0)
-			angle = angle + M_PI;
-		angle = angle + s_step;
-		distx = hypo*cosf(angle);
-		disty = hypo*sinf(angle);
-		coord->x = cx - distx;
-		coord->y = cy - disty;
+		if (distx != 0 || disty != 0)
+		{
+			signx = distx < 0;
+			signy = disty < 0;
+			angle = atanf(disty / distx);
+			hypo = powf(distx, 2) + powf(disty, 2);
+			hypo = sqrtf(hypo);
+			if (distx < 0)
+				angle = angle + M_PI;
+			angle = angle + s_step;
+			distx = hypo*cosf(angle);
+			disty = hypo*sinf(angle);
+			coord->x = cx - distx;
+			coord->y = cy - disty;
+		}
 		last = last->next;
 	}
 	return;
