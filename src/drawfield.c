@@ -58,6 +58,8 @@ void def_canvas (GtkWidget *widget)
 		c_width = width;
 		c_height = height;
 	}
+	//c_width = 801;
+	//c_height = 426;
 	//printf("width=%g\theight=%g\tstep=%g\n", width, height, step);
 	xoff = (int)c_width % 160; 		// extra margin for the width
 	if (!xoff)	// need some margin

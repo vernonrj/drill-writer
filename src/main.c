@@ -645,7 +645,7 @@ int buildIfacegtk(void)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_add_events (window, GDK_BUTTON_PRESS_MASK);
 	gtk_window_set_title(GTK_WINDOW(window), "Drill-Writer Pre-Alpha");
-	gtk_window_set_default_size(GTK_WINDOW(window), 800, 500);
+	gtk_window_set_default_size(GTK_WINDOW(window), 1000, 700);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	
 	// Might need these in the future
@@ -701,7 +701,7 @@ int buildIfacegtk(void)
 
 	// get and pack canvas
 	drill = gtk_drill_new();
-	gtk_widget_set_size_request(drill, 800, 400);
+	gtk_widget_set_size_request(drill, 801, 426);
 	gtk_scrolled_window_add_with_viewport(
 			GTK_SCROLLED_WINDOW(scrolled_window), drill);
 	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
