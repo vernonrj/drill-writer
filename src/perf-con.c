@@ -193,6 +193,12 @@ void yperf_change (GtkWidget *widget)
 	}
 }
 
+int select_all_gtk (GtkWidget *widget)
+{
+	select_all();
+	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+}
+
 int add_perf (GtkWidget *widget)
 {
 	// Add a performer
@@ -1020,4 +1026,26 @@ int select_add(int index)
 	}
 	return;
 }
+
+int select_all(void)
+{
+	// select all dots
+	int i;
+	int perfnum;
+	struct perf_proto **perfs;
+	select_discard();
+	perfnum = pshow->perfnum;
+	perfs = pshow->perfs;
+	for (i=0; i<perfnum; i++)
+	{
+		if (perfs[i]->valid)
+		{
+			// performer is valid. Add
+			select_add(i);
+		}
+	}
+	return 0;
+}
+
+
 

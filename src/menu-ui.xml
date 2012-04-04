@@ -10,6 +10,7 @@
 			<placeholder name="FileMenuAdditions" />
 		</menu>
 		<menu name="EditMenu" action="EditMenuAction">
+			<menuitem name="SelectAll" action="SelectAllAction"/>
 			<menuitem name="AddPerf" action="AddPerfAction"/>
 			<menuitem name="DelPerf" action="DelPerfAction"/>
 			<menuitem name="AddSet" action="AddSetAction"/>

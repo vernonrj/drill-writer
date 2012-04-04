@@ -254,6 +254,7 @@ void rot_countercw(GtkWidget *widget);
 void goto_perf (GtkWidget *widget);
 void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
+int select_all_gtk (GtkWidget *widget);
 int add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
 // create container for show
@@ -280,6 +281,7 @@ void add_sel_center(struct coord_proto *coord);
 void rem_sel_center(struct coord_proto *coord);
 void select_discard(void);
 int select_add(int index);
+int select_all(void);
 
 // set-controls.c
 gboolean zoom_in(GtkWidget *widget, GdkEventScroll *event);
