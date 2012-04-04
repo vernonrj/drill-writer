@@ -311,6 +311,7 @@ void func_relative(void)
 void show_gen(void)
 {
 	int i, j;
+	int tempo;
 	double intervalx, intervaly;
 	fp = fopen("new_save", "r");
 	c = getc(fp);

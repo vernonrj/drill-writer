@@ -352,6 +352,40 @@ int startTk(int argc, char *argv[])
 	return 0;
 }
 
+int update_entries(void)
+{
+	int tempo;
+	char set_buf[5];
+	char count_buf[5];
+	char tempo_buf[5];
+	char perf_buf[5];
+	char perf_buf_x[5];
+	char perf_buf_y[5];
+	// Update all the entries
+	// Convert all numbers into strings first
+	if (!pshow->currset->name[0])
+		sprintf(set_buf, "%i", setnum);
+	else
+		strcpy(set_buf, pshow->currset->name);
+	update_tempo();
+	tempo = pshow->currtempo->tempo;
+	sprintf(tempo_buf, "%i", tempo);
+	//printf("tempo = %i\n", tempo);
+	sprintf(count_buf, "%i", pshow->currset->counts);
+	sprintf(perf_buf, "%i", perf_cur);
+	//retr_coord(pshow->currset->coords[perf_cur], &x, &y);
+	sprintf(perf_buf_x, "%g", pshow->center->x);
+	sprintf(perf_buf_y, "%g", pshow->center->y);
+	// Now Update entries with new data
+	gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
+	gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);
+	gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);
+	gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
+	gtk_entry_set_text(GTK_ENTRY (entry_perf_x), perf_buf_x);
+	gtk_entry_set_text(GTK_ENTRY (entry_perf_y), perf_buf_y);
+	return 0;
+}
+
 int buildIfacegtk(void)
 {
 	GtkActionGroup *action_group;	// menus
@@ -378,6 +412,14 @@ int buildIfacegtk(void)
 	gchar *sbinfo;
 
 	gint tmp_pos;
+
+	int tempo;
+	char set_buf[5];
+	char count_buf[5];
+	char tempo_buf[5];
+	char perf_buf[5];
+	char perf_buf_x[5];
+	char perf_buf_y[5];
 
 	first_time = 1;
 
@@ -659,6 +701,7 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX(setbox), label, FALSE, TRUE, 0);
 
 	// Tempo entry box
+	tempo = pshow->currtempo->tempo;
 	sprintf(tempo_buf, "%i", tempo);
 	entry_tempo = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entry_tempo), 50);
@@ -819,11 +862,11 @@ int main (int argc, char *argv[])
 	int i, j;		// loop vars
 	float x, y;
 
+	// Hardcode tempo in
+	int tempo = 120;
 	// set show as uninitialized
 	pshow = 0;
 	//dot_construct(&pshow);
-	// Hardcode tempo in
-	tempo = 120;
 
 	// Make a show with 5 performers
 	pshow = 0;

@@ -341,6 +341,7 @@ int draw_dots (GtkWidget *widget)
 
 void draw_field (GtkWidget *widget)
 {	// This function will draw the actual football field
+	int tempo;
 	int i, j, k;		// loop vars
 	float x, y;
 	char text[3];		// text for yardline names
@@ -476,28 +477,8 @@ void draw_field (GtkWidget *widget)
 	
 	// Make sure field won't be redrawn by default
 	do_field = 0;
+	update_entries();
 
-	// Update all the entries
-	// Convert all numbers into strings first
-	if (!pshow->currset->name[0])
-		sprintf(set_buf, "%i", setnum);
-	else
-		strcpy(set_buf, pshow->currset->name);
-	update_tempo();
-	sprintf(tempo_buf, "%i", tempo);
-	//printf("tempo = %i\n", tempo);
-	sprintf(count_buf, "%i", pshow->currset->counts);
-	sprintf(perf_buf, "%i", perf_cur);
-	//retr_coord(pshow->currset->coords[perf_cur], &x, &y);
-	sprintf(perf_buf_x, "%g", pshow->center->x);
-	sprintf(perf_buf_y, "%g", pshow->center->y);
-	// Now Update entries with new data
-	gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_perf_x), perf_buf_x);
-	gtk_entry_set_text(GTK_ENTRY (entry_perf_y), perf_buf_y);
 
 }
 

@@ -196,7 +196,6 @@ void change_tempo (GtkWidget *widget)
 	{
 		// Tempo is valid. Make changes thusly
 
-		tempo = tmpo;
 		if (currtempo->anchorpoint == setnum)
 		{
 			// changing an existing tempo
@@ -431,7 +430,7 @@ void update_tempo(void)
 	if (currtempo->anchorpoint > setnum)
 	{
 		// Go backward to tempo
-		while (currtempo->anchorpoint > setnum)
+		while (currtempo->anchorpoint > setnum && currtempo->prev != NULL)
 			currtempo = currtempo->prev;
 	}
 	else
@@ -454,7 +453,7 @@ void update_tempo(void)
 		}
 	}
 	// interface with deprecated tempo system
-	tempo = currtempo->tempo;
+	//tempo = currtempo->tempo;
 	pshow->currtempo = currtempo;
 	return;
 }

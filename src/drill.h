@@ -25,13 +25,7 @@ double step;			// size of 8:5 step in window
 int expose_flag;
 float zoom_x;
 float zoom_y;
-char set_buf[5];
-char count_buf[5];
-char tempo_buf[5];
-char perf_buf[5];
-char perf_buf_x[5];
-char perf_buf_y[5];
-int tempo; // tempo
+//int tempo; // tempo
 GtkWidget *entry_sets;
 GtkWidget *entry_counts;
 GtkWidget *entry_tempo;
@@ -240,6 +234,8 @@ void calc_stepsize (GtkWidget *widget);
 
 // Start toolkit of choice
 int startTk(int argc, char *argv[]);
+int update_entries(void);
+int buildIfacegtk(void);
 int main (int argc, char *argv[]);
 
 // media.c

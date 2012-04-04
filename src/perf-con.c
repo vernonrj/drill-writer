@@ -415,20 +415,20 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint)
 {
 	// Add a new tempo at anchorpoint
-	struct tempo_proto *tempo;
-	tempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
-	if (tempo == NULL)
+	struct tempo_proto *stempo;
+	stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
+	if (stempo == NULL)
 	{
 		// allocation error
 		return -1;
 	}
-	tempo->prev = 0;
-	tempo->next = 0;
-	tempo->tempo = 120;
-	tempo->anchorpoint = anchorpoint;
+	stempo->prev = 0;
+	stempo->next = 0;
+	stempo->tempo = 120;
+	stempo->anchorpoint = anchorpoint;
 
 	// pass by reference back
-	*tempo_r = tempo;
+	*tempo_r = stempo;
 
 	return 0;
 }
@@ -978,12 +978,14 @@ int select_add(int index)
 				}
 				loop_done = 1;
 				matched = 1;
+				rem_sel_center(pshow->currset->coords[index]);
 			}
 			else if (last->index > index)
 			{
 				// no match found
 				// exit to create new node
 				loop_done = 1;
+				matched = 0;
 			}
 			else
 			{
