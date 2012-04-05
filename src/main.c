@@ -309,6 +309,114 @@ float getSidetoSide(float *x, float *y)
 	return ssrel;
 }
 
+float getFronttoBack(float *x, float *y, gchar **inorout_r, gchar **frontback_r, gchar **hashorside_r)
+{
+	// check to see if a dot is inside or outside
+	// a hash/sideline, and whether it's on the front or back
+	int back_side = 0;
+	int back_hash = 32;
+	int front_hash = 53;
+	int front_side = 85;
+	gchar *inorout;
+	gchar *frontback;
+	gchar *hashorside;
+	float fbrel;
+	// back hash to back sideline
+	int bhbs = (back_hash - back_side) / 2 + back_side;
+	// front hash to back hash
+	int bhfh = (front_hash - back_hash) / 2 + back_hash;	
+	// front sideline to front hash
+	int fhfs = (front_side - front_hash) / 2 + front_hash;
+	float coordx = *x;
+	float coordy = *y;
+	// Get front-to-back
+	if (coordy == back_side)
+	{
+		// coord is on back sideline
+		fbrel = 0;
+		inorout = g_strdup_printf("on");
+		frontback = g_strdup_printf("back");
+		hashorside = g_strdup_printf("sideline");
+	}
+	else if (coordy < bhbs)
+	{
+		// coord is close to back sideline
+		fbrel = coordy;
+		inorout = g_strdup_printf("inside");
+		frontback = g_strdup_printf("back");
+		hashorside = g_strdup_printf("sideline");
+	}
+	else if (coordy < back_hash)
+	{
+		// coord is behind back hash
+		fbrel = back_hash - coordy;
+		inorout = g_strdup_printf("outside");
+		frontback = g_strdup_printf("back");
+		hashorside = g_strdup_printf("hash");
+	}
+	else if (coordy == back_hash)
+	{
+		// coord is on back hash
+		fbrel = 0;
+		inorout = g_strdup_printf("on");
+		frontback = g_strdup_printf("back");
+		hashorside = g_strdup_printf("hash");
+	}
+	else if (coordy < bhfh)
+	{
+		// coord is close, but in front of, back hash
+		fbrel = coordy - back_hash;
+		inorout = g_strdup_printf("inside");
+		frontback = g_strdup_printf("back");
+		hashorside = g_strdup_printf("hash");
+	}
+	else if (coordy < front_hash)
+	{
+		// coord is close to, but behind, front hash
+		fbrel = front_hash - coordy;
+		inorout = g_strdup_printf("inside");
+		frontback = g_strdup_printf("front");
+		hashorside = g_strdup_printf("hash");
+	}
+	else if (coordy == front_hash)
+	{
+		// coord is on front hash
+		fbrel = 0;
+		inorout = g_strdup_printf("on");
+		frontback = g_strdup_printf("front");
+		hashorside = g_strdup_printf("hash");
+	}
+	else if (coordy < fhfs)
+	{
+		// coord is close to, but in front of, front hash
+		fbrel = coordy - front_hash;
+		inorout = g_strdup_printf("outside");
+		frontback = g_strdup_printf("front");
+		hashorside = g_strdup_printf("hash");
+	}
+	else if (coordy < front_side)
+	{
+		// coord is close to, but behind, front sideline
+		fbrel = front_side - coordy;
+		inorout = g_strdup_printf("inside");
+		frontback = g_strdup_printf("front");
+		hashorside = g_strdup_printf("sideline");
+	}
+	else
+	{
+		// coord is on front sideline
+		fbrel = 0;
+		inorout = g_strdup_printf("on");
+		frontback = g_strdup_printf("front");
+		hashorside = g_strdup_printf("sideline");
+	}
+	*inorout_r = inorout;
+	*frontback_r = frontback;
+	*hashorside_r = hashorside;
+	return fbrel;
+}
+
+
 void xy_to_relation(float *x, float *y, gchar **buffer_r)
 {
 	// convert event to side-side and front-back relation
@@ -324,17 +432,10 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	gchar *hash;
 	gchar *frontback_relation;
 	float coordx, coordy;
+	gchar *inorout;
+	gchar *frontback;
+	gchar *hashorside;
 	// relation splits
-	int back_side = 0;
-	int back_hash = 32;
-	int front_hash = 53;
-	int front_side = 85;
-	// back hash to back sideline
-	int bhbs = (back_hash - back_side) / 2 + back_side;
-	// front hash to back hash
-	int bhfh = (front_hash - back_hash) / 2 + back_hash;	
-	// front sideline to front hash
-	int fhfs = (front_side - front_hash) / 2 + front_hash;
 
 
 	coordx = *x;
@@ -371,65 +472,11 @@ void xy_to_relation(float *x, float *y, gchar **buffer_r)
 	// Get yardline relation
 	yardline = getYardline(x, y);
 
-	// Get front-to-back
-	if (coordy == back_side)
-	{
-		// coord is on back sideline
-		frontback_relation = g_strdup_printf("on back sideline");
-	}
-	else if (coordy < bhbs)
-	{
-		// coord is close to back sideline
-		fbrel = coordy;
-		frontback_relation = g_strdup_printf("%.2f inside back sideline", fbrel);
-	}
-	else if (coordy < back_hash)
-	{
-		// coord is behind back hash
-		fbrel = back_hash - coordy;
-		frontback_relation = g_strdup_printf("%.2f outside back hash", fbrel);
-	}
-	else if (coordy == back_hash)
-	{
-		// coord is on back hash
-		frontback_relation = g_strdup_printf("on back hash");
-	}
-	else if (coordy < bhfh)
-	{
-		// coord is close, but in front of, back hash
-		fbrel = coordy - back_hash;
-		frontback_relation = g_strdup_printf("%.2f inside back hash", fbrel);
-	}
-	else if (coordy < front_hash)
-	{
-		// coord is close to, but behind, front hash
-		fbrel = front_hash - coordy;
-		frontback_relation = g_strdup_printf("%.2f inside front hash", fbrel);
-	}
-	else if (coordy == front_hash)
-	{
-		// coord is on front hash
-		frontback_relation = g_strdup_printf("on front hash");
-	}
-	else if (coordy < fhfs)
-	{
-		// coord is close to, but in front of, front hash
-		fbrel = coordy - front_hash;
-		frontback_relation = g_strdup_printf("%.2f outside front hash", fbrel);
-	}
-	else if (coordy < front_side)
-	{
-		// coord is close to, but behind, front sideline
-		fbrel = front_side - coordy;
-		frontback_relation = g_strdup_printf("%.2f inside front sideline", fbrel);
-	}
-	else
-	{
-		// coord is on front sideline
-		frontback_relation = g_strdup_printf("on front sideline");
-	}
-
-	
+	fbrel = getFronttoBack(x, y, &inorout, &frontback, &hashorside);
+	frontback_relation = g_strdup_printf("%.2f %s %s %s", fbrel, inorout, frontback, hashorside);
+	g_free(inorout);
+	g_free(frontback);
+	g_free(hashorside);
 
 	buffer = g_strdup_printf("(%.2f, %.2f): %.2f %s %i %s", coordx, coordy, ssrel, sideside_relation, yardline, frontback_relation);
 	g_free(sideside_relation);

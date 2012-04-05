@@ -263,6 +263,7 @@ static void quit_action ();
 int getYardline(float *x, float *y);
 int isInsideYard(float *x, float *y, int *field_side);
 float getSidetoSide(float *x, float *y);
+float getFronttoBack(float *x, float *y, gchar **inorout_r, gchar **frontback_r, gchar **hashorside_r);
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 void calc_stepsize (GtkWidget *widget);
