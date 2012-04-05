@@ -46,7 +46,7 @@ struct gtk_ssRel
 	GtkWidget *ssSide;		
 	// Yardline button
 	GtkWidget *ssYdLine;		
-};
+} sidesideBtns;
 // Front-to-Back relations buttons
 struct gtk_fbRel
 {
@@ -58,7 +58,7 @@ struct gtk_fbRel
 	GtkWidget *fbToggleButton;
 	// Hash/Sideline
 	GtkWidget *HashSideButton;
-};
+} frbkBtns;
 gint context_id;
 //double perf[50][50][2];	// Set, performer, dot
 int perf_cur;	// current selected performer

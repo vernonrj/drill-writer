@@ -259,11 +259,23 @@ int isInsideYard(float *x, float *y, int *field_side)
 			return 1;
 		}
 	}
-	else
+	else if (ssrel == 4)
 	{
-		// on the yardline
-		return 0;
+		if (coordx > 80)
+		{
+			// split side 2 yardline
+			*field_side = 2;
+			return 1;
+		}
+		else
+		{
+			// on side 1 yardline
+			*field_side = 1;
+			return 1;
+		}
 	}
+	// on the yardline
+	return 0;
 }
 
 int getYardline(float *x, float *y)
@@ -548,11 +560,43 @@ int update_entries(void)
 	char ss_siderel[8];
 	char ss_ydline[3];
 	// front-to-back entries/buttons
+	float ssStep;
+	float fbStep;
+	int yardRel;
+	int fieldSide;
+	float cx, cy;
 	char fb_buf[20];
 	char fb_hashrel[10];
 	char fb_frontback[8];
 	char fb_hashside[10];
 	// Update all the entries
+	cx = pshow->center->x;
+	cy = pshow->center->y;
+	ssStep = getSidetoSide(&cx, &cy);
+	sprintf(ss_buf, "%.2f", ssStep);
+	yardRel = isInsideYard(&cx, &cy, &fieldSide);
+	if (yardRel == -1)
+	{
+		// outside
+		sprintf(ss_ydrel, "outside");
+	}
+	else if (yardRel == 1)
+	{
+		// inside
+		sprintf(ss_ydrel, "inside");
+	}
+	else
+	{
+		// on
+		sprintf(ss_ydrel, "on");
+	}
+	sprintf(ss_siderel, "side %i", fieldSide);
+	sprintf(ss_ydline, "%i", getYardline(&cx, &cy));
+	gtk_entry_set_text(GTK_ENTRY (sidesideBtns.ssStepEntry), ss_buf);
+	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdRelButton), ss_ydrel);
+	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssSide), ss_siderel);
+	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdLine), ss_ydline);
+	
 	// Convert all numbers into strings first
 	if (!pshow->currset->name[0])
 		sprintf(set_buf, "%i", setnum);
@@ -572,6 +616,7 @@ int update_entries(void)
 		// Take the counts from this set
 		sprintf(count_buf, "%i", pshow->currset->counts);
 	}
+	// side-to-side relations
 	sprintf(perf_buf, "%i", perf_cur);
 	//retr_coord(pshow->currset->coords[perf_cur], &x, &y);
 	sprintf(perf_buf_x, "%g", pshow->center->x);
@@ -610,8 +655,8 @@ int buildIfacegtk(void)
 	gchar *sbinfo;
 
 	// Field relation buttons
-	struct gtk_ssRel sidesideBtns;
-	struct gtk_fbRel frbkBtns;
+	//struct gtk_ssRel sidesideBtns;
+	//struct gtk_fbRel frbkBtns;
 
 	gint tmp_pos;
 
