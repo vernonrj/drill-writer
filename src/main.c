@@ -215,6 +215,7 @@ static void quit_action ()
 	gtk_main_quit();
 }
 
+// TODO: put side-to-side into one function like front-to-back
 int isInsideYard(float *x, float *y, int *field_side)
 {
 	// check to see if a dot is inside or outside
