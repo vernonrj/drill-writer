@@ -580,7 +580,7 @@ int update_entries(void)
 	gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);
-	//gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
+	gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
 	//gtk_entry_set_text(GTK_ENTRY (entry_perf_x), perf_buf_x);
 	//gtk_entry_set_text(GTK_ENTRY (entry_perf_y), perf_buf_y);
 	return 0;
@@ -1055,6 +1055,7 @@ int buildIfacegtk(void)
 	/*
 	label = gtk_label_new ("Performer:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
+	*/
 
 	sprintf(perf_buf, "%i", perf_cur);
 	entry_perf = gtk_entry_new ();
@@ -1065,6 +1066,7 @@ int buildIfacegtk(void)
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf), 4);
 	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 0);
+	/*
 
 
 	label = gtk_label_new ("X:");

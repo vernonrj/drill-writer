@@ -69,3 +69,23 @@ S(set)=6;
 S(counts)=12;
 G(line[P5, P1, P3, P2, P0, P4, P11, P10, P9, P8, P6, P7], (0.s1.25, 16.b.fh), (0.s1.25, 4.b.fs));
 
+S(set)=7;
+S(counts)=4;
+G(line[P5, P3, P0, P11, P9, P6], (4.s1.25, 16.b.fh), (4.s1.25, 8.b.fs));
+G(line[P1, P2, P4, P10, P8, P7], (-4.s1.25, 12.b.fh), (-4.s1.25, 4.b.fs));
+
+S(set)=8;
+S(counts)=12;
+G(line[P4, P2, P1, P5, P3, P0], (4.s1.10, 0.f.fh), (4.s1.35, 0.f.fh));
+G(line[P10, P8, P7, P6, P9, P11], (4.s1.10, 8.f.fh), (4.s1.35, 8.f.fh));
+
+S(set)=9;
+S(counts)=4;
+G(line[P4, P2, P1, P5, P3, P0], (-2.s1.15, 4.f.fh), (-2.s1.40, 4.f.fh));
+G(line[P10, P8, P7, P6, P9, P11], (2.s1.10, 4.f.fh), (2.s1.35, 4.f.fh));
+
+S(set)=10;
+S(counts)=4;
+G(line[P4, P2, P1, P5, P3, P0], (4.s1.10, 8.f.fh), (4.s1.35, 8.f.fh));
+G(line[P10, P8, P7, P6, P9, P11], (4.s1.10, 0.f.fh), (4.s1.35, 0.f.fh));
+
