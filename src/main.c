@@ -62,8 +62,8 @@ int align_dots(void)
 	while (select != NULL)
 	{
 		retr_coord(coords[select->index], &x, &y);
-		x = floorf(x);
-		y = floorf(y);
+		x = roundf(x);
+		y = roundf(y);
 		set_coord(coords[select->index], x, y);
 		select = select->next;
 	}
