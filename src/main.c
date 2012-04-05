@@ -616,10 +616,10 @@ int update_entries(void)
 	int yardRel;
 	int fieldSide;
 	float cx, cy;
-	char fb_buf[20];
-	char fb_hashrel[10];
-	char fb_frontback[8];
-	char fb_hashside[10];
+	gchar *fb_buf;
+	gchar *fb_hashrel;
+	gchar *fb_frontback;
+	gchar *fb_hashside;
 	// Update all the entries
 	cx = pshow->center->x;
 	cy = pshow->center->y;
@@ -643,10 +643,20 @@ int update_entries(void)
 	}
 	sprintf(ss_siderel, "side %i", fieldSide);
 	sprintf(ss_ydline, "%i", getYardline(&cx, &cy));
+	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, &fb_frontback, &fb_hashside);
+	fb_buf = g_strdup_printf("%.2f", fbStep);
 	gtk_entry_set_text(GTK_ENTRY (sidesideBtns.ssStepEntry), ss_buf);
 	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdRelButton), ss_ydrel);
 	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssSide), ss_siderel);
 	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdLine), ss_ydline);
+	gtk_entry_set_text(GTK_ENTRY (frbkBtns.fbStepEntry), fb_buf);
+	gtk_button_set_label(GTK_BUTTON (frbkBtns.fbHashRelButton), fb_hashrel);
+	gtk_button_set_label(GTK_BUTTON (frbkBtns.fbToggleButton), fb_frontback);
+	gtk_button_set_label(GTK_BUTTON (frbkBtns.HashSideButton), fb_hashside);
+	g_free(fb_buf);
+	g_free(fb_hashrel);
+	g_free(fb_frontback);
+	g_free(fb_hashside);
 	
 	// Convert all numbers into strings first
 	if (!pshow->currset->name[0])
