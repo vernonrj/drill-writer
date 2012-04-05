@@ -283,11 +283,15 @@ int getYardline(float *x, float *y)
 	// get yardline number
 	int yardline;
 	float coordx, coordy;
+	float inCheck;
 	coordx = *x;
 	coordy = *y;
 	yardline = (coordx+4)/8;
 	yardline = abs(yardline - 10);
 	yardline = 5 * abs(10 - yardline);
+	inCheck = (coordx+4)/8;
+	if (coordx < 80 && inCheck == floorf(inCheck))
+		yardline = yardline - 5;
 	return yardline;
 }
 
