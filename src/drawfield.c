@@ -95,10 +95,12 @@ void def_canvas (GtkWidget *widget)
 
 void drawing_method(cairo_t *cdots, float x, float y)
 {
-	cairo_move_to(cdots, x-step, y-step);
-	cairo_rel_line_to(cdots, 2*step, 2*step);
-	cairo_move_to(cdots, x-step, y+step);
-	cairo_rel_line_to(cdots, 2*step, -2*step);
+	// dot drawing
+	float size = 0.5;
+	cairo_move_to(cdots, x-size*step, y-size*step);
+	cairo_rel_line_to(cdots, 2*size*step, 2*size*step);
+	cairo_move_to(cdots, x-size*step, y+size*step);
+	cairo_rel_line_to(cdots, 2*size*step, -2*size*step);
 	//cairo_new_sub_path(cdots);
 	//cairo_arc(cdots, x, y, 2*(float)step/3, 0, 360);
 	return;
@@ -151,6 +153,9 @@ int draw_dots (GtkWidget *widget)
 	// Define canvases
 	dots = gdk_cairo_create(widget->window);
 	selected = gdk_cairo_create(widget->window);
+
+	cairo_set_line_width(dots, 1.5);
+	cairo_set_line_width(selected, 1.5);
 
 	// grab sets from data structure
 	currset = pshow->currset;
