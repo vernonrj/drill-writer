@@ -253,6 +253,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	struct set_proto *currset;	// current set
 	struct perf_proto *perfcurr;	// current performer
 	struct coord_proto **coords;	// coordinates
+	struct tempo_proto *tempo;
 	int operation;			// specified operation
 	int excode;
 	int done;
@@ -364,7 +365,13 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			currset->coords[index]->x = x;
 			currset->coords[index]->y = y;
 			break;
-
+		case 5:		// tempo changed
+			// changed tempo back
+			excode = pushTempo(&destbr, dshow->currtempo->tempo);
+			if (excode != -1)
+				change_tempo(sourcebr->ud.tempo, &dshow->currtempo);
+			done = sourcePop(&sourcebr);
+			break;
 
 
 	}
