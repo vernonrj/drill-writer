@@ -260,6 +260,7 @@ int add_perf_gtk(GtkWidget *widget)
 {
 	int excode;
 	excode = add_perf();
+	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	if (excode != -1)
 		return 0;
 	return excode;
@@ -357,6 +358,7 @@ int add_perf(void)
 		pshow->perfnum = perfnum+5;
 	}
 	pshow->perfs[index]->valid = 1;
+	pushPerfMk(&pshow->undobr, index, 1);
 	return index;
 }
 

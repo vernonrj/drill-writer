@@ -36,10 +36,12 @@ void change_counts (GtkWidget *widget)
 void do_undo_gtk(GtkWidget *widget)
 {
 	popFromStack(pshow, &pshow->undobr, &pshow->redobr);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	return;
 }
 void do_redo_gtk(GtkWidget *widget)
 {
+	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	return;
 }
 int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
