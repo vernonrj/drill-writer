@@ -1,4 +1,5 @@
 /* drill.h */
+//TODO: add copy for dots
 
 #ifndef __DRILL_H
 #define __DRILL_H
@@ -344,7 +345,7 @@ void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
 int add_perf (GtkWidget *widget);
-void delete_perf(GtkWidget *widget);
+void delete_perf_gtk(GtkWidget *widget);
 void delete_perf(int index);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);

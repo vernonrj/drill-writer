@@ -378,6 +378,7 @@ void delete_perf_gtk(GtkWidget *widget)
 void delete_perf(int index)
 {
 	// render performer invalid
+	struct perf_proto *perf;
 	perf = pshow->perfs[index];
 	perf->valid = 0;
 	return ;

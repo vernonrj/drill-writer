@@ -306,4 +306,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			break;
 		case 2: 	// perf was added
 			// render new performer invalid
-
+			break;
+	}
+	return 0;
+}
