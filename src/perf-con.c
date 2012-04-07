@@ -256,7 +256,16 @@ int select_all_gtk (GtkWidget *widget)
 	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 }
 
-int add_perf (GtkWidget *widget)
+int add_perf_gtk(GtkWidget *widget)
+{
+	int excode;
+	excode = add_perf();
+	if (excode != -1)
+		return 0;
+	return excode;
+}
+
+int add_perf(void)
 {
 	// Add a performer
 	// TODO: have an "add mode"
@@ -348,7 +357,7 @@ int add_perf (GtkWidget *widget)
 		pshow->perfnum = perfnum+5;
 	}
 	pshow->perfs[index]->valid = 1;
-	return 0;
+	return index;
 }
 
 

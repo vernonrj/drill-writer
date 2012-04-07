@@ -783,7 +783,7 @@ int buildIfacegtk(void)
 	{ "AddPerfAction", NULL,
 		"_Add Performer", NULL,
 		"Add a performer to the show",
-		G_CALLBACK (add_perf) },
+		G_CALLBACK (add_perf_gtk) },
 	{ "DelPerfAction", NULL,
 		"_Delete Performer", NULL,
 		"Delete a performer from the show",

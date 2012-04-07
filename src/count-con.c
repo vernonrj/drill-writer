@@ -252,9 +252,11 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	struct undo_proto *destbr;	// destination branch
 	struct set_proto *currset;	// current set
 	struct perf_proto *perfcurr;	// current performer
+	struct coord_proto **coords;	// coordinates
 	int operation;			// specified operation
 	int excode;
 	int done;
+	int index;
 
 	// get operation
 	sourcebr = *sourcebr_r;
@@ -306,7 +308,48 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			break;
 		case 2: 	// perf was added
 			// render new performer invalid
+			perfcurr = dshow->perfs[sourcebr->ud.pindex];
+			perfcurr->valid = 0;
+			done = sourcePop(&sourcebr);
+			excode = pushPerfDel(&destbr, perfcurr, dshow->firstset, done);
 			break;
+		case 3:		// perf was deleted
+			// re-add performer
+			index = add_perf();
+			if (index == -1)
+				return -1;
+			perfcurr = dshow->perfs[index];
+			free(perfcurr->name);
+			free(perfcurr->symbol);
+			free(dshow->perfs[index]);
+			dshow->perfs[index] = sourcebr->ud.sperf;
+			sourcebr->ud.sperf->valid = 1;
+			currset = dshow->firstset;
+			i = 0;
+			// re-add coordinates for performer
+			coords = currset->coords;
+			while (currset != NULL && coords[index] && sourcebr->coords[i])
+			{
+				coords[index]->x = sourcebr->coords[i]->x;
+				coords[index]->y = sourcebr->coords[i]->y;
+				free(sourcebr->coords[i]);
+				i++;
+				currset = currset->next;
+				if (currset)
+					coords = currset->coords;
+			}
+			// finish de-allocating if not done
+			while (sourcebr->coords[i])
+			{
+				free(sourcebr->coords[i]);
+				i++;
+			}
+			free(sourcebr->coords);
+			done = sourcePop(&sourcebr);
+			excode = pushPerfMk(&destbr, index, done);
+			break;
+
+
 	}
 	return 0;
 }

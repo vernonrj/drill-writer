@@ -344,7 +344,8 @@ void goto_perf (GtkWidget *widget);
 void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
-int add_perf (GtkWidget *widget);
+int add_perf_gtk(GtkWidget *widget);
+int add_perf(void);
 void delete_perf_gtk(GtkWidget *widget);
 void delete_perf(int index);
 // create container for show
