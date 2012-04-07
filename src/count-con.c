@@ -36,6 +36,13 @@ void change_counts (GtkWidget *widget)
 int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
 {
 	// Push node to stack
+	struct undo_proto *stack;
+	if (!unredo)
+		return -1;
+	stack = *stack_r;
+
+	unredo->next = stack;
+	*stack_r = unredo;
 	return 0;
 }
 
@@ -43,8 +50,7 @@ int pushSetMk(struct undo_proto **stack_r)
 {
 	// New set created, push set num onto undo stack
 	struct undo_proto *unredo;
-	struct undo_proto *stack;
-	stack = *stack_r;
+	int excode;
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
@@ -52,9 +58,9 @@ int pushSetMk(struct undo_proto **stack_r)
 		unredo->set_num = setnum;
 		unredo->operation = 0;	// set to be created
 		unredo->done = 1;
-		pushToStack(unredo, stack_r);
+		excode = pushToStack(unredo, stack_r);
 
-		return 0;
+		return excode;
 	}
 	else
 		return -1;
@@ -64,8 +70,7 @@ int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset)
 {
 	// Set to be deleted, push current set onto stack
 	struct undo_proto *unredo;
-	struct undo_proto *stack;
-	stack = *stack_r;
+	int excode;
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
@@ -74,9 +79,9 @@ int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset)
 		unredo->operation = 1;		// set to be deleted
 		unredo->ud.set = oldset;	// store set
 		unredo->done = 1;		// finished
-		pushToStack(unredo, stack_r);	// push
+		excode = pushToStack(unredo, stack_r);	// push
 
-		return 0;
+		return excode;
 	}
 	else
 		return -1;
@@ -86,8 +91,7 @@ int pushPerfMk(struct undo_proto **stack_r, int index, int done)
 {
 	// Perf to be added, push index onto stack
 	struct undo_proto *unredo;
-	struct undo_proto *stack;
-	stack = *stack_r;
+	int excode;
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
@@ -96,9 +100,9 @@ int pushPerfMk(struct undo_proto **stack_r, int index, int done)
 		unredo->operation = 2;		// Performer adding
 		unredo->ud.pindex = index;	// store perf index
 		unredo->done = done;		// check if finished
-		pushToStack(unredo, stack_r);	// push
+		excode = pushToStack(unredo, stack_r);	// push
 
-		return 0;
+		return excode;
 	}
 	else
 		return -1;
@@ -110,12 +114,11 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto *oldperf,
 {
 	// Perf to be deleted, push node onto stack
 	struct undo_proto *unredo;
-	struct undo_proto *stack;
 	struct set_proto *last;
 	int i;
 	int index;
+	int excode;
 
-	stack = *stack_r;
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (!unredo)
@@ -145,17 +148,16 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto *oldperf,
 	}
 
 	unredo->done = done;		// check if finished
-	pushToStack(unredo, stack_r);	// push
+	excode = pushToStack(unredo, stack_r);	// push
 
-	return 0;
+	return excode;
 }
 
 int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int done)
 {
 	// push the relative movement of perf onto stack
 	struct undo_proto *unredo;
-	struct undo_proto *stack;
-	stack = *stack_r;
+	int excode;
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
@@ -166,9 +168,9 @@ int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int don
 		unredo->x = x;			// store coords
 		unredo->y = y;			// store coords
 		unredo->done = done;		// check if finished
-		pushToStack(unredo, stack_r);	// push
+		excode = pushToStack(unredo, stack_r);	// push
 
-		return 0;
+		return excode;
 	}
 	else
 		return -1;
@@ -180,8 +182,7 @@ int pushTempo(struct undo_proto **stack_r, int tempo)
 {
 	// push tempo change onto stack
 	struct undo_proto *unredo;
-	struct undo_proto *stack;
-	stack = *stack_r;
+	int excode;
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
@@ -190,9 +191,9 @@ int pushTempo(struct undo_proto **stack_r, int tempo)
 		unredo->operation = 5;		// tempo changed
 		unredo->ud.tempo = tempo;	// store tempo
 		unredo->done = 1;		// finished
-		pushToStack(unredo, stack_r);	// push
+		excode = pushToStack(unredo, stack_r);	// push
 
-		return 0;
+		return excode;
 	}
 	else
 		return -1;
@@ -203,8 +204,7 @@ int pushCounts(struct undo_proto **stack_r, int counts)
 {
 	// push counts change onto stack
 	struct undo_proto *unredo;
-	struct undo_proto *stack;
-	stack = *stack_r;
+	int excode;
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
@@ -213,9 +213,9 @@ int pushCounts(struct undo_proto **stack_r, int counts)
 		unredo->operation = 6;		// counts changed
 		unredo->ud.counts = counts;	// store counts
 		unredo->done = 1;		// finished
-		pushToStack(unredo, stack_r);	// push
+		excode = pushToStack(unredo, stack_r);	// push
 
-		return 0;
+		return excode;
 	}
 	else
 		return -1;
