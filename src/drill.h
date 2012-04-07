@@ -241,6 +241,8 @@ struct headset_proto *pshow;
 // count-con.c
 void goto_count (GtkWidget *widget);
 void change_counts (GtkWidget *widget);
+void do_undo_gtk(GtkWidget *widget);
+void do_redo_gtk(GtkWidget *widget);
 int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r);
 int pushSetMk(struct undo_proto **stack_r);
 int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset);

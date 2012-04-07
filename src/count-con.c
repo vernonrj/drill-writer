@@ -33,6 +33,15 @@ void change_counts (GtkWidget *widget)
 }
 
 // undo code
+void do_undo_gtk(GtkWidget *widget)
+{
+	popFromStack(pshow, &pshow->undobr, &pshow->redobr);
+	return;
+}
+void do_redo_gtk(GtkWidget *widget)
+{
+	return;
+}
 int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
 {
 	// Push node to stack
@@ -56,6 +65,7 @@ int pushSetMk(struct undo_proto **stack_r)
 	if (unredo)
 	{
 		unredo->set_num = setnum;
+		printf("setnum = %i\n", setnum);
 		unredo->operation = 0;	// set to be created
 		unredo->done = 1;
 		excode = pushToStack(unredo, stack_r);
@@ -267,11 +277,14 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	operation = sourcebr->operation;
 	currset = dshow->firstset;
 	i = 0;
-	while (currset != NULL && i <sourcebr->set_num)
+	set_first();
+	while (currset != NULL && i < sourcebr->set_num)
 	{
-		currset = currset->next;
+		set_next();
+		currset = dshow->currset;
 		i++;
 	}
+	printf("on set %i\n", setnum);
 	if (currset == NULL)
 	{
 		// might have been last set. For testing purposes (i.e. for now),

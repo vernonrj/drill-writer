@@ -776,6 +776,14 @@ int buildIfacegtk(void)
 		"Exit Program",			// tooltip
 		G_CALLBACK (gtk_main_quit) },
 	// Edit Menu
+	{ "UndoProcAction", NULL,
+		"_Undo", "<control>z",
+		"Undo previous action",
+		G_CALLBACK(do_undo_gtk) },
+	{ "RedoProcAction", NULL,
+		"_Redo", "<control><shift>z",
+		"Redo previous undo",
+		G_CALLBACK(do_redo_gtk) },
 	{ "SelectAllAction", NULL,
 		"_Select All", "<control>A",
 		"Select All Performers",
