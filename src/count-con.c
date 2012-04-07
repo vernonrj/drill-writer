@@ -372,8 +372,13 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 				change_tempo(sourcebr->ud.tempo, &dshow->currtempo);
 			done = sourcePop(&sourcebr);
 			break;
-
-
+		case 6:		// count structure was changed
+			// change counts back
+			excode = pushCounts(&destbr, dshow->currset->counts);
+			if (excode != -1)
+				dshow->currset->counts = sourcebr->ud.counts;
+			done = sourcePop(&sourcebr);
+			break;
 	}
 	return 0;
 }
