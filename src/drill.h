@@ -345,6 +345,7 @@ void yperf_change (GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
 int add_perf (GtkWidget *widget);
 void delete_perf(GtkWidget *widget);
+void delete_perf(int index);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);
 int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);
@@ -386,7 +387,8 @@ void set_next_count_gtk(GtkWidget *widget);
 void set_prev_count_gtk(GtkWidget *widget);
 void set_prev_gtk(GtkWidget *widget);
 void set_set_name_gtk(GtkWidget *widget);
-void goto_set (GtkWidget *widget);
+void goto_set_gtk(GtkWidget *widget);
+void goto_set(int set_buffer);
 void change_tempo(int tempo, struct tempo_proto **currtempo_r);
 void change_tempo_gtk (GtkWidget *widget);
 

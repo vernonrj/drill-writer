@@ -197,17 +197,25 @@ void set_set_name_gtk(GtkWidget *widget)
 }
 
 
-void goto_set (GtkWidget *widget)
+void goto_set_gtk (GtkWidget *widget)
 {	// Go to set specified in entry_sets
 	const gchar *entry_buffer;
 	int set_buffer;
-	int i = 0;
-	struct set_proto *last = pshow->firstset;
-	struct set_proto *curr = 0;
 	if (!playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_sets));
 		set_buffer = atoi(entry_buffer);
+		goto_set(set_buffer);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+}
+
+void goto_set(int set_buffer)
+{
+	int i = 0;
+	struct set_proto *last = pshow->firstset;
+	struct set_proto *curr = 0;
+	{
 		for (i=0; i<set_buffer && last != NULL; i++)
 		{
 			// go to current set
@@ -225,8 +233,8 @@ void goto_set (GtkWidget *widget)
 			pshow->prevset = curr;
 			setnum = i;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
+	return;
 }
 
 

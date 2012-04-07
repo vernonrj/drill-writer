@@ -353,7 +353,7 @@ int add_perf (GtkWidget *widget)
 
 
 
-void delete_perf(GtkWidget *widget)
+void delete_perf_gtk(GtkWidget *widget)
 {
 	// Delete selected performers
 	int index;
@@ -366,8 +366,7 @@ void delete_perf(GtkWidget *widget)
 		{
 			// set dots as invalid
 			index = last->index;
-			perf = pshow->perfs[index];
-			perf->valid = 0;
+			delete_perf(index);
 			// go to next performer
 			last = last->next;
 		}
@@ -375,6 +374,15 @@ void delete_perf(GtkWidget *widget)
 		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	}
 }
+
+void delete_perf(int index)
+{
+	// render performer invalid
+	perf = pshow->perfs[index];
+	perf->valid = 0;
+	return ;
+}
+
 
 int show_construct(struct headset_proto **dshow_r, int perfs)
 {

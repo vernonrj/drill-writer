@@ -1029,7 +1029,7 @@ int buildIfacegtk(void)
 	sprintf(set_buf, "%i", setnum);
 	entry_sets = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_sets), 50);
-	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set), entry_sets);
+	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set_gtk), entry_sets);
 	gtk_entry_set_text (GTK_ENTRY (entry_sets), set_buf);
 	tmp_pos = GTK_ENTRY (entry_sets)->text_length;
 	gtk_editable_select_region (GTK_EDITABLE (entry_sets),

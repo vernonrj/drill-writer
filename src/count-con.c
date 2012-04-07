@@ -221,3 +221,89 @@ int pushCounts(struct undo_proto **stack_r, int counts)
 		return -1;
 	return 0;
 }
+
+int sourcePop(struct undo_proto **sourcebr_r)
+{
+	struct undo_proto *sourcebr;
+	struct undo_proto *dscard;
+	struct set_proto *oldset;
+	struct coord_proto **coords;
+	int i;
+	int done;
+	if (!*sourcebr_r)
+		return 1;
+	sourcebr = *sourcebr_r;
+	dscard = *sourcebr_r;
+	sourcebr = sourcebr->next;
+	done = dscard->done;
+	free(dscard);
+	return done;
+}
+
+
+
+int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
+		struct undo_proto **destbr_r)
+{
+	// pop values from source stack, reverse operation,
+	// and push it onto destination stack. Can be used for undo and redo
+	int i;				// loop var
+	struct undo_proto *sourcebr;	// source branch
+	struct undo_proto *destbr;	// destination branch
+	struct set_proto *currset;	// current set
+	struct perf_proto *perfcurr;	// current performer
+	int operation;			// specified operation
+	int excode;
+	int done;
+
+	// get operation
+	sourcebr = *sourcebr_r;
+	destbr = *destbr_r;
+	operation = sourcebr->operation;
+	currset = dshow->firstset;
+	i = 0;
+	while (currset != NULL && i <sourcebr->set_num)
+	{
+		currset = currset->next;
+		i++;
+	}
+	if (currset == NULL)
+	{
+		// might have been last set. For testing purposes (i.e. for now),
+		// print warning and continue, grabbing last set instead
+		printf("WARNING(pop): passed set number we were looking for\n");
+		printf("\tcontinuing using last set instead\n");
+		set_last();
+		currset = dshow->currset;
+	}
+	switch(operation)
+	{
+		case 0:		// set was created
+			currset = dshow->currset;
+			excode = pushSetDel(&destbr, currset);
+			if (!excode)
+			{
+				delete_set();
+				done = sourcePop(&sourcebr);
+			}
+			else
+				done = 1;
+			break;
+		case 1:		// set was destroyed
+			// link up old set
+			set_prev();
+			currset = dshow->currset;
+			sourcebr->ud.set->next = currset->next;
+			currset->next = sourcebr->ud.set;
+			excode = pushSetMk(&destbr);
+			if (!excode)
+			{
+				done = sourcePop(&sourcebr);
+			}
+			else
+				done = 1;
+			set_next();
+			break;
+		case 2: 	// perf was added
+			// render new performer invalid
+
