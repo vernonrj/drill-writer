@@ -115,6 +115,35 @@ G_END_DECLS
 #endif // __DRILL_H
 
 
+// undo/redo LLL stack node
+struct undo_proto
+{
+	// node with undo information
+	// operations:
+	// 0:	set created
+	// 1:	set deleted
+	// 2:	perf added
+	// 3:	perf removed
+	// 4:	perf moved
+	// 5:	tempo changed
+	// 6:	counts changed
+	int set_num;
+	int operation;
+	union undo_union
+	{
+		struct set_proto *set;		// if set was deleted
+		int tempo;			// if tempo was changed
+		int counts;			// if count was changed
+		struct perf_proto *sperf;	// if perf was changed (not coord)
+		int pindex;			// if perf location changed
+	} ud;
+	struct coord_proto **coords;		// if perf is to be deleted
+	float x, y;				// relative/absolute coords
+	int done;				// whether or not cascade should stop here
+
+	struct undo_proto *next;
+};
+
 // selection LLL node
 struct select_proto
 {
@@ -208,6 +237,15 @@ struct headset_proto *pshow;
 // count-con.c
 void goto_count (GtkWidget *widget);
 void change_counts (GtkWidget *widget);
+int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r);
+int pushSetMk(struct undo_proto **stack_r);
+int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset);
+int pushPerfMk(struct undo_proto **stack_r, int index, int done);
+int pushPerfDel(struct undo_proto **stack_r, struct perf_proto *oldperf, 
+		struct set_proto *firstset, int done);
+int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int done);
+int pushTempo(struct undo_proto **stack_r, int tempo);
+int pushCounts(struct undo_proto **stack_r, int counts);
 
 // drawfield.c
 void def_canvas (GtkWidget *widget);
