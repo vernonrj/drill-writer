@@ -466,6 +466,9 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// Set the current set to opening set
 	dshow->currset = dshow->firstset;
 	dshow->prevset = 0;
+	// init undo/redo to NULL
+	dshow->undobr = 0;
+	dshow->redobr = 0;
 
 	// start at the beginning of the set
 	dshow->step = 0;
