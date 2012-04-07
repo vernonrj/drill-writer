@@ -647,12 +647,15 @@ int set_destroy(void)
 	prevset = pshow->prevset;
 	perfnum = pshow->perfnum;
 
+	pushSetDel(&pshow->undobr, pshow->currset);
 	// free memory in nodes
+	/*
 	free(last->name);
 	free(last->info);
 	for (i=0; i<perfnum; i++)
 		free(last->coords[i]);
 	free(last->coords);
+	*/
 
 	// unlink node
 	if (prevset != NULL)
@@ -661,7 +664,7 @@ int set_destroy(void)
 		prevset->next = last->next;
 		pshow->currset = prevset->next;
 		// delete node
-		free(last);
+		//free(last);
 		// put current set on next set if it exists
 		if (prevset->next == NULL)
 		{
@@ -680,7 +683,7 @@ int set_destroy(void)
 	{
 		// At first set
 		pshow->firstset = last->next;
-		free(last);
+		//free(last);
 		last = pshow->firstset;
 		if (last == NULL)
 		{

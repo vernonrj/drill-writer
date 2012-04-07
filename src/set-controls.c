@@ -368,6 +368,7 @@ void add_set(void)
 	// Add a set after the current one
 	newset_create(pshow->currset);
 	set_next();
+	pushSetMk(&pshow->undobr);
 	return;
 }
 
@@ -375,6 +376,7 @@ void add_set(void)
 void delete_set(void)
 {
 	// delete a set
+	// undo chain in set_destroy
 	set_destroy();
 }
 
