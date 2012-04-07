@@ -278,7 +278,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	currset = dshow->firstset;
 	i = 0;
 	set_first();
-	while (currset != NULL && i < sourcebr->set_num)
+	while (i < sourcebr->set_num)
 	{
 		set_next();
 		currset = dshow->currset;
@@ -309,10 +309,30 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			break;
 		case 1:		// set was destroyed
 			// link up old set
-			set_prev();
-			currset = dshow->currset;
-			sourcebr->ud.set->next = currset->next;
-			currset->next = sourcebr->ud.set;
+			if (sourcebr->set_num == 0)
+			{
+				// first set
+				set_first();
+				sourcebr->ud.set->next = dshow->firstset;
+				dshow->firstset = sourcebr->ud.set;
+				dshow->prevset = sourcebr->ud.set;
+				set_first();
+			}
+			else if (sourcebr->set_num > setnum)
+			{
+				// last set needs to be added
+				set_last();
+				currset = dshow->currset;
+				sourcebr->ud.set->next = 0;
+				currset->next = sourcebr->ud.set;
+			}
+			else
+			{
+				set_prev();
+				currset = dshow->currset;
+				sourcebr->ud.set->next = currset->next;
+				currset->next = sourcebr->ud.set;
+			}
 			excode = pushSetMk(&destbr);
 			if (!excode)
 			{
