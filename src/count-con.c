@@ -257,6 +257,8 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	int excode;
 	int done;
 	int index;
+	float x, y;			// coords for moving dot
+	float xold, yold;
 
 	// get operation
 	sourcebr = *sourcebr_r;
@@ -348,6 +350,21 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			done = sourcePop(&sourcebr);
 			excode = pushPerfMk(&destbr, index, done);
 			break;
+		case 4:		// performer moved
+			// move performer back
+			currset = dshow->currset;
+			index = sourcebr->ud.pindex;
+			perfcurr = dshow->perfs[index];
+			xold = currset->coords[index]->x;
+			yold = currset->coords[index]->y;
+			x = sourcebr->x;
+			y = sourcebr->y;
+			done = sourcePop(&sourcebr);
+			excode = pushPerfmv(&destbr, index, xold, yold, done);
+			currset->coords[index]->x = x;
+			currset->coords[index]->y = y;
+			break;
+
 
 
 	}
