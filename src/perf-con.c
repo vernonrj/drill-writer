@@ -370,15 +370,17 @@ void delete_perf_gtk(GtkWidget *widget)
 	int index;
 	struct select_proto *last;
 	struct perf_proto *perf;
+	struct perf_proto **perfs;
 	int done;
 	if (!playing)
 	{
 		last = pshow->select;
+		perfs = pshow->perfs;
 		while (last)
 		{
 			// set dots as invalid
 			index = last->index;
-			perf = pshow->perfs[index];
+			perf = perfs[index];
 			if (last->next)
 			{
 				// more to delete
@@ -391,7 +393,9 @@ void delete_perf_gtk(GtkWidget *widget)
 			}
 			pushPerfDel(&pshow->undobr, &perf, pshow->firstset, done);
 			// TODO: eventually have to unlink perf struct for undo
-			delete_perf(index);
+			pshow->perfs[index] = perf;
+			delete_perf(perf);
+			perfs[index]->valid = 0;
 			// go to next performer
 			last = last->next;
 		}
@@ -400,13 +404,12 @@ void delete_perf_gtk(GtkWidget *widget)
 	}
 }
 
-void delete_perf(int index)
+void delete_perf(struct perf_proto *perf)
 {
 	// render performer invalid
-	struct perf_proto *perf;
-	perf = pshow->perfs[index];
-	perf->valid = 0;
-	return ;
+	//struct perf_proto *perf;
+	perf->valid = 2;
+	return;
 }
 
 
@@ -1135,7 +1138,7 @@ int select_all(void)
 	perfs = pshow->perfs;
 	for (i=0; i<perfnum; i++)
 	{
-		if (perfs[i]->valid)
+		if (perfs[i]->valid == 1)
 		{
 			// performer is valid. Add
 			select_add(i);

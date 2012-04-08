@@ -349,7 +349,7 @@ int select_all_gtk (GtkWidget *widget);
 int add_perf_gtk(GtkWidget *widget);
 int add_perf(void);
 void delete_perf_gtk(GtkWidget *widget);
-void delete_perf(int index);
+void delete_perf(struct perf_proto *perf);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);
 int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);

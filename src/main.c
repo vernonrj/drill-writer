@@ -563,7 +563,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 			distance = pow(workx, 2) + pow(worky, 2);
 			if (i == 0)
 			{
-				printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
+				printf("(x,y) at %.2f, %.2f (valid = 0x%x)\n", workx, worky, pshow->perfs[i]);
 			}
 			if (distance < dist_threshold && pshow->perfs[i]->valid == 1)
 			{
@@ -1343,7 +1343,7 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 	currset = pshow->firstset;
-	pshow->perfnum = 15;
+	//pshow->perfnum = 15;
 	currset->counts = 0;
 	set_coord_valid(currset->coords, 0, 32, 53);
 	set_coord_valid(currset->coords, 1, 36, 53);
