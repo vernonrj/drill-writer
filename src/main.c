@@ -1386,7 +1386,7 @@ int main (int argc, char *argv[])
 	perf_cur = 0;
 	foo();
 
-	///*
+	/*
 	// Start up gtk
 	startTk(argc, argv);
 	// Create gtk interface

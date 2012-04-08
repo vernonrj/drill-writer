@@ -24,9 +24,11 @@ bin_PROGRAMS = drillwriter
 
 ## included in distribution archives of the project.
 
-drillwriter_SOURCES = drill.h d_gtk.h testbench/tb.hpp count-con.c drawfield.c drill.c \
+drillwriter_SOURCES = drill.h d_gtk.h testbench/tb.hpp testbench/util.hpp count-con.c \
+		      drawfield.c drill.c \
 		      entry-con.c file-ops.c main.c media.c \
-		      perf-con.c set-controls.c testbench/testbench.cpp
+		      perf-con.c set-controls.c \
+		      testbench/testbench.cpp testbench/util.cpp
 
 ## Define an independent executable script for inclusion in the distribution
 

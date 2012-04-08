@@ -54,7 +54,8 @@ am_drillwriter_OBJECTS = drillwriter-count-con.$(OBJEXT) \
 	drillwriter-entry-con.$(OBJEXT) drillwriter-file-ops.$(OBJEXT) \
 	drillwriter-main.$(OBJEXT) drillwriter-media.$(OBJEXT) \
 	drillwriter-perf-con.$(OBJEXT) \
-	drillwriter-set-controls.$(OBJEXT) testbench.$(OBJEXT)
+	drillwriter-set-controls.$(OBJEXT) testbench.$(OBJEXT) \
+	util.$(OBJEXT)
 drillwriter_OBJECTS = $(am_drillwriter_OBJECTS)
 drillwriter_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -234,9 +235,11 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
-drillwriter_SOURCES = drill.h d_gtk.h testbench/tb.hpp count-con.c drawfield.c drill.c \
+drillwriter_SOURCES = drill.h d_gtk.h testbench/tb.hpp testbench/util.hpp count-con.c \
+		      drawfield.c drill.c \
 		      entry-con.c file-ops.c main.c media.c \
-		      perf-con.c set-controls.c testbench/testbench.cpp
+		      perf-con.c set-controls.c \
+		      testbench/testbench.cpp testbench/util.cpp
 
 drillwriter_LDFLAGS = $(GTK_LIBS) -lm
 drillwriter_CFLAGS = $(GTK_CFLAGS) 
@@ -338,6 +341,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-perf-con.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-set-controls.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testbench.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -520,6 +524,20 @@ testbench.obj: testbench/testbench.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='testbench/testbench.cpp' object='testbench.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o testbench.obj `if test -f 'testbench/testbench.cpp'; then $(CYGPATH_W) 'testbench/testbench.cpp'; else $(CYGPATH_W) '$(srcdir)/testbench/testbench.cpp'; fi`
+
+util.o: testbench/util.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util.o -MD -MP -MF $(DEPDIR)/util.Tpo -c -o util.o `test -f 'testbench/util.cpp' || echo '$(srcdir)/'`testbench/util.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/util.Tpo $(DEPDIR)/util.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='testbench/util.cpp' object='util.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o util.o `test -f 'testbench/util.cpp' || echo '$(srcdir)/'`testbench/util.cpp
+
+util.obj: testbench/util.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util.obj -MD -MP -MF $(DEPDIR)/util.Tpo -c -o util.obj `if test -f 'testbench/util.cpp'; then $(CYGPATH_W) 'testbench/util.cpp'; else $(CYGPATH_W) '$(srcdir)/testbench/util.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/util.Tpo $(DEPDIR)/util.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='testbench/util.cpp' object='util.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o util.obj `if test -f 'testbench/util.cpp'; then $(CYGPATH_W) 'testbench/util.cpp'; else $(CYGPATH_W) '$(srcdir)/testbench/util.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
