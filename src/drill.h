@@ -1,27 +1,26 @@
 /* drill.h */
 //TODO: add copy for dots
 
-#ifndef __DRILL_H
-#define __DRILL_H
+//#ifndef __DRILL_H
+//#define __DRILL_H
 
 #include <string.h>
 #include <stdlib.h>
-#include <gtk/gtk.h>
-#include <glib.h>
-#include <cairo.h>
+//#include <gtk/gtk.h>
+//#include <glib.h>
+//#include <cairo.h>
 #include <math.h>
-#include <gdk/gdkkeysyms.h>
+//#include <gdk/gdkkeysyms.h>
+
+//#include "testbench/tb.hpp"
 
 
-GtkWidget *drill;		// custom cairo widget
-GtkWidget *scrolled_window;	// for the field
 int setnum;			// current set
 //int set_tot;			// Total amount of sets
 int do_field;			// whether or not to redraw field
 double xoff, yoff;		// x offset
 double xo2, yo2;		// y offset
 double width, height;		// window width, height
-GtkWidget *window;		// Everything goes in here
 int playing;
 int set_step;
 double step;			// size of 8:5 step in window
@@ -29,6 +28,10 @@ int expose_flag;
 float zoom_x;
 float zoom_y;
 //int tempo; // tempo
+/*
+GtkWidget *window;		// Everything goes in here
+GtkWidget *drill;		// custom cairo widget
+GtkWidget *scrolled_window;	// for the field
 GtkWidget *entry_sets;
 GtkWidget *entry_counts;
 GtkWidget *entry_tempo;
@@ -61,18 +64,22 @@ struct gtk_fbRel
 	GtkWidget *HashSideButton;
 } frbkBtns;
 gint context_id;
+*/
 //double perf[50][50][2];	// Set, performer, dot
 int perf_cur;	// current selected performer
 //int perfnum;
 // field surface
+/*
 cairo_surface_t *surface;
 cairo_t *field;
 cairo_t *gaks;
 cairo_t *fnums;
 cairo_t *dots;
+*/
 // check to make sure void surface isn't destroyed
 int first_time;
 
+/*
 gdouble time_elapsed;
 GTimer *timer;
 
@@ -114,6 +121,7 @@ GtkWidget * gtk_drill_new();
 G_END_DECLS
 
 #endif // __DRILL_H
+*/
 
 
 // undo/redo LLL stack node
@@ -239,10 +247,12 @@ struct headset_proto *pshow;
 
 // Functions
 // count-con.c
+/*
 void goto_count (GtkWidget *widget);
 void change_counts (GtkWidget *widget);
 void do_undo_gtk(GtkWidget *widget);
 void do_redo_gtk(GtkWidget *widget);
+*/
 int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r);
 int pushSetMk(struct undo_proto **stack_r);
 int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset);
@@ -254,11 +264,14 @@ int pushTempo(struct undo_proto **stack_r, int tempo);
 int pushCounts(struct undo_proto **stack_r, int counts);
 
 // drawfield.c
+/*
 void def_canvas (GtkWidget *widget);
 int draw_dots (GtkWidget *widget);
 void draw_field (GtkWidget *widget);
+*/
 
 // drill.c
+/*
 GtkType gtk_drill_get_type(void);
 void gtk_drill_set_state(GtkDrill *drill, gint num);
 GtkWidget * gtk_drill_new(void);
@@ -270,15 +283,20 @@ static void gtk_drill_realize(GtkWidget *widget);
 static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
 static void gtk_drill_paint(GtkWidget *widget);
 static void gtk_drill_destroy(GtkObject *object);
+*/
 
 // entry-con.c
+/*
 static void entry_toggle_editable(GtkWidget *checkbutton, GtkWidget *entry);
 static void entry_toggle_visibility(GtkWidget *checkbutton, GtkWidget *entry);
+*/
 
 // file-ops.c
 void open_file(void);
+/*
 void save_file(GtkWidget *widget);
 int wrap_load_dep(GtkWidget *widget);
+*/
 // TODO: Deprecated commands
 void absolute_dot (void);
 void relative_dot (void);
@@ -289,8 +307,9 @@ void show_gen(struct tempo_proto **stempo_r);
 // main.c
 int movexy(float xoff, float yoff);
 int movexy_grid(float xoff, float yoff);
-void dot_align_to_grid(GtkWidget *widget);
 int align_dots(void);
+/*
+void dot_align_to_grid(GtkWidget *widget);
 void move_up(GtkWidget *widget);
 void move_down(GtkWidget *widget);
 void move_left(GtkWidget *widget);
@@ -304,28 +323,36 @@ void prev_perf(GtkWidget *widget);
 static void not_implemented ();
 void force_redraw(GtkWidget *widget);
 static void quit_action ();
+*/
 int getYardline(float *x, float *y);
 int isInsideYard(float *x, float *y, int *field_side);
 float getSidetoSide(float *x, float *y);
+/*
 float getFronttoBack(float *x, float *y, gchar **inorout_r, gchar **frontback_r, gchar **hashorside_r);
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 void calc_stepsize (GtkWidget *widget);
+*/
 
 
 // Start toolkit of choice
+/*
 int startTk(int argc, char *argv[]);
 int update_entries(void);
 int buildIfacegtk(void);
 int main (int argc, char *argv[]);
+*/
 
 // media.c
+/*
 gboolean play_show (GtkWidget *widget);
 void stop_show (GtkWidget *widget);
 void queue_show (GtkWidget *widget);
 void play_show_from_start (GtkWidget *widget);
+*/
 
 // perf-con.c
+/*
 void change_ss_entry(GtkWidget *widget);
 void toggle_ssYdRel(GtkWidget *widget);
 void toggle_ssSide(GtkWidget *widget);
@@ -334,8 +361,10 @@ void change_fb_entry(GtkWidget *widget);
 void toggle_fbHashRel(GtkWidget *widget);
 void toggle_fbFrontBack(GtkWidget *widget);
 void toggle_HashSide(GtkWidget *widget);
+*/
 void scale_form(float s_step);
 void rot_form(float s_step);
+/*
 void expand_form(GtkWidget *widget);
 void contract_form(GtkWidget *widget);
 void rot_cw(GtkWidget *widget);
@@ -347,8 +376,9 @@ void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
 int add_perf_gtk(GtkWidget *widget);
-int add_perf(void);
 void delete_perf_gtk(GtkWidget *widget);
+*/
+int add_perf(void);
 void delete_perf(struct perf_proto *perf);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);
@@ -378,6 +408,7 @@ int select_all(void);
 
 // set-controls.c
 void zoom_amnt(float x, float y);
+/*
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
 void zoom_in(GtkWidget *widget);
 void zoom_out(GtkWidget *widget);
@@ -392,9 +423,10 @@ void set_prev_count_gtk(GtkWidget *widget);
 void set_prev_gtk(GtkWidget *widget);
 void set_set_name_gtk(GtkWidget *widget);
 void goto_set_gtk(GtkWidget *widget);
+void change_tempo_gtk (GtkWidget *widget);
+*/
 void goto_set(int set_buffer);
 void change_tempo(int tempo, struct tempo_proto **currtempo_r);
-void change_tempo_gtk (GtkWidget *widget);
 
 int isLastSet(void);
 int isFirstSet(void);
@@ -410,4 +442,4 @@ void update_tempo(void);
 
 
 
-
+//int foo(void);

@@ -1,6 +1,7 @@
 // drill.c
 
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 
 static void gtk_drill_class_init(GtkDrillClass *klass);
 static void gtk_drill_init(GtkDrill *drill);

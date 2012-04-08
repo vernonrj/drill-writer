@@ -1,5 +1,6 @@
 // Functions that manipulate performers go here
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 
 // Side-to-Side relations
 void change_ss_entry(GtkWidget *widget)

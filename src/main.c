@@ -2,7 +2,8 @@
 // main.c
 #include <stdlib.h>
 
-#include "drill.h"		// header file, with most global variables
+#include "d_gtk.h"
+//#include "drill.h"		// header file, with most global variables
 //#include "media.c"		// playback functions
 //#include "set-controls.c"	// Various functions concerning the use of sets
 //#include "perf-con.c"		// Various functions for performers/dots
@@ -1383,7 +1384,9 @@ int main (int argc, char *argv[])
 	pshow->prevset = 0;
 
 	perf_cur = 0;
+	foo();
 
+	///*
 	// Start up gtk
 	startTk(argc, argv);
 	// Create gtk interface
@@ -1393,6 +1396,7 @@ int main (int argc, char *argv[])
 
 	// Run Main Loop
 	gtk_main();
+	// */
 
 	return 0;
 }

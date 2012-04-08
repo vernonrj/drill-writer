@@ -1,5 +1,6 @@
 // Functions like playing, stopping, etc go here (automated set movement)
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 gboolean play_show (GtkWidget *widget)
 {	// Play the show
 	gulong dumb_API;

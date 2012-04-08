@@ -1,5 +1,6 @@
 // Functions that change sets go here
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 void zoom_amnt(float x, float y)
 {
 	if (x == 0 && y == 0)

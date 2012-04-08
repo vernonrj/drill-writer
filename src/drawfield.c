@@ -1,6 +1,7 @@
 // drawfield.c
 
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 #include <unistd.h>
 
 double xstep, yheight;	
@@ -351,7 +352,7 @@ int draw_dots (GtkWidget *widget)
 	// Cleanup loose ends
 	cairo_destroy(dots);
 	cairo_destroy(selected);
-	cairo_surface_destroy(field_surface);
+	//cairo_surface_destroy(field_surface);
 }
 
 void draw_field (GtkWidget *widget)

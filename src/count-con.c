@@ -1,5 +1,6 @@
 // Functions manipulating count structure goes here
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 void goto_count (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
@@ -158,7 +159,7 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	if (!unredo->coords)
 		return -1;
 	goto_set(unredo->set_num);
-	last = pshow->firstset;
+	last = firstset;
 	i = 0;
 	//while (last != NULL)
 	for (i=0; last != NULL; i++, last = last->next)
@@ -258,9 +259,9 @@ int sourcePop(struct undo_proto **sourcebr_r)
 	struct coord_proto **coords;
 	int i;
 	int done;
-	if (!*sourcebr_r)
-		return 1;
 	sourcebr = *sourcebr_r;
+	if (!sourcebr)
+		return 1;
 	dscard = *sourcebr_r;
 	sourcebr = sourcebr->next;
 	done = dscard->done;
@@ -289,8 +290,11 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	float x, y;			// coords for moving dot
 	float xold, yold;
 
+
 	// get operation
 	sourcebr = *sourcebr_r;
+	if (!sourcebr)
+		return 0;
 	destbr = *destbr_r;
 	operation = sourcebr->operation;
 	currset = dshow->firstset;

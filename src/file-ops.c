@@ -1,5 +1,6 @@
 // Functions that manipulate files go here
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 int getInParen(FILE *fp, char **opt_r)
 {
 	/*

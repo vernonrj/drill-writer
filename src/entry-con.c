@@ -1,5 +1,6 @@
 // Functions changing attributes of entries go here
-#include "drill.h"
+//#include "drill.h"
+#include "d_gtk.h"
 GtkWidget *entry_perf;
 GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
