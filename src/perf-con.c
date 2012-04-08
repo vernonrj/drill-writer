@@ -368,41 +368,46 @@ int add_perf(void)
 void delete_perf_gtk(GtkWidget *widget)
 {
 	// Delete selected performers
+	if (!playing)
+	{
+		delete_perf_selected();
+		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	}
+}
+void delete_perf_selected(void)
+{
 	int index;
 	struct select_proto *last;
 	struct perf_proto *perf;
 	struct perf_proto **perfs;
 	int done;
-	if (!playing)
+	last = pshow->select;
+	perfs = pshow->perfs;
+	while (last)
 	{
-		last = pshow->select;
-		perfs = pshow->perfs;
-		while (last)
+		// set dots as invalid
+		index = last->index;
+		perf = perfs[index];
+		if (last->next)
 		{
-			// set dots as invalid
-			index = last->index;
-			perf = perfs[index];
-			if (last->next)
-			{
-				// more to delete
-				done = 0;
-			}
-			else
-			{
-				// no more to delete
-				done = 1;
-			}
-			pushPerfDel(&pshow->undobr, &perf, pshow->firstset, done);
-			// TODO: eventually have to unlink perf struct for undo
-			pshow->perfs[index] = perf;
-			delete_perf(perf);
-			perfs[index]->valid = 0;
-			// go to next performer
-			last = last->next;
+			// more to delete
+			done = 0;
 		}
-		select_discard();
-		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+		else
+		{
+			// no more to delete
+			done = 1;
+		}
+		pushPerfDel(&pshow->undobr, &perf, pshow->firstset, done);
+		// TODO: eventually have to unlink perf struct for undo
+		pshow->perfs[index] = perf;
+		delete_perf(perf);
+		perfs[index]->valid = 0;
+		// go to next performer
+		last = last->next;
 	}
+	select_discard();
+	return;
 }
 
 void delete_perf(struct perf_proto *perf)

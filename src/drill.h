@@ -262,6 +262,9 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf,
 int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int done);
 int pushTempo(struct undo_proto **stack_r, int tempo);
 int pushCounts(struct undo_proto **stack_r, int counts);
+int sourcePop(struct undo_proto **sourcebr_r);
+int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
+		struct undo_proto **destbr_r);
 
 // drawfield.c
 /*
@@ -379,6 +382,7 @@ int add_perf_gtk(GtkWidget *widget);
 void delete_perf_gtk(GtkWidget *widget);
 */
 int add_perf(void);
+void delete_perf_selected(void);
 void delete_perf(struct perf_proto *perf);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);
