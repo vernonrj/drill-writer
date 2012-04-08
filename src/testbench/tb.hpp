@@ -24,5 +24,4 @@ int tbCoords_change(void);
 
 int tbSelect_view(void);
 int tbSelect_add(void);
-int tbSelect_rem(void);
 

@@ -163,6 +163,7 @@ int tbSets(void)
 
 int tbUnRedo(void)
 {
+	popFromStack(pshow, &pshow->undobr, &pshow->redobr);
 	return 0;
 }
 
@@ -236,7 +237,6 @@ int tbSelect(void)
 	fifo->enqueue("Selection");
 	fifo->enqueue("View Selects");
 	fifo->enqueue("Add Select");
-	fifo->enqueue("Remove Select");
 	fifo->enqueue("Select All");
 	fifo->enqueue("Select None");
 	fifo->enqueue("Back");
@@ -252,18 +252,15 @@ int tbSelect(void)
 			case 2:		// add
 				excode = tbSelect_add();
 				break;
-			case 3:		// remove
-				excode = tbSelect_rem();
-				break;
-			case 4:		// Select all
+			case 3:		// Select all
 				// non-testbench
 				select_all();
 				break;
-			case 5:		// Select none
+			case 4:		// Select none
 				// non-testbench
 				select_discard();
 				break;
-			case 6:		// back
+			case 5:		// back
 				excode = 1;
 				break;
 		}
@@ -282,10 +279,18 @@ int tbSelect_view(void)
 
 	while (selects)
 	{
-		cout << i << ":\t";
-		cout << coords[i]->x << ", ";
-		cout << coords[i]->y << " | valid = ";
-		cout << perfs[i]->valid << endl;
+		if (perfs[i]->valid == 1)
+		{
+			cout << i << ":\t";
+			cout << coords[i]->x << ", ";
+			cout << coords[i]->y << " | valid = ";
+			cout << perfs[i]->valid << endl;
+		}
+		else if (perfs[i]->valid != 0)
+		{
+			cout << "ERR: valid not 0 or 1" << endl;
+			cout << "on dot " << i << endl;
+		}
 		i = i + 1;
 		selects = selects->next;
 	}
@@ -307,14 +312,13 @@ int tbSelect_add(void)
 	fifo->dequeue(select);
 	excode = atoi(select);
 	delete [] select;
+	delete fifo;
 	select_add(excode);
 
 	return 0;
 }
-int tbSelect_rem(void)
-{
-	return 0;
-}
+
+
 int tbCoords_change(void)
 {
 	return 0;
