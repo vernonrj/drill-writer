@@ -36,7 +36,7 @@ int mainmenu(void)
 			case 2:		// sets
 				excode = tbSets();
 				break;
-			case 3:		// coords
+			case 3:		// Coords
 				excode = tbCoords();
 				break;
 			case 4:		// undo/redo
@@ -113,6 +113,7 @@ int tbSets(void)
 	fifo->enqueue("Prev");
 	fifo->enqueue("First");
 	fifo->enqueue("Last");
+	fifo->enqueue("Coords...");
 	fifo->enqueue("Add");
 	fifo->enqueue("Delete");
 	fifo->enqueue("Back");
@@ -134,13 +135,16 @@ int tbSets(void)
 			case 5:		// Last
 				set_last();
 				break;
-			case 6:		// Add
+			case 6:		// coords
+				tbCoords();
+				break;
+			case 7:		// Add
 				excode = tbSets_add();
 				break;
-			case 7:		// Delete
+			case 8:		// Delete
 				excode = tbSets_del();
 				break;
-			case 8:		// Back
+			case 9:		// Back
 				excode = 1;
 				break;
 		}
@@ -150,12 +154,6 @@ int tbSets(void)
 
 	delete fifo;
 	return 0;
-	return 0;
-}
-
-
-int tbCoords(void)
-{
 	return 0;
 }
 
@@ -180,6 +178,55 @@ int tbPerfs_del(void)
 
 
 int tbSets_attr(void)
+{
+	return 0;
+}
+int tbCoords(void)
+{
+	int excode;
+	int mysel;
+	queue *fifo;
+	char *set_buf;
+
+	fifo = new queue;
+	set_buf = new char [25];
+	sprintf(set_buf, "Coords (Set %i)", setnum);
+	fifo->enqueue(set_buf);
+	delete [] set_buf;
+	fifo->enqueue("View Dot...");
+	fifo->enqueue("Select Dots...");
+	fifo->enqueue("Change Dot...");
+	fifo->enqueue("Back");
+	do
+	{
+		mysel = menu(fifo);
+		switch(mysel)
+		{
+			case 1:		// view dots
+				excode = tbCoords_view();
+				break;
+			case 2:		// select dots
+				excode = tbCoords_select();
+				break;
+			case 3:		// change dots
+				excode = tbCoords_change();
+				break;
+			case 4:		// back
+				excode = 1;
+				break;
+		}
+	} while (excode == 0);
+	return 0;
+}
+int tbCoords_view(void)
+{
+	return 0;
+}
+int tbCoords_select(void)
+{
+	return 0;
+}
+int tbCoords_change(void)
 {
 	return 0;
 }
