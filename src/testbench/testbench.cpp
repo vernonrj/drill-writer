@@ -20,6 +20,7 @@ int mainmenu(void)
 	fifo = new queue;
 	fifo->enqueue("Testbench");
 	fifo->enqueue("Performers...");
+	fifo->enqueue("Selection...");
 	fifo->enqueue("Sets...");
 	fifo->enqueue("Coords...");
 	fifo->enqueue("Undo/Redo...");
@@ -33,16 +34,19 @@ int mainmenu(void)
 			case 1:		// performers
 				excode = tbPerfs();
 				break;
-			case 2:		// sets
+			case 2:		// Selection
+				excode = tbSelect();
+				break;
+			case 3:		// sets
 				excode = tbSets();
 				break;
-			case 3:		// Coords
+			case 4:		// Coords
 				excode = tbCoords();
 				break;
-			case 4:		// undo/redo
+			case 5:		// undo/redo
 				excode = tbUnRedo();
 				break;
-			case 5:		// exit
+			case 6:		// exit
 				excode = 1;
 				break;
 		} 
@@ -206,7 +210,7 @@ int tbCoords(void)
 				excode = tbCoords_view();
 				break;
 			case 2:		// select dots
-				excode = tbCoords_select();
+				excode = tbSelect();
 				break;
 			case 3:		// change dots
 				excode = tbCoords_change();
@@ -222,7 +226,92 @@ int tbCoords_view(void)
 {
 	return 0;
 }
-int tbCoords_select(void)
+int tbSelect(void)
+{
+	queue *fifo;
+	int excode;
+	int mysel;
+
+	fifo = new queue;
+	fifo->enqueue("Selection");
+	fifo->enqueue("View Selects");
+	fifo->enqueue("Add Select");
+	fifo->enqueue("Remove Select");
+	fifo->enqueue("Select All");
+	fifo->enqueue("Select None");
+	fifo->enqueue("Back");
+
+	do
+	{
+		mysel = menu(fifo);
+		switch(mysel)
+		{
+			case 1:		// view
+				excode = tbSelect_view();
+				break;
+			case 2:		// add
+				excode = tbSelect_add();
+				break;
+			case 3:		// remove
+				excode = tbSelect_rem();
+				break;
+			case 4:		// Select all
+				// non-testbench
+				select_all();
+				break;
+			case 5:		// Select none
+				// non-testbench
+				select_discard();
+				break;
+			case 6:		// back
+				excode = 1;
+				break;
+		}
+	} while (excode == 0);
+	return 0;
+}
+
+
+
+int tbSelect_view(void)
+{
+	select_proto *selects = pshow->select;
+	coord_proto **coords = pshow->currset->coords;
+	perf_proto **perfs = pshow->perfs;
+	int i = 0;
+
+	while (selects)
+	{
+		cout << i << ":\t";
+		cout << coords[i]->x << ", ";
+		cout << coords[i]->y << " | valid = ";
+		cout << perfs[i]->valid << endl;
+		i = i + 1;
+		selects = selects->next;
+	}
+	return 0;
+}
+
+int tbSelect_add(void)
+{
+	queue *fifo;
+	char *select;
+	int excode;
+
+	select = new char [1];
+	fifo = new queue;
+
+	fifo->enqueue("Input dot to select: ");
+	fdialog(fifo);
+
+	fifo->dequeue(select);
+	excode = atoi(select);
+	delete [] select;
+	select_add(excode);
+
+	return 0;
+}
+int tbSelect_rem(void)
 {
 	return 0;
 }

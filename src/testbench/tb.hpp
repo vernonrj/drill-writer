@@ -19,6 +19,10 @@ int tbSets_add(void);
 int tbSets_del(void);
 
 int tbCoords_view(void);
-int tbCoords_select(void);
+int tbSelect(void);
 int tbCoords_change(void);
+
+int tbSelect_view(void);
+int tbSelect_add(void);
+int tbSelect_rem(void);
 
