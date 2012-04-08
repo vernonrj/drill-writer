@@ -174,10 +174,12 @@ int tbPerfs_attr(void)
 }
 int tbPerfs_add(void)
 {
+	add_perf();
 	return 0;
 }
 int tbPerfs_del(void)
 {
+	delete_perf_selected();
 	return 0;
 }
 
