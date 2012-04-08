@@ -370,6 +370,7 @@ void delete_perf_gtk(GtkWidget *widget)
 	int index;
 	struct select_proto *last;
 	struct perf_proto *perf;
+	int done;
 	if (!playing)
 	{
 		last = pshow->select;
@@ -377,6 +378,19 @@ void delete_perf_gtk(GtkWidget *widget)
 		{
 			// set dots as invalid
 			index = last->index;
+			perf = pshow->perfs[index];
+			if (last->next)
+			{
+				// more to delete
+				done = 0;
+			}
+			else
+			{
+				// no more to delete
+				done = 1;
+			}
+			pushPerfDel(&pshow->undobr, &perf, pshow->firstset, done);
+			// TODO: eventually have to unlink perf struct for undo
 			delete_perf(index);
 			// go to next performer
 			last = last->next;

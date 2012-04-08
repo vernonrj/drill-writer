@@ -121,31 +121,40 @@ int pushPerfMk(struct undo_proto **stack_r, int index, int done)
 	return 0;
 }
 
-int pushPerfDel(struct undo_proto **stack_r, struct perf_proto *oldperf, 
+int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r, 
 		struct set_proto *firstset, int done)
 {
 	// Perf to be deleted, push node onto stack
 	struct undo_proto *unredo;
 	struct set_proto *last;
+	struct perf_proto *perf = 0;
+	struct perf_proto *oldperf;
 	int i;
 	int index;
 	int excode;
+	int set_tot;
 
 
+	oldperf = *oldperf_r;
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (!unredo)
 	{
 		return -1;
 	}
+	index = oldperf->index;
 	unredo->set_num = setnum;
 	unredo->operation = 3;		// Performer removed
-	unredo->ud.sperf = oldperf;	// store performer data 
+	unredo->ud.sperf = *oldperf_r;	// store performer data 
+	excode = perf_construct(oldperf_r);
 	// store coordinates for performer
+	// get total number of sets
+	set_last();
 	unredo->coords = (struct coord_proto**)malloc(
 			setnum*sizeof(struct coord_proto*));
 	if (!unredo->coords)
 		return -1;
-	last = firstset;
+	goto_set(unredo->set_num);
+	last = pshow->firstset;
 	i = 0;
 	while (last != NULL)
 	{
@@ -349,40 +358,42 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			perfcurr = dshow->perfs[sourcebr->ud.pindex];
 			perfcurr->valid = 0;
 			done = sourcePop(&sourcebr);
-			excode = pushPerfDel(&destbr, perfcurr, dshow->firstset, done);
+			excode = pushPerfDel(&destbr, &perfcurr, dshow->firstset, done);
 			break;
 		case 3:		// perf was deleted
 			// re-add performer
 			index = add_perf();
 			if (index == -1)
 				return -1;
+			printf("ping\n");
 			perfcurr = dshow->perfs[index];
 			free(perfcurr->name);
 			free(perfcurr->symbol);
 			free(dshow->perfs[index]);
 			dshow->perfs[index] = sourcebr->ud.sperf;
-			sourcebr->ud.sperf->valid = 1;
+			perfcurr = sourcebr->ud.sperf;
+			sourcebr->ud.sperf = 0;
+			perfcurr->valid = 1;
+			perfcurr->index = index;
 			currset = dshow->firstset;
 			i = 0;
 			// re-add coordinates for performer
 			coords = currset->coords;
-			while (currset != NULL && coords[index] && sourcebr->coords[i])
+			printf("performer added @ %i\n", index);
+			while (currset != NULL)
 			{
 				coords[index]->x = sourcebr->coords[i]->x;
 				coords[index]->y = sourcebr->coords[i]->y;
+				printf("(x,y) @ %i = %.2f, %.2f\n", i, coords[index]->x, coords[index]->y);
 				free(sourcebr->coords[i]);
 				i++;
 				currset = currset->next;
 				if (currset)
 					coords = currset->coords;
 			}
-			// finish de-allocating if not done
-			while (sourcebr->coords[i])
-			{
-				free(sourcebr->coords[i]);
-				i++;
-			}
+			printf("ping\n");
 			free(sourcebr->coords);
+			dshow->perfs[index]->valid = 1;
 			done = sourcePop(&sourcebr);
 			excode = pushPerfMk(&destbr, index, done);
 			break;

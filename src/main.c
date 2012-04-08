@@ -561,13 +561,22 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 			workx = workx - coordx;
 			worky = worky - coordy;
 			distance = pow(workx, 2) + pow(worky, 2);
+			if (i == 0)
+			{
+				printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
+			}
 			if (distance < dist_threshold && pshow->perfs[i]->valid == 1)
 			{
 				// Found a closer dot
 				perf_cur = i;
 				dist_threshold = distance;
 				found_dot = 1;
+				if (i == 0)
+					printf("0 valid\n");
 			}
+			else if (pshow->perfs[i]->valid == 0 && i == 0)
+				printf("invalid at %i\n", i);
+
 		}
 		if (found_dot == 1)
 			select_add(perf_cur);
@@ -795,7 +804,7 @@ int buildIfacegtk(void)
 	{ "DelPerfAction", NULL,
 		"_Delete Performer", NULL,
 		"Delete a performer from the show",
-		G_CALLBACK (delete_perf) },
+		G_CALLBACK (delete_perf_gtk) },
 	{ "AddSetAction", NULL,
 		"_Add Set", NULL,
 		"Add a set to the show",

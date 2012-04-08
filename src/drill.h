@@ -247,7 +247,7 @@ int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r);
 int pushSetMk(struct undo_proto **stack_r);
 int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset);
 int pushPerfMk(struct undo_proto **stack_r, int index, int done);
-int pushPerfDel(struct undo_proto **stack_r, struct perf_proto *oldperf, 
+int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf, 
 		struct set_proto *firstset, int done);
 int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int done);
 int pushTempo(struct undo_proto **stack_r, int tempo);
