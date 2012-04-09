@@ -65,11 +65,13 @@ void scale_form(float s_step)
 	coords = pshow->currset->coords;
 	cx = pshow->center->x;
 	cy = pshow->center->y;
+	undo_tclose();
 	while (last != NULL)
 	{
 		// get coords for selected dot
 		index = last->index;
 		coord = coords[index];
+		pushPerfmv(&pshow->undobr, index, coord->x, coord->y, 0);
 		distx = cx - coord->x;
 		disty = cy - coord->y;
 		signx = distx < 0;
@@ -124,6 +126,7 @@ void rot_form(float s_step)
 	coords = pshow->currset->coords;
 	cx = pshow->center->x;
 	cy = pshow->center->y;
+	undo_tclose();
 	while (last != NULL)
 	{
 		// get coords for selected dot
@@ -131,6 +134,7 @@ void rot_form(float s_step)
 		coord = coords[index];
 		distx = cx - coord->x;
 		disty = cy - coord->y;
+		pushPerfmv(&pshow->undobr, index, coord->x, coord->y, 0);
 		if (distx != 0 || disty != 0)
 		{
 			signx = distx < 0;
