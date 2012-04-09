@@ -27,6 +27,7 @@ void change_counts (GtkWidget *widget)
 		count_buffer = atoi(entry_buffer);
 		if (count_buffer > 0)
 		{
+			pushCounts(&pshow->undobr, pshow->currset->counts);
 			pshow->currset->counts = count_buffer;
 			//counts[setnum] = count_buffer;
 		}
