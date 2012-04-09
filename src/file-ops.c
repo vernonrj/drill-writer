@@ -53,6 +53,63 @@ void open_file(void)
 
 void save_file(GtkWidget *widget)
 {
+	// save a file
+	// sets
+	struct set_proto *currset;
+	// performers
+	struct perf_proto **perfs;
+	// coordinates
+	struct coord_proto **coords;
+	// tempo
+	struct tempo_proto *tempo;
+	// file pointer
+	FILE *fp;
+	// loop var
+	int i, j;
+	int set_num = setnum;
+	int done;
+
+	// open file
+	set_first();
+	currset = pshow->firstset;
+	fp = fopen("save_file","w");
+	fprintf(fp, "name = %s\n", pshow->showname);
+	fprintf(fp, "info = %s\n", pshow->showinfo);
+	fprintf(fp, "perfnum = %i\n", pshow->perfnum);
+	fprintf(fp, "\n");
+	// store performers
+	perfs = pshow->perfs;
+	for (i=0; i<pshow->perfnum; i++)
+	{
+		fprintf(fp, "name = %s\n", perfs[i]->name);
+		fprintf(fp, "index = %i\n", perfs[i]->index);
+		fprintf(fp, "symbol = %s\n", perfs[i]->symbol);
+		fprintf(fp, "valid = %i\n", perfs[i]->valid);
+		fprintf(fp, "\n");
+	}
+	done = 0;
+	do
+	{
+		// store set info
+		coords = currset->coords;
+
+		fprintf(fp, "set = %i\n", setnum);
+		fprintf(fp, "counts = %i\n", currset->counts);
+		fprintf(fp, "tempo = %i\n", pshow->currtempo->tempo);
+		fprintf(fp, "coords:\n");
+		for(i=0; i<pshow->perfnum; i++)
+		{
+			fprintf(fp, "%i: %f %f\n", i, coords[i]->x, coords[i]->y);
+		}
+		fprintf(fp, "\n");
+		set_next();
+		if (currset->next == NULL)
+			done = 1;
+		currset = pshow->currset;
+	} while (done == 0);
+	fclose(fp);
+	return;
+
 	/*
 	FILE *fp;
 	int i, j;	// loop vars

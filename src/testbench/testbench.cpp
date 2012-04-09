@@ -14,9 +14,9 @@ int mainmenu(void)
 	// create testbench mainmenu
 	int mysel;
 	int excode;
-
 	queue *fifo;
 
+	// build menu
 	fifo = new queue;
 	fifo->enqueue("Testbench");
 	fifo->enqueue("Performers...");
