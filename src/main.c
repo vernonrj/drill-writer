@@ -719,6 +719,8 @@ int buildIfacegtk(void)
 	GtkWidget *box1;
 	GtkWidget *setbox;		// Set attributes go in this box
 	GtkWidget *perfbox;		// Dot attributes go in this box
+	GtkWidget *perfSSbox;
+	GtkWidget *perfFBbox;
 	GtkWidget *box3;
 	GtkWidget *menu_box;		// First-level packing box (for menus)
 	GtkWidget *media_box;		// For media buttons
@@ -729,6 +731,7 @@ int buildIfacegtk(void)
 	GtkWidget *separator;
 	GtkWidget *image;
 	GtkWidget *alignment;
+	GtkWidget *frame;
 	gchar *sbinfo;
 
 	// Field relation buttons
@@ -1014,6 +1017,11 @@ int buildIfacegtk(void)
 
 	// Set attributes (set, counts, tempo, etc)
 	setbox = gtk_hbox_new (FALSE, 5);	
+	/*
+	setbox = gtk_hbutton_box_new();
+       	gtk_button_box_set_layout(GTK_BUTTON_BOX(setbox), GTK_BUTTONBOX_START);
+	gtk_box_set_spacing(GTK_BOX(setbox), 20);
+	*/
 	// make alignment for sets
 	alignment = gtk_alignment_new(0.015,0.5, 0, 0);
 	gtk_container_add(GTK_CONTAINER(alignment), setbox);
@@ -1113,6 +1121,10 @@ int buildIfacegtk(void)
 
 
 	// Performer entry box
+	// put it in a frame
+	/*
+	frame = gtk_frame_new("performer");
+	*/
 	sprintf(perf_buf, "%i", perf_cur);
 	entry_perf = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf), 5);
@@ -1129,6 +1141,10 @@ int buildIfacegtk(void)
 
 	// Side-to-Side
 	// Field Step entry
+	frame = gtk_frame_new("side-to-side");
+	perfSSbox = gtk_hbox_new(FALSE, 5);
+	gtk_container_add(GTK_CONTAINER(frame), perfSSbox);
+	gtk_box_pack_start(GTK_BOX(perfbox), frame, FALSE, TRUE, 5);
 	sprintf(ss_buf, "%i", 0);
 	sidesideBtns.ssStepEntry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(sidesideBtns.ssStepEntry), 50);
@@ -1140,30 +1156,31 @@ int buildIfacegtk(void)
 			0, GTK_ENTRY(sidesideBtns.ssStepEntry)->text_length);
 	gtk_entry_set_alignment(GTK_ENTRY(sidesideBtns.ssStepEntry), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY(sidesideBtns.ssStepEntry), 4);
-	gtk_box_pack_start(GTK_BOX(perfbox), sidesideBtns.ssStepEntry, FALSE, TRUE, 0);
+	//gtk_box_pack_start(GTK_BOX(perfbox), sidesideBtns.ssStepEntry, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(perfSSbox), sidesideBtns.ssStepEntry, FALSE, TRUE, 0);
 
 	// yardline relation
 	sidesideBtns.ssYdRelButton = gtk_button_new_with_label ("inside");
 	g_signal_connect(sidesideBtns.ssYdRelButton,
 		       	"clicked", G_CALLBACK(toggle_ssYdRel), NULL);
-	gtk_box_pack_start(GTK_BOX (perfbox), 
-			sidesideBtns.ssYdRelButton, FALSE, FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX (perfbox), sidesideBtns.ssYdRelButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (perfSSbox), sidesideBtns.ssYdRelButton, FALSE, FALSE, 0);
 	gtk_widget_show(sidesideBtns.ssYdRelButton);
 
 	// side of the field
 	sidesideBtns.ssSide = gtk_button_new_with_label ("Side 1");
 	g_signal_connect(sidesideBtns.ssSide,
 		       	"clicked", G_CALLBACK(toggle_ssSide), NULL);
-	gtk_box_pack_start(GTK_BOX (perfbox), 
-			sidesideBtns.ssSide, FALSE, FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX (perfbox), sidesideBtns.ssSide, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (perfSSbox), sidesideBtns.ssSide, FALSE, FALSE, 0);
 	gtk_widget_show(sidesideBtns.ssSide);
 
 	// yardline
 	sidesideBtns.ssYdLine = gtk_button_new_with_label ("50");
 	g_signal_connect(sidesideBtns.ssYdLine,
 		       	"clicked", G_CALLBACK(toggle_ssYdLine), NULL);
-	gtk_box_pack_start(GTK_BOX (perfbox), 
-			sidesideBtns.ssYdLine, FALSE, FALSE, 5);
+	//gtk_box_pack_start(GTK_BOX (perfbox), sidesideBtns.ssYdLine, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX (perfSSbox), sidesideBtns.ssYdLine, FALSE, FALSE, 5);
 	gtk_widget_show(sidesideBtns.ssYdLine);
 
 
@@ -1172,7 +1189,14 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX(perfbox), separator, FALSE, TRUE, 0);
 	gtk_widget_show(separator);
 
+
 	// Front-To-Back
+	// frame
+	frame = gtk_frame_new("front-to-back");
+	perfFBbox = gtk_hbox_new(FALSE, 5);
+	gtk_container_add(GTK_CONTAINER(frame), perfFBbox);
+	gtk_box_pack_start(GTK_BOX(perfbox), frame, FALSE, TRUE, 5);
+
 	// Field Step entry
 	sprintf(fb_buf, "%i", 0);
 	frbkBtns.fbStepEntry = gtk_entry_new();
@@ -1185,30 +1209,31 @@ int buildIfacegtk(void)
 			0, GTK_ENTRY(frbkBtns.fbStepEntry)->text_length);
 	gtk_entry_set_alignment(GTK_ENTRY(frbkBtns.fbStepEntry), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY(frbkBtns.fbStepEntry), 4);
-	gtk_box_pack_start(GTK_BOX(perfbox), frbkBtns.fbStepEntry, FALSE, TRUE, 0);
+	//gtk_box_pack_start(GTK_BOX(perfbox), frbkBtns.fbStepEntry, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(perfFBbox), frbkBtns.fbStepEntry, FALSE, TRUE, 0);
 
 	// Hash relation button
 	frbkBtns.fbHashRelButton = gtk_button_new_with_label ("inside");
 	g_signal_connect(frbkBtns.fbHashRelButton,
 		       	"clicked", G_CALLBACK(toggle_fbHashRel), NULL);
-	gtk_box_pack_start(GTK_BOX (perfbox), 
-			frbkBtns.fbHashRelButton, FALSE, FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX (perfbox), frbkBtns.fbHashRelButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (perfFBbox), frbkBtns.fbHashRelButton, FALSE, FALSE, 0);
 	gtk_widget_show(frbkBtns.fbHashRelButton);
 
 	// Front/Back toggle button
 	frbkBtns.fbToggleButton = gtk_button_new_with_label ("Front");
 	g_signal_connect(frbkBtns.fbToggleButton,
 		       	"clicked", G_CALLBACK(toggle_fbFrontBack), NULL);
-	gtk_box_pack_start(GTK_BOX (perfbox), 
-			frbkBtns.fbToggleButton, FALSE, FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX (perfbox), frbkBtns.fbToggleButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (perfFBbox), frbkBtns.fbToggleButton, FALSE, FALSE, 0);
 	gtk_widget_show(frbkBtns.fbToggleButton);
 
 	// Hash/Sideline toggle button
 	frbkBtns.HashSideButton = gtk_button_new_with_label ("Sideline");
 	g_signal_connect(frbkBtns.HashSideButton,
 		       	"clicked", G_CALLBACK(toggle_HashSide), NULL);
-	gtk_box_pack_start(GTK_BOX (perfbox), 
-			frbkBtns.HashSideButton, FALSE, FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX (perfbox), frbkBtns.HashSideButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (perfFBbox), frbkBtns.HashSideButton, FALSE, FALSE, 0);
 	gtk_widget_show(frbkBtns.HashSideButton);
 
 
@@ -1332,6 +1357,8 @@ int buildIfacegtk(void)
 	gtk_widget_show(box0);
 	gtk_widget_show(box1);
 	gtk_widget_show(setbox);
+	gtk_widget_show(perfSSbox);
+	gtk_widget_show(perfFBbox);
 	gtk_widget_show(perfbox);
 	//gtk_widget_show(box3);
 	gtk_widget_show(media_box);
