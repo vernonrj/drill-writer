@@ -101,27 +101,28 @@ int tbSets(void)
 	// testbench for sets
 	queue *fifo;
 	int mysel;
-	int excode;
+	int excode = 0;
 	char *set_buf;
 	
-	fifo = new queue;
 
 	do
 	{
-	set_buf = new char [20];
-	sprintf(set_buf, "Set (%i)", setnum);
-	fifo->enqueue(set_buf);
-	delete [] set_buf;
-	fifo->enqueue("Attributes...");
-	fifo->enqueue("Next");
-	fifo->enqueue("Prev");
-	fifo->enqueue("First");
-	fifo->enqueue("Last");
-	fifo->enqueue("Coords...");
-	fifo->enqueue("Add");
-	fifo->enqueue("Delete");
-	fifo->enqueue("Back");
+		fifo = new queue;
+		set_buf = new char [20];
+		sprintf(set_buf, "Set (%i)", setnum);
+		fifo->enqueue(set_buf);
+		delete [] set_buf;
+		fifo->enqueue("Attributes...");
+		fifo->enqueue("Next");
+		fifo->enqueue("Prev");
+		fifo->enqueue("First");
+		fifo->enqueue("Last");
+		fifo->enqueue("Coords...");
+		fifo->enqueue("Add");
+		fifo->enqueue("Delete");
+		fifo->enqueue("Back");
 		mysel = menu(fifo);
+		delete fifo;
 		switch(mysel)
 		{
 			case 1:		// attributes
@@ -152,12 +153,9 @@ int tbSets(void)
 				excode = 1;
 				break;
 		}
-		fifo->discard();
 	} while (excode == 0);
 
 
-	delete fifo;
-	return 0;
 	return 0;
 }
 
@@ -278,22 +276,23 @@ int tbSelect_view(void)
 	coord_proto **coords = pshow->currset->coords;
 	perf_proto **perfs = pshow->perfs;
 	int i = 0;
+	int index;
 
 	while (selects)
 	{
-		if (perfs[i]->valid == 1)
+		index = selects->index;
+		if (perfs[index]->valid == 1)
 		{
-			cout << i << ":\t";
-			cout << coords[i]->x << ", ";
-			cout << coords[i]->y << " | valid = ";
-			cout << perfs[i]->valid << endl;
+			cout << index << ":\t";
+			cout << coords[index]->x << ", ";
+			cout << coords[index]->y << " | valid = ";
+			cout << perfs[index]->valid << endl;
 		}
-		else if (perfs[i]->valid != 0)
+		else if (perfs[index]->valid != 0)
 		{
 			cout << "ERR: valid not 0 or 1" << endl;
-			cout << "on dot " << i << endl;
+			cout << "on dot " << index << endl;
 		}
-		i = i + 1;
 		selects = selects->next;
 	}
 	return 0;

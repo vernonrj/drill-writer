@@ -1397,6 +1397,8 @@ int main (int argc, char *argv[])
 	// Run Main Loop
 	gtk_main();
 	// */
+	
+	show_destroy(&pshow);
 
 	return 0;
 }

@@ -542,6 +542,9 @@ int show_destroy(struct headset_proto **dshow_r)
 	// undo/redo
 	struct undo_proto *undcurr;
 	struct undo_proto *undlast;
+	// tempo
+	struct tempo_proto *tcurr;
+	struct tempo_proto *tlast;
 	
 	// get show
 	dshow = *dshow_r;
@@ -558,7 +561,7 @@ int show_destroy(struct headset_proto **dshow_r)
 	{
 		setlast = setcurr;
 		setcurr = setcurr->next;
-		set_cldestroy(&setlast);
+		set_cldestroy(&setlast, perfnum);
 		snum = snum + 1;
 	}
 	// delete performers
@@ -581,11 +584,21 @@ int show_destroy(struct headset_proto **dshow_r)
 		select = sellast;
 	}
 	// delete undo
-	undo_destroy(&dshow->undobr);
-	undlast = dshow->undobr;
-	undo_destroy(&dshow->undobr);
-	undo_destroy(&dshow->redobr);
-
+	undo_destroy(&dshow->undobr, dshow);
+	undo_destroy(&dshow->redobr, dshow);
+	// delete tempo
+	tlast = dshow->currtempo;
+	if (tlast)
+	{
+		while (tlast->prev)
+			tlast = tlast->prev;
+		while (tlast)
+		{
+			tcurr = tlast->next;
+			free(tlast);
+			tlast = tcurr;
+		}
+	}
 	// delete last piece
 	free(dshow);
 	*dshow_r = 0;
@@ -593,7 +606,7 @@ int show_destroy(struct headset_proto **dshow_r)
 }
 
 
-int undo_destroy(struct undo_proto **undlast_r)
+int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow)
 {
 	struct undo_proto *undlast;
 	struct undo_proto *undcurr;
@@ -601,6 +614,7 @@ int undo_destroy(struct undo_proto **undlast_r)
 	int undop;
 	int snum;
 	struct perf_proto *pcurr;
+	int perfnum = dshow->perfnum;
 	undlast = *undlast_r;
 	while (undlast != NULL)
 	{
@@ -611,7 +625,7 @@ int undo_destroy(struct undo_proto **undlast_r)
 			case 0:		// set created
 				break;
 			case 1:		// set destroyed
-				set_cldestroy(&undcurr->ud.set);
+				set_cldestroy(&undcurr->ud.set, perfnum);
 				break;
 			case 2:		// perf added
 				break;
@@ -642,10 +656,9 @@ int undo_destroy(struct undo_proto **undlast_r)
 
 
 
-int set_cldestroy(struct set_proto **setcurr_r)
+int set_cldestroy(struct set_proto **setcurr_r, int perfnum)
 {
 	int i;
-	int perfnum;
 	struct set_proto *setcurr;
 	struct coord_proto **coords;
 
