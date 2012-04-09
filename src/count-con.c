@@ -154,8 +154,7 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	// store coordinates for performer
 	// get total number of sets
 	set_last();
-	unredo->coords = (struct coord_proto**)malloc(
-			setnum*sizeof(struct coord_proto*));
+	unredo->coords = (struct coord_proto**)malloc((setnum+1)*sizeof(struct coord_proto*));
 	if (!unredo->coords)
 		return -1;
 	goto_set(unredo->set_num);
@@ -165,8 +164,7 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	for (i=0; last != NULL; i++, last = last->next)
 	{
 		unredo->coords[i] = last->coords[index];
-		last->coords[index] = (struct coord_proto*)malloc(
-				sizeof(struct coord_proto));
+		last->coords[index] = (struct coord_proto*)malloc(sizeof(struct coord_proto));
 		if (!last->coords[index])
 			return -1;
 		last->coords[index]->x = 0;
@@ -264,6 +262,7 @@ int sourcePop(struct undo_proto **sourcebr_r)
 		return 1;
 	dscard = *sourcebr_r;
 	sourcebr = sourcebr->next;
+	*sourcebr_r = sourcebr;
 	done = dscard->done;
 	free(dscard);
 	return done;
@@ -438,5 +437,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			done = sourcePop(&sourcebr);
 			break;
 	}
+	*sourcebr_r = sourcebr;
+	*destbr_r = destbr;
 	return 0;
 }
