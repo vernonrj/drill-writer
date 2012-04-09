@@ -31,14 +31,13 @@ int movexy(float xoff, float yoff)
 	double tdiff;
 	time(&new_undo_timer);
  	tdiff = difftime(new_undo_timer, undo_timer);
+	undo_timer = new_undo_timer;
 	// link up undoes that happen in less than a second
 	if (tdiff > 1)
 		undo_tclose();
 	while(selects != NULL)
 	{
 		retr_coord(coords[selects->index], &x, &y);
-		if (selects->next == NULL) 
-			done = 1;
 		pushPerfmv(&pshow->undobr, selects->index, x, y, done);
 		x = x + xoff;
 		y = y + yoff;

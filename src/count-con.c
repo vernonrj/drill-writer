@@ -36,7 +36,11 @@ void change_counts (GtkWidget *widget)
 // undo code
 void do_undo_gtk(GtkWidget *widget)
 {
-	popFromStack(pshow, &pshow->undobr, &pshow->redobr);
+	int done;
+	do
+	{
+		done = popFromStack(pshow, &pshow->undobr, &pshow->redobr);
+	} while (done == 0);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	return;
 }
@@ -284,7 +288,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	struct tempo_proto *tempo;
 	int operation;			// specified operation
 	int excode;
-	int done;
+	int done = 1;
 	int index;
 	float x, y;			// coords for moving dot
 	float xold, yold;
@@ -293,7 +297,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	// get operation
 	sourcebr = *sourcebr_r;
 	if (!sourcebr)
-		return 0;
+		return 1;
 	destbr = *destbr_r;
 	operation = sourcebr->operation;
 	currset = dshow->firstset;
@@ -439,7 +443,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	}
 	*sourcebr_r = sourcebr;
 	*destbr_r = destbr;
-	return 0;
+	return done;
 }
 
 void undo_tclose(void)
