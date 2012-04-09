@@ -441,3 +441,16 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	*destbr_r = destbr;
 	return 0;
 }
+
+void undo_tclose(void)
+{
+	struct undo_proto *undobr;
+	undobr = pshow->undobr;
+	if (undobr != NULL)
+	{
+		// close undo cascade
+		undobr->done = 1;
+	}
+	return;
+}
+

@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 //#include <gtk/gtk.h>
 //#include <glib.h>
 //#include <cairo.h>
@@ -27,6 +28,7 @@ double step;			// size of 8:5 step in window
 int expose_flag;
 float zoom_x;
 float zoom_y;
+time_t undo_timer;
 //int tempo; // tempo
 /*
 GtkWidget *window;		// Everything goes in here
@@ -265,6 +267,7 @@ int pushCounts(struct undo_proto **stack_r, int counts);
 int sourcePop(struct undo_proto **sourcebr_r);
 int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		struct undo_proto **destbr_r);
+void undo_tclose(void);
 
 // drawfield.c
 /*

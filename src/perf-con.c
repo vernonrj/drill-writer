@@ -512,6 +512,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// init undo/redo to NULL
 	dshow->undobr = 0;
 	dshow->redobr = 0;
+	time(&undo_timer);
 
 	// start at the beginning of the set
 	dshow->step = 0;

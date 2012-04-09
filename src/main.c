@@ -26,9 +26,20 @@ int movexy(float xoff, float yoff)
 	float x, y;
 	struct coord_proto **coords = pshow->currset->coords;
 	struct select_proto *selects = pshow->select;
+	int done = 0;
+	time_t new_undo_timer;
+	double tdiff;
+	time(&new_undo_timer);
+ 	tdiff = difftime(new_undo_timer, undo_timer);
+	// link up undoes that happen in less than a second
+	if (tdiff > 1)
+		undo_tclose();
 	while(selects != NULL)
 	{
 		retr_coord(coords[selects->index], &x, &y);
+		if (selects->next == NULL) 
+			done = 1;
+		pushPerfmv(&pshow->undobr, selects->index, x, y, done);
 		x = x + xoff;
 		y = y + yoff;
 		set_coord(coords[selects->index], x, y);
@@ -1384,9 +1395,9 @@ int main (int argc, char *argv[])
 	pshow->prevset = 0;
 
 	perf_cur = 0;
-	foo();
+	//foo();
 
-	/*
+	///*
 	// Start up gtk
 	startTk(argc, argv);
 	// Create gtk interface
