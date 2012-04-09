@@ -46,6 +46,11 @@ void do_undo_gtk(GtkWidget *widget)
 }
 void do_redo_gtk(GtkWidget *widget)
 {
+	int done;
+	do
+	{
+		done = popFromStack(pshow, &pshow->redobr, &pshow->undobr);
+	} while (done == 0);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	return;
 }
