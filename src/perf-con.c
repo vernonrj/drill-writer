@@ -761,15 +761,19 @@ int newset_create(struct set_proto *curr)
 	// make a new set at a point right after index
 	int i;
 	int excode;
+	int mid = 0;
+	float x, y;
 
 	// set structures
 	struct set_proto *sets;
 	struct set_proto *last;
 	struct set_proto *fset;
+	struct set_proto *nextset;
 
 	// coordinates
 	struct coord_proto **coords;
 	struct coord_proto **pcoords;
+	struct coord_proto **ncoords;
 
 	sets = 0;
 	last = 0;
@@ -787,6 +791,7 @@ int newset_create(struct set_proto *curr)
 		curr = pshow->firstset;
 		pshow->firstset = last;
 		pcoords = curr->coords;
+		
 		coords = last->coords;
 		for (i=0; i<pshow->perfnum; i++)
 		{
@@ -801,20 +806,48 @@ int newset_create(struct set_proto *curr)
 		// allocate new set
 		pcoords = curr->coords;
 		coords = last->coords;
+		nextset = curr->next;
+		if (nextset && pshow->step)
+		{
+			ncoords = nextset->coords;
+			mid = 1;
+		}
 		for (i=0; i<pshow->perfnum; i++)
 		{
 			// Copy previous dots into new set
-			coords[i]->x = pcoords[i]->x;
-			coords[i]->y = pcoords[i]->y;
+			if (mid)
+			{
+				x = (ncoords[i]->x - pcoords[i]->x) / nextset->counts;
+				coords[i]->x = x*pshow->step + pcoords[i]->x;
+				y = (ncoords[i]->y - pcoords[i]->y) / nextset->counts;
+				coords[i]->y = y*pshow->step + pcoords[i]->y;
+			}
+			else
+			{
+				coords[i]->x = pcoords[i]->x;
+				coords[i]->y = pcoords[i]->y;
+			}
 		}
+		if (mid)
+		{
+			nextset->counts = nextset->counts - pshow->step;
+			printf("nextset = %i\n", nextset->counts);
+			last->counts = pshow->step;
+			printf("current set = %i\n", last->counts);
+			pshow->step = 0;
+		}
+		else
+			last->counts = curr->counts;
 		// link
 		last->next = curr->next;
 		curr->next = last;
 		// set counts
-		if (curr->counts == 0)
-			last->counts = 1;
-		else
+		if (last->counts == 0)
+		{
 			last->counts = curr->counts;
+			if (last->counts == 0)
+				last->counts = 1;
+		}
 	}
 
 	return 0;

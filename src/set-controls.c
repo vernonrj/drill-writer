@@ -75,6 +75,7 @@ void add_set_gtk(GtkWidget *widget)
 	if (!playing)
 	{
 		add_set();
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 	return;
 }
