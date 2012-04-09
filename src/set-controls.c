@@ -250,7 +250,7 @@ void change_tempo(int tempo, struct tempo_proto **currtempo_r)
 	if (tempo >= 30 && tempo <= 250)
 	{
 		// Tempo is valid. Make changes thusly
-
+		pushTempo(&pshow->undobr, currtempo->tempo);
 		if (currtempo->anchorpoint == setnum)
 		{
 			// changing an existing tempo
