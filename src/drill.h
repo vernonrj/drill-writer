@@ -386,6 +386,9 @@ void delete_perf_selected(void);
 void delete_perf(struct perf_proto *perf);
 // create container for show
 int show_construct(struct headset_proto **dshow_r, int perfs);
+int undo_destroy(struct undo_proto **undlast_r);
+int show_destroy(struct headset_proto **dshow_r);
+int set_cldestroy(struct set_proto **setcurr_r);
 int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);
 // create a set with a given amount of performers
 int set_construct(struct set_proto **sets_r, int perfs);

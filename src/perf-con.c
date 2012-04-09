@@ -520,6 +520,152 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	return 0;
 }
 
+int show_destroy(struct headset_proto **dshow_r)
+{
+	int i, j;
+	int perfnum;
+	int undop;
+	int snum;
+	// show
+	struct headset_proto *dshow;
+	// performers
+	struct perf_proto **perfs;
+	struct perf_proto *pcurr;
+	// sets
+	struct set_proto *setcurr;
+	struct set_proto *setlast;
+	// coords
+	struct coord_proto **coords;
+	// selects
+	struct select_proto *select;
+	struct select_proto *sellast;
+	// undo/redo
+	struct undo_proto *undcurr;
+	struct undo_proto *undlast;
+	
+	// get show
+	dshow = *dshow_r;
+	perfnum = dshow->perfnum;
+	// free toplevel allocs
+	free(dshow->center);
+	free(dshow->showname);
+	free(dshow->showinfo);
+
+	// delete sets
+	setcurr = dshow->firstset;
+	snum = 0;
+	while (setcurr != NULL)
+	{
+		setlast = setcurr;
+		setcurr = setcurr->next;
+		set_cldestroy(&setlast);
+		snum = snum + 1;
+	}
+	// delete performers
+	perfs = pshow->perfs;
+	for (i=0; i<perfnum; i++)
+	{
+		// delete performers
+		pcurr = perfs[i];
+		free(pcurr->name);
+		free(pcurr->symbol);
+		free(perfs[i]);
+	}
+	free(perfs);
+	// delete selects
+	select = dshow->select;
+	while (select != NULL)
+	{
+		sellast = select->next;
+		free(select);
+		select = sellast;
+	}
+	// delete undo
+	undo_destroy(&dshow->undobr);
+	undlast = dshow->undobr;
+	undo_destroy(&dshow->undobr);
+	undo_destroy(&dshow->redobr);
+
+	// delete last piece
+	free(dshow);
+	*dshow_r = 0;
+	return 0;
+}
+
+
+int undo_destroy(struct undo_proto **undlast_r)
+{
+	struct undo_proto *undlast;
+	struct undo_proto *undcurr;
+	int i;
+	int undop;
+	int snum;
+	struct perf_proto *pcurr;
+	undlast = *undlast_r;
+	while (undlast != NULL)
+	{
+		undcurr = undlast;
+		undop = undcurr->operation;
+		switch(undop)
+		{
+			case 0:		// set created
+				break;
+			case 1:		// set destroyed
+				set_cldestroy(&undcurr->ud.set);
+				break;
+			case 2:		// perf added
+				break;
+			case 3:		// perf deleted
+				// TODO: need to track allocation in undo branch
+				for (i=0; i<snum; i++)
+					free(undcurr->coords[i]);
+				free(undcurr->coords);
+				pcurr = undcurr->ud.sperf;
+				free(pcurr->name);
+				free(pcurr->symbol);
+				free(undcurr->ud.sperf);
+				break;
+			case 4:		// perf moved
+				break;
+			case 5:		// tempo changed
+				break;
+			case 6:		// counts changed
+				break;
+		}
+		undlast = undlast->next;
+		free(undcurr);
+	}
+	*undlast_r = 0;
+	return 0;
+}
+
+
+
+
+int set_cldestroy(struct set_proto **setcurr_r)
+{
+	int i;
+	int perfnum;
+	struct set_proto *setcurr;
+	struct coord_proto **coords;
+
+	setcurr = *setcurr_r;
+	// delete sets
+	free(setcurr->name);
+	free(setcurr->info);
+	coords = setcurr->coords;
+	for (i=0; i<perfnum; i++)
+	{
+		// delete coords
+		free(coords[i]);
+	}
+	free(coords);
+	free(setcurr);
+	*setcurr_r = 0;
+	return 0;
+}
+
+
 // Tempo storage
 int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint)
 {
