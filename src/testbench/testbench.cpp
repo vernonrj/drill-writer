@@ -24,6 +24,8 @@ int mainmenu(void)
 	fifo->enqueue("Sets...");
 	fifo->enqueue("Coords...");
 	fifo->enqueue("Undo/Redo...");
+	fifo->enqueue("Open");
+	fifo->enqueue("Save");
 	fifo->enqueue("Quit");
 	do
 	{
@@ -46,7 +48,13 @@ int mainmenu(void)
 			case 5:		// undo/redo
 				excode = tbUnRedo();
 				break;
-			case 6:		// exit
+			case 6:		// Open
+				open_file();
+				break;
+			case 7:		// Save
+				//save_file();
+				break;
+			case 8:		// exit
 				excode = 1;
 				break;
 		} 

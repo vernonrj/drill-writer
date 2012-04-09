@@ -1388,9 +1388,9 @@ int main (int argc, char *argv[])
 	pshow->prevset = 0;
 
 	perf_cur = 0;
-	//foo();
+	foo();
 
-	///*
+	/*
 	// Start up gtk
 	startTk(argc, argv);
 	// Create gtk interface

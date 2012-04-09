@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
 //#include <gtk/gtk.h>
 //#include <glib.h>
 //#include <cairo.h>
@@ -298,6 +299,7 @@ static void entry_toggle_visibility(GtkWidget *checkbutton, GtkWidget *entry);
 */
 
 // file-ops.c
+int file_getline(FILE *fp, char **buffer_r);
 void open_file(void);
 /*
 void save_file(GtkWidget *widget);
