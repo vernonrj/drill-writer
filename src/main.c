@@ -1013,12 +1013,13 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX (menu_box), box0, TRUE, TRUE, 0);
 
 	// Set attributes (set, counts, tempo, etc)
-	setbox = gtk_hbox_new (FALSE, 0);	
+	setbox = gtk_hbox_new (FALSE, 5);	
 	// make alignment for sets
 	alignment = gtk_alignment_new(0.015,0.5, 0, 0);
 	gtk_container_add(GTK_CONTAINER(alignment), setbox);
 
 	gtk_box_pack_start(GTK_BOX (box0), alignment, FALSE, FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new ("Set:");
 	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
@@ -1096,7 +1097,7 @@ int buildIfacegtk(void)
 	// draw the field the first time
 	do_field=1;
 
-	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
+	perfbox = gtk_hbox_new (FALSE, 5);	// Dot attributes
 	// make alignment for performers
 	alignment = gtk_alignment_new(0.015, 0.5, 0, 0);
 	gtk_container_add(GTK_CONTAINER(alignment), perfbox);
@@ -1120,7 +1121,7 @@ int buildIfacegtk(void)
 	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf), 4);
-	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 5);
 
 	separator = gtk_vseparator_new();
 	gtk_box_pack_start(GTK_BOX(perfbox), separator, FALSE, TRUE, 0);
@@ -1162,9 +1163,14 @@ int buildIfacegtk(void)
 	g_signal_connect(sidesideBtns.ssYdLine,
 		       	"clicked", G_CALLBACK(toggle_ssYdLine), NULL);
 	gtk_box_pack_start(GTK_BOX (perfbox), 
-			sidesideBtns.ssYdLine, FALSE, FALSE, 0);
+			sidesideBtns.ssYdLine, FALSE, FALSE, 5);
 	gtk_widget_show(sidesideBtns.ssYdLine);
 
+
+	// another separator
+	separator = gtk_vseparator_new();
+	gtk_box_pack_start(GTK_BOX(perfbox), separator, FALSE, TRUE, 0);
+	gtk_widget_show(separator);
 
 	// Front-To-Back
 	// Field Step entry
