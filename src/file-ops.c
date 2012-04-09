@@ -54,6 +54,7 @@ int file_getline(FILE *fp, char **buffer_r)
 			size = size+def_size;
 			buffer = (char*)malloc(size*sizeof(char));
 			strcpy(buffer, oldbuff);
+			free(oldbuff);
 		}
 		buffer[index] = cq;
 		index++;
@@ -93,6 +94,7 @@ void open_file(void)
 	struct perf_proto *perf;
 	struct set_proto *currset;
 	struct coord_proto **coords;
+
 
 	fp = fopen("save_file","r");
 	// get the name
@@ -149,34 +151,48 @@ void open_file(void)
 	}
 	perfnum_buffer[i-index] = '\0';
 	free(buffer);
-	perfnum = atoi(perfnum_buffer);
+	perfnum = atoi(perfnum_buffer) + 5;
 	// make the show
+	show_destroy(&pshow);
 	excode = show_construct(&pshow, perfnum);
-	printf("%s\n", perfnum_buffer);
+	//printf("%s\n", perfnum_buffer);
+	free(perfnum_buffer);
 	// store name
 	free(pshow->showname);
 	pshow->showname = (char*)malloc((strlen(name)+1)*sizeof(char));
 	strcpy(pshow->showname, name);
+	free(name);
 	// store info
 	free(pshow->showinfo);
 	pshow->showinfo = (char*)malloc((strlen(info)+1)*sizeof(char));
 	strcpy(pshow->showinfo, info);
+	free(info);
 
 	// pass whitespace
+	done = 0;
+	/*
 	do {
 		excode = file_getline(fp, &buffer);
-	} while (buffer[0] == '\0');
+		if (buffer[0] != '\0')
+			done = 1;
+		free(buffer);
+	} while (done == 0);
+	*/
 
+	buffer = (char*)malloc(sizeof(char));
 	// get performer info
 	perfs = pshow->perfs;
+	perf = perfs[0];
 	done = 0;
 	i = -1;
 	do
 	{
+		/*
 		if (i == -1)
 			perf = perfs[0];
 		else
 			perf = perfs[i];
+		*/
 		free(buffer);
 		excode = file_getline(fp, &buffer);
 		size = strlen(buffer);
@@ -201,10 +217,12 @@ void open_file(void)
 		{
 			data[j-index] = buffer[j];
 		}
+		data[j-index] = '\0';
 		if (!strcmp(operation, "name"))
 		{
 			// name
 			i++;
+			perf = perfs[i];
 			free(perf->name);
 			perf->name = (char*)malloc((size+1)*sizeof(char));
 			strcpy(perf->name, data);
@@ -240,6 +258,7 @@ void open_file(void)
 	{
 		free(buffer);
 		excode = file_getline(fp, &buffer);
+		//printf("buffer = %s\n", buffer);
 		size = strlen(buffer);
 		data = (char*)malloc((size+1)*sizeof(char));
 		operation = (char*)malloc((size+1)*sizeof(char));
@@ -263,6 +282,7 @@ void open_file(void)
 		{
 			data[i-index] = buffer[i];
 		}
+		data[i-index] = '\0';
 		// find correct operation
 		if (!strcmp(operation, "set"))
 		{
@@ -284,8 +304,10 @@ void open_file(void)
 		{
 			// tempo
 			change_tempo(atoi(data), &pshow->currtempo);
+			//printf("ping\n");
+
 		}
-		else if (!strcmp(operation, "coords"))
+		else if (!strcmp(operation, "coords:"))
 		{
 			// store coords
 			coords = currset->coords;
@@ -293,6 +315,8 @@ void open_file(void)
 			{
 				free(buffer);
 				excode = file_getline(fp, &buffer);
+				if (buffer[0] == '\0')
+					break;
 				size = strlen(buffer);
 				free(data);
 				data = (char*)malloc((size+1)*sizeof(char));
@@ -308,7 +332,7 @@ void open_file(void)
 				}
 				index = j;
 				// get first number
-				for (j=0; j<size && buffer[j] != ' '; j++)
+				for (j=j; j<size && buffer[j] != ' '; j++)
 				{
 					data[j-index] = buffer[j];
 				}
@@ -320,18 +344,23 @@ void open_file(void)
 				}
 				index = j;
 				// get second number
-				for (j=0; j<size; j++)
+				for (j=j; j<size; j++)
 				{
 					data[j-index] = buffer[j];
 				}
 				data[j-index] = '\0';
 				y = atof(data);
-				set_coord_valid(currset->coords, cnum, x, y);
+				//printf("(x,y) = %i %.2f %.2f\n", cnum, x, y);
+				set_coord(coords[i], x, y);
 			}
 		}
 		free(operation);
 		free(data);
 	} while (excode != 1);
+	free(buffer);
+	set_first();
+	update_tempo();
+	fclose(fp);
 		
 	return;
 }
@@ -401,6 +430,7 @@ void save_file(GtkWidget *widget)
 		fprintf(fp, "valid = %i\n", perfs[i]->valid);
 		fprintf(fp, "\n");
 	}
+	fprintf(fp, "sets:\n\n");
 	done = 0;
 	do
 	{
@@ -417,6 +447,7 @@ void save_file(GtkWidget *widget)
 		}
 		fprintf(fp, "\n");
 		set_next();
+		update_tempo();
 		if (currset->next == NULL)
 			done = 1;
 		currset = pshow->currset;
