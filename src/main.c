@@ -721,6 +721,7 @@ int buildIfacegtk(void)
 	GtkWidget *perfbox;		// Dot attributes go in this box
 	GtkWidget *perfSSbox;
 	GtkWidget *perfFBbox;
+	GtkWidget *perfEnbox;
 	GtkWidget *box3;
 	GtkWidget *menu_box;		// First-level packing box (for menus)
 	GtkWidget *media_box;		// For media buttons
@@ -1122,9 +1123,11 @@ int buildIfacegtk(void)
 
 	// Performer entry box
 	// put it in a frame
-	/*
 	frame = gtk_frame_new("performer");
-	*/
+	perfEnbox = gtk_hbox_new(FALSE, 5);
+	gtk_container_add(GTK_CONTAINER(frame), perfEnbox);
+	gtk_box_pack_start(GTK_BOX(perfbox), frame, FALSE, TRUE, 5);
+
 	sprintf(perf_buf, "%i", perf_cur);
 	entry_perf = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf), 5);
@@ -1133,7 +1136,8 @@ int buildIfacegtk(void)
 	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	gtk_entry_set_alignment(GTK_ENTRY (entry_perf), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf), 4);
-	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 5);
+	//gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 5);
+	gtk_box_pack_start (GTK_BOX (perfEnbox), entry_perf, FALSE, TRUE, 5);
 
 	separator = gtk_vseparator_new();
 	gtk_box_pack_start(GTK_BOX(perfbox), separator, FALSE, TRUE, 0);
@@ -1357,6 +1361,7 @@ int buildIfacegtk(void)
 	gtk_widget_show(box0);
 	gtk_widget_show(box1);
 	gtk_widget_show(setbox);
+	gtk_widget_show(perfEnbox);
 	gtk_widget_show(perfSSbox);
 	gtk_widget_show(perfFBbox);
 	gtk_widget_show(perfbox);
