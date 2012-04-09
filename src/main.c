@@ -728,6 +728,7 @@ int buildIfacegtk(void)
 	GtkWidget *label;
 	GtkWidget *separator;
 	GtkWidget *image;
+	GtkWidget *alignment;
 	gchar *sbinfo;
 
 	// Field relation buttons
@@ -1013,47 +1014,23 @@ int buildIfacegtk(void)
 
 	// Set attributes (set, counts, tempo, etc)
 	setbox = gtk_hbox_new (FALSE, 0);	
-	gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
+	// make alignment for sets
+	alignment = gtk_alignment_new(0.015,0.5, 0, 0);
+	gtk_container_add(GTK_CONTAINER(alignment), setbox);
 
-	// create field canvas scroll container
-	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-	gtk_box_pack_start(GTK_BOX(box0), scrolled_window, TRUE, TRUE, 0);
-	gtk_widget_show(scrolled_window);
-
-	// get and pack canvas
-	drill = gtk_drill_new();
-	gtk_widget_set_size_request(drill, 801, 426);
-	gtk_scrolled_window_add_with_viewport(
-			GTK_SCROLLED_WINDOW(scrolled_window), drill);
-	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
-	//g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
-	// draw the field the first time
-	do_field=1;
-
-	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
-	gtk_box_pack_start(GTK_BOX (box0), perfbox, FALSE, FALSE, 0);
-
-
-	media_box = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
-
-	// Media Controls (First, prev, next, last)
-	box1 = gtk_hbox_new (FALSE, 0);	
-	gtk_box_pack_start(GTK_BOX (media_box), box1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (box0), alignment, FALSE, FALSE, 0);
 
 	label = gtk_label_new ("Set:");
 	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
 
-	// need to change these to spin buttons
+	// Set entry
 	sprintf(set_buf, "%i", setnum);
 	entry_sets = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_sets), 50);
 	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set_gtk), entry_sets);
 	gtk_entry_set_text (GTK_ENTRY (entry_sets), set_buf);
 	tmp_pos = GTK_ENTRY (entry_sets)->text_length;
+	gtk_editable_set_editable(GTK_EDITABLE(entry_sets), FALSE);
 	gtk_editable_select_region (GTK_EDITABLE (entry_sets),
 			0, GTK_ENTRY (entry_sets)->text_length);
 	gtk_entry_set_alignment (GTK_ENTRY (entry_sets), 1);
@@ -1064,10 +1041,10 @@ int buildIfacegtk(void)
 	//separator = gtk_vseparator_new ();
 	//gtk_box_pack_start (GTK_BOX (setbox), separator, FALSE, TRUE, 0);
 
+	// Count entry
 	label = gtk_label_new ("Counts:");
 	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
 
-	// need to change these to spin buttons
 	sprintf(count_buf, "%i", pshow->currset->counts);
 	entry_counts = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_counts), 50);
@@ -1100,6 +1077,54 @@ int buildIfacegtk(void)
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_tempo), 4);
 	gtk_box_pack_start(GTK_BOX(setbox), entry_tempo, FALSE, TRUE, 0);
 
+
+	// create field canvas scroll container
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+	gtk_box_pack_start(GTK_BOX(box0), scrolled_window, TRUE, TRUE, 0);
+	gtk_widget_show(scrolled_window);
+
+	// get and pack canvas
+	drill = gtk_drill_new();
+	gtk_widget_set_size_request(drill, 801, 426);
+	gtk_scrolled_window_add_with_viewport(
+			GTK_SCROLLED_WINDOW(scrolled_window), drill);
+	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
+	//g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
+	// draw the field the first time
+	do_field=1;
+
+	perfbox = gtk_hbox_new (FALSE, 0);	// Dot attributes
+	// make alignment for performers
+	alignment = gtk_alignment_new(0.015, 0.5, 0, 0);
+	gtk_container_add(GTK_CONTAINER(alignment), perfbox);
+	gtk_box_pack_start(GTK_BOX (box0), alignment, FALSE, FALSE, 0);
+
+
+	media_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
+
+	// Media Controls (First, prev, next, last)
+	box1 = gtk_hbox_new (FALSE, 0);	
+	gtk_box_pack_start(GTK_BOX (media_box), box1, FALSE, FALSE, 0);
+
+
+	// Performer entry box
+	sprintf(perf_buf, "%i", perf_cur);
+	entry_perf = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (entry_perf), 5);
+	g_signal_connect (entry_perf, "activate", G_CALLBACK (goto_perf), entry_perf);
+	gtk_entry_set_text (GTK_ENTRY (entry_perf), perf_buf);
+	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
+	gtk_entry_set_alignment(GTK_ENTRY (entry_perf), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf), 4);
+	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 0);
+
+	separator = gtk_vseparator_new();
+	gtk_box_pack_start(GTK_BOX(perfbox), separator, FALSE, TRUE, 0);
+	gtk_widget_show(separator);
 
 	// Side-to-Side
 	// Field Step entry
@@ -1186,15 +1211,6 @@ int buildIfacegtk(void)
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 	*/
 
-	sprintf(perf_buf, "%i", perf_cur);
-	entry_perf = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry_perf), 5);
-	g_signal_connect (entry_perf, "activate", G_CALLBACK (goto_perf), entry_perf);
-	gtk_entry_set_text (GTK_ENTRY (entry_perf), perf_buf);
-	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
-	gtk_entry_set_alignment(GTK_ENTRY (entry_perf), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf), 4);
-	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf, FALSE, TRUE, 0);
 	/*
 
 
