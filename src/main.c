@@ -753,9 +753,7 @@ int buildIfacegtk(void)
 
 	first_time = 1;
 
-
 	// Build the menu
-	// TODO: Gtk errors have something to do with menu
 	static GtkActionEntry entries[] =
 	{
 	{ "FileMenuAction", NULL, "_File" },	// name, stock id, label

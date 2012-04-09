@@ -37,3 +37,5 @@ drillwriter_LDFLAGS = $(GTK_LIBS) -lm
 drillwriter_CFLAGS = $(GTK_CFLAGS) 
 
 dist_noinst_SCRIPTS = autogen.sh
+
+EXTRA_DIST = menu-ui.xml
