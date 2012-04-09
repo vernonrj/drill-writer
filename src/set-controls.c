@@ -368,9 +368,17 @@ int isFirstSet(void)
 void add_set(void)
 {
 	// Add a set after the current one
+	struct set_proto *nextset;
+	int newcounts = 0;
+	nextset = pshow->currset->next;
+	if (nextset && pshow->step)
+		newcounts = nextset->counts;
 	newset_create(pshow->currset);
 	set_next();
+	if (newcounts)
+		pushCounts(&pshow->undobr, setnum, newcounts, 0);
 	pushSetMk(&pshow->undobr);
+
 	return;
 }
 

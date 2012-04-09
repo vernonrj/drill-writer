@@ -27,7 +27,7 @@ void change_counts (GtkWidget *widget)
 		count_buffer = atoi(entry_buffer);
 		if (count_buffer > 0)
 		{
-			pushCounts(&pshow->undobr, pshow->currset->counts);
+			pushCounts(&pshow->undobr, setnum, pshow->currset->counts, 1);
 			pshow->currset->counts = count_buffer;
 			//counts[setnum] = count_buffer;
 		}
@@ -38,10 +38,13 @@ void change_counts (GtkWidget *widget)
 void do_undo_gtk(GtkWidget *widget)
 {
 	int done;
+	int first_one = 2;
 	do
 	{
 		done = popFromStack(pshow, &pshow->undobr, &pshow->redobr);
-	} while (done == 0);
+		if (first_one)
+			first_one = first_one - 1;
+	} while ((done == 0 || first_one) && pshow->undobr);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	return;
 }
@@ -245,7 +248,7 @@ int pushTempo(struct undo_proto **stack_r, int tempo)
 	return 0;
 }
 
-int pushCounts(struct undo_proto **stack_r, int counts)
+int pushCounts(struct undo_proto **stack_r, int set_num, int counts, int done)
 {
 	// push counts change onto stack
 	struct undo_proto *unredo;
@@ -254,10 +257,11 @@ int pushCounts(struct undo_proto **stack_r, int counts)
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
 	{
-		unredo->set_num = setnum;
+		unredo->set_num = set_num;
 		unredo->operation = 6;		// counts changed
 		unredo->ud.counts = counts;	// store counts
-		unredo->done = 1;		// finished
+		unredo->done = done;		// finished
+		printf("push done = %i\n", done);
 		excode = pushToStack(unredo, stack_r);	// push
 
 		return excode;
@@ -449,10 +453,11 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			break;
 		case 6:		// count structure was changed
 			// change counts back
-			excode = pushCounts(&destbr, dshow->currset->counts);
+			excode = pushCounts(&destbr, setnum, dshow->currset->counts, 1);
 			if (excode != -1)
 				dshow->currset->counts = sourcebr->ud.counts;
 			done = sourcePop(&sourcebr);
+			printf("done = %i\n", done);
 			break;
 	}
 	*sourcebr_r = sourcebr;

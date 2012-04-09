@@ -763,6 +763,7 @@ int newset_create(struct set_proto *curr)
 	int excode;
 	int mid = 0;
 	float x, y;
+	int newcounts;
 
 	// set structures
 	struct set_proto *sets;
@@ -830,10 +831,10 @@ int newset_create(struct set_proto *curr)
 		}
 		if (mid)
 		{
+			// change counts to reflect a midset creation
+			newcounts = nextset->counts;
 			nextset->counts = nextset->counts - pshow->step;
-			printf("nextset = %i\n", nextset->counts);
 			last->counts = pshow->step;
-			printf("current set = %i\n", last->counts);
 			pshow->step = 0;
 		}
 		else

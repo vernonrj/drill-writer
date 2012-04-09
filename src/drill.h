@@ -264,7 +264,7 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf,
 		struct set_proto *firstset, int done);
 int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int done);
 int pushTempo(struct undo_proto **stack_r, int tempo);
-int pushCounts(struct undo_proto **stack_r, int counts);
+int pushCounts(struct undo_proto **stack_r, int set_num, int counts, int done);
 int sourcePop(struct undo_proto **sourcebr_r);
 int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		struct undo_proto **destbr_r);
