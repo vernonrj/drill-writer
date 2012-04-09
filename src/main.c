@@ -1315,6 +1315,7 @@ int buildIfacegtk(void)
 	gtk_widget_show(media_box);
 	gtk_widget_show(menu_box);
 	gtk_widget_show_all (window);
+	gtk_widget_grab_focus(scrolled_window);
 
 	return 0;
 }
