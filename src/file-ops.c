@@ -502,6 +502,7 @@ int wrap_load_dep(GtkWidget *widget)
 	// a wrapper for the deprecated load function
 	// interface with the old static array type
 	open_file();
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return 0;
 	int i, j;
 	float x, y;
