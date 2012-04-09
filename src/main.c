@@ -27,14 +27,6 @@ int movexy(float xoff, float yoff)
 	struct coord_proto **coords = pshow->currset->coords;
 	struct select_proto *selects = pshow->select;
 	int done = 0;
-	time_t new_undo_timer;
-	double tdiff;
-	time(&new_undo_timer);
- 	tdiff = difftime(new_undo_timer, undo_timer);
-	undo_timer = new_undo_timer;
-	// link up undoes that happen in less than a second
-	if (tdiff > 1)
-		undo_tclose();
 	while(selects != NULL)
 	{
 		retr_coord(coords[selects->index], &x, &y);
@@ -70,9 +62,11 @@ int align_dots(void)
 	struct coord_proto **coords = pshow->currset->coords;
 	struct select_proto *select = pshow->select;
 	float x, y;
+	int done = 0;
 	while (select != NULL)
 	{
 		retr_coord(coords[select->index], &x, &y);
+		pushPerfmv(&pshow->undobr, select->index, x, y, done);
 		x = roundf(x);
 		y = roundf(y);
 		set_coord(coords[select->index], x, y);

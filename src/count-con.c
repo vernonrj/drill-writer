@@ -53,12 +53,20 @@ int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
 {
 	// Push node to stack
 	struct undo_proto *stack;
+	time_t new_undo_timer;
+	double tdiff;
 	if (!unredo)
 		return -1;
+	time(&new_undo_timer);
+ 	tdiff = difftime(new_undo_timer, undo_timer);
+	undo_timer = new_undo_timer;
 	stack = *stack_r;
 
 	unredo->next = stack;
 	*stack_r = unredo;
+	// link up undoes that happen in less than a second
+	if (tdiff > 1)
+		undo_tclose();
 	return 0;
 }
 
