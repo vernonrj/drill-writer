@@ -573,7 +573,7 @@ int buildIfacegtk(void)
 	gtk_editable_select_region(GTK_EDITABLE(sidesideBtns.ssStepEntry),
 			0, GTK_ENTRY(sidesideBtns.ssStepEntry)->text_length);
 	gtk_entry_set_alignment(GTK_ENTRY(sidesideBtns.ssStepEntry), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY(sidesideBtns.ssStepEntry), 4);
+	gtk_entry_set_width_chars(GTK_ENTRY(sidesideBtns.ssStepEntry), 5);
 	//gtk_box_pack_start(GTK_BOX(perfbox), sidesideBtns.ssStepEntry, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(perfSSbox), sidesideBtns.ssStepEntry, FALSE, TRUE, 0);
 
@@ -626,7 +626,7 @@ int buildIfacegtk(void)
 	gtk_editable_select_region(GTK_EDITABLE(frbkBtns.fbStepEntry),
 			0, GTK_ENTRY(frbkBtns.fbStepEntry)->text_length);
 	gtk_entry_set_alignment(GTK_ENTRY(frbkBtns.fbStepEntry), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY(frbkBtns.fbStepEntry), 4);
+	gtk_entry_set_width_chars(GTK_ENTRY(frbkBtns.fbStepEntry), 5);
 	//gtk_box_pack_start(GTK_BOX(perfbox), frbkBtns.fbStepEntry, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(perfFBbox), frbkBtns.fbStepEntry, FALSE, TRUE, 0);
 

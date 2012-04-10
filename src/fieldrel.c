@@ -281,7 +281,7 @@ void xy_to_relation(float *x, float *y, char **buffer_r)
 	fbrel = getFronttoBack(x, y, &inorout, &frontback, &hashorside);
 	fbbuffer = (char*)malloc(21*sizeof(char));
 	snprintf(fbbuffer, 20, "%.2f", fbrel);
-	size = strlen(fbbuffer) + strlen(inorout) + strlen(frontback) + strlen(hashorside) + 6;
+	size = strlen(fbbuffer) + strlen(inorout) + strlen(frontback) + strlen(hashorside) + 10;
 	frontback_relation = (char*)malloc(size*sizeof(char));
 	snprintf(frontback_relation, size-1, "%s %s %s %s", fbbuffer, inorout, frontback, hashorside);
 	free(fbbuffer);
@@ -289,11 +289,11 @@ void xy_to_relation(float *x, float *y, char **buffer_r)
 	free(frontback);
 	free(hashorside);
 
-	xbuff = (char*)malloc(20*sizeof(char));
-	ybuff = (char*)malloc(20*sizeof(char));
+	xbuff = (char*)malloc(21*sizeof(char));
+	ybuff = (char*)malloc(21*sizeof(char));
 	snprintf(xbuff, 20, "%.2f", coordx);
 	snprintf(ybuff, 20, "%.2f", coordy);
-	size = strlen(xbuff) + strlen(ybuff) + strlen(sideside_relation) + strlen(frontback_relation) + 20;
+	size = strlen(xbuff) + strlen(ybuff) + strlen(sideside_relation) + strlen(frontback_relation) + 25;
 	// put everything together
 	buffer = (char*)malloc(size*sizeof(char));
 	snprintf(buffer, size-1, "(%s, %s): %.2f %s %i %s", xbuff, ybuff, ssrel, sideside_relation, yardline, frontback_relation);
