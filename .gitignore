@@ -1,0 +1,21 @@
+# compiled source
+*.o
+*.gch
+drillwriter
+
+# lock files
+*.swp
+
+# local compile helpers
+Makefile
+m4/
+aclocal.m4
+libtool
+config.status
+config.log
+config.h.in~
+config.h
+autom4te.cache
+aclocal.m4
+.deps
+stamp-h1

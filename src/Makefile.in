@@ -49,12 +49,18 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_drillwriter_OBJECTS = drillwriter-count-con.$(OBJEXT) \
-	drillwriter-drawfield.$(OBJEXT) drillwriter-drill.$(OBJEXT) \
-	drillwriter-entry-con.$(OBJEXT) drillwriter-file-ops.$(OBJEXT) \
-	drillwriter-main.$(OBJEXT) drillwriter-media.$(OBJEXT) \
-	drillwriter-perf-con.$(OBJEXT) \
-	drillwriter-set-controls.$(OBJEXT) testbench.$(OBJEXT) \
+am_drillwriter_OBJECTS = drillwriter-coords.$(OBJEXT) \
+	drillwriter-fieldrel.$(OBJEXT) drillwriter-file-ops.$(OBJEXT) \
+	drillwriter-main.$(OBJEXT) drillwriter-perf-con.$(OBJEXT) \
+	drillwriter-select-con.$(OBJEXT) \
+	drillwriter-set-controls.$(OBJEXT) drillwriter-tempo.$(OBJEXT) \
+	drillwriter-undo.$(OBJEXT) drillwriter-file-ops-gtk.$(OBJEXT) \
+	drillwriter-coords-gtk.$(OBJEXT) \
+	drillwriter-main-gtk.$(OBJEXT) drillwriter-media-gtk.$(OBJEXT) \
+	drillwriter-perf-con-gtk.$(OBJEXT) \
+	drillwriter-set-controls-gtk.$(OBJEXT) \
+	drillwriter-draw_field.$(OBJEXT) \
+	drillwriter-drill-class.$(OBJEXT) testbench.$(OBJEXT) \
 	util.$(OBJEXT)
 drillwriter_OBJECTS = $(am_drillwriter_OBJECTS)
 drillwriter_LDADD = $(LDADD)
@@ -235,10 +241,14 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
-drillwriter_SOURCES = drill.h d_gtk.h testbench/tb.hpp testbench/util.hpp count-con.c \
-		      drawfield.c drill.c \
-		      entry-con.c file-ops.c main.c media.c \
-		      perf-con.c set-controls.c \
+drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.hpp \
+		      coords.c fieldrel.c file-ops.c \
+		      main.c perf-con.c \
+		      select-con.c set-controls.c tempo.c undo.c \
+		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
+		      gtk-drill/main-gtk.c gtk-drill/media-gtk.c gtk-drill/perf-con-gtk.c \
+		      gtk-drill/set-controls-gtk.c \
+		      gtk-drill/draw_field.c gtk-drill/drill-class.c \
 		      testbench/testbench.cpp testbench/util.cpp
 
 drillwriter_LDFLAGS = $(GTK_LIBS) -lm
@@ -332,15 +342,23 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-count-con.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-drawfield.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-drill.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-entry-con.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-coords-gtk.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-coords.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-draw_field.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-drill-class.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-fieldrel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-file-ops-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-file-ops.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-main-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-media.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-media-gtk.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-perf-con-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-perf-con.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-select-con.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-set-controls-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-set-controls.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-tempo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-undo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testbench.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 
@@ -365,61 +383,33 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-drillwriter-count-con.o: count-con.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-count-con.o -MD -MP -MF $(DEPDIR)/drillwriter-count-con.Tpo -c -o drillwriter-count-con.o `test -f 'count-con.c' || echo '$(srcdir)/'`count-con.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-count-con.Tpo $(DEPDIR)/drillwriter-count-con.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='count-con.c' object='drillwriter-count-con.o' libtool=no @AMDEPBACKSLASH@
+drillwriter-coords.o: coords.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-coords.o -MD -MP -MF $(DEPDIR)/drillwriter-coords.Tpo -c -o drillwriter-coords.o `test -f 'coords.c' || echo '$(srcdir)/'`coords.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-coords.Tpo $(DEPDIR)/drillwriter-coords.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coords.c' object='drillwriter-coords.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-count-con.o `test -f 'count-con.c' || echo '$(srcdir)/'`count-con.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-coords.o `test -f 'coords.c' || echo '$(srcdir)/'`coords.c
 
-drillwriter-count-con.obj: count-con.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-count-con.obj -MD -MP -MF $(DEPDIR)/drillwriter-count-con.Tpo -c -o drillwriter-count-con.obj `if test -f 'count-con.c'; then $(CYGPATH_W) 'count-con.c'; else $(CYGPATH_W) '$(srcdir)/count-con.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-count-con.Tpo $(DEPDIR)/drillwriter-count-con.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='count-con.c' object='drillwriter-count-con.obj' libtool=no @AMDEPBACKSLASH@
+drillwriter-coords.obj: coords.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-coords.obj -MD -MP -MF $(DEPDIR)/drillwriter-coords.Tpo -c -o drillwriter-coords.obj `if test -f 'coords.c'; then $(CYGPATH_W) 'coords.c'; else $(CYGPATH_W) '$(srcdir)/coords.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-coords.Tpo $(DEPDIR)/drillwriter-coords.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coords.c' object='drillwriter-coords.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-count-con.obj `if test -f 'count-con.c'; then $(CYGPATH_W) 'count-con.c'; else $(CYGPATH_W) '$(srcdir)/count-con.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-coords.obj `if test -f 'coords.c'; then $(CYGPATH_W) 'coords.c'; else $(CYGPATH_W) '$(srcdir)/coords.c'; fi`
 
-drillwriter-drawfield.o: drawfield.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drawfield.o -MD -MP -MF $(DEPDIR)/drillwriter-drawfield.Tpo -c -o drillwriter-drawfield.o `test -f 'drawfield.c' || echo '$(srcdir)/'`drawfield.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drawfield.Tpo $(DEPDIR)/drillwriter-drawfield.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='drawfield.c' object='drillwriter-drawfield.o' libtool=no @AMDEPBACKSLASH@
+drillwriter-fieldrel.o: fieldrel.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-fieldrel.o -MD -MP -MF $(DEPDIR)/drillwriter-fieldrel.Tpo -c -o drillwriter-fieldrel.o `test -f 'fieldrel.c' || echo '$(srcdir)/'`fieldrel.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-fieldrel.Tpo $(DEPDIR)/drillwriter-fieldrel.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fieldrel.c' object='drillwriter-fieldrel.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drawfield.o `test -f 'drawfield.c' || echo '$(srcdir)/'`drawfield.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-fieldrel.o `test -f 'fieldrel.c' || echo '$(srcdir)/'`fieldrel.c
 
-drillwriter-drawfield.obj: drawfield.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drawfield.obj -MD -MP -MF $(DEPDIR)/drillwriter-drawfield.Tpo -c -o drillwriter-drawfield.obj `if test -f 'drawfield.c'; then $(CYGPATH_W) 'drawfield.c'; else $(CYGPATH_W) '$(srcdir)/drawfield.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drawfield.Tpo $(DEPDIR)/drillwriter-drawfield.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='drawfield.c' object='drillwriter-drawfield.obj' libtool=no @AMDEPBACKSLASH@
+drillwriter-fieldrel.obj: fieldrel.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-fieldrel.obj -MD -MP -MF $(DEPDIR)/drillwriter-fieldrel.Tpo -c -o drillwriter-fieldrel.obj `if test -f 'fieldrel.c'; then $(CYGPATH_W) 'fieldrel.c'; else $(CYGPATH_W) '$(srcdir)/fieldrel.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-fieldrel.Tpo $(DEPDIR)/drillwriter-fieldrel.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fieldrel.c' object='drillwriter-fieldrel.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drawfield.obj `if test -f 'drawfield.c'; then $(CYGPATH_W) 'drawfield.c'; else $(CYGPATH_W) '$(srcdir)/drawfield.c'; fi`
-
-drillwriter-drill.o: drill.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drill.o -MD -MP -MF $(DEPDIR)/drillwriter-drill.Tpo -c -o drillwriter-drill.o `test -f 'drill.c' || echo '$(srcdir)/'`drill.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drill.Tpo $(DEPDIR)/drillwriter-drill.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='drill.c' object='drillwriter-drill.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drill.o `test -f 'drill.c' || echo '$(srcdir)/'`drill.c
-
-drillwriter-drill.obj: drill.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drill.obj -MD -MP -MF $(DEPDIR)/drillwriter-drill.Tpo -c -o drillwriter-drill.obj `if test -f 'drill.c'; then $(CYGPATH_W) 'drill.c'; else $(CYGPATH_W) '$(srcdir)/drill.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drill.Tpo $(DEPDIR)/drillwriter-drill.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='drill.c' object='drillwriter-drill.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drill.obj `if test -f 'drill.c'; then $(CYGPATH_W) 'drill.c'; else $(CYGPATH_W) '$(srcdir)/drill.c'; fi`
-
-drillwriter-entry-con.o: entry-con.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-entry-con.o -MD -MP -MF $(DEPDIR)/drillwriter-entry-con.Tpo -c -o drillwriter-entry-con.o `test -f 'entry-con.c' || echo '$(srcdir)/'`entry-con.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-entry-con.Tpo $(DEPDIR)/drillwriter-entry-con.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='entry-con.c' object='drillwriter-entry-con.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-entry-con.o `test -f 'entry-con.c' || echo '$(srcdir)/'`entry-con.c
-
-drillwriter-entry-con.obj: entry-con.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-entry-con.obj -MD -MP -MF $(DEPDIR)/drillwriter-entry-con.Tpo -c -o drillwriter-entry-con.obj `if test -f 'entry-con.c'; then $(CYGPATH_W) 'entry-con.c'; else $(CYGPATH_W) '$(srcdir)/entry-con.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-entry-con.Tpo $(DEPDIR)/drillwriter-entry-con.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='entry-con.c' object='drillwriter-entry-con.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-entry-con.obj `if test -f 'entry-con.c'; then $(CYGPATH_W) 'entry-con.c'; else $(CYGPATH_W) '$(srcdir)/entry-con.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-fieldrel.obj `if test -f 'fieldrel.c'; then $(CYGPATH_W) 'fieldrel.c'; else $(CYGPATH_W) '$(srcdir)/fieldrel.c'; fi`
 
 drillwriter-file-ops.o: file-ops.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-file-ops.o -MD -MP -MF $(DEPDIR)/drillwriter-file-ops.Tpo -c -o drillwriter-file-ops.o `test -f 'file-ops.c' || echo '$(srcdir)/'`file-ops.c
@@ -449,20 +439,6 @@ drillwriter-main.obj: main.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
-drillwriter-media.o: media.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-media.o -MD -MP -MF $(DEPDIR)/drillwriter-media.Tpo -c -o drillwriter-media.o `test -f 'media.c' || echo '$(srcdir)/'`media.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-media.Tpo $(DEPDIR)/drillwriter-media.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='media.c' object='drillwriter-media.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-media.o `test -f 'media.c' || echo '$(srcdir)/'`media.c
-
-drillwriter-media.obj: media.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-media.obj -MD -MP -MF $(DEPDIR)/drillwriter-media.Tpo -c -o drillwriter-media.obj `if test -f 'media.c'; then $(CYGPATH_W) 'media.c'; else $(CYGPATH_W) '$(srcdir)/media.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-media.Tpo $(DEPDIR)/drillwriter-media.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='media.c' object='drillwriter-media.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-media.obj `if test -f 'media.c'; then $(CYGPATH_W) 'media.c'; else $(CYGPATH_W) '$(srcdir)/media.c'; fi`
-
 drillwriter-perf-con.o: perf-con.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-perf-con.o -MD -MP -MF $(DEPDIR)/drillwriter-perf-con.Tpo -c -o drillwriter-perf-con.o `test -f 'perf-con.c' || echo '$(srcdir)/'`perf-con.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-perf-con.Tpo $(DEPDIR)/drillwriter-perf-con.Po
@@ -477,6 +453,20 @@ drillwriter-perf-con.obj: perf-con.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-perf-con.obj `if test -f 'perf-con.c'; then $(CYGPATH_W) 'perf-con.c'; else $(CYGPATH_W) '$(srcdir)/perf-con.c'; fi`
 
+drillwriter-select-con.o: select-con.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-select-con.o -MD -MP -MF $(DEPDIR)/drillwriter-select-con.Tpo -c -o drillwriter-select-con.o `test -f 'select-con.c' || echo '$(srcdir)/'`select-con.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-select-con.Tpo $(DEPDIR)/drillwriter-select-con.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='select-con.c' object='drillwriter-select-con.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-select-con.o `test -f 'select-con.c' || echo '$(srcdir)/'`select-con.c
+
+drillwriter-select-con.obj: select-con.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-select-con.obj -MD -MP -MF $(DEPDIR)/drillwriter-select-con.Tpo -c -o drillwriter-select-con.obj `if test -f 'select-con.c'; then $(CYGPATH_W) 'select-con.c'; else $(CYGPATH_W) '$(srcdir)/select-con.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-select-con.Tpo $(DEPDIR)/drillwriter-select-con.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='select-con.c' object='drillwriter-select-con.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-select-con.obj `if test -f 'select-con.c'; then $(CYGPATH_W) 'select-con.c'; else $(CYGPATH_W) '$(srcdir)/select-con.c'; fi`
+
 drillwriter-set-controls.o: set-controls.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-set-controls.o -MD -MP -MF $(DEPDIR)/drillwriter-set-controls.Tpo -c -o drillwriter-set-controls.o `test -f 'set-controls.c' || echo '$(srcdir)/'`set-controls.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-set-controls.Tpo $(DEPDIR)/drillwriter-set-controls.Po
@@ -490,6 +480,146 @@ drillwriter-set-controls.obj: set-controls.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='set-controls.c' object='drillwriter-set-controls.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-set-controls.obj `if test -f 'set-controls.c'; then $(CYGPATH_W) 'set-controls.c'; else $(CYGPATH_W) '$(srcdir)/set-controls.c'; fi`
+
+drillwriter-tempo.o: tempo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-tempo.o -MD -MP -MF $(DEPDIR)/drillwriter-tempo.Tpo -c -o drillwriter-tempo.o `test -f 'tempo.c' || echo '$(srcdir)/'`tempo.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-tempo.Tpo $(DEPDIR)/drillwriter-tempo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tempo.c' object='drillwriter-tempo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-tempo.o `test -f 'tempo.c' || echo '$(srcdir)/'`tempo.c
+
+drillwriter-tempo.obj: tempo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-tempo.obj -MD -MP -MF $(DEPDIR)/drillwriter-tempo.Tpo -c -o drillwriter-tempo.obj `if test -f 'tempo.c'; then $(CYGPATH_W) 'tempo.c'; else $(CYGPATH_W) '$(srcdir)/tempo.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-tempo.Tpo $(DEPDIR)/drillwriter-tempo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tempo.c' object='drillwriter-tempo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-tempo.obj `if test -f 'tempo.c'; then $(CYGPATH_W) 'tempo.c'; else $(CYGPATH_W) '$(srcdir)/tempo.c'; fi`
+
+drillwriter-undo.o: undo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-undo.o -MD -MP -MF $(DEPDIR)/drillwriter-undo.Tpo -c -o drillwriter-undo.o `test -f 'undo.c' || echo '$(srcdir)/'`undo.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-undo.Tpo $(DEPDIR)/drillwriter-undo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='undo.c' object='drillwriter-undo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-undo.o `test -f 'undo.c' || echo '$(srcdir)/'`undo.c
+
+drillwriter-undo.obj: undo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-undo.obj -MD -MP -MF $(DEPDIR)/drillwriter-undo.Tpo -c -o drillwriter-undo.obj `if test -f 'undo.c'; then $(CYGPATH_W) 'undo.c'; else $(CYGPATH_W) '$(srcdir)/undo.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-undo.Tpo $(DEPDIR)/drillwriter-undo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='undo.c' object='drillwriter-undo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-undo.obj `if test -f 'undo.c'; then $(CYGPATH_W) 'undo.c'; else $(CYGPATH_W) '$(srcdir)/undo.c'; fi`
+
+drillwriter-file-ops-gtk.o: gtk-drill/file-ops-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-file-ops-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-file-ops-gtk.Tpo -c -o drillwriter-file-ops-gtk.o `test -f 'gtk-drill/file-ops-gtk.c' || echo '$(srcdir)/'`gtk-drill/file-ops-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-file-ops-gtk.Tpo $(DEPDIR)/drillwriter-file-ops-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/file-ops-gtk.c' object='drillwriter-file-ops-gtk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-file-ops-gtk.o `test -f 'gtk-drill/file-ops-gtk.c' || echo '$(srcdir)/'`gtk-drill/file-ops-gtk.c
+
+drillwriter-file-ops-gtk.obj: gtk-drill/file-ops-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-file-ops-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-file-ops-gtk.Tpo -c -o drillwriter-file-ops-gtk.obj `if test -f 'gtk-drill/file-ops-gtk.c'; then $(CYGPATH_W) 'gtk-drill/file-ops-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/file-ops-gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-file-ops-gtk.Tpo $(DEPDIR)/drillwriter-file-ops-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/file-ops-gtk.c' object='drillwriter-file-ops-gtk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-file-ops-gtk.obj `if test -f 'gtk-drill/file-ops-gtk.c'; then $(CYGPATH_W) 'gtk-drill/file-ops-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/file-ops-gtk.c'; fi`
+
+drillwriter-coords-gtk.o: gtk-drill/coords-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-coords-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-coords-gtk.Tpo -c -o drillwriter-coords-gtk.o `test -f 'gtk-drill/coords-gtk.c' || echo '$(srcdir)/'`gtk-drill/coords-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-coords-gtk.Tpo $(DEPDIR)/drillwriter-coords-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/coords-gtk.c' object='drillwriter-coords-gtk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-coords-gtk.o `test -f 'gtk-drill/coords-gtk.c' || echo '$(srcdir)/'`gtk-drill/coords-gtk.c
+
+drillwriter-coords-gtk.obj: gtk-drill/coords-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-coords-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-coords-gtk.Tpo -c -o drillwriter-coords-gtk.obj `if test -f 'gtk-drill/coords-gtk.c'; then $(CYGPATH_W) 'gtk-drill/coords-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/coords-gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-coords-gtk.Tpo $(DEPDIR)/drillwriter-coords-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/coords-gtk.c' object='drillwriter-coords-gtk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-coords-gtk.obj `if test -f 'gtk-drill/coords-gtk.c'; then $(CYGPATH_W) 'gtk-drill/coords-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/coords-gtk.c'; fi`
+
+drillwriter-main-gtk.o: gtk-drill/main-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-main-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-main-gtk.Tpo -c -o drillwriter-main-gtk.o `test -f 'gtk-drill/main-gtk.c' || echo '$(srcdir)/'`gtk-drill/main-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-main-gtk.Tpo $(DEPDIR)/drillwriter-main-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/main-gtk.c' object='drillwriter-main-gtk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-main-gtk.o `test -f 'gtk-drill/main-gtk.c' || echo '$(srcdir)/'`gtk-drill/main-gtk.c
+
+drillwriter-main-gtk.obj: gtk-drill/main-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-main-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-main-gtk.Tpo -c -o drillwriter-main-gtk.obj `if test -f 'gtk-drill/main-gtk.c'; then $(CYGPATH_W) 'gtk-drill/main-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/main-gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-main-gtk.Tpo $(DEPDIR)/drillwriter-main-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/main-gtk.c' object='drillwriter-main-gtk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-main-gtk.obj `if test -f 'gtk-drill/main-gtk.c'; then $(CYGPATH_W) 'gtk-drill/main-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/main-gtk.c'; fi`
+
+drillwriter-media-gtk.o: gtk-drill/media-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-media-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-media-gtk.Tpo -c -o drillwriter-media-gtk.o `test -f 'gtk-drill/media-gtk.c' || echo '$(srcdir)/'`gtk-drill/media-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-media-gtk.Tpo $(DEPDIR)/drillwriter-media-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/media-gtk.c' object='drillwriter-media-gtk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-media-gtk.o `test -f 'gtk-drill/media-gtk.c' || echo '$(srcdir)/'`gtk-drill/media-gtk.c
+
+drillwriter-media-gtk.obj: gtk-drill/media-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-media-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-media-gtk.Tpo -c -o drillwriter-media-gtk.obj `if test -f 'gtk-drill/media-gtk.c'; then $(CYGPATH_W) 'gtk-drill/media-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/media-gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-media-gtk.Tpo $(DEPDIR)/drillwriter-media-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/media-gtk.c' object='drillwriter-media-gtk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-media-gtk.obj `if test -f 'gtk-drill/media-gtk.c'; then $(CYGPATH_W) 'gtk-drill/media-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/media-gtk.c'; fi`
+
+drillwriter-perf-con-gtk.o: gtk-drill/perf-con-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-perf-con-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-perf-con-gtk.Tpo -c -o drillwriter-perf-con-gtk.o `test -f 'gtk-drill/perf-con-gtk.c' || echo '$(srcdir)/'`gtk-drill/perf-con-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-perf-con-gtk.Tpo $(DEPDIR)/drillwriter-perf-con-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/perf-con-gtk.c' object='drillwriter-perf-con-gtk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-perf-con-gtk.o `test -f 'gtk-drill/perf-con-gtk.c' || echo '$(srcdir)/'`gtk-drill/perf-con-gtk.c
+
+drillwriter-perf-con-gtk.obj: gtk-drill/perf-con-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-perf-con-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-perf-con-gtk.Tpo -c -o drillwriter-perf-con-gtk.obj `if test -f 'gtk-drill/perf-con-gtk.c'; then $(CYGPATH_W) 'gtk-drill/perf-con-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/perf-con-gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-perf-con-gtk.Tpo $(DEPDIR)/drillwriter-perf-con-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/perf-con-gtk.c' object='drillwriter-perf-con-gtk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-perf-con-gtk.obj `if test -f 'gtk-drill/perf-con-gtk.c'; then $(CYGPATH_W) 'gtk-drill/perf-con-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/perf-con-gtk.c'; fi`
+
+drillwriter-set-controls-gtk.o: gtk-drill/set-controls-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-set-controls-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-set-controls-gtk.Tpo -c -o drillwriter-set-controls-gtk.o `test -f 'gtk-drill/set-controls-gtk.c' || echo '$(srcdir)/'`gtk-drill/set-controls-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-set-controls-gtk.Tpo $(DEPDIR)/drillwriter-set-controls-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/set-controls-gtk.c' object='drillwriter-set-controls-gtk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-set-controls-gtk.o `test -f 'gtk-drill/set-controls-gtk.c' || echo '$(srcdir)/'`gtk-drill/set-controls-gtk.c
+
+drillwriter-set-controls-gtk.obj: gtk-drill/set-controls-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-set-controls-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-set-controls-gtk.Tpo -c -o drillwriter-set-controls-gtk.obj `if test -f 'gtk-drill/set-controls-gtk.c'; then $(CYGPATH_W) 'gtk-drill/set-controls-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/set-controls-gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-set-controls-gtk.Tpo $(DEPDIR)/drillwriter-set-controls-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/set-controls-gtk.c' object='drillwriter-set-controls-gtk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-set-controls-gtk.obj `if test -f 'gtk-drill/set-controls-gtk.c'; then $(CYGPATH_W) 'gtk-drill/set-controls-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/set-controls-gtk.c'; fi`
+
+drillwriter-draw_field.o: gtk-drill/draw_field.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-draw_field.o -MD -MP -MF $(DEPDIR)/drillwriter-draw_field.Tpo -c -o drillwriter-draw_field.o `test -f 'gtk-drill/draw_field.c' || echo '$(srcdir)/'`gtk-drill/draw_field.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-draw_field.Tpo $(DEPDIR)/drillwriter-draw_field.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/draw_field.c' object='drillwriter-draw_field.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-draw_field.o `test -f 'gtk-drill/draw_field.c' || echo '$(srcdir)/'`gtk-drill/draw_field.c
+
+drillwriter-draw_field.obj: gtk-drill/draw_field.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-draw_field.obj -MD -MP -MF $(DEPDIR)/drillwriter-draw_field.Tpo -c -o drillwriter-draw_field.obj `if test -f 'gtk-drill/draw_field.c'; then $(CYGPATH_W) 'gtk-drill/draw_field.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/draw_field.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-draw_field.Tpo $(DEPDIR)/drillwriter-draw_field.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/draw_field.c' object='drillwriter-draw_field.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-draw_field.obj `if test -f 'gtk-drill/draw_field.c'; then $(CYGPATH_W) 'gtk-drill/draw_field.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/draw_field.c'; fi`
+
+drillwriter-drill-class.o: gtk-drill/drill-class.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drill-class.o -MD -MP -MF $(DEPDIR)/drillwriter-drill-class.Tpo -c -o drillwriter-drill-class.o `test -f 'gtk-drill/drill-class.c' || echo '$(srcdir)/'`gtk-drill/drill-class.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drill-class.Tpo $(DEPDIR)/drillwriter-drill-class.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/drill-class.c' object='drillwriter-drill-class.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drill-class.o `test -f 'gtk-drill/drill-class.c' || echo '$(srcdir)/'`gtk-drill/drill-class.c
+
+drillwriter-drill-class.obj: gtk-drill/drill-class.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drill-class.obj -MD -MP -MF $(DEPDIR)/drillwriter-drill-class.Tpo -c -o drillwriter-drill-class.obj `if test -f 'gtk-drill/drill-class.c'; then $(CYGPATH_W) 'gtk-drill/drill-class.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/drill-class.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drill-class.Tpo $(DEPDIR)/drillwriter-drill-class.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/drill-class.c' object='drillwriter-drill-class.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drill-class.obj `if test -f 'gtk-drill/drill-class.c'; then $(CYGPATH_W) 'gtk-drill/drill-class.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/drill-class.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

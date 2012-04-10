@@ -1,216 +1,242 @@
 // Functions that change sets go here
-//#include "drill.h"
-#include "d_gtk.h"
-void zoom_amnt(float x, float y)
+#include "drill.h"
+
+
+int set_construct(struct set_proto **sets_r, int perfs)
 {
-	if (x == 0 && y == 0)
+	// Build storage for set
+	int i;
+	int excode;
+	
+	struct set_proto *sets;
+	struct set_proto *last;
+
+	sets = (struct set_proto*) malloc(sizeof(struct set_proto));
+	if (sets == NULL)
 	{
-		// zoom to 100%
-		zoom_x = (float)scrolled_window->allocation.width;
-		zoom_y = (float)scrolled_window->allocation.height;
-		//zoom_x = width;
-		//zoom_y = height;
+		// allocation error
+		return -1;
+	}
+	// allocate values inside set
+	sets->name = (char*) malloc(1*sizeof(char));
+	sets->info = (char*) malloc(1*sizeof(char));
+	if (!sets->name || !sets->info)
+		return -1;
+	sets->name[0] = '\0';
+	sets->info[0] = '\0';
+	sets->counts = 0;
+	// make sure not classified as midset
+	sets->midset = 0;
+	// make coordinate system
+	excode = coord_construct(&sets->coords, perfs);
+
+
+	// link
+	last = *sets_r;
+	if (last != NULL)
+	{
+		// Link previous set
+		sets->next = last->next;
+		last->next = sets;
+		last = sets;
 	}
 	else
 	{
-		zoom_x = zoom_x + x;
-		zoom_y = zoom_y + y;
+		sets->next = 0;
+		*sets_r = sets;
 	}
-	return;
+
+	return 0;
 }
 
-gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
+
+int newset_create(struct set_proto *curr)
 {
-	// handle zoom events
-	// propagate everything except control modifier
-	if (event->state == 0)
-		return FALSE;
-	else if (event->state != 4)
-		return FALSE;
-	if (event->direction == GDK_SCROLL_UP)
+	// make a new set at a point right after index
+	int i;
+	int excode;
+	int mid = 0;
+	float x, y;
+	int newcounts;
+
+	// set structures
+	struct set_proto *sets;
+	struct set_proto *last;
+	struct set_proto *fset;
+	struct set_proto *nextset;
+
+	// coordinates
+	struct coord_proto **coords;
+	struct coord_proto **pcoords;
+	struct coord_proto **ncoords;
+
+	sets = 0;
+	last = 0;
+	excode = set_construct(&last, pshow->perfnum);
+	if (excode == -1)
+		return -1;
+	if (curr == 0 && pshow->firstset == NULL)
 	{
-		// zoom in
-		zoom_amnt(10, 10);
-		//zoom_x = zoom_x + 10;
-		//zoom_y = zoom_y + 10;
-		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
+		// Make the first set
+		pshow->firstset = last;
 	}
-	else if (event->direction == GDK_SCROLL_DOWN)
+	else if (curr == 0 && pshow->firstset != NULL)
 	{
-		// zoom out
-		zoom_amnt(-10, -10);
-		//zoom_x = zoom_x - 10;
-		//zoom_y = zoom_y - 10;
-		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
-	}
-	return TRUE;
-}
-
-void zoom_in(GtkWidget *widget)
-{
-	// zoom in
-	zoom_amnt(10, 10);
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
-}
-
-void zoom_out(GtkWidget *widget)
-{
-	// zoom out
-	zoom_amnt(-10, -10);
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
-}
-
-void zoom_standard(GtkWidget *widget)
-{
-	// zoom to 100%
-	zoom_amnt(0, 0);
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
-}
-
-
-
-void add_set_gtk(GtkWidget *widget)
-{
-	// add a set from a Gtk entry
-	if (!playing)
-	{
-		add_set();
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-	return;
-}
-
-void delete_set_gtk(GtkWidget *widget)
-{
-	// delete a set from a Gtk entry
-	if (!playing)
-	{
-		delete_set();
-		do_field = 0;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-	return;
-}
-
-
-
-void set_first_gtk(GtkWidget *widget)
-{
-	// Move to first set, do gtk stuff
-	if (!playing)
-	{
-		set_first();
-		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-	return;
-}
-
-void set_last_gtk(GtkWidget *widget)
-{
-	// Go to last set from Gtk button
-	if (!playing)
-	{
-		set_last();
-		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-
-	}
-	return;
-}
-
-void set_next_gtk(GtkWidget *widget)
-{
-	// Go to next set from Gtk button
-	if (!playing)
-	{
-		set_next();
-		do_field=0;
-		//gdk_drawable_get_size(widget->window, &width, &height);
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-	return;
-}
-
-
-void set_next_count_gtk(GtkWidget *widget)
-{
-	// Go to next count from gtk button
-	if (!playing)
-	{
-		set_next_count();
-		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-	return;
-}
-
-void set_prev_count_gtk(GtkWidget *widget)
-{
-	// Go to next count from gtk button
-	if (!playing)
-	{
-		set_prev_count();
-		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-	return;
-}
-				
-void set_prev_gtk(GtkWidget *widget)
-{
-	// Go to previous set from Gtk button
-	if (!playing)
-	{
-		set_prev();
-		do_field=0;	// don't need to draw field
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-	return;
-}
-
-
-
-void set_set_name_gtk(GtkWidget *widget)
-{
-	// Set the name of the set
-	// Name hard-limited to 4 chars currently
-	// name is currently taken from entry_sets
-	const gchar *entry_buffer;
-	int set_buffer;
-	struct set_proto *setcurr = pshow->currset;
-	int size;
-
-	if (!playing)
-	{	
-		entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_sets));
-		size = strlen(entry_buffer);
-		if (size < 5)
+		// Replace the first set with this set
+		curr = pshow->firstset;
+		pshow->firstset = last;
+		pcoords = curr->coords;
+		
+		coords = last->coords;
+		for (i=0; i<pshow->perfnum; i++)
 		{
-			// set the name of the current set
-			free(setcurr->name);
-			setcurr->name = (char*)malloc(size*sizeof(char)+1);
-			strcpy(setcurr->name, entry_buffer);
+			// copy old first set dots into new first set
+			coords[i]->x = pcoords[i]->x;
+			coords[i]->y = pcoords[i]->y;
 		}
-		do_field = 0;	// don't need to redraw field yet
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		last->counts = curr->counts;
+	}
+	else
+	{
+		// allocate new set
+		pcoords = curr->coords;
+		coords = last->coords;
+		nextset = curr->next;
+		if (nextset && pshow->step)
+		{
+			ncoords = nextset->coords;
+			mid = 1;
+		}
+		for (i=0; i<pshow->perfnum; i++)
+		{
+			// Copy previous dots into new set
+			if (mid)
+			{
+				x = (ncoords[i]->x - pcoords[i]->x) / nextset->counts;
+				coords[i]->x = x*pshow->step + pcoords[i]->x;
+				y = (ncoords[i]->y - pcoords[i]->y) / nextset->counts;
+				coords[i]->y = y*pshow->step + pcoords[i]->y;
+			}
+			else
+			{
+				coords[i]->x = pcoords[i]->x;
+				coords[i]->y = pcoords[i]->y;
+			}
+		}
+		if (mid)
+		{
+			// change counts to reflect a midset creation
+			newcounts = nextset->counts;
+			nextset->counts = nextset->counts - pshow->step;
+			last->counts = pshow->step;
+			pshow->step = 0;
+		}
+		else
+			last->counts = curr->counts;
+		// link
+		last->next = curr->next;
+		curr->next = last;
+		// set counts
+		if (last->counts == 0)
+		{
+			last->counts = curr->counts;
+			if (last->counts == 0)
+				last->counts = 1;
+		}
+	}
+
+	return 0;
+}
+
+
+int set_cldestroy(struct set_proto **setcurr_r, int perfnum)
+{
+	int i;
+	struct set_proto *setcurr;
+	struct coord_proto **coords;
+
+	setcurr = *setcurr_r;
+	// delete sets
+	free(setcurr->name);
+	free(setcurr->info);
+	coords = setcurr->coords;
+	for (i=0; i<perfnum; i++)
+	{
+		// delete coords
+		free(coords[i]);
+	}
+	free(coords);
+	free(setcurr);
+	*setcurr_r = 0;
+	return 0;
+}
+
+
+int set_destroy(void)
+{
+	// destroy current set
+	int i;
+	int perfnum;
+	struct set_proto *last;
+	struct set_proto *prevset;
+	struct set_proto *before;
+	int excode;
+
+	last = pshow->currset;
+	prevset = pshow->prevset;
+	perfnum = pshow->perfnum;
+
+	pushSetDel(&pshow->undobr, pshow->currset);
+	// free memory in nodes
+	/*
+	free(last->name);
+	free(last->info);
+	for (i=0; i<perfnum; i++)
+		free(last->coords[i]);
+	free(last->coords);
+	*/
+
+	// unlink node
+	if (prevset != NULL)
+	{
+		// Not at first set
+		prevset->next = last->next;
+		pshow->currset = prevset->next;
+		// delete node
+		//free(last);
+		// put current set on next set if it exists
+		if (prevset->next == NULL)
+		{
+			// next set does not exist. Put current set
+			// at new last set
+			set_first();
+			set_last();
+		}
+		else
+		{
+			// next set does exist. Put current set there
+			pshow->currset = prevset->next;
+		}
+	}
+	else
+	{
+		// At first set
+		pshow->firstset = last->next;
+		//free(last);
+		last = pshow->firstset;
+		if (last == NULL)
+		{
+			// No sets now, make a new first set
+			excode = set_construct(&pshow->firstset, pshow->perfnum);
+			if (excode == -1)
+				return -1;
+		}
+		pshow->currset = pshow->firstset;
 	}
 	return;
 }
 
 
-void goto_set_gtk (GtkWidget *widget)
-{	// Go to set specified in entry_sets
-	const gchar *entry_buffer;
-	int set_buffer;
-	if (!playing)
-	{
-		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_sets));
-		set_buffer = atoi(entry_buffer);
-		goto_set(set_buffer);
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-}
 
 void goto_set(int set_buffer)
 {
@@ -239,98 +265,6 @@ void goto_set(int set_buffer)
 	return;
 }
 
-
-void change_tempo(int tempo, struct tempo_proto **currtempo_r)
-{
-	struct tempo_proto *prevtempo;
-	struct tempo_proto *currtempo;
-	struct tempo_proto *nexttempo;
-	struct tempo_proto *stempo;
-	struct tempo_proto *othertempo;
-	currtempo = *currtempo_r;
-	if (tempo >= 30 && tempo <= 250)
-	{
-		// Tempo is valid. Make changes thusly
-		pushTempo(&pshow->undobr, currtempo->tempo);
-		if (currtempo->anchorpoint == setnum)
-		{
-			// changing an existing tempo
-			currtempo->tempo = tempo;
-		}
-		else
-		{
-			// making a new node
-			stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
-			// store data to new node
-			stempo->tempo = tempo;
-			stempo->anchorpoint = setnum;
-			// link new node
-			stempo->next = currtempo->next;
-			currtempo->next = stempo;
-			stempo->prev = currtempo;
-			currtempo = currtempo->next;
-		}
-		// Now check to see if node is unneccesary
-		// Check to see if node can be deleted
-		prevtempo = currtempo->prev;
-		if (prevtempo)
-		{
-			if (prevtempo->tempo == tempo)
-			{
-				// current node is redundant, can be deleted
-				prevtempo->next = currtempo->next;
-				nexttempo = currtempo->next;
-				if (nexttempo)
-				{
-					// link previously
-					nexttempo->prev = prevtempo;
-				}
-				//pshow->currtempo = prevtempo;
-				free(currtempo);
-				currtempo = prevtempo;
-			}
-		}
-		nexttempo = currtempo->next;
-		if (nexttempo)
-		{
-			if (nexttempo->tempo == tempo)
-			{
-				// next node is redundant, can be deleted
-				currtempo->next = nexttempo->next;
-				othertempo = nexttempo->next;
-				if (othertempo)
-				{
-					// link next to prv
-					othertempo->prev = currtempo;
-				}
-				free(nexttempo);
-			}
-		}
-	}
-	*currtempo_r = currtempo;
-	return;
-}
-
-
-void change_tempo_gtk (GtkWidget *widget)
-{
-	// Change the tempo internally
-	// TODO: Non-global tempo
-	struct tempo_proto *currtempo;
-	struct tempo_proto *stempo;
-	struct tempo_proto *nexttempo;
-	const gchar *entry_buffer;
-	int tmpo;
-
-	entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_tempo));
-	tmpo = atoi(entry_buffer);
-	currtempo = pshow->currtempo;
-	change_tempo(tmpo, &currtempo);
-	pshow->currtempo = currtempo;
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
-
-	return;
-}
 
 
 int isLastSet(void)
@@ -547,47 +481,5 @@ void set_prev(void)
 	}
 }
 
-
-void update_tempo(void)
-{
-	// if the tempo is out of date, change it
-	// to the correct tempo
-	struct tempo_proto *currtempo;
-	struct tempo_proto *othertempo;
-	int cset;
-	int nset;
-
-	currtempo = pshow->currtempo;
-	// Go back to general location
-	if (currtempo->anchorpoint > setnum)
-	{
-		// Go backward to tempo
-		while (currtempo->anchorpoint > setnum && currtempo->prev != NULL)
-			currtempo = currtempo->prev;
-	}
-	else
-	{
-		// Go forward to tempo
-		othertempo = currtempo->next;
-		while (othertempo)
-		{
-			cset = currtempo->anchorpoint;
-			nset = othertempo->anchorpoint;
-			// find correct tempo forward
-			if (nset <= setnum)
-			{
-				// go to next tempo
-				currtempo = othertempo;
-				othertempo = othertempo->next;
-			}
-			else
-				othertempo = 0;
-		}
-	}
-	// interface with deprecated tempo system
-	//tempo = currtempo->tempo;
-	pshow->currtempo = currtempo;
-	return;
-}
 
 

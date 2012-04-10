@@ -249,13 +249,77 @@ struct headset_proto
 struct headset_proto *pshow;
 
 // Functions
-// count-con.c
-/*
-void goto_count (GtkWidget *widget);
-void change_counts (GtkWidget *widget);
-void do_undo_gtk(GtkWidget *widget);
-void do_redo_gtk(GtkWidget *widget);
-*/
+// coords.c
+// create container for dots
+int coord_construct(struct coord_proto *** coords_r, int perfs);
+// set/retrieve coordinates from coord struct
+int set_coord(struct coord_proto *curr, float x, float y);
+int set_coord_valid(struct coord_proto **curr, int index, float x, float y);
+int retr_coord(struct coord_proto *curr, float *x, float *y);
+int retr_midset(struct set_proto *currset, int index, float *x_r, float *y_r);
+int movexy(float xoff, float yoff);
+int align_dots(void);
+int movexy_grid(float xoff, float yoff);
+void scale_form(float s_step);
+void rot_form(float s_step);
+
+// fieldrel.c
+int isInsideYard(float *x, float *y, int *field_side);
+int getYardline(float *x, float *y);
+float getSidetoSide(float *x, float *y);
+float getFronttoBack(float *x, float *y, char **inorout_r, char **frontback_r, char **hashorside_r);
+void xy_to_relation(float *x, float *y, char **buffer_r);
+
+// file-ops.c
+int file_getline(FILE *fp, char **buffer_r);
+void open_file(void);
+void save_file(void);
+
+// main.c
+int show_construct(struct headset_proto **dshow_r, int perfs);
+int show_destroy(struct headset_proto **dshow_r);
+int main (int argc, char *argv[]);
+
+// perf-con.c
+// create container for performers
+int perf_construct(struct perf_proto **dots_r);
+int add_perf(void);
+void delete_perf_selected(void);
+void delete_perf(struct perf_proto *perf);
+
+// select-con.c
+void update_sel_center(void);
+void add_sel_center(struct coord_proto *coord);
+void rem_sel_center(struct coord_proto *coord);
+void select_discard(void);
+int select_add(int index);
+int select_all(void);
+
+// set-controls.c
+// create a set with a given amount of performers
+int set_construct(struct set_proto **sets_r, int perfs);
+int newset_create(struct set_proto *curr);
+int set_cldestroy(struct set_proto **setcurr_r, int perfnum);
+int set_destroy(void);
+void goto_set(int set_buffer);
+int isLastSet(void);
+int isFirstSet(void);
+void add_set(void);
+void delete_set(void);
+void set_first(void);
+void set_last(void);
+void set_next(void);
+void set_next_count(void);
+void set_prev_count(void);
+void set_prev(void);
+
+// tempo.c
+int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);
+void change_tempo(int tempo, struct tempo_proto **currtempo_r);
+void update_tempo(void);
+
+// undo.c
+int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow);
 int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r);
 int pushSetMk(struct undo_proto **stack_r);
 int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset);
@@ -269,6 +333,16 @@ int sourcePop(struct undo_proto **sourcebr_r);
 int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		struct undo_proto **destbr_r);
 void undo_tclose(void);
+
+
+
+// count-con.c
+/*
+void goto_count (GtkWidget *widget);
+void change_counts (GtkWidget *widget);
+void do_undo_gtk(GtkWidget *widget);
+void do_redo_gtk(GtkWidget *widget);
+*/
 
 // drawfield.c
 /*
@@ -299,23 +373,19 @@ static void entry_toggle_visibility(GtkWidget *checkbutton, GtkWidget *entry);
 */
 
 // file-ops.c
-int file_getline(FILE *fp, char **buffer_r);
-void open_file(void);
 /*
 void save_file(GtkWidget *widget);
 int wrap_load_dep(GtkWidget *widget);
 */
-// TODO: Deprecated commands
+/* TODO: Deprecated commands
 void absolute_dot (void);
 void relative_dot (void);
 void func_relative(void);
 void show_gen(struct tempo_proto **stempo_r);
+*/
 // end deprecated commands
 
 // main.c
-int movexy(float xoff, float yoff);
-int movexy_grid(float xoff, float yoff);
-int align_dots(void);
 /*
 void dot_align_to_grid(GtkWidget *widget);
 void move_up(GtkWidget *widget);
@@ -332,9 +402,6 @@ static void not_implemented ();
 void force_redraw(GtkWidget *widget);
 static void quit_action ();
 */
-int getYardline(float *x, float *y);
-int isInsideYard(float *x, float *y, int *field_side);
-float getSidetoSide(float *x, float *y);
 /*
 float getFronttoBack(float *x, float *y, gchar **inorout_r, gchar **frontback_r, gchar **hashorside_r);
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
@@ -348,7 +415,6 @@ void calc_stepsize (GtkWidget *widget);
 int startTk(int argc, char *argv[]);
 int update_entries(void);
 int buildIfacegtk(void);
-int main (int argc, char *argv[]);
 */
 
 // media.c
@@ -370,8 +436,6 @@ void toggle_fbHashRel(GtkWidget *widget);
 void toggle_fbFrontBack(GtkWidget *widget);
 void toggle_HashSide(GtkWidget *widget);
 */
-void scale_form(float s_step);
-void rot_form(float s_step);
 /*
 void expand_form(GtkWidget *widget);
 void contract_form(GtkWidget *widget);
@@ -386,40 +450,16 @@ int select_all_gtk (GtkWidget *widget);
 int add_perf_gtk(GtkWidget *widget);
 void delete_perf_gtk(GtkWidget *widget);
 */
-int add_perf(void);
-void delete_perf_selected(void);
-void delete_perf(struct perf_proto *perf);
 // create container for show
-int show_construct(struct headset_proto **dshow_r, int perfs);
-int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow);
-int show_destroy(struct headset_proto **dshow_r);
-int set_cldestroy(struct set_proto **setcurr_r, int perfnum);
-int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);
-// create a set with a given amount of performers
-int set_construct(struct set_proto **sets_r, int perfs);
-int newset_create(struct set_proto *curr);
-int set_destroy(void);
-// create container for dots
-int coord_construct(struct coord_proto *** coords_r, int perfs);
-// create container for performers
-int perf_construct(struct perf_proto **dots_r);
-// set/retrieve coordinates from coord struct
-int set_coord(struct coord_proto *curr, float x, float y);
-int set_coord_valid(struct coord_proto **curr, int index, float x, float y);
-int retr_coord(struct coord_proto *curr, float *x, float *y);
 // not used yet
+/*
 int dot_realloc(struct perf_proto ***dots_r, int oldsize, int newsize);
 int dot_new_set(struct perf_proto ***dots_r, int setnum);
 int dot_destroy(struct perf_proto ***dots_r, int size);
-void update_sel_center(void);
-void add_sel_center(struct coord_proto *coord);
-void rem_sel_center(struct coord_proto *coord);
-void select_discard(void);
-int select_add(int index);
-int select_all(void);
+*/
 
 // set-controls.c
-void zoom_amnt(float x, float y);
+//void zoom_amnt(float x, float y);
 /*
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
 void zoom_in(GtkWidget *widget);
@@ -437,20 +477,6 @@ void set_set_name_gtk(GtkWidget *widget);
 void goto_set_gtk(GtkWidget *widget);
 void change_tempo_gtk (GtkWidget *widget);
 */
-void goto_set(int set_buffer);
-void change_tempo(int tempo, struct tempo_proto **currtempo_r);
-
-int isLastSet(void);
-int isFirstSet(void);
-void add_set(void);
-void delete_set(void);
-void set_first(void);
-void set_last(void);
-void set_next(void);
-void set_next_count(void);
-void set_prev_count(void);
-void set_prev(void);
-void update_tempo(void);
 
 
 

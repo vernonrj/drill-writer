@@ -12,6 +12,12 @@ extern int playing;
 extern int set_step;
 extern GTimer * timer;
 
+void force_redraw(GtkWidget *widget)
+{	// Refresh the field
+	do_field=1;
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+}
+
 void def_canvas (GtkWidget *widget)
 {
 	// define the canvas

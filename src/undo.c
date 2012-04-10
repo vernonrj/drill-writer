@@ -1,63 +1,52 @@
-// Functions manipulating count structure goes here
-//#include "drill.h"
-#include "d_gtk.h"
-void goto_count (GtkWidget *widget)
+#include "drill.h"
+
+int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow)
 {
-	const gchar *entry_buffer;
-	int count_buffer;
-	if (!playing)
+	struct undo_proto *undlast;
+	struct undo_proto *undcurr;
+	int i;
+	int undop;
+	int snum;
+	struct perf_proto *pcurr;
+	int perfnum = dshow->perfnum;
+	undlast = *undlast_r;
+	while (undlast != NULL)
 	{
-		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_counts));
-		count_buffer = atoi(entry_buffer);
-		if (!isLastSet() && pshow->step < pshow->currset->counts)
-			pshow->step = count_buffer;
-		//if (setnum+1<set_tot && count_buffer < counts[setnum+1])
-			//set_step=count_buffer;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
-	}
-}
-		
-void change_counts (GtkWidget *widget)
-{
-	const gchar *entry_buffer;
-	int count_buffer;
-	if (!playing)
-	{
-		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_counts));
-		count_buffer = atoi(entry_buffer);
-		if (count_buffer > 0)
+		undcurr = undlast;
+		undop = undcurr->operation;
+		switch(undop)
 		{
-			pushCounts(&pshow->undobr, setnum, pshow->currset->counts, 1);
-			pshow->currset->counts = count_buffer;
-			//counts[setnum] = count_buffer;
+			case 0:		// set created
+				break;
+			case 1:		// set destroyed
+				set_cldestroy(&undcurr->ud.set, perfnum);
+				break;
+			case 2:		// perf added
+				break;
+			case 3:		// perf deleted
+				// TODO: need to track allocation in undo branch
+				for (i=0; i<snum; i++)
+					free(undcurr->coords[i]);
+				free(undcurr->coords);
+				pcurr = undcurr->ud.sperf;
+				free(pcurr->name);
+				free(pcurr->symbol);
+				free(undcurr->ud.sperf);
+				break;
+			case 4:		// perf moved
+				break;
+			case 5:		// tempo changed
+				break;
+			case 6:		// counts changed
+				break;
 		}
+		undlast = undlast->next;
+		free(undcurr);
 	}
+	*undlast_r = 0;
+	return 0;
 }
 
-// undo code
-void do_undo_gtk(GtkWidget *widget)
-{
-	int done;
-	int first_one = 2;
-	do
-	{
-		done = popFromStack(pshow, &pshow->undobr, &pshow->redobr);
-		if (first_one)
-			first_one = first_one - 1;
-	} while ((done == 0 || first_one) && pshow->undobr);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
-	return;
-}
-void do_redo_gtk(GtkWidget *widget)
-{
-	int done;
-	do
-	{
-		done = popFromStack(pshow, &pshow->redobr, &pshow->undobr);
-	} while (done == 0);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
-	return;
-}
 int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
 {
 	// Push node to stack

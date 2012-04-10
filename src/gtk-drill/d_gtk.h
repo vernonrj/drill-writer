@@ -91,63 +91,9 @@ G_END_DECLS
 
 #endif // __DRILL_H
 
-void goto_count (GtkWidget *widget);
-void change_counts (GtkWidget *widget);
-void do_undo_gtk(GtkWidget *widget);
-void do_redo_gtk(GtkWidget *widget);
 
-
-void def_canvas (GtkWidget *widget);
-int draw_dots (GtkWidget *widget);
-void draw_field (GtkWidget *widget);
-
-GtkType gtk_drill_get_type(void);
-void gtk_drill_set_state(GtkDrill *drill, gint num);
-GtkWidget * gtk_drill_new(void);
-static void gtk_drill_class_init(GtkDrillClass *klass);
-static void gtk_drill_init (GtkDrill *drill);
-static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition);
-static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation);
-static void gtk_drill_realize(GtkWidget *widget);
-static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
-static void gtk_drill_paint(GtkWidget *widget);
-static void gtk_drill_destroy(GtkObject *object);
-
-static void entry_toggle_editable(GtkWidget *checkbutton, GtkWidget *entry);
-static void entry_toggle_visibility(GtkWidget *checkbutton, GtkWidget *entry);
-
-void save_file(GtkWidget *widget);
-int wrap_load_dep(GtkWidget *widget);
-
-void dot_align_to_grid(GtkWidget *widget);
-void move_up(GtkWidget *widget);
-void move_down(GtkWidget *widget);
-void move_left(GtkWidget *widget);
-void move_right(GtkWidget *widget);
-void move_up_small(GtkWidget *widget);
-void move_down_small(GtkWidget *widget);
-void move_left_small(GtkWidget *widget);
-void move_right_small(GtkWidget *widget);
-void next_perf(GtkWidget *widget);
-void prev_perf(GtkWidget *widget);
-static void not_implemented ();
-void force_redraw(GtkWidget *widget);
-static void quit_action ();
-float getFronttoBack(float *x, float *y, gchar **inorout_r, gchar **frontback_r, gchar **hashorside_r);
-gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
-gboolean clicked(GtkWidget *widget, GdkEventButton *event);
-void calc_stepsize (GtkWidget *widget);
-
-int startTk(int argc, char *argv[]);
-int update_entries(void);
-int buildIfacegtk(void);
-int main (int argc, char *argv[]);
-
-gboolean play_show (GtkWidget *widget);
-void stop_show (GtkWidget *widget);
-void queue_show (GtkWidget *widget);
-void play_show_from_start (GtkWidget *widget);
-
+// Functions
+// coords-gtk.c
 void change_ss_entry(GtkWidget *widget);
 void toggle_ssYdRel(GtkWidget *widget);
 void toggle_ssSide(GtkWidget *widget);
@@ -162,17 +108,78 @@ void rot_cw(GtkWidget *widget);
 void rot_countercw(GtkWidget *widget);
 void rot_cw_small(GtkWidget *widget);
 void rot_countercw_small(GtkWidget *widget);
-void goto_perf (GtkWidget *widget);
-void xperf_change (GtkWidget *widget);
-void yperf_change (GtkWidget *widget);
-int select_all_gtk (GtkWidget *widget);
-int add_perf_gtk(GtkWidget *widget);
-void delete_perf_gtk(GtkWidget *widget);
+void dot_align_to_grid(GtkWidget *widget);
+void move_up(GtkWidget *widget);
+void move_down(GtkWidget *widget);
+void move_left(GtkWidget *widget);
+void move_right(GtkWidget *widget);
+void move_up_small(GtkWidget *widget);
+void move_down_small(GtkWidget *widget);
+void move_left_small(GtkWidget *widget);
+void move_right_small(GtkWidget *widget);
+gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 
+// drawfield.c
+void force_redraw(GtkWidget *widget);
+void def_canvas (GtkWidget *widget);
+void drawing_method(cairo_t *cdots, float x, float y);
+int draw_dots (GtkWidget *widget);
+void draw_field (GtkWidget *widget);
+
+// drill.c
+void zoom_amnt(float x, float y);
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
 void zoom_in(GtkWidget *widget);
 void zoom_out(GtkWidget *widget);
 void zoom_standard(GtkWidget *widget);
+GType gtk_drill_get_type(void);
+void gtk_drill_set_state(GtkDrill *drill, gint num);
+GtkWidget * gtk_drill_new(void);
+static void gtk_drill_class_init(GtkDrillClass *klass);
+static void gtk_drill_init (GtkDrill *drill);
+static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition);
+static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation);
+static void gtk_drill_realize(GtkWidget *widget);
+static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
+static void gtk_drill_paint(GtkWidget *widget);
+static void gtk_drill_destroy(GtkObject *object);
+
+
+// file-ops-gtk.c
+void save_file_gtk(GtkWidget *widget);
+int wrap_load_dep(GtkWidget *widget);
+void absolute_dot (void);
+void relative_dot (void);
+void func_relative(void);
+void show_gen(struct tempo_proto **stempo_r);
+
+// main-gtk.c
+int startTk(int argc, char *argv[]);
+static void not_implemented ();
+static void quit_action ();
+int update_entries(void);
+int buildIfacegtk(void);
+void do_undo_gtk(GtkWidget *widget);
+void do_redo_gtk(GtkWidget *widget);
+
+// media-gtk.c
+gboolean play_show (GtkWidget *widget);
+void stop_show (GtkWidget *widget);
+void queue_show (GtkWidget *widget);
+void play_show_from_start (GtkWidget *widget);
+
+// perf-con-gtk.c
+void goto_perf (GtkWidget *widget);
+int add_perf_gtk(GtkWidget *widget);
+void delete_perf_gtk(GtkWidget *widget);
+void xperf_change (GtkWidget *widget);
+void yperf_change (GtkWidget *widget);
+void next_perf(GtkWidget *widget);
+void prev_perf(GtkWidget *widget);
+int select_all_gtk (GtkWidget *widget);
+gboolean clicked(GtkWidget *widget, GdkEventButton *event);
+
+// set-controls-gtk.c
 void add_set_gtk(GtkWidget *widget);
 void delete_set_gtk(GtkWidget *widget);
 void set_first_gtk(GtkWidget *widget);
@@ -182,6 +189,8 @@ void set_next_count_gtk(GtkWidget *widget);
 void set_prev_count_gtk(GtkWidget *widget);
 void set_prev_gtk(GtkWidget *widget);
 void set_set_name_gtk(GtkWidget *widget);
-void goto_set_gtk(GtkWidget *widget);
+void goto_set_gtk (GtkWidget *widget);
+void goto_count (GtkWidget *widget);
+void change_counts (GtkWidget *widget);
 void change_tempo_gtk (GtkWidget *widget);
 

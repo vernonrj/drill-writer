@@ -18,28 +18,73 @@ static void gtk_drill_destroy(GtkObject *object);
 extern double width, height;
 extern int expose_flag;
 
-/*
-GtkType gtk_drill_get_type(void)
+void zoom_amnt(float x, float y)
 {
-	static GtkType gtk_drill_type = 0;
-
-
-	if (!gtk_drill_type) {
-		static const GtkTypeInfo gtk_drill_info = {
-			"GtkDrill",
-			sizeof(GtkDrill),
-			sizeof(GtkDrillClass),
-			(GtkClassInitFunc) gtk_drill_class_init,
-			(GtkObjectInitFunc) gtk_drill_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
-		};
-		gtk_drill_type = gtk_type_unique(GTK_TYPE_WIDGET, &gtk_drill_info);
+	if (x == 0 && y == 0)
+	{
+		// zoom to 100%
+		zoom_x = (float)scrolled_window->allocation.width;
+		zoom_y = (float)scrolled_window->allocation.height;
+		//zoom_x = width;
+		//zoom_y = height;
 	}
-	return gtk_drill_type;
+	else
+	{
+		zoom_x = zoom_x + x;
+		zoom_y = zoom_y + y;
+	}
+	return;
 }
-*/
+
+gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
+{
+	// handle zoom events
+	// propagate everything except control modifier
+	if (event->state == 0)
+		return FALSE;
+	else if (event->state != 4)
+		return FALSE;
+	if (event->direction == GDK_SCROLL_UP)
+	{
+		// zoom in
+		zoom_amnt(10, 10);
+		//zoom_x = zoom_x + 10;
+		//zoom_y = zoom_y + 10;
+		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
+	}
+	else if (event->direction == GDK_SCROLL_DOWN)
+	{
+		// zoom out
+		zoom_amnt(-10, -10);
+		//zoom_x = zoom_x - 10;
+		//zoom_y = zoom_y - 10;
+		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
+	}
+	return TRUE;
+}
+
+void zoom_in(GtkWidget *widget)
+{
+	// zoom in
+	zoom_amnt(10, 10);
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+}
+
+void zoom_out(GtkWidget *widget)
+{
+	// zoom out
+	zoom_amnt(-10, -10);
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+}
+
+void zoom_standard(GtkWidget *widget)
+{
+	// zoom to 100%
+	zoom_amnt(0, 0);
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+}
+
+
 GType gtk_drill_get_type(void)
 {
 	static GType gtk_drill_type = 0;
