@@ -39,8 +39,8 @@ void def_canvas (GtkWidget *widget)
 	//printf("width = %.2f%\n", z_x);
 	//printf("height = %.2f%\n", z_y);
 	//printf("(xoff, yoff) = (%.2f, %.2f)\n", xoff, yoff);
-	printf("(width, height) = (%.2f, %.2f)\n", width, height);
-	printf("zoom = (%.2f, %.2f)\n", zoom_x, zoom_y);
+	//printf("(width, height) = (%.2f, %.2f)\n", width, height);
+	//printf("zoom = (%.2f, %.2f)\n", zoom_x, zoom_y);
 	if (width != zoom_x || height != zoom_y)
 	{
 		// Catch zoom < 100% and handle

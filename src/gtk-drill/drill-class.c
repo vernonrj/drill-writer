@@ -23,10 +23,10 @@ void zoom_amnt(float x, float y)
 	if (x == 0 && y == 0)
 	{
 		// zoom to 100%
-		zoom_x = (float)scrolled_window->allocation.width;
-		zoom_y = (float)scrolled_window->allocation.height;
 		//zoom_x = width;
 		//zoom_y = height;
+		zoom_x = 921;
+		zoom_y = 550;
 	}
 	else
 	{
@@ -34,9 +34,31 @@ void zoom_amnt(float x, float y)
 		zoom_y = zoom_y + y;
 		do_field = 1;
 	}
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
 	return;
 }
 
+void zoom_fit(GtkWidget *widget)
+{
+	float s_width, s_height;
+	s_width = (float)scrolled_window->allocation.width;
+	s_height = (float)scrolled_window->allocation.height;
+	//printf("scrolled = (%.2f, %.2f)\n", s_width, s_height);
+	//printf("window = (%.2f, %.2f)\n", width, height);
+	if (width > s_width || height > s_height)
+	{
+		zoom_x = s_width;
+		zoom_y = s_height;
+	}
+	else
+	{
+		zoom_x = width;
+		zoom_y = height;
+	}
+	do_field = 1;
+	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+	return;
+}
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events

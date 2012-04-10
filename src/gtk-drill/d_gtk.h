@@ -132,6 +132,7 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
 void zoom_in(GtkWidget *widget);
 void zoom_out(GtkWidget *widget);
 void zoom_standard(GtkWidget *widget);
+void zoom_fit(GtkWidget *widget);
 GType gtk_drill_get_type(void);
 void gtk_drill_set_state(GtkDrill *drill, gint num);
 GtkWidget * gtk_drill_new(void);

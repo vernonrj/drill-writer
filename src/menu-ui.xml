@@ -23,6 +23,7 @@
 			<menuitem name="ZoomIn" action="ZoomInAction"/>
 			<menuitem name="ZoomOut" action="ZoomOutAction"/>
 			<menuitem name="ZoomStandard" action="ZoomStandardAction"/>
+			<menuitem name="ZoomFit" action="ZoomFitAction"/>
 			<placeholder name="ViewMenuAddition"/>
 		</menu>
 		<menu name="DotMenu" action="DotMenuAction">

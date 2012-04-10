@@ -244,6 +244,10 @@ int buildIfacegtk(void)
 		"_Zoom Standard", "<control>0",
 		"Zoom the field to 100%",
 		G_CALLBACK(zoom_standard) },
+	{ "ZoomFitAction", NULL,
+		"_Zoom Fit", "<control>plus",
+		"Fit the field in the window",
+		G_CALLBACK(zoom_fit) },
 	// Dot Menu
 	{ "AlignGridAction", NULL,
 		"_Align to Grid", "<control>G",
