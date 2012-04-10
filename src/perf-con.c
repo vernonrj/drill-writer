@@ -2,34 +2,35 @@
 #include "drill.h"
 
 // performer storage
-int perf_construct(struct perf_proto **dots_r)
+int perf_construct(struct perf_proto **perf_r)
 {
 	// Build storage for performer
 	// give argument:
 	// excode = perf_construct(&dots);
 	// piece of performer array
-	struct perf_proto *dots;
+	struct perf_proto *perf;
 
-	dots = (struct perf_proto*) malloc(sizeof(struct perf_proto));
-	if (dots == NULL)
+	perf = (struct perf_proto*) malloc(sizeof(struct perf_proto));
+	if (perf == NULL)
 	{
 		// allocation error
 		return -1;
 	}
 	// allocate values inside struct
-	dots->name = (char*) malloc(1 * sizeof(char));
-	dots->symbol = (char*) malloc(1 * sizeof(char));
-	if (dots->name == NULL || dots->symbol == NULL)
+	perf->name = (char*) malloc(1 * sizeof(char));
+	perf->symbol = (char*) malloc(1 * sizeof(char));
+	if (perf->name == NULL || perf->symbol == NULL)
 	{
 		// allocation error
 		return -1;
 	}
-	dots->name[0] = '\0';
-	dots->symbol[0] = '\0';
-	dots->valid = 0;
+	perf->name[0] = '\0';
+	perf->symbol[0] = '\0';
+	coord_construct(&perf->vdot, 0, 0);
+	perf->valid = -1;
 
 	// pass by reference
-	*dots_r = dots;
+	*perf_r = perf;
 
 	return 0;
 }
@@ -61,7 +62,7 @@ int add_perf(void)
 	{
 		// check this performer
 		perf = pshow->perfs[i];
-		if (perf->valid == 0)
+		if (perf->valid == -1)
 		{
 			found_dot = 1;
 			index = i;
@@ -92,7 +93,7 @@ int add_perf(void)
 				return -1;
 			newperfs[i]->name[0] = '\0';
 			newperfs[i]->symbol[0] = '\0';
-			newperfs[i]->valid = 0;
+			newperfs[i]->valid = -1;
 		}
 		// set new performers
 		free(pshow->perfs);
@@ -128,7 +129,7 @@ int add_perf(void)
 		index = perfnum;
 		pshow->perfnum = perfnum+5;
 	}
-	pshow->perfs[index]->valid = 1;
+	pshow->perfs[index]->valid = 0;
 	pushPerfMk(&pshow->undobr, index, 1);
 	return index;
 }
@@ -164,7 +165,7 @@ void delete_perf_selected(void)
 		// TODO: eventually have to unlink perf struct for undo
 		pshow->perfs[index] = perf;
 		delete_perf(perf);
-		perfs[index]->valid = 0;
+		perfs[index]->valid = -1;
 		// go to next performer
 		last = last->next;
 	}
@@ -176,7 +177,7 @@ void delete_perf(struct perf_proto *perf)
 {
 	// render performer invalid
 	//struct perf_proto *perf;
-	perf->valid = 2;
+	perf->valid = -1;
 	return;
 }
 

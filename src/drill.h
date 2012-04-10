@@ -9,6 +9,7 @@
 //#define __DRILL_H
 
 #include <string.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
@@ -84,6 +85,16 @@ struct tempo_proto
 };
 
 
+
+struct coord_proto
+{
+	// stores dot for one performer on one set
+	float x;
+	float y;
+};
+
+
+
 // Performer LLL nodes
 struct perf_proto
 {
@@ -92,18 +103,14 @@ struct perf_proto
 	int index;	// index number for dots
 	char *symbol;	// symbol on field
 	int valid;	// should be used by program
+	// last valid coordinate
+	struct coord_proto *vdot;
 
 	//struct perf_proto *next;
 };
 
 
-struct coord_proto
-{
-	// stores dot for one performer on one set
-	float x;
-	float y;
-};
-	
+
 struct set_proto
 {
 	// node with set information
@@ -155,9 +162,10 @@ struct headset_proto *pshow;
 // Functions
 // coords.c
 // create container for dots
-int coord_construct(struct coord_proto *** coords_r, int perfs);
+int coords_construct(struct coord_proto *** coords_r, int perfs);
+int coord_construct(struct coord_proto **coord_r, float x, float y);
 // set/retrieve coordinates from coord struct
-int set_coord(struct coord_proto *curr, float x, float y);
+int set_coord(struct headset_proto *dshow, int index, float x, float y);
 int set_coord_valid(struct coord_proto **curr, int index, float x, float y);
 int retr_coord(struct coord_proto *curr, float *x, float *y);
 int retr_midset(struct set_proto *currset, int index, float *x_r, float *y_r);
@@ -186,7 +194,7 @@ int main (int argc, char *argv[]);
 
 // perf-con.c
 // create container for performers
-int perf_construct(struct perf_proto **dots_r);
+int perf_construct(struct perf_proto **perf_ref);
 int add_perf(void);
 void delete_perf_selected(void);
 void delete_perf(struct perf_proto *perf);

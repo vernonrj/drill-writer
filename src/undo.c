@@ -160,7 +160,7 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	*oldperf_r = 0;
 	perf_construct(&newperf);
 	printf("newperf = 0x%x\n", newperf);
-	newperf->valid = 0;
+	newperf->valid = -1;
 	// store coordinates for performer
 	// get total number of sets
 	set_last();
@@ -377,7 +377,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		case 2: 	// perf was added
 			// render new performer invalid
 			perfcurr = dshow->perfs[sourcebr->ud.pindex];
-			perfcurr->valid = 0;
+			perfcurr->valid = -1;
 			done = sourcePop(&sourcebr);
 			excode = pushPerfDel(&destbr, &perfcurr, dshow->firstset, done);
 			break;

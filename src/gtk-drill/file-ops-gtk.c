@@ -6,6 +6,7 @@ void save_file_gtk(GtkWidget *widget)
 }
 
 
+/*
 double perf[50][50][3];
 int perfnum;
 int set_tot;
@@ -22,6 +23,7 @@ int wset, wcount, wperf, work;
 double x, y;
 int place;
 int counts[50];
+*/
 
 int wrap_load_dep(GtkWidget *widget)
 {
@@ -30,6 +32,8 @@ int wrap_load_dep(GtkWidget *widget)
 	open_file();
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return 0;
+}
+	/*
 	int i, j;
 	float x, y;
 	struct set_proto *currset;
@@ -60,7 +64,7 @@ int wrap_load_dep(GtkWidget *widget)
 		{
 			x = perf[i][j][0];
 			y = perf[i][j][1];
-			set_coord_valid(currset->coords, j, x, y);
+			set_coord(pshow, j, x, y);
 		}
 	}
 	pshow->currset = pshow->firstset;
@@ -423,3 +427,4 @@ void show_gen(struct tempo_proto **stempo_r)
 	*stempo_r = stempo;
 	setnum = 0;
 }
+*/

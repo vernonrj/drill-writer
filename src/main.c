@@ -69,8 +69,6 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->firstset = setcurr;
 
 	// Make the index of dots for the first set
-	//excode = coord_construct(&dshow->firstset->coords, perfs);
-	//struct coord_proto **coords = dshow->firstset->coords;
 	//printf("coords = %g\n", coords[0]->x);
 	if (excode == -1)
 	{
@@ -224,36 +222,48 @@ int main (int argc, char *argv[])
 	currset = pshow->firstset;
 	//pshow->perfnum = 15;
 	currset->counts = 0;
-	set_coord_valid(currset->coords, 0, 32, 53);
-	set_coord_valid(currset->coords, 1, 36, 53);
-	set_coord_valid(currset->coords, 2, 40, 53);
-	set_coord_valid(currset->coords, 3, 34, 49);
-	set_coord_valid(currset->coords, 4, 38, 49);
-	set_coord_valid(currset->coords, 5, 36, 45);
+	set_coord(pshow, 0, 32, 53);
+	set_coord(pshow, 1, 36, 53);
+	set_coord(pshow, 2, 40, 53);
+	set_coord(pshow, 3, 34, 49);
+	set_coord(pshow, 4, 38, 49);
+	set_coord(pshow, 5, 36, 45);
 
-	set_coord_valid(currset->coords, 6, 32, 70);
-	set_coord_valid(currset->coords, 7, 36, 70);
-	set_coord_valid(currset->coords, 8, 40, 70);
-	set_coord_valid(currset->coords, 9, 34, 66);
-	set_coord_valid(currset->coords, 10, 38, 66);
-	set_coord_valid(currset->coords, 11, 36, 62);
+	set_coord(pshow, 6, 32, 70);
+	set_coord(pshow, 7, 36, 70);
+	set_coord(pshow, 8, 40, 70);
+	set_coord(pshow, 9, 34, 66);
+	set_coord(pshow, 10, 38, 66);
+	set_coord(pshow, 11, 36, 62);
+	// add new set
+	add_set();
+	/*
 	newset_create(currset);
 	prevset = currset;
 	currset = currset->next;
+	*/
+	currset = pshow->currset;
+	prevset = pshow->prevset;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
 		prevcr = prevset->coords[i];
-		set_coord(currset->coords[i], prevcr->x+4, prevcr->y);
+		set_coord(pshow, i, prevcr->x+4, prevcr->y);
 	}
+	// add new set
+	add_set();
+	/*
 	newset_create(currset);
 	prevset = currset;
 	currset = currset->next;
+	*/
+	currset = pshow->currset;
+	prevset = pshow->prevset;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
 		prevcr = prevset->coords[i];
-		set_coord(currset->coords[i], prevcr->x, prevcr->y-10);
+		set_coord(pshow, i, prevcr->x, prevcr->y-10);
 	}
 
 	// Start at first set

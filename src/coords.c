@@ -1,7 +1,7 @@
 #include "drill.h"
 
 
-int coord_construct(struct coord_proto *** coords_r, int perfs)
+int coords_construct(struct coord_proto *** coords_r, int perfs)
 {
 	// Build the coordinates for the set
 	
@@ -36,11 +36,42 @@ int coord_construct(struct coord_proto *** coords_r, int perfs)
 	return 0;
 }
 
-int set_coord(struct coord_proto *curr, float x, float y)
+
+int coord_construct(struct coord_proto **coord_r, float x, float y)
+{
+	// build coord for just 1 dot
+	struct coord_proto *coord;
+	coord = (struct coord_proto*)malloc(sizeof(struct coord_proto));
+	if (coord != NULL)
+	{
+		coord->x = x;
+		coord->y = y;
+
+		// link to reference
+		*coord_r = coord;
+		return 0;
+	}
+	else
+		return -1;
+	return 0;
+}
+
+int set_coord(struct headset_proto *dshow, int index, float x, float y)
 {
 	// set coordinates from the coord struct
-	curr->x = x;
-	curr->y = y;
+	struct coord_proto *coord;
+	struct perf_proto *perf;
+	coord = dshow->currset->coords[index];
+	perf = dshow->perfs[index];
+	if (perf->valid <= setnum)
+	{
+		// update valid coord
+		perf->vdot->x = x;
+		perf->vdot->y = y;
+		perf->valid = setnum;
+	}
+	coord->x = x;
+	coord->y = y;
 	return 0;
 }
 
@@ -48,10 +79,14 @@ int set_coord(struct coord_proto *curr, float x, float y)
 int set_coord_valid(struct coord_proto **curr, int index, float x, float y)
 {
 	// set coordinates and set performer valid
+	set_coord(pshow, index, x, y);
+	return 0;
+	/*
 	curr[index]->x = x;
 	curr[index]->y = y;
 	pshow->perfs[index]->valid = 1;
 	return 0;
+	*/
 }
 
 int retr_coord(struct coord_proto *curr, float *x, float *y)
@@ -119,7 +154,7 @@ int movexy(float xoff, float yoff)
 		pushPerfmv(&pshow->undobr, selects->index, x, y, done);
 		x = x + xoff;
 		y = y + yoff;
-		set_coord(coords[selects->index], x, y);
+		set_coord(pshow, selects->index, x, y);
 		selects = selects->next;
 	}
 	// move center of selection
@@ -149,7 +184,7 @@ int align_dots(void)
 		pushPerfmv(&pshow->undobr, select->index, x, y, done);
 		x = roundf(x);
 		y = roundf(y);
-		set_coord(coords[select->index], x, y);
+		set_coord(pshow, select->index, x, y);
 		select = select->next;
 	}
 	// move center of selection
@@ -171,7 +206,7 @@ int movexy_grid(float xoff, float yoff)
 		retr_coord(coords[selects->index], &x, &y);
 		x = floorf(x + xoff);
 		y = floorf(y + yoff);
-		set_coord(coords[selects->index], x, y);
+		set_coord(pshow, selects->index, x, y);
 		selects = selects->next;
 	}
 	// move center of selection

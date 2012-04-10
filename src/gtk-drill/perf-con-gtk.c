@@ -47,7 +47,7 @@ void xperf_change (GtkWidget *widget)
 		perf_buffer = atof(entry_buffer);
 		if (perf_buffer>0 && perf_buffer<=160)
 		{
-			set_coord(coords, perf_buffer, coords->y);
+			set_coord(pshow, perf_cur, perf_buffer, coords->y);
 			//perf[setnum][perf_cur][0] = perf_buffer;
 		}
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
@@ -65,7 +65,7 @@ void yperf_change (GtkWidget *widget)
 		perf_buffer = atoi(entry_buffer);
 		if (perf_buffer>0 && perf_buffer<=85)
 		{
-			set_coord(coords, coords->x, perf_buffer);
+			set_coord(pshow, perf_cur, coords->x, perf_buffer);
 			//perf[setnum][perf_cur][1] = perf_buffer;
 		}
 		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
@@ -154,9 +154,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 			distance = pow(workx, 2) + pow(worky, 2);
 			if (i == 0)
 			{
-				printf("(x,y) at %.2f, %.2f (valid = 0x%x)\n", workx, worky, pshow->perfs[i]);
+				printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
 			}
-			if (distance < dist_threshold && pshow->perfs[i]->valid == 1)
+			if (distance < dist_threshold && pshow->perfs[i]->valid != -1)
 			{
 				// Found a closer dot
 				perf_cur = i;

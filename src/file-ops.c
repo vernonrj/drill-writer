@@ -69,6 +69,7 @@ void open_file(void)
 	int index;
 	int cnum;
 	float x, y;
+	int *valid;
 
 	struct perf_proto **perfs;
 	struct perf_proto *perf;
@@ -131,10 +132,12 @@ void open_file(void)
 	}
 	perfnum_buffer[i-index] = '\0';
 	free(buffer);
-	perfnum = atoi(perfnum_buffer) + 5;
+	perfnum = atoi(perfnum_buffer);
 	// make the show
 	show_destroy(&pshow);
 	excode = show_construct(&pshow, perfnum);
+	printf("perfnum = %i\n", perfnum);
+	valid = (int*)malloc(perfnum*sizeof(int));
 	//printf("%s\n", perfnum_buffer);
 	free(perfnum_buffer);
 	// store name
@@ -222,7 +225,7 @@ void open_file(void)
 		else if (!strcmp(operation, "valid"))
 		{
 			// validity flag
-			perf->valid = atoi(data);
+			valid[i] = atoi(data);
 		}
 		else if (!strcmp(operation, "sets:"))
 		{
@@ -232,6 +235,8 @@ void open_file(void)
 		free(data);
 		free(operation);
 	} while (done == 0);
+	for (i=i+1; i<perfnum; i++)
+		valid[i] = -1;
 
 	currset = pshow->currset;
 	do
@@ -291,11 +296,15 @@ void open_file(void)
 		{
 			// store coords
 			coords = currset->coords;
-			for (i=0; i<perfnum; i++)
+			i = 0;
+			//for (i=0; i<perfnum; i++)
+			do
 			{
 				free(buffer);
 				excode = file_getline(fp, &buffer);
 				if (buffer[0] == '\0')
+					break;
+				else if (!strcmp(buffer, "done"))
 					break;
 				size = strlen(buffer);
 				free(data);
@@ -331,8 +340,10 @@ void open_file(void)
 				data[j-index] = '\0';
 				y = atof(data);
 				//printf("(x,y) = %i %.2f %.2f\n", cnum, x, y);
-				set_coord(coords[i], x, y);
-			}
+				if (valid[i] != -1)
+					set_coord(pshow, cnum, x, y);
+				i++;
+			} while (i < perfnum);
 		}
 		free(operation);
 		free(data);
@@ -341,6 +352,11 @@ void open_file(void)
 	set_first();
 	update_tempo();
 	fclose(fp);
+
+	// update valid flags
+	printf("perfnum = %i\n", perfnum);
+	for (i=0; i<perfnum; i++)
+		perfs[i]->valid = valid[i];
 		
 	return;
 }
@@ -378,11 +394,14 @@ void save_file(void)
 	perfs = pshow->perfs;
 	for (i=0; i<pshow->perfnum; i++)
 	{
-		fprintf(fp, "name = %s\n", perfs[i]->name);
-		fprintf(fp, "index = %i\n", perfs[i]->index);
-		fprintf(fp, "symbol = %s\n", perfs[i]->symbol);
-		fprintf(fp, "valid = %i\n", perfs[i]->valid);
-		fprintf(fp, "\n");
+		if (perfs[i]->valid != -1)
+		{
+			fprintf(fp, "name = %s\n", perfs[i]->name);
+			fprintf(fp, "index = %i\n", perfs[i]->index);
+			fprintf(fp, "symbol = %s\n", perfs[i]->symbol);
+			fprintf(fp, "valid = %i\n", perfs[i]->valid);
+			fprintf(fp, "\n");
+		}
 	}
 	fprintf(fp, "sets:\n\n");
 	done = 0;
@@ -397,8 +416,10 @@ void save_file(void)
 		fprintf(fp, "coords:\n");
 		for(i=0; i<pshow->perfnum; i++)
 		{
-			fprintf(fp, "%i: %f %f\n", i, coords[i]->x, coords[i]->y);
+			if (perfs[i]->valid >= setnum)
+				fprintf(fp, "%i: %f %f\n", i, coords[i]->x, coords[i]->y);
 		}
+		fprintf(fp, "done\n");
 		fprintf(fp, "\n");
 		set_next();
 		update_tempo();

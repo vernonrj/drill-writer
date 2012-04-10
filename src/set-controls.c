@@ -28,7 +28,7 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	// make sure not classified as midset
 	sets->midset = 0;
 	// make coordinate system
-	excode = coord_construct(&sets->coords, perfs);
+	excode = coords_construct(&sets->coords, perfs);
 
 
 	// link
