@@ -44,6 +44,7 @@ int coord_construct(struct coord_proto **coord_r, float x, float y)
 	coord = (struct coord_proto*)malloc(sizeof(struct coord_proto));
 	if (coord != NULL)
 	{
+		coord->type = 0;
 		coord->x = x;
 		coord->y = y;
 
