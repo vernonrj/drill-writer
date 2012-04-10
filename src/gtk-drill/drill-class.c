@@ -32,6 +32,7 @@ void zoom_amnt(float x, float y)
 	{
 		zoom_x = zoom_x + x;
 		zoom_y = zoom_y + y;
+		do_field = 1;
 	}
 	return;
 }

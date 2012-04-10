@@ -424,6 +424,10 @@ int buildIfacegtk(void)
 	box0 = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (menu_box), box0, TRUE, TRUE, 0);
 
+	// set controls and media controls
+	media_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
+
 	// Set attributes (set, counts, tempo, etc)
 	setbox = gtk_hbox_new (FALSE, 5);	
 	/*
@@ -521,8 +525,6 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX (box0), alignment, FALSE, FALSE, 0);
 
 
-	media_box = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
 
 	// Media Controls (First, prev, next, last)
 	box1 = gtk_hbox_new (FALSE, 0);	
