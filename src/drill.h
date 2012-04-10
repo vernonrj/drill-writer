@@ -89,6 +89,9 @@ struct tempo_proto
 struct coord_proto
 {
 	// stores dot for one performer on one set
+	// rel/abs dot 
+	bool type;
+	// location info
 	float x;
 	float y;
 };
