@@ -121,6 +121,7 @@ int draw_dots (GtkWidget *widget)
 	// set containers
 	struct set_proto *currset;	
 	struct set_proto *lastset;
+	struct set_proto *prevset;
 	// performer container
 	struct perf_proto **perf;
 	// coordinate containers
@@ -128,6 +129,7 @@ int draw_dots (GtkWidget *widget)
 	// coordinates
 	float x, y;	// x and y location
 	float xcalc, ycalc;
+	float xprev, yprev;
 	// canvases
 	//cairo_t *dots;	// context for all dots
 	cairo_t *selected; // this will eventually have a struct to get dots
@@ -167,6 +169,7 @@ int draw_dots (GtkWidget *widget)
 
 	// grab sets from data structure
 	currset = pshow->currset;
+	prevset = pshow->prevset;
 	perf = pshow->perfs;
 
 
@@ -203,6 +206,11 @@ int draw_dots (GtkWidget *widget)
 				// performer should be drawn
 				// Get dots for current set and next set
 				retr_coord(currset->coords[i], &x, &y);
+				if (prevset != NULL && x == 0 && y == 0)
+				{
+					retr_coord(prevset->coords[i], &x, &y);
+					set_coord(pshow, i, x, y);
+				}
 				retr_coord(lastset->coords[i], &xcalc, &ycalc);
 				// Build horizontal location
 				xcalc = (xcalc - x) / lastset->counts;
