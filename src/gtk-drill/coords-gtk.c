@@ -122,12 +122,53 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	const gchar *buffer;
 	buffer = gtk_button_get_label(GTK_BUTTON(widget));
 	float fbStep;
+	float shstep;
+	float shstart;
 	float cx, cy;
+	int fb;
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
+	cx = pshow->center->x;
+	cy = pshow->center->y;
 	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
+	if (!strcmp(fb_hashside, "hash"))
+	{
+		// hash info
+		shstart = 32;
+		shstep = 85-64;
+	}
+	else
+	{
+		// sideline info
+		shstep = 85;
+		shstart = 0;
+	}
+	if (!strcmp(fb_frontback, "front"))
+	{
+		fb = -1;
+	}
+	else if (!strcmp(fb_frontback, "back"))
+	{
+		fb = 1;
+	}
+	else
+		fb = 0;
+
+	// front hash/side
+	if (!strcmp(fb_hashrel, "inside"))
+	{
+		// inside front hash/side
+		movexy(0, fb * (shstep - 2*fbStep));
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+	else if (!strcmp(fb_hashrel, "outside"))
+	{
+		// outside front hash/side
+		movexy(0, fb * (shstep + 2*fbStep));
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
 	return;
 }
 
