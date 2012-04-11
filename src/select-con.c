@@ -238,7 +238,7 @@ int select_all(void)
 	perfs = pshow->perfs;
 	for (i=0; i<perfnum; i++)
 	{
-		if (perfs[i]->valid == 1)
+		if (perfs[i]->valid != -1)
 		{
 			// performer is valid. Add
 			select_add(i);
