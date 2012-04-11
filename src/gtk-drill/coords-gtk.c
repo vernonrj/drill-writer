@@ -18,6 +18,7 @@ void change_ss_entry(GtkWidget *widget)
 	new_cx = atof(buffer);
 	if (ssStep != new_cx)
 	{
+		// changed
 		if ((yardrel == -1 && fieldside == 1)
 				|| (yardrel == 1 && fieldside == 2))
 		{
@@ -93,6 +94,57 @@ void toggle_ssYdLine(GtkWidget *widget)
 // Front-to-back relations
 void change_fb_entry(GtkWidget *widget)
 {
+	// change front-to-back
+	float cx = pshow->center->x;
+	float cy = pshow->center->y;
+	int yardrel;
+	int fieldside;
+	float new_cy;
+	float fbStep;
+	const gchar *buffer;
+	char *newtext;
+	int inOut;
+	gchar *fb_hashrel;
+	gchar *fb_frontback;
+	gchar *fb_hashside;
+
+	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel,
+			&fb_frontback, &fb_hashside);
+	buffer = gtk_entry_get_text(GTK_ENTRY(widget));
+	new_cy = atof(buffer);
+	if (fbStep != new_cy)
+	{
+		// changed
+		if (!strcmp(fb_hashrel, "inside"))
+		{
+			// inside hash/sideline
+			inOut = -1;
+		}
+		else if (!strcmp(fb_hashrel, "outside"))
+		{
+			// outside hash/sideline
+			inOut = 1;
+		}
+		else
+			inOut = 0;
+		// front/back
+		if (!strcmp(fb_frontback, "front"))
+		{
+			// front
+			movexy(0, inOut * (new_cy-fbStep));
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		}
+		else if (!strcmp(fb_frontback, "back"))
+		{
+			// back
+			movexy(0, -inOut*(new_cy-fbStep));
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		}
+	}
+	g_free (fb_hashrel);
+	g_free (fb_frontback);
+	g_free (fb_hashside);
+
 	return;
 }
 
