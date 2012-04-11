@@ -25,15 +25,17 @@ void toggle_ssYdRel(GtkWidget *widget)
 	{
 		// don't do anything
 	}
-	else if ((yardrel == -1 && fieldside == 1) || (yardrel == 1 && fieldside == 2))
+	else if ((yardrel == -1 && fieldside == 1) 
+			|| (yardrel == 1 && fieldside == 2))
 	{
-		// move 4 steps right
+		// move right
 		movexy(2*ssStep, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
-	else if ((yardrel == 1 && fieldside == 1) || (yardrel == -1 && fieldside == 2))
+	else if ((yardrel == 1 && fieldside == 1) 
+			|| (yardrel == -1 && fieldside == 2))
 	{
-		// move 4 steps left
+		// move left
 		movexy(-2*ssStep, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
@@ -42,6 +44,14 @@ void toggle_ssYdRel(GtkWidget *widget)
 
 void toggle_ssSide(GtkWidget *widget)
 {
+	// change side from side 1 to side 2
+	// 	or side 2 to side 1
+	float cx, cy;
+	cx = pshow->center->x;
+
+	movexy(2*(80-cx), 0);
+	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+
 	return;
 }
 
