@@ -195,6 +195,10 @@ void toggle_fbHashRel(GtkWidget *widget)
 		}
 	}
 
+	g_free (fb_hashrel);
+	g_free (fb_frontback);
+	g_free (fb_hashside);
+
 	return;
 }
 
@@ -251,6 +255,9 @@ void toggle_fbFrontBack(GtkWidget *widget)
 		movexy(0, fb * (shstep + 2*fbStep));
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
+	g_free (fb_hashrel);
+	g_free (fb_frontback);
+	g_free (fb_hashside);
 	return;
 }
 
@@ -287,6 +294,10 @@ void toggle_HashSide(GtkWidget *widget)
 		movexy(0, -fb*32);
 		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
+
+	g_free (fb_hashrel);
+	g_free (fb_frontback);
+	g_free (fb_hashside);
 
 	return;
 }
