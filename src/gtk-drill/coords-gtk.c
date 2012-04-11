@@ -68,16 +68,81 @@ void change_fb_entry(GtkWidget *widget)
 
 void toggle_fbHashRel(GtkWidget *widget)
 {
+	// toggle relation from ins/out
+	// 			out/ins
+	const gchar *buffer;
+	float fbStep;
+	float cx, cy;
+	gchar *fb_hashrel;
+	gchar *fb_frontback;
+	gchar *fb_hashside;
+	cx = pshow->center->x;
+	cy = pshow->center->y;
+	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
+			&fb_frontback, &fb_hashside);
+	if (!strcmp(fb_frontback, "front"))
+	{
+		// front hash/side
+		if (!strcmp(fb_hashrel, "inside"))
+		{
+			// inside front, add
+			movexy(0, 2*fbStep);
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		}
+		else if (!strcmp(fb_hashrel, "outside"))
+		{
+			// outside front, subtract
+			movexy(0, -2*fbStep);
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		}
+	}
+	else if (!strcmp(fb_frontback, "back"))
+	{
+		// back hash/side
+		if (!strcmp(fb_hashrel, "inside"))
+		{
+			// inside back, subtract
+			movexy(0, -2*fbStep);
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		}
+		else if (!strcmp(fb_hashrel, "outside"))
+		{
+			// outside back, add
+			movexy(0, 2*fbStep);
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		}
+	}
+
 	return;
 }
 
 void toggle_fbFrontBack(GtkWidget *widget)
 {
+	// toggle relation from front/back
+	const gchar *buffer;
+	buffer = gtk_button_get_label(GTK_BUTTON(widget));
+	float fbStep;
+	float cx, cy;
+	gchar *fb_hashrel;
+	gchar *fb_frontback;
+	gchar *fb_hashside;
+	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
+			&fb_frontback, &fb_hashside);
 	return;
 }
 
 void toggle_HashSide(GtkWidget *widget)
 {
+	// toggle hash/sideline
+	const gchar *buffer;
+	buffer = gtk_button_get_label(GTK_BUTTON(widget));
+	float fbStep;
+	float cx, cy;
+	gchar *fb_hashrel;
+	gchar *fb_frontback;
+	gchar *fb_hashside;
+	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
+			&fb_frontback, &fb_hashside);
 	return;
 }
 
