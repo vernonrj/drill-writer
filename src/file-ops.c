@@ -205,6 +205,7 @@ void open_file(void)
 		{
 			// info
 			perf->index = atoi(data);
+			i++;
 		}
 		else if (!strcmp(operation, "symbol"))
 		{

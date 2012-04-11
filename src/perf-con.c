@@ -130,6 +130,8 @@ int add_perf(void)
 	}
 	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 0;
+	select_discard();
+	select_add(index);
 	pushPerfMk(&pshow->undobr, index, 1);
 	return index;
 }

@@ -164,10 +164,12 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 			workx = workx - coordx;
 			worky = worky - coordy;
 			distance = pow(workx, 2) + pow(worky, 2);
+			/*
 			if (i == 0)
 			{
 				printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
 			}
+			*/
 			if (distance < dist_threshold && pshow->perfs[i]->valid != -1)
 			{
 				// Found a closer dot

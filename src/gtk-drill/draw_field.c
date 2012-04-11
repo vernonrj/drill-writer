@@ -508,7 +508,7 @@ void draw_field (GtkWidget *widget)
 			}
 		}
 		// Maybe I can write this to a pixmap instead...
-		cairo_surface_write_to_png(surface, "field.png");
+		//cairo_surface_write_to_png(surface, "field.png");
 	}
 	// Cleanup
 	// Show the dots
