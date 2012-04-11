@@ -102,7 +102,7 @@ struct coord_proto
 struct perf_proto
 {
 	// node with performer information
-	char *name;	// performer name
+	//char *name;	// performer name
 	int index;	// index number for dots
 	char *symbol;	// symbol on field
 	int valid;	// should be used by program

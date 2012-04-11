@@ -104,6 +104,8 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	return 0;
 }
 
+
+
 int show_destroy(struct headset_proto **dshow_r)
 {
 	int i, j;
@@ -154,7 +156,6 @@ int show_destroy(struct headset_proto **dshow_r)
 	{
 		// delete performers
 		pcurr = perfs[i];
-		free(pcurr->name);
 		free(pcurr->symbol);
 		free(perfs[i]);
 	}

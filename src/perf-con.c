@@ -17,14 +17,12 @@ int perf_construct(struct perf_proto **perf_r)
 		return -1;
 	}
 	// allocate values inside struct
-	perf->name = (char*) malloc(1 * sizeof(char));
-	perf->symbol = (char*) malloc(1 * sizeof(char));
-	if (perf->name == NULL || perf->symbol == NULL)
+	perf->symbol = (char*) malloc(2 * sizeof(char));
+	if (perf->symbol == NULL)
 	{
 		// allocation error
 		return -1;
 	}
-	perf->name[0] = '\0';
 	perf->symbol[0] = '\0';
 	coord_construct(&perf->vdot, 0, 0);
 	perf->valid = -1;
@@ -84,16 +82,17 @@ int add_perf(void)
 		for (i=perfnum; i<perfnum+5; i++)
 		{
 			// make new performers
+			perf_construct(&newperfs[i]);
+			/*
 			newperfs[i] = (struct perf_proto*)malloc(sizeof(struct perf_proto));
 			if (newperfs[i] == NULL)
 				return -1;
-			newperfs[i]->name = (char*)malloc(1*sizeof(char));
 			newperfs[i]->symbol = (char*)malloc(1*sizeof(char));
-			if (newperfs[i]->name == NULL || newperfs[i]->symbol == NULL)
+			if (newperfs[i]->symbol == NULL)
 				return -1;
-			newperfs[i]->name[0] = '\0';
 			newperfs[i]->symbol[0] = '\0';
 			newperfs[i]->valid = -1;
+			*/
 		}
 		// set new performers
 		free(pshow->perfs);
@@ -129,6 +128,7 @@ int add_perf(void)
 		index = perfnum;
 		pshow->perfnum = perfnum+5;
 	}
+	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 0;
 	pushPerfMk(&pshow->undobr, index, 1);
 	return index;

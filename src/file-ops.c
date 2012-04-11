@@ -201,16 +201,7 @@ void open_file(void)
 			data[j-index] = buffer[j];
 		}
 		data[j-index] = '\0';
-		if (!strcmp(operation, "name"))
-		{
-			// name
-			i++;
-			perf = perfs[i];
-			free(perf->name);
-			perf->name = (char*)malloc((size+1)*sizeof(char));
-			strcpy(perf->name, data);
-		}
-		else if (!strcmp(operation, "index"))
+		if (!strcmp(operation, "index"))
 		{
 			// info
 			perf->index = atoi(data);
@@ -398,7 +389,6 @@ void save_file(void)
 	{
 		if (perfs[i]->valid != -1)
 		{
-			fprintf(fp, "name = %s\n", perfs[i]->name);
 			fprintf(fp, "index = %i\n", perfs[i]->index);
 			fprintf(fp, "symbol = %s\n", perfs[i]->symbol);
 			fprintf(fp, "valid = %i\n", perfs[i]->valid);
