@@ -20,6 +20,24 @@ static void quit_action ()
 	gtk_main_quit();
 }
 
+void button_upifCh(GtkWidget *button, char *newinfo)
+{
+	const gchar *buffer;
+	buffer = gtk_button_get_label(GTK_BUTTON(button));
+	if (strcmp(buffer, newinfo))
+		gtk_button_set_label(GTK_BUTTON(button), newinfo);
+	return;
+}
+
+void entry_upifCh(GtkWidget *entry, char *newinfo)
+{
+
+	const char *buffer;
+	buffer = gtk_entry_get_text(GTK_ENTRY(entry));
+	if (strcmp(buffer, newinfo))
+		gtk_entry_set_text(GTK_ENTRY(entry), newinfo);
+	return;
+}
 
 int update_entries(void)
 {
@@ -45,7 +63,10 @@ int update_entries(void)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
-	const gchar *buffer;
+	//const gchar *buffer;
+	const gchar *b_ssStepE;
+	const gchar *b_ssYdRel;
+	const gchar *b_ssSideRel;
 	// Update all the entries
 	cx = pshow->center->x;
 	cy = pshow->center->y;
@@ -71,19 +92,15 @@ int update_entries(void)
 	sprintf(ss_ydline, "%i", getYardline(&cx, &cy));
 	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, &fb_frontback, &fb_hashside);
 	fb_buf = g_strdup_printf("%.2f", fbStep);
-	buffer = gtk_entry_get_text (GTK_ENTRY (sidesideBtns.ssStepEntry));
-	if (!strcmp(buffer, ss_buf))
-		gtk_entry_set_text(GTK_ENTRY (sidesideBtns.ssStepEntry), ss_buf);
-	//if (!strcmp(buffer, ss_ydrel))
-	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdRelButton), ss_ydrel);
-	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssSide), ss_siderel);
-	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdLine), ss_ydline);
-	buffer = gtk_entry_get_text (GTK_ENTRY (frbkBtns.fbStepEntry));
-	if (!strcmp(buffer, fb_buf))
-		gtk_entry_set_text(GTK_ENTRY (frbkBtns.fbStepEntry), fb_buf);
-	gtk_button_set_label(GTK_BUTTON (frbkBtns.fbHashRelButton), fb_hashrel);
-	gtk_button_set_label(GTK_BUTTON (frbkBtns.fbToggleButton), fb_frontback);
-	gtk_button_set_label(GTK_BUTTON (frbkBtns.HashSideButton), fb_hashside);
+	entry_upifCh(sidesideBtns.ssStepEntry, ss_buf);
+	// change yard relation button
+	button_upifCh(sidesideBtns.ssYdRelButton, ss_ydrel);
+	button_upifCh(sidesideBtns.ssSide, ss_siderel);
+	button_upifCh(sidesideBtns.ssYdLine, ss_ydline);
+	entry_upifCh(frbkBtns.fbStepEntry, fb_buf);
+	button_upifCh(frbkBtns.fbHashRelButton, fb_hashrel);
+	button_upifCh(frbkBtns.fbToggleButton, fb_frontback);
+	button_upifCh(frbkBtns.HashSideButton, fb_hashside);
 	g_free(fb_buf);
 	g_free(fb_hashrel);
 	g_free(fb_frontback);
