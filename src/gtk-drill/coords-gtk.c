@@ -8,6 +8,35 @@ void change_ss_entry(GtkWidget *widget)
 
 void toggle_ssYdRel(GtkWidget *widget)
 {
+	// change relationship from 	outside->inside
+	// 				inside->outside
+	const gchar *buffer;
+	float cx, cy;
+	float ssStep;
+	int fieldside;
+	int yardrel;
+	buffer = gtk_button_get_label(GTK_BUTTON(widget));
+	cx = pshow->center->x;
+	cy = pshow->center->y;
+	ssStep = getSidetoSide(&cx, &cy);
+	ssStep = roundf(4*ssStep)/4;
+	yardrel = isInsideYard(&cx, &cy, &fieldside);
+	if (ssStep == 4)
+	{
+		// don't do anything
+	}
+	else if ((yardrel == -1 && fieldside == 1) || (yardrel == 1 && fieldside == 2))
+	{
+		// move 4 steps right
+		movexy(2*ssStep, 0);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+	else if ((yardrel == 1 && fieldside == 1) || (yardrel == -1 && fieldside == 2))
+	{
+		// move 4 steps left
+		movexy(-2*ssStep, 0);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
 	return;
 }
 
