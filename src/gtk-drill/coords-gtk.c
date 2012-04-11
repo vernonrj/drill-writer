@@ -182,8 +182,30 @@ void toggle_HashSide(GtkWidget *widget)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
+	cx = pshow->center->x;
+	cy = pshow->center->y;
 	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
+	int fb;
+	if (!strcmp(fb_frontback, "front"))
+		fb = 1;
+	else if (!strcmp(fb_frontback, "back"))
+		fb = -1;
+	else
+		fb = 0;
+	if (!strcmp(fb_hashside, "hash"))
+	{
+		// front/back hash
+		movexy(0, fb * 32);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+	else if (!strcmp(fb_hashside, "sideline"))
+	{
+		// front/back sideline
+		movexy(0, -fb*32);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+
 	return;
 }
 
