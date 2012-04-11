@@ -169,7 +169,6 @@ int draw_dots (GtkWidget *widget)
 
 	// grab sets from data structure
 	currset = pshow->currset;
-	prevset = pshow->prevset;
 	perf = pshow->perfs;
 
 
@@ -194,6 +193,8 @@ int draw_dots (GtkWidget *widget)
 		//g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
 		// get next set
 		lastset = currset->next;
+		// get previous set
+		prevset = pshow->prevset;
 		// get first selected dot
 		selects = pshow->select;
 		// draw performers at certain point
@@ -305,6 +306,8 @@ int draw_dots (GtkWidget *widget)
 	else
 	{	// We're on the last set
 		selects = pshow->select;
+		// get previous set
+		prevset = pshow->prevset;
 		for (i=0; i< pshow->perfnum; i++)
 		{	// Draw dots here
 			if (!perf[i])
@@ -313,6 +316,11 @@ int draw_dots (GtkWidget *widget)
 			{
 				// draw only if valid
 				retr_coord(currset->coords[i], &x, &y);
+				if (prevset != NULL && x == 0 && y == 0)
+				{
+					retr_coord(prevset->coords[i], &x, &y);
+					set_coord(pshow, i, x, y);
+				}
 				x = xo2+step*x;
 				y = yo2+step*y;
 				// print selection if dot is selected
