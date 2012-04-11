@@ -1,4 +1,12 @@
 #include "d_gtk.h"
+void view_stepsize_gtk(GtkWidget *widget)
+{
+	// view the stepsize of selected dots
+	float stepsize;
+	stepsize = check_stepsize_selected(pshow);
+	printf("stepsize = %.2f:5\n", stepsize);
+	return;
+}
 
 void goto_perf (GtkWidget *widget)
 {

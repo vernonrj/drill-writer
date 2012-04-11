@@ -247,8 +247,49 @@ void delete_perf(struct perf_proto *perf)
 
 
 
+float check_stepsize_selected(struct headset_proto *dshow)
+{
+	// get average stepsize of selected dots
+	int count = 0;
+	int index;
+	int sCounts;
+	float stepsize = 0;
+	float x, y;
+	float xpr, ypr;
+	float dx, dy;
+	float dxy;
+	// sets
+	struct set_proto *currset = dshow->currset;
+	struct set_proto *prevset = dshow->prevset;
+	// selection
+	struct select_proto *last = dshow->select;
+	// coords
+	struct coord_proto **coords = currset->coords;
+	struct coord_proto **pcoords;
 
-
-
-
+	if (setnum == 0)
+		return 0;
+	pcoords = prevset->coords;
+	sCounts = currset->counts;
+	while (last != NULL)
+	{
+		index = last->index;
+		x = coords[index]->x;
+		y = coords[index]->y;
+		xpr = pcoords[index]->x;
+		ypr = pcoords[index]->y;
+		dx = x - xpr;
+		dy = y - ypr;
+		dxy = sqrt(powf(dx,2)+powf(dy,2));
+		if (dxy)
+			dxy = 8 * sCounts / dxy;
+		stepsize = stepsize + dxy;
+		count++;
+		last = last->next;
+	}
+	if (count == 0)
+		return 0;
+	stepsize = stepsize / count;
+	return stepsize;
+}
 

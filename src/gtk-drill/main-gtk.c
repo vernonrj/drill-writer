@@ -275,6 +275,10 @@ int buildIfacegtk(void)
 		"_Zoom Fit", "<control>plus",
 		"Fit the field in the window",
 		G_CALLBACK(zoom_fit) },
+	{ "StepSizeAction", NULL,
+		"_View Stepsize", NULL,
+		"View stepsize of selected dots",
+		G_CALLBACK(view_stepsize_gtk) },
 	// Dot Menu
 	{ "AlignGridAction", NULL,
 		"_Align to Grid", "<control>G",

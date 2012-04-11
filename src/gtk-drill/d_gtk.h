@@ -172,6 +172,7 @@ void queue_show (GtkWidget *widget);
 void play_show_from_start (GtkWidget *widget);
 
 // perf-con-gtk.c
+void view_stepsize_gtk(GtkWidget *widget);
 void goto_perf (GtkWidget *widget);
 int add_perf_gtk(GtkWidget *widget);
 void revert_perf_gtk(GtkWidget *widget);

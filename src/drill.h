@@ -203,6 +203,7 @@ void revert_perf_selected(struct headset_proto *dshow);
 void revert_perf(struct headset_proto *dshow, int index);
 void delete_perf_selected(void);
 void delete_perf(struct perf_proto *perf);
+float check_stepsize_selected(struct headset_proto *dshow);
 
 // select-con.c
 void update_sel_center(void);
