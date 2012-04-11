@@ -3,6 +3,36 @@
 // Side-to-Side relations
 void change_ss_entry(GtkWidget *widget)
 {
+	// change side-to-side
+	float cx = pshow->center->x;
+	float cy = pshow->center->y;
+	int yardrel;
+	int fieldside;
+	float new_cx;
+	float ssStep;
+	const gchar *buffer;
+	char *newtext;
+	ssStep = getSidetoSide(&cx, &cy);
+	yardrel = isInsideYard(&cx, &cy, &fieldside);
+	buffer = gtk_entry_get_text(GTK_ENTRY(widget));
+	new_cx = atof(buffer);
+	if (ssStep != new_cx)
+	{
+		if ((yardrel == -1 && fieldside == 1)
+				|| (yardrel == 1 && fieldside == 2))
+		{
+			// move right
+			movexy(ssStep-new_cx, 0);
+		}
+		else if ((yardrel == 1 && fieldside == 1)
+				|| (yardrel == -1 && fieldside == 2))
+		{
+			// move left
+			movexy(new_cx-ssStep, 0);
+		}	
+		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	}
+
 	return;
 }
 
