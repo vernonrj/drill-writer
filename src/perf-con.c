@@ -136,6 +136,68 @@ int add_perf(void)
 
 
 
+void revert_perf_selected(struct headset_proto *dshow)
+{
+	// revert selected performers to dot at the previous set
+	int index;
+	// selections
+	struct select_proto *last;
+	// coords
+	struct coord_proto *coord;
+	// finished
+	int done;
+	last = dshow->select;
+	undo_tclose();
+	while (last)
+	{
+		// set dots as invalid
+		index = last->index;
+		coord = dshow->currset->coords[index];
+		if (last->next)
+		{
+			// more to delete
+			done = 0;
+		}
+		else
+		{
+			// no more to delete
+			done = 1;
+		}
+		pushPerfmv(&dshow->undobr, index, coord->x, coord->y, done);
+		revert_perf(dshow, index);
+		// go to next performer
+		last = last->next;
+	}
+	return;
+}
+	
+
+void revert_perf(struct headset_proto *dshow, int index)
+{
+	// revert a performer's dot to the dot at the previous set
+	struct set_proto *currset;
+	struct set_proto *prevset;
+	struct coord_proto *coord;
+	struct coord_proto *prevcoord;
+
+	currset = dshow->currset;
+	prevset = dshow->prevset;
+
+	coord = currset->coords[index];
+
+	if (prevset == NULL)
+	{
+		// first set
+		set_coord(dshow, index, 0, 0);
+	}
+	else
+	{
+		// not first set; use previous dots
+		prevcoord = prevset->coords[index];
+		set_coord(dshow, index, prevcoord->x, prevcoord->y);
+	}
+	return;
+}
 
 void delete_perf_selected(void)
 {

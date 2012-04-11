@@ -24,6 +24,18 @@ int add_perf_gtk(GtkWidget *widget)
 	return excode;
 }
 
+
+void revert_perf_gtk(GtkWidget *widget)
+{
+	// revert selected performers
+	if (!playing)
+	{
+		revert_perf_selected(pshow);
+		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	}
+	return;
+}
+
 void delete_perf_gtk(GtkWidget *widget)
 {
 	// Delete selected performers

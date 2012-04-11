@@ -172,6 +172,7 @@ void play_show_from_start (GtkWidget *widget);
 // perf-con-gtk.c
 void goto_perf (GtkWidget *widget);
 int add_perf_gtk(GtkWidget *widget);
+void revert_perf_gtk(GtkWidget *widget);
 void delete_perf_gtk(GtkWidget *widget);
 void xperf_change (GtkWidget *widget);
 void yperf_change (GtkWidget *widget);
