@@ -45,6 +45,7 @@ int update_entries(void)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
+	const gchar *buffer;
 	// Update all the entries
 	cx = pshow->center->x;
 	cy = pshow->center->y;
@@ -70,11 +71,16 @@ int update_entries(void)
 	sprintf(ss_ydline, "%i", getYardline(&cx, &cy));
 	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, &fb_frontback, &fb_hashside);
 	fb_buf = g_strdup_printf("%.2f", fbStep);
-	gtk_entry_set_text(GTK_ENTRY (sidesideBtns.ssStepEntry), ss_buf);
+	buffer = gtk_entry_get_text (GTK_ENTRY (sidesideBtns.ssStepEntry));
+	if (!strcmp(buffer, ss_buf))
+		gtk_entry_set_text(GTK_ENTRY (sidesideBtns.ssStepEntry), ss_buf);
+	//if (!strcmp(buffer, ss_ydrel))
 	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdRelButton), ss_ydrel);
 	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssSide), ss_siderel);
 	gtk_button_set_label(GTK_BUTTON (sidesideBtns.ssYdLine), ss_ydline);
-	gtk_entry_set_text(GTK_ENTRY (frbkBtns.fbStepEntry), fb_buf);
+	buffer = gtk_entry_get_text (GTK_ENTRY (frbkBtns.fbStepEntry));
+	if (!strcmp(buffer, fb_buf))
+		gtk_entry_set_text(GTK_ENTRY (frbkBtns.fbStepEntry), fb_buf);
 	gtk_button_set_label(GTK_BUTTON (frbkBtns.fbHashRelButton), fb_hashrel);
 	gtk_button_set_label(GTK_BUTTON (frbkBtns.fbToggleButton), fb_frontback);
 	gtk_button_set_label(GTK_BUTTON (frbkBtns.HashSideButton), fb_hashside);
