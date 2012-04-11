@@ -272,6 +272,7 @@ int main (int argc, char *argv[])
 	pshow->prevset = 0;
 
 	perf_cur = 0;
+	undo_destroy(&pshow->undobr, pshow);
 	//foo();
 
 	///*

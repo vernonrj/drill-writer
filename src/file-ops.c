@@ -357,6 +357,8 @@ void open_file(void)
 	printf("perfnum = %i\n", perfnum);
 	for (i=0; i<perfnum; i++)
 		perfs[i]->valid = valid[i];
+
+	undo_destroy(&pshow->undobr, pshow);
 		
 	return;
 }
