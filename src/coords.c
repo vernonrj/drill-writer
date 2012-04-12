@@ -64,13 +64,16 @@ int set_coord(struct headset_proto *dshow, int index, float x, float y)
 	struct perf_proto *perf;
 	coord = dshow->currset->coords[index];
 	perf = dshow->perfs[index];
+	if (perf->valid == 0 || perf->valid == -1)
+		perf->valid = 1;
+	/*
+	perf = dshow->perfs[index];
 	if (perf->valid <= setnum)
 	{
 		// update valid coord
-		perf->vdot->x = x;
-		perf->vdot->y = y;
 		perf->valid = setnum;
 	}
+	*/
 	coord->x = x;
 	coord->y = y;
 	return 0;

@@ -178,7 +178,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
 			}
 			*/
-			if (distance < dist_threshold && pshow->perfs[i]->valid != -1)
+			if (distance < dist_threshold && pshow->perfs[i]->valid)
 			{
 				// Found a closer dot
 				perf_cur = i;

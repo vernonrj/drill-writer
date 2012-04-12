@@ -228,7 +228,7 @@ void open_file(void)
 		free(operation);
 	} while (done == 0);
 	for (i=i+1; i<perfnum; i++)
-		valid[i] = -1;
+		valid[i] = 0;
 
 	currset = pshow->currset;
 	do
@@ -388,7 +388,7 @@ void save_file(void)
 	perfs = pshow->perfs;
 	for (i=0; i<pshow->perfnum; i++)
 	{
-		if (perfs[i]->valid != -1)
+		if (perfs[i]->valid != -1 && perfs[i]->valid != 0)
 		{
 			fprintf(fp, "index = %i\n", perfs[i]->index);
 			fprintf(fp, "symbol = %s\n", perfs[i]->symbol);
@@ -409,7 +409,7 @@ void save_file(void)
 		fprintf(fp, "coords:\n");
 		for(i=0; i<pshow->perfnum; i++)
 		{
-			if (perfs[i]->valid >= setnum)
+			if (perfs[i]->valid)
 				fprintf(fp, "%i: %f %f\n", i, coords[i]->x, coords[i]->y);
 		}
 		fprintf(fp, "done\n");

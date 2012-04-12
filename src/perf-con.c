@@ -24,12 +24,27 @@ int perf_construct(struct perf_proto **perf_r)
 		return -1;
 	}
 	perf->symbol[0] = '\0';
-	coord_construct(&perf->vdot, 0, 0);
-	perf->valid = -1;
+	//coord_construct(&perf->vdot, 0, 0);
+	perf->valid = 0;
 
 	// pass by reference
 	*perf_r = perf;
 
+	return 0;
+}
+
+
+
+int perf_destroy(struct perf_proto **perf_r)
+{
+	// destroy storage for performer
+	struct perf_proto *perf;
+
+	perf = *perf_r;
+
+	free(perf->symbol);
+	free(perf);
+	*perf_r = 0;
 	return 0;
 }
 
@@ -60,7 +75,7 @@ int add_perf(void)
 	{
 		// check this performer
 		perf = pshow->perfs[i];
-		if (perf->valid == -1)
+		if (perf->valid == 0)
 		{
 			found_dot = 1;
 			index = i;
@@ -129,7 +144,7 @@ int add_perf(void)
 		pshow->perfnum = perfnum+5;
 	}
 	printf("performer created at %i\n", index);
-	pshow->perfs[index]->valid = 0;
+	pshow->perfs[index]->valid = 1;
 	select_discard();
 	select_add(index);
 	pushPerfMk(&pshow->undobr, index, 1);
@@ -229,7 +244,7 @@ void delete_perf_selected(void)
 		// TODO: eventually have to unlink perf struct for undo
 		pshow->perfs[index] = perf;
 		delete_perf(perf);
-		perfs[index]->valid = -1;
+		perfs[index]->valid = 0;
 		// go to next performer
 		last = last->next;
 	}
@@ -241,7 +256,7 @@ void delete_perf(struct perf_proto *perf)
 {
 	// render performer invalid
 	//struct perf_proto *perf;
-	perf->valid = -1;
+	perf->valid = 0;
 	return;
 }
 

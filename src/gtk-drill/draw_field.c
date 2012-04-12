@@ -202,7 +202,7 @@ int draw_dots (GtkWidget *widget)
 		{	// Draw performers only if they have valid dots
 			if (!perf[i])
 				return -1;
-			if (perf[i]->valid != -1)
+			if (perf[i]->valid)
 			{
 				// performer should be drawn
 				// Get dots for current set and next set
@@ -312,7 +312,7 @@ int draw_dots (GtkWidget *widget)
 		{	// Draw dots here
 			if (!perf[i])
 				return -1;
-			if (perf[i]->valid != -1)
+			if (perf[i]->valid)
 			{
 				// draw only if valid
 				retr_coord(currset->coords[i], &x, &y);

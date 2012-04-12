@@ -107,7 +107,7 @@ struct perf_proto
 	char *symbol;	// symbol on field
 	int valid;	// should be used by program
 	// last valid coordinate
-	struct coord_proto *vdot;
+	//struct coord_proto *vdot;
 
 	//struct perf_proto *next;
 };
@@ -198,6 +198,7 @@ int main (int argc, char *argv[]);
 // perf-con.c
 // create container for performers
 int perf_construct(struct perf_proto **perf_ref);
+int perf_destroy(struct perf_proto **perf_r);
 int add_perf(void);
 void revert_perf_selected(struct headset_proto *dshow);
 void revert_perf(struct headset_proto *dshow, int index);
