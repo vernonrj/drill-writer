@@ -272,7 +272,6 @@ int main (int argc, char *argv[])
 
 	perf_cur = 0;
 	undo_destroy(&pshow->undobr, pshow);
-	//foo();
 
 	///*
 	// Start up gtk
@@ -286,6 +285,7 @@ int main (int argc, char *argv[])
 	gtk_main();
 	// */
 	
+	//foo();
 	show_destroy(&pshow);
 
 	return 0;

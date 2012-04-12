@@ -6,31 +6,50 @@
 int file_getline(FILE *fp, char **buffer_r)
 {
 	// get a line from a file
+	// buffer is allocated dynamically to fit the line
+	
+	// default buffer size
 	int def_size = 5;
+	// dynamic buffer size
 	int size = def_size;
+	// stream input
 	char c;
+	// modified stream output
 	char cq;
+	// buffer for stream
 	char *buffer;
+	// buffer for reallocating
 	char *oldbuff;
+	// index for buffer
 	int index = 0;
+	// flag indicating finish
 	int done = 0;
 
+	// allocate starting buffer
 	buffer = (char*)malloc(size*sizeof(char));
 	if (!buffer)
 		return -1;
 	do
 	{
+		// grab stream to end of line
+		// or end of file
 		c = fgetc(fp);
 		if (c == EOF || c == '\n')
 		{
+			// hit end of file
+			// or end of line
+			// Finish reading line
 			done = 1;
 			cq = '\0';
 		}
 		else
+		{
+			// get ready to copy char to buffer
 			cq = c;
+		}
 		if (index == size - 1)
 		{
-			// need to alloc more memory
+			// Allocate more memory to buffer
 			buffer[index] = '\0';
 			oldbuff = buffer;
 			size = size+def_size;
@@ -38,11 +57,15 @@ int file_getline(FILE *fp, char **buffer_r)
 			strcpy(buffer, oldbuff);
 			free(oldbuff);
 		}
+		// store data to buffer
 		buffer[index] = cq;
 		index++;
 	} while (done == 0);
+	// cap the end of the buffer (just in case)
 	buffer[index] = '\0';
+	// passing by reference; pass back
 	*buffer_r = buffer;
+	// if the end of file is reached, note that in return
 	if (c == EOF)
 		return 1;
 	else
@@ -55,11 +78,17 @@ int file_getValidLine(FILE *fp, char **buffer_r)
 {
 	// get a valid line (not a blank-line)
 	// 	from a file
+
+	// exit code
 	int excode;
+	// stream buffer
 	char *buffer;
+	// finished flag
 	int done;
 	do
 	{
+		// read until EOF is reached,
+		// 	or a non-blank line is found
 		excode = file_getline(fp, buffer_r);
 		buffer = *buffer_r;
 		if (excode == 1)
@@ -67,6 +96,7 @@ int file_getValidLine(FILE *fp, char **buffer_r)
 		else if (buffer[0] == '\0')
 		{
 			// empty line
+			// re-run
 			done = 0;
 			free(buffer);
 		}
@@ -85,11 +115,18 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 {
 	// convert a line to an operation using the stopchar
 	//char *buffer;
-	char *op;
-	int size;
+
+	// loop var
 	int i;
+	// operation
+	char *op;
+	// sizing for buffer
+	int size;
+	// placeholder for buffer
 	int index = 0;
+	// check to see if match was found
 	bool match;
+	// check to see if operation was found
 	bool foundOp = 0;
 	//printf("line = %s\n", buffer);
 	size = strlen(buffer);
@@ -134,33 +171,59 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 
 void open_file(void)
 {
+	// open a file (for now, just save_file)
+	
+	// loop vars
 	int i, j;
+	// file pointer
 	FILE *fp;
+	// stream char
 	char c;
+	// stream string
 	char *buffer;
+	// older buffer
 	char *oldbuff;
+	// data storage
 	char *data;
+	// operation storage
 	char *operation;
+	// name storage
 	char *name;
+	// info storage
 	char *info;
+	// performer storage
 	char *perfnum_buffer;
+	// performer number
 	int perfnum;
+	// exit code
 	int excode;
+	// sizing for allocation
 	int size;
+	// finished flag
 	int done;
+	// placeholder for char
 	int index;
+	// coord number
 	int cnum;
+	// coordinates
 	float x, y;
+	// validity array
 	int *valid;
+	// new data
 	char *nwdata;
+	// new operation
 	char *op;
 
+	// Structures
+	// performer structures
 	struct perf_proto **perfs;
 	struct perf_proto *perf;
+	// Set structure
 	struct set_proto *currset;
+	// Coord structure
 	struct coord_proto **coords;
 
-
+	// open file for reading
 	fp = fopen("save_file","r");
 	// get the name
 	excode = file_getValidLine(fp, &buffer);
@@ -216,13 +279,19 @@ void open_file(void)
 	i = -1;
 	do
 	{
+		if (i != -1)
+		{
+			if (perfs[i])
+				perf = perfs[i];
+			else
+				exit(-1);
+		}
 		// grab performer pieces
 		free(buffer);
 		// get a valid line
 		excode = file_getValidLine(fp, &buffer);
 		size = strlen(buffer);
 		// get operations at data from line
-		operation = (char*)malloc((size+2)*sizeof(char));
 		data = (char*)malloc((size+2)*sizeof(char));
 		strncpy(data, buffer, size+1);
 		excode = file_linetoOps(data, &operation, '=');
@@ -243,7 +312,8 @@ void open_file(void)
 		else if (!strcmp(operation, "valid"))
 		{
 			// validity flag
-			valid[i] = atoi(data);
+			perf->valid = atoi(data);
+			//valid[i] = atoi(data);
 		}
 		else if (!strcmp(operation, "sets:"))
 		{
@@ -254,7 +324,7 @@ void open_file(void)
 		free(operation);
 	} while (done == 0);
 	for (i=i+1; i<perfnum; i++)
-		valid[i] = 0;
+		perfs[i]->valid = 0;
 
 	currset = pshow->currset;
 	do
@@ -264,7 +334,6 @@ void open_file(void)
 		//printf("buffer = %s\n", buffer);
 		size = strlen(buffer);
 		data = (char*)malloc((size+2)*sizeof(char));
-		operation = (char*)malloc((size+2)*sizeof(char));
 		strncpy(data, buffer, size+1);
 		file_linetoOps(data, &operation, '=');
 		//printf("op = %s data = %s\n", operation, data);
@@ -346,7 +415,8 @@ void open_file(void)
 				data[j-index] = '\0';
 				y = atof(data);
 				//printf("(x,y) = %i %.2f %.2f\n", cnum, x, y);
-				if (valid[i] != 0)
+				//printf("valid = %i\n", perfs[i]->valid);
+				if (perfs[i]->valid != 0)
 					set_coord(pshow, cnum, x, y);
 				i++;
 			} while (i < perfnum);
@@ -360,15 +430,16 @@ void open_file(void)
 	fclose(fp);
 
 	// update valid flags
-	printf("perfnum = %i\n", perfnum);
+	//printf("perfnum = %i\n", perfnum);
+	/*
 	for (i=0; i<perfnum; i++)
 		perfs[i]->valid = valid[i];
+		*/
 
 	undo_destroy(&pshow->undobr, pshow);
 		
 	return;
 }
-
 
 
 
