@@ -308,3 +308,53 @@ float check_stepsize_selected(struct headset_proto *dshow)
 	return stepsize;
 }
 
+
+int max_stepsize_selected(struct headset_proto *dshow, float *stepsize_r)
+{
+	// get the max stepsize of a group
+	// largest dot
+	int largest = -1;
+	// select index
+	int index;
+	int sCounts;
+	float x, y;
+	float xpr, ypr;
+	float dx, dy;
+	float dxy;
+	// sets
+	struct set_proto *currset = dshow->currset;
+	struct set_proto *prevset = dshow->prevset;
+	// selection
+	struct select_proto *last = dshow->select;
+	// coords
+	struct coord_proto **coords = currset->coords;
+	struct coord_proto **pcoords;
+
+	float stepsize = 0;
+	if (setnum == 0)
+		return 0;
+	pcoords = prevset->coords;
+	sCounts = currset->counts;
+	while (last != NULL)
+	{
+		index = last->index;
+		x = coords[index]->x;
+		y = coords[index]->y;
+		xpr = pcoords[index]->x;
+		ypr = pcoords[index]->y;
+		dx = x - xpr;
+		dy = y - ypr;
+		dxy = sqrt(powf(dx,2)+powf(dy,2));
+		if (dxy)
+			dxy = 8 * sCounts / dxy;
+		if (stepsize > dxy)
+		{
+			stepsize = dxy;
+			largest = index;
+		}
+		last = last->next;
+	}
+	*stepsize_r = stepsize;
+	return largest;
+}
+	
