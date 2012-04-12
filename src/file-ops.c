@@ -39,6 +39,7 @@ int file_getline(FILE *fp, char **buffer_r)
 		buffer[index] = cq;
 		index++;
 	} while (done == 0);
+	buffer[index] = '\0';
 	*buffer_r = buffer;
 	if (c == EOF)
 		return 1;
@@ -48,6 +49,83 @@ int file_getline(FILE *fp, char **buffer_r)
 }
 
 
+int file_getValidLine(FILE *fp, char **buffer_r)
+{
+	// get a valid line (not a blank-line)
+	// 	from a file
+	int excode;
+	char *buffer;
+	int done;
+	do
+	{
+		excode = file_getline(fp, buffer_r);
+		buffer = *buffer_r;
+		if (excode == 1)
+			done = 1;
+		else if (buffer[0] == '\0')
+		{
+			// empty line
+			done = 0;
+			free(buffer);
+		}
+		else
+		{
+			// finished
+			done = 1;
+		}
+	} while (done == 0);
+	return excode;
+}
+
+
+
+int file_linetoOps(char *buffer, char **op_r, char stop)
+{
+	// convert a line to an operation using the stopchar
+	//char *buffer;
+	char *op;
+	int size;
+	int i;
+	int index = 0;
+	bool match;
+	bool foundOp = 0;
+	printf("line = %s\n", buffer);
+	size = strlen(buffer);
+	op = (char*)malloc((size+2)*sizeof(char));
+	if (op == NULL)
+		return -1;
+	strncpy(op, buffer, size);
+	match = 0;
+	for (i=0; i<size; i++)
+	{
+		// find the operation using stopchar
+		if (op[i] == ' ' && !foundOp)
+		{
+			// end of operation
+			op[i] = '\0';
+			foundOp = 1;
+		}
+		if (buffer[i] == stop)
+		{
+			// stop char found
+			match = 1;
+			index = i;
+		}
+		else if (i-1 == index && buffer[i] == ' ')
+		{
+			// remove spaces
+			index++;
+		}
+		if (match == true)
+			buffer[i-index] = buffer[i];
+	}
+	buffer[i-index] = '\0';
+	printf("operat = %s\n", op);
+	printf("buffer = %s\n", buffer);
+	//*buffer_r = buffer;
+	*op_r = op;
+	return 0;
+}
 
 
 void open_file(void)
@@ -70,6 +148,8 @@ void open_file(void)
 	int cnum;
 	float x, y;
 	int *valid;
+	char *nwdata;
+	char *op;
 
 	struct perf_proto **perfs;
 	struct perf_proto *perf;
@@ -79,9 +159,33 @@ void open_file(void)
 
 	fp = fopen("save_file","r");
 	// get the name
-	excode = file_getline(fp, &buffer);
+	excode = file_getValidLine(fp, &buffer);
 	size = strlen(buffer);
-	name = (char*)malloc((size+1)*sizeof(char));
+	name = (char*)malloc((size+2)*sizeof(char));
+	strncpy(name, buffer, size+1);
+	excode = file_linetoOps(name, &op, '=');
+	free(op);
+	free(buffer);
+
+	// get info
+	excode = file_getValidLine(fp, &buffer);
+	size = strlen(buffer);
+	info = (char*)malloc((size+2)*sizeof(char));
+	strncpy(info, buffer, size+1);
+	excode = file_linetoOps(info, &op, '=');
+	free(op);
+	free(buffer);
+
+	// get perfnum
+	excode = file_getValidLine(fp, &buffer);
+	size = strlen(buffer);
+	perfnum_buffer = (char*)malloc((size+2)*sizeof(char));
+	strncpy(perfnum_buffer, buffer, size+1);
+	excode = file_linetoOps(perfnum_buffer, &op, '=');
+	free(op);
+	free(buffer);
+	perfnum = atoi(perfnum_buffer);
+	/*
 	for (i=0; i<size && buffer[i] != '='; i++)
 	{
 	}
@@ -115,8 +219,17 @@ void open_file(void)
 	info[i-index] = '\0';
 	free(buffer);
 	// get the performer list
-	excode = file_getline(fp, &buffer);
+	excode = file_getValidLine(fp, &buffer);
 	size = strlen(buffer);
+
+	nwdata = (char*)malloc((size+2)*sizeof(char));
+	op = (char*)malloc((size+2)*sizeof(char));
+	strncpy(nwdata, buffer, size+1);
+	printf("first buffer : %s\n", nwdata);
+	file_linetoOps(nwdata, &op, '=');
+	free(nwdata);
+	free(op);
+
 	perfnum_buffer = (char*)malloc((size+1)*sizeof(char));
 	for (i=0; i<size && buffer[i] != '='; i++)
 	{
@@ -133,6 +246,7 @@ void open_file(void)
 	perfnum_buffer[i-index] = '\0';
 	free(buffer);
 	perfnum = atoi(perfnum_buffer);
+	*/
 	// make the show
 	show_destroy(&pshow);
 	excode = show_construct(&pshow, perfnum);

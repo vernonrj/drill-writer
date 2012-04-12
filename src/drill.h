@@ -187,6 +187,7 @@ void xy_to_relation(float *x, float *y, char **buffer_r);
 
 // file-ops.c
 int file_getline(FILE *fp, char **buffer_r);
+int file_getValidLine(FILE *fp, char **buffer_r);
 void open_file(void);
 void save_file(void);
 
