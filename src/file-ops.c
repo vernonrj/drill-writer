@@ -16,6 +16,8 @@ int file_getline(FILE *fp, char **buffer_r)
 	int done = 0;
 
 	buffer = (char*)malloc(size*sizeof(char));
+	if (!buffer)
+		return -1;
 	do
 	{
 		c = fgetc(fp);
@@ -89,12 +91,12 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 	int index = 0;
 	bool match;
 	bool foundOp = 0;
-	printf("line = %s\n", buffer);
+	//printf("line = %s\n", buffer);
 	size = strlen(buffer);
 	op = (char*)malloc((size+2)*sizeof(char));
 	if (op == NULL)
 		return -1;
-	strncpy(op, buffer, size);
+	strncpy(op, buffer, size+1);
 	match = 0;
 	for (i=0; i<size; i++)
 	{
@@ -110,6 +112,8 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 			// stop char found
 			match = 1;
 			index = i;
+			op[i] = '\0';
+			foundOp = 1;
 		}
 		else if (i-1 == index && buffer[i] == ' ')
 		{
@@ -120,8 +124,8 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 			buffer[i-index] = buffer[i];
 	}
 	buffer[i-index] = '\0';
-	printf("operat = %s\n", op);
-	printf("buffer = %s\n", buffer);
+	//printf("operat = %s\n", op);
+	//printf("buffer = %s\n", buffer);
 	//*buffer_r = buffer;
 	*op_r = op;
 	return 0;
@@ -166,6 +170,11 @@ void open_file(void)
 	excode = file_linetoOps(name, &op, '=');
 	free(op);
 	free(buffer);
+	// store name
+	free(pshow->showname);
+	pshow->showname = (char*)malloc((strlen(name)+1)*sizeof(char));
+	strcpy(pshow->showname, name);
+	free(name);
 
 	// get info
 	excode = file_getValidLine(fp, &buffer);
@@ -175,6 +184,11 @@ void open_file(void)
 	excode = file_linetoOps(info, &op, '=');
 	free(op);
 	free(buffer);
+	// store info
+	free(pshow->showinfo);
+	pshow->showinfo = (char*)malloc((strlen(info)+1)*sizeof(char));
+	strcpy(pshow->showinfo, info);
+	free(info);
 
 	// get perfnum
 	excode = file_getValidLine(fp, &buffer);
@@ -185,97 +199,15 @@ void open_file(void)
 	free(op);
 	free(buffer);
 	perfnum = atoi(perfnum_buffer);
-	/*
-	for (i=0; i<size && buffer[i] != '='; i++)
-	{
-	}
-	i++;
-	for (i=i; i<size && buffer[i] == ' '; i++)
-	{
-	}
-	index = i;
-	for (i=i; i<size; i++)
-	{
-		name[i-index] = buffer[i];
-	}
-	name[i-index] = '\0';
-	free(buffer);
-	// get the info
-	excode = file_getline(fp, &buffer);
-	size = strlen(buffer);
-	info = (char*)malloc((size+1)*sizeof(char));
-	for (i=0; i<size && buffer[i] != '='; i++)
-	{
-	}
-	i++;
-	for (i=i; i<size && buffer[i] == ' '; i++)
-	{
-	}
-	index = i;
-	for (i=i; i<size; i++)
-	{
-		info[i-index] = buffer[i];
-	}
-	info[i-index] = '\0';
-	free(buffer);
-	// get the performer list
-	excode = file_getValidLine(fp, &buffer);
-	size = strlen(buffer);
+	free(perfnum_buffer);
 
-	nwdata = (char*)malloc((size+2)*sizeof(char));
-	op = (char*)malloc((size+2)*sizeof(char));
-	strncpy(nwdata, buffer, size+1);
-	printf("first buffer : %s\n", nwdata);
-	file_linetoOps(nwdata, &op, '=');
-	free(nwdata);
-	free(op);
-
-	perfnum_buffer = (char*)malloc((size+1)*sizeof(char));
-	for (i=0; i<size && buffer[i] != '='; i++)
-	{
-	}
-	i++;
-	for (i=i; i<size && buffer[i] == ' '; i++)
-	{
-	}
-	index = i;
-	for (i=i; i<size; i++)
-	{
-		perfnum_buffer[i-index] = buffer[i];
-	}
-	perfnum_buffer[i-index] = '\0';
-	free(buffer);
-	perfnum = atoi(perfnum_buffer);
-	*/
 	// make the show
 	show_destroy(&pshow);
 	excode = show_construct(&pshow, perfnum);
-	printf("perfnum = %i\n", perfnum);
+	//printf("perfnum = %i\n", perfnum);
 	valid = (int*)malloc(perfnum*sizeof(int));
-	//printf("%s\n", perfnum_buffer);
-	free(perfnum_buffer);
-	// store name
-	free(pshow->showname);
-	pshow->showname = (char*)malloc((strlen(name)+1)*sizeof(char));
-	strcpy(pshow->showname, name);
-	free(name);
-	// store info
-	free(pshow->showinfo);
-	pshow->showinfo = (char*)malloc((strlen(info)+1)*sizeof(char));
-	strcpy(pshow->showinfo, info);
-	free(info);
-
-	// pass whitespace
-	done = 0;
-	/*
-	do {
-		excode = file_getline(fp, &buffer);
-		if (buffer[0] != '\0')
-			done = 1;
-		free(buffer);
-	} while (done == 0);
-	*/
-
+	
+	// build performers
 	buffer = (char*)malloc(sizeof(char));
 	// get performer info
 	perfs = pshow->perfs;
@@ -284,37 +216,17 @@ void open_file(void)
 	i = -1;
 	do
 	{
-		/*
-		if (i == -1)
-			perf = perfs[0];
-		else
-			perf = perfs[i];
-		*/
+		// grab performer pieces
 		free(buffer);
-		excode = file_getline(fp, &buffer);
+		// get a valid line
+		excode = file_getValidLine(fp, &buffer);
 		size = strlen(buffer);
-		data = (char*)malloc((size+1)*sizeof(char));
-		operation = (char*)malloc((size+1)*sizeof(char));
-		strcpy(operation, buffer);
-		for (j = 0; j < size && buffer[j] != '='; j++)
-		{
-			if (buffer[j] == ' ')
-				operation[j] = '\0';
-		}
-		operation[j] = '\0';
-		// pass equality
-		if (j < size)
-			j++;
-		// pass whitespace
-		for (j = j; j < size && buffer[j] == ' '; j++)
-		{
-		}
-		index = j;
-		for (j = index; j < size; j++)
-		{
-			data[j-index] = buffer[j];
-		}
-		data[j-index] = '\0';
+		// get operations at data from line
+		operation = (char*)malloc((size+2)*sizeof(char));
+		data = (char*)malloc((size+2)*sizeof(char));
+		strncpy(data, buffer, size+1);
+		excode = file_linetoOps(data, &operation, '=');
+		// interpret data based on operation
 		if (!strcmp(operation, "index"))
 		{
 			// info
@@ -348,32 +260,14 @@ void open_file(void)
 	do
 	{
 		free(buffer);
-		excode = file_getline(fp, &buffer);
+		excode = file_getValidLine(fp, &buffer);
 		//printf("buffer = %s\n", buffer);
 		size = strlen(buffer);
-		data = (char*)malloc((size+1)*sizeof(char));
-		operation = (char*)malloc((size+1)*sizeof(char));
-		strcpy(operation, buffer);
-		for (i = 0; i < size && buffer[i] != '='; i++)
-		{
-			if (buffer[i] == ' ')
-				operation[i] = '\0';
-		}
-		operation[i] = '\0';
-		// pass equal
-		if (i < size)
-			i++;
-		// pass whitespace
-		for (i = i; i < size && buffer[i] == ' '; i++)
-		{
-		}
-		// get data
-		index = i;
-		for (i = index; i < size; i++)
-		{
-			data[i-index] = buffer[i];
-		}
-		data[i-index] = '\0';
+		data = (char*)malloc((size+2)*sizeof(char));
+		operation = (char*)malloc((size+2)*sizeof(char));
+		strncpy(data, buffer, size+1);
+		file_linetoOps(data, &operation, '=');
+		//printf("op = %s data = %s\n", operation, data);
 		// find correct operation
 		if (!strcmp(operation, "set"))
 		{
@@ -381,8 +275,12 @@ void open_file(void)
 			if (atoi(data) != 0)
 			{
 				// need a new set
+				add_set();
+				/*
 				newset_create(pshow->currset);
 				set_next();
+				currset = pshow->currset;
+				*/
 				currset = pshow->currset;
 			}
 		}
@@ -407,15 +305,17 @@ void open_file(void)
 			do
 			{
 				free(buffer);
-				excode = file_getline(fp, &buffer);
-				if (buffer[0] == '\0')
-					break;
+				excode = file_getValidLine(fp, &buffer);
+				if (excode == -1)
+					exit(-1);
 				else if (!strcmp(buffer, "done"))
 					break;
 				size = strlen(buffer);
 				free(data);
-				data = (char*)malloc((size+1)*sizeof(char));
-				// TODO: more safety
+				data = (char*)malloc((size+2)*sizeof(char));
+				if (excode == -1)
+					exit(-1);
+				strncpy(data, buffer, size+1);
 				for (j=0; j<size && buffer[j] != ':'; j++)
 					data[j] = buffer[j];
 				data[j] = '\0';
@@ -446,7 +346,7 @@ void open_file(void)
 				data[j-index] = '\0';
 				y = atof(data);
 				//printf("(x,y) = %i %.2f %.2f\n", cnum, x, y);
-				if (valid[i] != -1)
+				if (valid[i] != 0)
 					set_coord(pshow, cnum, x, y);
 				i++;
 			} while (i < perfnum);
@@ -536,30 +436,5 @@ void save_file(void)
 	} while (done == 0);
 	fclose(fp);
 	return;
-
-	/*
-	FILE *fp;
-	int i, j;	// loop vars
-	char string_x[20];
-	char string_y[20];
-	int len_x, len_y;
-	fp = fopen("save_file","w");
-
-	fprintf(fp,"I %i %i %i\n", setnum, set_tot, perfnum);
-	for (i=0; i<set_tot; i++)
-	{
-		//len_x = sprintf(string_x, "%g", perf[i][j][0]);
-		//len_y = sprintf(string_y, "%g", perf[i][j][1]);
-		fprintf(fp, "S %i %i\n", i, counts[i]); // set number, count structure
-		for(j=0; j<perfnum; j++)
-		{
-			fprintf(fp, "%i %g %g\n", j, perf[i][j][0], perf[i][j][1]);
-			//printf("%f\n", perf[i][j][0]);
-		}
-	}
-
-
-	fclose(fp);
-	*/
 }
 

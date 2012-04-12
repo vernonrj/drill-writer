@@ -156,9 +156,6 @@ int show_destroy(struct headset_proto **dshow_r)
 	{
 		// delete performers
 		perf_destroy(&perfs[i]);
-		//pcurr = perfs[i];
-		//free(pcurr->symbol);
-		//free(perfs[i]);
 	}
 	free(perfs);
 	// delete selects

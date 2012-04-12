@@ -77,7 +77,7 @@ int pushSetMk(struct undo_proto **stack_r)
 	if (unredo)
 	{
 		unredo->set_num = setnum;
-		printf("setnum = %i\n", setnum);
+		//printf("setnum = %i\n", setnum);
 		unredo->operation = 0;	// set to be created
 		unredo->done = 1;
 		excode = pushToStack(unredo, stack_r);
