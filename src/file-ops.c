@@ -178,11 +178,11 @@ void open_file(void)
 	// file pointer
 	FILE *fp;
 	// stream char
-	char c;
+	//char c;
 	// stream string
 	char *buffer;
 	// older buffer
-	char *oldbuff;
+	//char *oldbuff;
 	// data storage
 	char *data;
 	// operation storage
@@ -208,9 +208,9 @@ void open_file(void)
 	// coordinates
 	double x, y;
 	// validity array
-	int *valid;
+	//int *valid;
 	// new data
-	char *nwdata;
+	//char *nwdata;
 	// new operation
 	char *op;
 
@@ -221,7 +221,7 @@ void open_file(void)
 	// Set structure
 	struct set_proto *currset;
 	// Coord structure
-	struct coord_proto **coords;
+	//struct coord_proto **coords;
 
 	// open file for reading
 	fp = fopen("save_file","r");
@@ -268,7 +268,7 @@ void open_file(void)
 	show_destroy(&pshow);
 	excode = show_construct(&pshow, perfnum);
 	//printf("perfnum = %i\n", perfnum);
-	valid = (int*)malloc(perfnum*sizeof(int));
+	//valid = (int*)malloc(perfnum*sizeof(int));
 	
 	// build performers
 	buffer = (char*)malloc(sizeof(char));
@@ -368,7 +368,7 @@ void open_file(void)
 		else if (!strcmp(operation, "coords:"))
 		{
 			// store coords
-			coords = currset->coords;
+			//coords = currset->coords;
 			i = 0;
 			//for (i=0; i<perfnum; i++)
 			do
@@ -453,12 +453,12 @@ void save_file(void)
 	// coordinates
 	struct coord_proto **coords;
 	// tempo
-	struct tempo_proto *tempo;
+	//struct tempo_proto *tempo;
 	// file pointer
 	FILE *fp;
 	// loop var
-	int i, j;
-	int set_num = setnum;
+	int i;
+	//int set_num = setnum;
 	int done;
 
 	// open file

@@ -6,10 +6,9 @@ int isInsideYard(double *x, double *y, int *field_side)
 	// check to see if a dot is inside or outside
 	// a yardline
 	double ssrel;
-	double coordx, coordy;
-	int relation;
+	double coordx;
+	//int relation;
 	coordx = *x;
-	coordy = *y;
 	// get side-to-side
 	ssrel = coordx / 8;
 	ssrel = 8*(ssrel - (int)ssrel);
@@ -68,10 +67,9 @@ int getYardline(double *x, double *y)
 {
 	// get yardline number
 	int yardline;
-	double coordx, coordy;
+	double coordx;
 	double inCheck;
 	coordx = *x;
-	coordy = *y;
 	yardline = (coordx+4)/8;
 	yardline = abs(yardline - 10);
 	yardline = 5 * abs(10 - yardline);
@@ -86,10 +84,9 @@ double getSidetoSide(double *x, double *y)
 {
 	// get the side-to-side relation
 	double ssrel;
-	double coordx, coordy;
+	double coordx;
 
 	coordx = *x;
-	coordy = *y;
 	ssrel = coordx / 8;
 	ssrel = 8*(ssrel - (int)ssrel);
 	ssrel = (int)(ssrel*4);
@@ -117,7 +114,6 @@ double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r
 	int bhfh = (front_hash - back_hash) / 2 + back_hash;	
 	// front sideline to front hash
 	int fhfs = (front_side - front_hash) / 2 + front_hash;
-	double coordx = *x;
 	double coordy = *y;
 	// Get front-to-back
 	if (coordy == back_side)
@@ -227,8 +223,8 @@ void xy_to_relation(double *x, double *y, char **buffer_r)
 	char *fbbuffer;
 	char *xbuff, *ybuff;
 	char *sideside_relation;
-	char *side;
-	char *hash;
+	//char *side;
+	//char *hash;
 	char *frontback_relation;
 	double coordx, coordy;
 	char *inorout;

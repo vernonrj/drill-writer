@@ -25,6 +25,7 @@ int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow)
 				break;
 			case 3:		// perf deleted
 				// TODO: need to track allocation in undo branch
+				snum = dshow->perfnum;
 				for (i=0; i<snum; i++)
 					free(undcurr->coords[i]);
 				free(undcurr->coords);
@@ -138,13 +139,13 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	// Perf to be deleted, push node onto stack
 	struct undo_proto *unredo;
 	struct set_proto *last;
-	struct perf_proto *perf = 0;
+	//struct perf_proto *perf = 0;
 	struct perf_proto *oldperf;
 	struct perf_proto *newperf;
 	volatile int i;
 	int index;
 	int excode;
-	int set_tot;
+	//int set_tot;
 
 
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
@@ -269,9 +270,9 @@ int sourcePop(struct undo_proto **sourcebr_r)
 {
 	struct undo_proto *sourcebr;
 	struct undo_proto *dscard;
-	struct set_proto *oldset;
-	struct coord_proto **coords;
-	int i;
+	//struct set_proto *oldset;
+	//struct coord_proto **coords;
+	//int i;
 	int done;
 	sourcebr = *sourcebr_r;
 	if (!sourcebr)
@@ -297,7 +298,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	struct set_proto *currset;	// current set
 	struct perf_proto *perfcurr;	// current performer
 	struct coord_proto **coords;	// coordinates
-	struct tempo_proto *tempo;
+	//struct tempo_proto *tempo;
 	int operation;			// specified operation
 	int excode;
 	int done = 1;
@@ -392,7 +393,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			if (index == -1)
 				return -1;
 			perfcurr = dshow->perfs[index];
-			printf("new address @ 0x%x\n", perfcurr->symbol);
+			printf("new address @ 0x%x\n", (unsigned int)perfcurr->symbol);
 			free(perfcurr->symbol);
 			free(dshow->perfs[index]);
 			dshow->perfs[index] = sourcebr->ud.sperf;

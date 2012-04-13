@@ -107,7 +107,7 @@ int retr_coord(struct coord_proto *curr, double *x, double *y)
 int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r)
 {
 	// retrieve midset coordinates from set struct
-	struct set_proto *last;
+	//struct set_proto *last;
 	double xcurr, ycurr;
 	double xnext, ynext;
 	double xbias, ybias;
@@ -379,7 +379,7 @@ void rot_form(double s_step)
 	// distance
 	double distx, disty;
 	// sign
-	int signx, signy;
+	//int signx, signy;
 	// hypotenuse
 	double hypo;
 	// angle
@@ -406,8 +406,8 @@ void rot_form(double s_step)
 		pushPerfmv(&pshow->undobr, index, coord->x, coord->y, 0);
 		if (distx != 0 || disty != 0)
 		{
-			signx = distx < 0;
-			signy = disty < 0;
+			//signx = distx < 0;
+			//signy = disty < 0;
 			angle = atanf(disty / distx);
 			hypo = powf(distx, 2) + powf(disty, 2);
 			hypo = sqrtf(hypo);

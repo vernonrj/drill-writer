@@ -158,6 +158,7 @@ void show_gen(struct tempo_proto **stempo_r);
 
 // main-gtk.c
 int startTk(int argc, char *argv[]);
+int runTk(void);
 //static void not_implemented ();
 //static void quit_action ();
 void button_upifCh(GtkWidget *button, char *newinfo);

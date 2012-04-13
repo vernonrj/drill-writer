@@ -7,15 +7,15 @@
 int show_construct(struct headset_proto **dshow_r, int perfs)
 {
 	// Create a show based on information given
-	int i, j;
+	int i;
 	int excode;
 	struct headset_proto *dshow;
 	// Performers
 	struct perf_proto *pcurr;
-	struct perf_proto *plast;
+	//struct perf_proto *plast;
 	// Sets
 	struct set_proto *setcurr;
-	struct set_proto *setlast;
+	//struct set_proto *setlast;
 	// coords
 
 	dshow = (struct headset_proto*) malloc(sizeof(struct headset_proto));
@@ -108,26 +108,26 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 
 int show_destroy(struct headset_proto **dshow_r)
 {
-	int i, j;
+	int i;
 	int perfnum;
-	int undop;
+	//int undop;
 	int snum;
 	// show
 	struct headset_proto *dshow;
 	// performers
 	struct perf_proto **perfs;
-	struct perf_proto *pcurr;
+	//struct perf_proto *pcurr;
 	// sets
 	struct set_proto *setcurr;
 	struct set_proto *setlast;
 	// coords
-	struct coord_proto **coords;
+	//struct coord_proto **coords;
 	// selects
 	struct select_proto *select;
 	struct select_proto *sellast;
 	// undo/redo
-	struct undo_proto *undcurr;
-	struct undo_proto *undlast;
+	//struct undo_proto *undcurr;
+	//struct undo_proto *undlast;
 	// tempo
 	struct tempo_proto *tcurr;
 	struct tempo_proto *tlast;
@@ -196,18 +196,17 @@ int main (int argc, char *argv[])
 	struct set_proto *currset;
 	struct set_proto *prevset;
 	// specific performer
-	struct perf_proto *currperf;
+	//struct perf_proto *currperf;
 	// coords
-	struct coord_proto *coords; 
+	//struct coord_proto *coords; 
 	struct coord_proto *prevcr;
 	int excode;
-	int i, j;		// loop vars
-	double x, y;
-	enum ENUM_MOUSE_MODE MOUSE_MODE;
+	int i;		// loop vars
+	//double x, y;
 
 	mouse_currentMode = SELECTONE;
 	// Hardcode tempo in
-	int tempo = 120;
+	//int tempo = 120;
 	// set show as uninitialized
 	pshow = 0;
 	//dot_construct(&pshow);
@@ -284,7 +283,7 @@ int main (int argc, char *argv[])
 
 
 	// Run Main Loop
-	gtk_main();
+	runTk();
 	// */
 	
 	//foo();

@@ -100,7 +100,7 @@ void update_tempo(void)
 	// to the correct tempo
 	struct tempo_proto *currtempo;
 	struct tempo_proto *othertempo;
-	int cset;
+	//int cset;
 	int nset;
 
 	currtempo = pshow->currtempo;
@@ -117,7 +117,7 @@ void update_tempo(void)
 		othertempo = currtempo->next;
 		while (othertempo)
 		{
-			cset = currtempo->anchorpoint;
+			//cset = currtempo->anchorpoint;
 			nset = othertempo->anchorpoint;
 			// find correct tempo forward
 			if (nset <= setnum)

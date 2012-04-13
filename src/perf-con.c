@@ -67,7 +67,7 @@ int add_perf(void)
 	struct coord_proto **newcoords;
 	// nodes used for checking
 	struct perf_proto *perf;
-	struct coord_proto *coord;
+	//struct coord_proto *coord;
 	struct set_proto *last;
 
 	// find an open node
@@ -192,15 +192,15 @@ void revert_perf_selected(struct headset_proto *dshow)
 void revert_perf(struct headset_proto *dshow, int index)
 {
 	// revert a performer's dot to the dot at the previous set
-	struct set_proto *currset;
+	//struct set_proto *currset;
 	struct set_proto *prevset;
-	struct coord_proto *coord;
+	//struct coord_proto *coord;
 	struct coord_proto *prevcoord;
 
-	currset = dshow->currset;
+	//currset = dshow->currset;
 	prevset = dshow->prevset;
 
-	coord = currset->coords[index];
+	//coord = currset->coords[index];
 
 	if (prevset == NULL)
 	{

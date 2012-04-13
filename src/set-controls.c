@@ -5,7 +5,7 @@
 int set_construct(struct set_proto **sets_r, int perfs)
 {
 	// Build storage for set
-	int i;
+	//int i;
 	int excode;
 	
 	struct set_proto *sets;
@@ -29,6 +29,8 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	sets->midset = 0;
 	// make coordinate system
 	excode = coords_construct(&sets->coords, perfs);
+	if (excode == -1)
+		return -1;
 
 
 	// link
@@ -57,12 +59,12 @@ int newset_create(struct set_proto *curr)
 	int excode;
 	int mid = 0;
 	double x, y;
-	int newcounts;
+	//int newcounts;
 
 	// set structures
-	struct set_proto *sets;
+	//struct set_proto *sets;
 	struct set_proto *last;
-	struct set_proto *fset;
+	//struct set_proto *fset;
 	struct set_proto *nextset;
 
 	// coordinates
@@ -70,7 +72,7 @@ int newset_create(struct set_proto *curr)
 	struct coord_proto **pcoords;
 	struct coord_proto **ncoords;
 
-	sets = 0;
+	//sets = 0;
 	last = 0;
 	excode = set_construct(&last, pshow->perfnum);
 	if (excode == -1)
@@ -126,7 +128,7 @@ int newset_create(struct set_proto *curr)
 		if (mid)
 		{
 			// change counts to reflect a midset creation
-			newcounts = nextset->counts;
+			//newcounts = nextset->counts;
 			nextset->counts = nextset->counts - pshow->step;
 			last->counts = pshow->step;
 			pshow->step = 0;
@@ -175,16 +177,16 @@ int set_cldestroy(struct set_proto **setcurr_r, int perfnum)
 int set_destroy(void)
 {
 	// destroy current set
-	int i;
-	int perfnum;
+	//int i;
+	//int perfnum;
 	struct set_proto *last;
 	struct set_proto *prevset;
-	struct set_proto *before;
+	//struct set_proto *before;
 	int excode;
 
 	last = pshow->currset;
 	prevset = pshow->prevset;
-	perfnum = pshow->perfnum;
+	//perfnum = pshow->perfnum;
 
 	pushSetDel(&pshow->undobr, pshow->currset);
 	// free memory in nodes
@@ -233,7 +235,7 @@ int set_destroy(void)
 		}
 		pshow->currset = pshow->firstset;
 	}
-	return;
+	return 0;
 }
 
 
@@ -414,7 +416,7 @@ void set_next_count(void)
 void set_prev_count(void)
 {
 	// go to the previous count
-	struct set_proto *nextset;
+	//struct set_proto *nextset;
 	if (!isFirstSet() || pshow->step)
 	{
 		pshow->step--;

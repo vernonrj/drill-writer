@@ -173,6 +173,11 @@ struct headset_proto
 struct headset_proto *pshow;
 
 // Functions
+// gtk functions
+int startTk(int argc, char *argv[]);
+int buildIfacegtk(void);
+int runTk(void);
+
 // coords.c
 // create container for dots
 int coords_construct(struct coord_proto *** coords_r, int perfs);

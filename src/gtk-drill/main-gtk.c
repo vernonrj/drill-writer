@@ -9,6 +9,13 @@ int startTk(int argc, char *argv[])
 }
 
 
+int runTk(void)
+{
+	gtk_main();
+	return 0;
+}
+
+
 static void not_implemented ()
 {	// If I don't have something yet, callbacks go here
 	g_print("This isn't done yet...\n");

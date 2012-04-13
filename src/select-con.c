@@ -7,17 +7,19 @@ void update_sel_center(void)
 	int index;
 	int selnum = 0;
 	double cx, cy;
-	double minx, miny, maxx, maxy;
+	//double minx, miny, maxx, maxy;
 	struct select_proto *last;
 	struct coord_proto **coords;
 	struct coord_proto *coord;
 
 	cx = 0;
 	cy = 0;
+	/*
 	minx = -1;
 	miny = -1;
 	maxx = 0;
 	maxy = 0;
+	*/
 	last = pshow->select;
 	coords = pshow->currset->coords;
 	while (last)
@@ -54,7 +56,7 @@ void update_sel_center(void)
 void add_sel_center(struct coord_proto *coord)
 {
 	// add a selection to center weight
-	int index;
+	//int index;
 	int selnum;
 	double x, y;
 	
@@ -81,7 +83,7 @@ void add_sel_center(struct coord_proto *coord)
 void rem_sel_center(struct coord_proto *coord)
 {
 	// remove a selection from center weight
-	int index;
+	//int index;
 	int selnum;
 	double x, y;
 
@@ -143,7 +145,7 @@ int select_add(int index)
 	struct select_proto *selects;
 	struct select_proto *last;
 	struct select_proto *curr;
-	struct coord_proto *coord;
+	//struct coord_proto *coord;
 	int matched = 0;
 	int loop_done = 0;
 
@@ -224,7 +226,7 @@ int select_add(int index)
 		}
 		add_sel_center(pshow->currset->coords[index]);
 	}
-	return;
+	return 0;
 }
 
 int select_all(void)
