@@ -326,7 +326,10 @@ void open_file(void)
 	for (i=i+1; i<perfnum; i++)
 		perfs[i]->valid = 0;
 
+	// go to first set
+	set_first();
 	currset = pshow->currset;
+	// get set information
 	do
 	{
 		free(buffer);
