@@ -122,6 +122,7 @@ int draw_dots (GtkWidget *widget)
 	struct set_proto *currset;	
 	struct set_proto *lastset;
 	struct set_proto *prevset;
+	struct set_proto *nextset;
 	// performer container
 	struct perf_proto **perf;
 	// coordinate containers
@@ -169,6 +170,8 @@ int draw_dots (GtkWidget *widget)
 
 	// grab sets from data structure
 	currset = pshow->currset;
+	lastset = currset->next;
+	prevset = pshow->prevset;
 	perf = pshow->perfs;
 
 
@@ -188,11 +191,11 @@ int draw_dots (GtkWidget *widget)
 		cairo_set_source_rgb(dots, 0, 0, 0);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 	//if (setnum+1<set_tot)
-	if (currset->next != NULL)
+	//if (currset->next != NULL)
 	{	// Not the last set, can step to next set
 		//g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
 		// get next set
-		lastset = currset->next;
+		//lastset = currset->next;
 		// get previous set
 		prevset = pshow->prevset;
 		// get first selected dot
@@ -212,24 +215,26 @@ int draw_dots (GtkWidget *widget)
 					retr_coord(prevset->coords[i], &x, &y);
 					set_coord(pshow, i, x, y);
 				}
-				retr_coord(lastset->coords[i], &xcalc, &ycalc);
-				// Build horizontal location
-				xcalc = (xcalc - x) / lastset->counts;
-				xcalc = xcalc*pshow->step + x;
-				x = pstate.xo2 + pstate.step*xcalc;
-				//x=((perf[setnum+1][i][0]-perf[setnum][i][0])/counts[setnum+1]);
-				//x=x*set_step+perf[setnum][i][0];
-				//xcalc = x;
-				//x=pstate.xo2+pstate.step*x;
-				// y location (even if mid-set)
-				ycalc = (ycalc - y) / lastset->counts;
-				ycalc = ycalc*pshow->step + y;
-				y = pstate.yo2 + pstate.step*ycalc;
-				//y=((perf[setnum+1][i][1]-perf[setnum][i][1])/counts[setnum+1]);
-				//y=y*set_step+perf[setnum][i][1];
-				//ycalc = y;
-				//y=pstate.yo2+pstate.step*y;
-				//printf("Drawing Performer %i at:\t\tX = %g\t\tY = %g\n", i, xcalc, ycalc);
+				if (lastset != NULL)
+				{
+					// not on last set
+					retr_coord(lastset->coords[i], &xcalc, &ycalc);
+					// Build horizontal location
+					xcalc = (xcalc - x) / lastset->counts;
+					xcalc = xcalc*pshow->step + x;
+					x = pstate.xo2 + pstate.step*xcalc;
+					// Build vertical location
+					ycalc = (ycalc - y) / lastset->counts;
+					ycalc = ycalc*pshow->step + y;
+					y = pstate.yo2 + pstate.step*ycalc;
+				}
+				else
+				{
+					// on last set
+					x = pstate.xo2+pstate.step*x;
+					y = pstate.yo2+pstate.step*y;
+				}
+
 				// print selection if dot is selected
 				was_selected = 0;
 				if (selects)
@@ -238,10 +243,6 @@ int draw_dots (GtkWidget *widget)
 					if (selects->index == i)
 					{
 						// dot is selected
-						/*
-						cairo_new_sub_path(selected);
-						cairo_arc(selected, x, y, 2*(double)pstate.step/3, 0, 360);
-						*/
 						drawing_method(selected, x, y);
 						selects = selects->next;
 						was_selected = 1;
@@ -250,42 +251,25 @@ int draw_dots (GtkWidget *widget)
 				if (was_selected == 0)
 				{
 					drawing_method(dots, x, y);
-					// dot is not selected
-					//cairo_new_sub_path(dots);
-					//cairo_arc(dots, x, y, 2*(double)pstate.step/3, 0, 360);
 				}
-				/*
-				if (i==perf_cur)
-				{	// This is the highlighted performer
-					//cairo_rectangle(selected, x, y, pstate.step, pstate.step);
-					cairo_new_sub_path(selected);
-					cairo_arc(selected, x, y, 2*(double)pstate.step/3, 0, 360);
-				}
-				else
-				{
-					//cairo_rectangle(dots, pstate.xo2-pstate.step/2+pstate.step*x, pstate.yo2-pstate.step/2+pstate.step*y, pstate.step, pstate.step);
-					cairo_new_sub_path(dots);
-					cairo_arc(dots, x, y, 2*(double)pstate.step/3, 0, 360);
-				}
-				*/
 			}
 		}
-		if (pshow->step >= lastset->counts)
+		if (lastset)
 		{
-			// Go to next set
-			pshow->step = 0;
-			pshow->prevset = pshow->currset;
-			pshow->currset = lastset;
-			pstate.setnum++;
+			if (pshow->step >= lastset->counts)
+			{
+				// Go to next set
+				set_next();
+				/*
+				pshow->step = 0;
+				pshow->prevset = pshow->currset;
+				pshow->currset = lastset;
+				lastset = lastset->next;
+				pstate.setnum++;
+				*/
+				lastset = pshow->currset->next;
+			}
 		}
-		/*
-		if (set_step >= counts[setnum+1])
-		{	// step to the next set
-			set_step = 0;
-			setnum++;
-			//printf("setnum=%i\n", setnum);
-		}
-		*/
 		if (pshow->currset->next == NULL)
 		{
 			// At last set, playing is done
@@ -303,6 +287,7 @@ int draw_dots (GtkWidget *widget)
 		cairo_fill (dots);
 		cairo_fill (selected);
 	}
+	/*
 	else
 	{	// We're on the last set
 		selects = pshow->select;
@@ -331,10 +316,8 @@ int draw_dots (GtkWidget *widget)
 					if (selects->index == i)
 					{
 						// dot is selected
-						/*
-						cairo_new_sub_path(selected);
-						cairo_arc(selected, x, y, 2*(double)pstate.step/3, 0, 360);
-						*/
+						//cairo_new_sub_path(selected);
+						//cairo_arc(selected, x, y, 2*(double)pstate.step/3, 0, 360);
 						drawing_method(selected, x, y);
 						selects = selects->next;
 						was_selected = 1;
@@ -344,14 +327,6 @@ int draw_dots (GtkWidget *widget)
 				{
 					// dot is not selected
 					drawing_method(dots, x, y);
-					/*
-					cairo_move_to(dots, x-pstate.step, y-pstate.step);
-					cairo_rel_line_to(dots, 2*pstate.step, 2*pstate.step);
-					cairo_move_to(dots, x-pstate.step, y+pstate.step);
-					cairo_rel_line_to(dots, 2*pstate.step, -2*pstate.step);
-					//cairo_new_sub_path(dots);
-					//cairo_arc(dots, x, y, 2*(double)pstate.step/3, 0, 360);
-					*/
 				}
 
 				//cairo_rectangle(dots, x, y, pstate.step, pstate.step);
@@ -372,6 +347,7 @@ int draw_dots (GtkWidget *widget)
 		cairo_fill(dots);
 		cairo_fill(selected);
 	}
+	*/
 	// Cleanup loose ends
 	cairo_destroy(dots);
 	cairo_destroy(selected);
