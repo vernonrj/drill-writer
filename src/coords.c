@@ -17,7 +17,7 @@ int coords_construct(struct coord_proto *** coords_r, int perfs)
 	if (!coords)
 	{
 		// coordinate allocation error
-		printf("Error: coords mapped to 0x%x\n", coords);
+		printf("Error: coords mapped to 0x%x\n", (unsigned int)coords);
 		return -1;
 	}
 

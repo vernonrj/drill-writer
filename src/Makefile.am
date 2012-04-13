@@ -37,8 +37,8 @@ drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.
 ## Define an independent executable script for inclusion in the distribution
 
 ## archive. It will not be installed on an end user's system, however.
-drillwriter_LDFLAGS = $(GTK_LIBS) -lm
-drillwriter_CFLAGS = $(GTK_CFLAGS) 
+drillwriter_LDFLAGS = $(GTK_LIBS) -lm -Wall
+drillwriter_CFLAGS = $(GTK_CFLAGS) -Wall
 
 dist_noinst_SCRIPTS = autogen.sh
 

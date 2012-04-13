@@ -17,7 +17,7 @@
 
 
 // mouse mode (what executes when user clicks on field)
-enum MOUSE_MODE
+enum ENUM_MOUSE_MODE
 {
 	SELECTONE,	// select one performer
 	SELECTDRAG,	// drag-select performers
@@ -25,6 +25,7 @@ enum MOUSE_MODE
 	MVPERF,		// move performer
 };
 
+int mouse_currentMode;
 int setnum;			// current set
 int do_field;			// whether or not to redraw field
 double xoff, yoff;		// x offset

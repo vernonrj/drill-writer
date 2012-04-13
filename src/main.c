@@ -203,7 +203,9 @@ int main (int argc, char *argv[])
 	int excode;
 	int i, j;		// loop vars
 	double x, y;
+	enum ENUM_MOUSE_MODE MOUSE_MODE;
 
+	mouse_currentMode = SELECTONE;
 	// Hardcode tempo in
 	int tempo = 120;
 	// set show as uninitialized

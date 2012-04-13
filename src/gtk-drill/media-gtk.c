@@ -37,6 +37,7 @@ gboolean play_show (GtkWidget *widget)
 	}
 	else if (playing == 0)
 		return FALSE;
+	return TRUE;
 }
 
 

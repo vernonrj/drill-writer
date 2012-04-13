@@ -136,6 +136,7 @@ void zoom_fit(GtkWidget *widget);
 GType gtk_drill_get_type(void);
 void gtk_drill_set_state(GtkDrill *drill, gint num);
 GtkWidget * gtk_drill_new(void);
+/*
 static void gtk_drill_class_init(GtkDrillClass *klass);
 static void gtk_drill_init (GtkDrill *drill);
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition);
@@ -144,6 +145,7 @@ static void gtk_drill_realize(GtkWidget *widget);
 static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
 static void gtk_drill_paint(GtkWidget *widget);
 static void gtk_drill_destroy(GtkObject *object);
+*/
 
 
 // file-ops-gtk.c
@@ -156,8 +158,8 @@ void show_gen(struct tempo_proto **stempo_r);
 
 // main-gtk.c
 int startTk(int argc, char *argv[]);
-static void not_implemented ();
-static void quit_action ();
+//static void not_implemented ();
+//static void quit_action ();
 void button_upifCh(GtkWidget *button, char *newinfo);
 void entry_upifCh(GtkWidget *entry, char *newinfo);
 int update_entries(void);
@@ -183,6 +185,7 @@ void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);
+int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 
 // set-controls-gtk.c
 void add_set_gtk(GtkWidget *widget);

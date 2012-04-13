@@ -117,85 +117,83 @@ int select_all_gtk (GtkWidget *widget)
 {
 	select_all();
 	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	return 0;
 }
 
 gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// Handle click event on canvas
 	
-	//printf("ping\n");
-	// loop vars
-	int i, j;
-	// number of performers
-	int perfnum;
-	// location of click
-	double coordx, coordy;
-	// dot of performer being checked
-	double workx, worky;
-	//double closex, closey;
 	// Length from click location to nearest dot
-	// Click must be closer than 3 steps
-	double dist_threshold = 9;
-	double distance;
-	// store type of click
-	guint state;
-	int found_dot = 0;
 
 
-	//printf("Event = %i\n", event->button);
-	//g_print("Event = %i\n", event->state);
-	//g_print("%g, %g\n", (event->x-xo2)/step, (event->y-yo2)/step);
-	state = event->state;
 	if (event->button == 1)
 	{
-		if (state == 0)
+		if (mouse_currentMode == SELECTONE)
 		{
-			// normal click; discard other clicks
-			select_discard();
+			// select 1 performer
+			select_oneperf_gtk(widget, event);
+			gtk_widget_queue_draw_area(window, 0, 0, width, height);
 		}
-		coordx = event->x;
-		coordy = event->y;
-		//printf("x = %g, y = %g\n", coordx, coordy);
-		// Adjust for various canvas offsets
-		coordx = (coordx-xo2)/step;
-		//coordy = (coordy-yo2-25)/step;
-		coordy = (coordy-yo2)/step;
-
-		//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
-		perfnum = pshow->perfnum;
-		//for (i=0; i<perfnum; i++)
-		perf_cur = 0;
-		for (i=0; i<perfnum; i++)
-		{
-			// TODO: Maybe use a BST later
-			retr_midset(pshow->currset, i, &workx, &worky);
-			workx = workx - coordx;
-			worky = worky - coordy;
-			distance = pow(workx, 2) + pow(worky, 2);
-			/*
-			if (i == 0)
-			{
-				printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
-			}
-			*/
-			if (distance < dist_threshold && pshow->perfs[i]->valid)
-			{
-				// Found a closer dot
-				perf_cur = i;
-				dist_threshold = distance;
-				found_dot = 1;
-				if (i == 0)
-					printf("0 valid\n");
-			}
-			else if (pshow->perfs[i]->valid == 0 && i == 0)
-				printf("invalid at %i\n", i);
-
-		}
-		if (found_dot == 1)
-			select_add(perf_cur);
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	}
 	return TRUE;
+}
+
+int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
+{
+	guint state = event->state;
+	double dist_threshold = 9;
+	double distance;
+	double workx, worky;
+	double coordx, coordy;
+	int perfnum;
+	int i;
+	int found_dot = 0;
+	if (state == 0)
+	{
+		// normal click; discard other clicks
+		select_discard();
+	}
+	coordx = event->x;
+	coordy = event->y;
+	//printf("x = %g, y = %g\n", coordx, coordy);
+	// Adjust for various canvas offsets
+	coordx = (coordx-xo2)/step;
+	//coordy = (coordy-yo2-25)/step;
+	coordy = (coordy-yo2)/step;
+
+	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
+	perfnum = pshow->perfnum;
+	//for (i=0; i<perfnum; i++)
+	perf_cur = 0;
+	for (i=0; i<perfnum; i++)
+	{
+		retr_midset(pshow->currset, i, &workx, &worky);
+		workx = workx - coordx;
+		worky = worky - coordy;
+		distance = pow(workx, 2) + pow(worky, 2);
+		/*
+		if (i == 0)
+		{
+			printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
+		}
+		*/
+		if (distance < dist_threshold && pshow->perfs[i]->valid)
+		{
+			// Found a closer dot
+			perf_cur = i;
+			dist_threshold = distance;
+			found_dot = 1;
+			if (i == 0)
+				printf("0 valid\n");
+		}
+		else if (pshow->perfs[i]->valid == 0 && i == 0)
+			printf("invalid at %i\n", i);
+
+	}
+	if (found_dot == 1)
+		select_add(perf_cur);
+	return 0;
 }
 
 

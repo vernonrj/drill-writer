@@ -107,7 +107,7 @@ void set_set_name_gtk(GtkWidget *widget)
 	// Name hard-limited to 4 chars currently
 	// name is currently taken from entry_sets
 	const gchar *entry_buffer;
-	int set_buffer;
+	//int set_buffer;
 	struct set_proto *setcurr = pshow->currset;
 	int size;
 
@@ -183,8 +183,8 @@ void change_tempo_gtk (GtkWidget *widget)
 	// Change the tempo internally
 	// TODO: Non-global tempo
 	struct tempo_proto *currtempo;
-	struct tempo_proto *stempo;
-	struct tempo_proto *nexttempo;
+	//struct tempo_proto *stempo;
+	//struct tempo_proto *nexttempo;
 	const gchar *entry_buffer;
 	int tmpo;
 

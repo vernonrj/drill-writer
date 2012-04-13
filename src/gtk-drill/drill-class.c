@@ -9,7 +9,7 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation);
 static void gtk_drill_realize(GtkWidget *widget);
 static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
-static gboolean timer_exec(GtkWidget *window, GtkWidget *widget);
+//static gboolean timer_exec(GtkWidget *window, GtkWidget *widget);
 static void gtk_drill_paint(GtkWidget *widget);
 static void gtk_drill_destroy(GtkObject *object);
 
@@ -155,7 +155,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint drill_signals[LAST_SIGNAL] = {0};
+//static guint drill_signals[LAST_SIGNAL] = {0};
 
 static void gtk_drill_class_init(GtkDrillClass *class)
 {
@@ -235,7 +235,7 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 static void gtk_drill_realize(GtkWidget *widget)
 {
 	//printf("ping realize\n");
-	GtkDrill *drill;
+	//GtkDrill *drill;
 	GdkWindowAttr attributes;
 	guint attributes_mask;
 
@@ -243,7 +243,7 @@ static void gtk_drill_realize(GtkWidget *widget)
 	g_return_if_fail(GTK_IS_DRILL(widget));
 
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
-	drill = GTK_DRILL(widget);
+	//drill = GTK_DRILL(widget);
 
 	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.x = widget->allocation.x;
@@ -301,13 +301,13 @@ static void gtk_drill_paint(GtkWidget *widget)
 
 static void gtk_drill_destroy(GtkObject *object)
 {
-	GtkDrill *drill;
+	//GtkDrill *drill;
 	GtkDrillClass *klass;
 	
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_DRILL(object));
 
-	drill = GTK_DRILL(object);
+	//drill = GTK_DRILL(object);
 	klass = gtk_type_class(gtk_widget_get_type());
 
 	if (GTK_OBJECT_CLASS(klass)->destroy) {

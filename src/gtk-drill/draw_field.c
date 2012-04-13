@@ -24,8 +24,8 @@ void def_canvas (GtkWidget *widget)
 	
 	double c_width;
 	double c_height;
-	double z_x;
-	double z_y;
+	//double z_x;
+	//double z_y;
 	// use default values for width and height
 	if (width != widget->allocation.width || height != widget->allocation.height)
 	{
@@ -34,8 +34,8 @@ void def_canvas (GtkWidget *widget)
 	// update width and height
 	width = widget->allocation.width;	// Get the width
 	height = widget->allocation.height;	// Get the height
-	z_x = 100 * width / (double)scrolled_window->allocation.width;
-	z_y = 100 * height / (double)scrolled_window->allocation.height;
+	//z_x = 100 * width / (double)scrolled_window->allocation.width;
+	//z_y = 100 * height / (double)scrolled_window->allocation.height;
 	//printf("width = %.2f%\n", z_x);
 	//printf("height = %.2f%\n", z_y);
 	//printf("(xoff, yoff) = (%.2f, %.2f)\n", xoff, yoff);
@@ -125,16 +125,16 @@ int draw_dots (GtkWidget *widget)
 	// performer container
 	struct perf_proto **perf;
 	// coordinate containers
-	struct coord_proto *coords;
+	//struct coord_proto *coords;
 	// coordinates
 	double x, y;	// x and y location
 	double xcalc, ycalc;
-	double xprev, yprev;
+	//double xprev, yprev;
 	// canvases
 	//cairo_t *dots;	// context for all dots
 	cairo_t *selected; // this will eventually have a struct to get dots
-	cairo_surface_t *field_surface;
-	cairo_surface_t *bak_surface;
+	//cairo_surface_t *field_surface;
+	//cairo_surface_t *bak_surface;
 	cairo_t *surface_write;
 	struct select_proto *selects;
 	int was_selected;
@@ -376,20 +376,21 @@ int draw_dots (GtkWidget *widget)
 	cairo_destroy(dots);
 	cairo_destroy(selected);
 	//cairo_surface_destroy(field_surface);
+	return 0;
 }
 
 void draw_field (GtkWidget *widget)
 {	// This function will draw the actual football field
-	int tempo;
-	int i, j, k;		// loop vars
-	double x, y;
+	//int tempo;
+	int i, j;		// loop vars
+	//double x, y;
 	char text[3];		// text for yardline names
 	int ynum = 0;		// yardline numbering
 	int past_fifty = 0;	// check to see if past 50 yardline
 	double x_bear;		// text centering
-	double y_bear;		// text centering
+	//double y_bear;		// text centering
 	cairo_text_extents_t te;
-	cairo_font_options_t *fopts;
+	//cairo_font_options_t *fopts;
 
 
 	def_canvas(widget);	// Refresh dimensions and such
@@ -432,7 +433,7 @@ void draw_field (GtkWidget *widget)
 			//cairo_get_font_options(fnums, fopts);
 			//cairo_font_options_set_height(fopts, 4*step);
 			x_bear = te.x_bearing + te.width / 2;
-			y_bear = te.y_bearing + te.height / 2;
+			//y_bear = te.y_bearing + te.height / 2;
 			cairo_move_to (fnums, i - x_bear, height-yo2-step*12);
 			cairo_show_text(fnums, text);
 			cairo_move_to (fnums, i - x_bear, height-yo2-step*73);

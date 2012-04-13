@@ -251,8 +251,8 @@ drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.
 		      gtk-drill/draw_field.c gtk-drill/drill-class.c \
 		      testbench/testbench.cpp testbench/util.cpp
 
-drillwriter_LDFLAGS = $(GTK_LIBS) -lm
-drillwriter_CFLAGS = $(GTK_CFLAGS) 
+drillwriter_LDFLAGS = $(GTK_LIBS) -lm -Wall
+drillwriter_CFLAGS = $(GTK_CFLAGS) -Wall
 dist_noinst_SCRIPTS = autogen.sh
 EXTRA_DIST = menu-ui.xml
 all: all-am
