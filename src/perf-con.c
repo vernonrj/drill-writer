@@ -262,17 +262,17 @@ void delete_perf(struct perf_proto *perf)
 
 
 
-float check_stepsize_selected(struct headset_proto *dshow)
+double check_stepsize_selected(struct headset_proto *dshow)
 {
 	// get average stepsize of selected dots
 	int count = 0;
 	int index;
 	int sCounts;
-	float stepsize = 0;
-	float x, y;
-	float xpr, ypr;
-	float dx, dy;
-	float dxy;
+	double stepsize = 0;
+	double x, y;
+	double xpr, ypr;
+	double dx, dy;
+	double dxy;
 	// sets
 	struct set_proto *currset = dshow->currset;
 	struct set_proto *prevset = dshow->prevset;
@@ -309,7 +309,7 @@ float check_stepsize_selected(struct headset_proto *dshow)
 }
 
 
-int max_stepsize_selected(struct headset_proto *dshow, float *stepsize_r)
+int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 {
 	// get the max stepsize of a group
 	// largest dot
@@ -317,10 +317,10 @@ int max_stepsize_selected(struct headset_proto *dshow, float *stepsize_r)
 	// select index
 	int index;
 	int sCounts;
-	float x, y;
-	float xpr, ypr;
-	float dx, dy;
-	float dxy;
+	double x, y;
+	double xpr, ypr;
+	double dx, dy;
+	double dxy;
 	// sets
 	struct set_proto *currset = dshow->currset;
 	struct set_proto *prevset = dshow->prevset;
@@ -330,7 +330,7 @@ int max_stepsize_selected(struct headset_proto *dshow, float *stepsize_r)
 	struct coord_proto **coords = currset->coords;
 	struct coord_proto **pcoords;
 
-	float stepsize = 0;
+	double stepsize = 0;
 	if (setnum == 0)
 		return 0;
 	pcoords = prevset->coords;

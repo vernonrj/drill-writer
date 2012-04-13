@@ -2,7 +2,7 @@
 void view_stepsize_gtk(GtkWidget *widget)
 {
 	// view the stepsize of selected dots
-	float stepsize;
+	double stepsize;
 	stepsize = check_stepsize_selected(pshow);
 	printf("stepsize = %.2f:5\n", stepsize);
 	return;
@@ -59,7 +59,7 @@ void delete_perf_gtk(GtkWidget *widget)
 void xperf_change (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
-	float perf_buffer;
+	double perf_buffer;
 	struct coord_proto *coords = pshow->currset->coords[perf_cur];
 	if (!playing)
 	{
@@ -77,7 +77,7 @@ void xperf_change (GtkWidget *widget)
 void yperf_change (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
-	float perf_buffer;
+	double perf_buffer;
 	struct coord_proto *coords = pshow->currset->coords[perf_cur];
 	if (!playing)
 	{
@@ -129,9 +129,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	// number of performers
 	int perfnum;
 	// location of click
-	float coordx, coordy;
+	double coordx, coordy;
 	// dot of performer being checked
-	float workx, worky;
+	double workx, worky;
 	//double closex, closey;
 	// Length from click location to nearest dot
 	// Click must be closer than 3 steps

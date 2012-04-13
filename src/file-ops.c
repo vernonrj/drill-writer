@@ -206,7 +206,7 @@ void open_file(void)
 	// coord number
 	int cnum;
 	// coordinates
-	float x, y;
+	double x, y;
 	// validity array
 	int *valid;
 	// new data

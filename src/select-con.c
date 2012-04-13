@@ -6,8 +6,8 @@ void update_sel_center(void)
 	// TODO: Use heaps to keep track of max, min values?
 	int index;
 	int selnum = 0;
-	float cx, cy;
-	float minx, miny, maxx, maxy;
+	double cx, cy;
+	double minx, miny, maxx, maxy;
 	struct select_proto *last;
 	struct coord_proto **coords;
 	struct coord_proto *coord;
@@ -56,7 +56,7 @@ void add_sel_center(struct coord_proto *coord)
 	// add a selection to center weight
 	int index;
 	int selnum;
-	float x, y;
+	double x, y;
 	
 	// open up weight
 	selnum = pshow->selnum;
@@ -83,7 +83,7 @@ void rem_sel_center(struct coord_proto *coord)
 	// remove a selection from center weight
 	int index;
 	int selnum;
-	float x, y;
+	double x, y;
 
 	// open up weight
 	selnum = pshow->selnum;

@@ -18,7 +18,7 @@ static void gtk_drill_destroy(GtkObject *object);
 extern double width, height;
 extern int expose_flag;
 
-void zoom_amnt(float x, float y)
+void zoom_amnt(double x, double y)
 {
 	if (x == 0 && y == 0)
 	{
@@ -40,9 +40,9 @@ void zoom_amnt(float x, float y)
 
 void zoom_fit(GtkWidget *widget)
 {
-	float s_width, s_height;
-	s_width = (float)scrolled_window->allocation.width;
-	s_height = (float)scrolled_window->allocation.height;
+	double s_width, s_height;
+	s_width = (double)scrolled_window->allocation.width;
+	s_height = (double)scrolled_window->allocation.height;
 	//printf("scrolled = (%.2f, %.2f)\n", s_width, s_height);
 	//printf("window = (%.2f, %.2f)\n", width, height);
 	if (width > s_width || height > s_height)

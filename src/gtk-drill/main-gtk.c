@@ -54,11 +54,11 @@ int update_entries(void)
 	char ss_siderel[8];
 	char ss_ydline[3];
 	// front-to-back entries/buttons
-	float ssStep;
-	float fbStep;
+	double ssStep;
+	double fbStep;
 	int yardRel;
 	int fieldSide;
-	float cx, cy;
+	double cx, cy;
 	gchar *fb_buf;
 	gchar *fb_hashrel;
 	gchar *fb_frontback;

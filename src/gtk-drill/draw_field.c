@@ -101,16 +101,16 @@ void def_canvas (GtkWidget *widget)
 	return;
 }
 
-void drawing_method(cairo_t *cdots, float x, float y)
+void drawing_method(cairo_t *cdots, double x, double y)
 {
 	// dot drawing
-	float size = 0.5;
+	double size = 0.5;
 	cairo_move_to(cdots, x-size*step, y-size*step);
 	cairo_rel_line_to(cdots, 2*size*step, 2*size*step);
 	cairo_move_to(cdots, x-size*step, y+size*step);
 	cairo_rel_line_to(cdots, 2*size*step, -2*size*step);
 	//cairo_new_sub_path(cdots);
-	//cairo_arc(cdots, x, y, 2*(float)step/3, 0, 360);
+	//cairo_arc(cdots, x, y, 2*(double)step/3, 0, 360);
 	return;
 }
 
@@ -127,9 +127,9 @@ int draw_dots (GtkWidget *widget)
 	// coordinate containers
 	struct coord_proto *coords;
 	// coordinates
-	float x, y;	// x and y location
-	float xcalc, ycalc;
-	float xprev, yprev;
+	double x, y;	// x and y location
+	double xcalc, ycalc;
+	double xprev, yprev;
 	// canvases
 	//cairo_t *dots;	// context for all dots
 	cairo_t *selected; // this will eventually have a struct to get dots
@@ -240,7 +240,7 @@ int draw_dots (GtkWidget *widget)
 						// dot is selected
 						/*
 						cairo_new_sub_path(selected);
-						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						cairo_arc(selected, x, y, 2*(double)step/3, 0, 360);
 						*/
 						drawing_method(selected, x, y);
 						selects = selects->next;
@@ -252,20 +252,20 @@ int draw_dots (GtkWidget *widget)
 					drawing_method(dots, x, y);
 					// dot is not selected
 					//cairo_new_sub_path(dots);
-					//cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					//cairo_arc(dots, x, y, 2*(double)step/3, 0, 360);
 				}
 				/*
 				if (i==perf_cur)
 				{	// This is the highlighted performer
 					//cairo_rectangle(selected, x, y, step, step);
 					cairo_new_sub_path(selected);
-					cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+					cairo_arc(selected, x, y, 2*(double)step/3, 0, 360);
 				}
 				else
 				{
 					//cairo_rectangle(dots, xo2-step/2+step*x, yo2-step/2+step*y, step, step);
 					cairo_new_sub_path(dots);
-					cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					cairo_arc(dots, x, y, 2*(double)step/3, 0, 360);
 				}
 				*/
 			}
@@ -333,7 +333,7 @@ int draw_dots (GtkWidget *widget)
 						// dot is selected
 						/*
 						cairo_new_sub_path(selected);
-						cairo_arc(selected, x, y, 2*(float)step/3, 0, 360);
+						cairo_arc(selected, x, y, 2*(double)step/3, 0, 360);
 						*/
 						drawing_method(selected, x, y);
 						selects = selects->next;
@@ -350,7 +350,7 @@ int draw_dots (GtkWidget *widget)
 					cairo_move_to(dots, x-step, y+step);
 					cairo_rel_line_to(dots, 2*step, -2*step);
 					//cairo_new_sub_path(dots);
-					//cairo_arc(dots, x, y, 2*(float)step/3, 0, 360);
+					//cairo_arc(dots, x, y, 2*(double)step/3, 0, 360);
 					*/
 				}
 
@@ -382,12 +382,12 @@ void draw_field (GtkWidget *widget)
 {	// This function will draw the actual football field
 	int tempo;
 	int i, j, k;		// loop vars
-	float x, y;
+	double x, y;
 	char text[3];		// text for yardline names
 	int ynum = 0;		// yardline numbering
 	int past_fifty = 0;	// check to see if past 50 yardline
-	float x_bear;		// text centering
-	float y_bear;		// text centering
+	double x_bear;		// text centering
+	double y_bear;		// text centering
 	cairo_text_extents_t te;
 	cairo_font_options_t *fopts;
 

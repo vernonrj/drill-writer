@@ -35,7 +35,7 @@ int wrap_load_dep(GtkWidget *widget)
 }
 	/*
 	int i, j;
-	float x, y;
+	double x, y;
 	struct set_proto *currset;
 	struct set_proto *prevset;
 	struct tempo_proto *stempo;

@@ -37,7 +37,7 @@ int coords_construct(struct coord_proto *** coords_r, int perfs)
 }
 
 
-int coord_construct(struct coord_proto **coord_r, float x, float y)
+int coord_construct(struct coord_proto **coord_r, double x, double y)
 {
 	// build coord for just 1 dot
 	struct coord_proto *coord;
@@ -57,7 +57,7 @@ int coord_construct(struct coord_proto **coord_r, float x, float y)
 	return 0;
 }
 
-int set_coord(struct headset_proto *dshow, int index, float x, float y)
+int set_coord(struct headset_proto *dshow, int index, double x, double y)
 {
 	// set coordinates from the coord struct
 	struct coord_proto *coord;
@@ -80,7 +80,7 @@ int set_coord(struct headset_proto *dshow, int index, float x, float y)
 }
 
 
-int set_coord_valid(struct coord_proto **curr, int index, float x, float y)
+int set_coord_valid(struct coord_proto **curr, int index, double x, double y)
 {
 	// set coordinates and set performer valid
 	set_coord(pshow, index, x, y);
@@ -93,7 +93,7 @@ int set_coord_valid(struct coord_proto **curr, int index, float x, float y)
 	*/
 }
 
-int retr_coord(struct coord_proto *curr, float *x, float *y)
+int retr_coord(struct coord_proto *curr, double *x, double *y)
 {
 	// retrieve coordinates from the coord struct
 	*x = curr->x;
@@ -104,13 +104,13 @@ int retr_coord(struct coord_proto *curr, float *x, float *y)
 
 
 
-int retr_midset(struct set_proto *currset, int index, float *x_r, float *y_r)
+int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r)
 {
 	// retrieve midset coordinates from set struct
 	struct set_proto *last;
-	float xcurr, ycurr;
-	float xnext, ynext;
-	float xbias, ybias;
+	double xcurr, ycurr;
+	double xnext, ynext;
+	double xbias, ybias;
 	int cstep;
 	int countnum;
 
@@ -145,10 +145,10 @@ int retr_midset(struct set_proto *currset, int index, float *x_r, float *y_r)
 	return 0;
 }
 
-int movexy(float xoff, float yoff)
+int movexy(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff
-	float x, y;
+	double x, y;
 	struct coord_proto **coords = pshow->currset->coords;
 	struct select_proto *selects = pshow->select;
 	int done = 0;
@@ -180,7 +180,7 @@ int align_dots(void)
 	// align selected dots to 8:5 grid
 	struct coord_proto **coords = pshow->currset->coords;
 	struct select_proto *select = pshow->select;
-	float x, y;
+	double x, y;
 	int done = 0;
 	while (select != NULL)
 	{
@@ -199,10 +199,10 @@ int align_dots(void)
 
 
 
-int movexy_grid(float xoff, float yoff)
+int movexy_grid(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff on 1-step intervals
-	float x, y;
+	double x, y;
 	struct coord_proto **coords = pshow->currset->coords;
 	struct select_proto *selects = pshow->select;
 	while(selects != NULL)
@@ -226,21 +226,21 @@ int movexy_grid(float xoff, float yoff)
 
 
 
-void scale_form(float s_step)
+void scale_form(double s_step)
 {
 	// move every dot s_step toward/away from center
 	// basic expansion or contraction of form
 	
 	// center
-	float cx, cy;
+	double cx, cy;
 	// distance
-	float distx, disty;
+	double distx, disty;
 	// sign
 	int signx, signy;
 	// hypotenuse
-	float hypo;
+	double hypo;
 	// angle
-	float angle;
+	double angle;
 	// selection
 	struct select_proto *last;
 	// coordinates
@@ -290,7 +290,7 @@ void scale_form(float s_step)
 }
 
 
-void box_scale_form(float s_step)
+void box_scale_form(double s_step)
 {
 	// move furthest dot (s_step, s_step) toward/away from center
 	// move other dots a ratio of
@@ -298,10 +298,10 @@ void box_scale_form(float s_step)
 	// forms should retain shape with this
 	
 	// center
-	float cx, cy;
-	float x, y;
-	float distx, disty;
-	float maxdx, maxdy;
+	double cx, cy;
+	double x, y;
+	double distx, disty;
+	double maxdx, maxdy;
 	// selection
 	struct select_proto *last;
 	// coords
@@ -371,19 +371,19 @@ void box_scale_form(float s_step)
 
 
 
-void rot_form(float s_step)
+void rot_form(double s_step)
 {
 	// basic rotation around center
 	// center
-	float cx, cy;
+	double cx, cy;
 	// distance
-	float distx, disty;
+	double distx, disty;
 	// sign
 	int signx, signy;
 	// hypotenuse
-	float hypo;
+	double hypo;
 	// angle
-	float angle;
+	double angle;
 	// selection
 	struct select_proto *last;
 	// coordinates

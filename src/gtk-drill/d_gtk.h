@@ -122,12 +122,12 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 // drawfield.c
 void force_redraw(GtkWidget *widget);
 void def_canvas (GtkWidget *widget);
-void drawing_method(cairo_t *cdots, float x, float y);
+void drawing_method(cairo_t *cdots, double x, double y);
 int draw_dots (GtkWidget *widget);
 void draw_field (GtkWidget *widget);
 
 // drill.c
-void zoom_amnt(float x, float y);
+void zoom_amnt(double x, double y);
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
 void zoom_in(GtkWidget *widget);
 void zoom_out(GtkWidget *widget);

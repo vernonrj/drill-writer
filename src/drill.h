@@ -25,8 +25,8 @@ int playing;
 int set_step;
 double step;			// size of 8:5 step in window
 int expose_flag;
-float zoom_x;
-float zoom_y;
+double zoom_x;
+double zoom_y;
 time_t undo_timer;
 int perf_cur;	// current selected performer
 // check to make sure void surface isn't destroyed
@@ -55,7 +55,7 @@ struct undo_proto
 		int pindex;			// if perf location changed
 	} ud;
 	struct coord_proto **coords;		// if perf is to be deleted
-	float x, y;				// relative/absolute coords
+	double x, y;				// relative/absolute coords
 	int done;				// whether or not cascade should stop here
 
 	struct undo_proto *next;
@@ -92,8 +92,8 @@ struct coord_proto
 	// abs/rel dot 
 	bool type;
 	// location info
-	float x;
-	float y;
+	double x;
+	double y;
 };
 
 
@@ -166,25 +166,25 @@ struct headset_proto *pshow;
 // coords.c
 // create container for dots
 int coords_construct(struct coord_proto *** coords_r, int perfs);
-int coord_construct(struct coord_proto **coord_r, float x, float y);
+int coord_construct(struct coord_proto **coord_r, double x, double y);
 // set/retrieve coordinates from coord struct
-int set_coord(struct headset_proto *dshow, int index, float x, float y);
-int set_coord_valid(struct coord_proto **curr, int index, float x, float y);
-int retr_coord(struct coord_proto *curr, float *x, float *y);
-int retr_midset(struct set_proto *currset, int index, float *x_r, float *y_r);
-int movexy(float xoff, float yoff);
+int set_coord(struct headset_proto *dshow, int index, double x, double y);
+int set_coord_valid(struct coord_proto **curr, int index, double x, double y);
+int retr_coord(struct coord_proto *curr, double *x, double *y);
+int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r);
+int movexy(double xoff, double yoff);
 int align_dots(void);
-int movexy_grid(float xoff, float yoff);
-void box_scale_form(float s_step);
-void scale_form(float s_step);
-void rot_form(float s_step);
+int movexy_grid(double xoff, double yoff);
+void box_scale_form(double s_step);
+void scale_form(double s_step);
+void rot_form(double s_step);
 
 // fieldrel.c
-int isInsideYard(float *x, float *y, int *field_side);
-int getYardline(float *x, float *y);
-float getSidetoSide(float *x, float *y);
-float getFronttoBack(float *x, float *y, char **inorout_r, char **frontback_r, char **hashorside_r);
-void xy_to_relation(float *x, float *y, char **buffer_r);
+int isInsideYard(double *x, double *y, int *field_side);
+int getYardline(double *x, double *y);
+double getSidetoSide(double *x, double *y);
+double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r);
+void xy_to_relation(double *x, double *y, char **buffer_r);
 
 // file-ops.c
 int file_getline(FILE *fp, char **buffer_r);
@@ -206,7 +206,7 @@ void revert_perf_selected(struct headset_proto *dshow);
 void revert_perf(struct headset_proto *dshow, int index);
 void delete_perf_selected(void);
 void delete_perf(struct perf_proto *perf);
-float check_stepsize_selected(struct headset_proto *dshow);
+double check_stepsize_selected(struct headset_proto *dshow);
 
 // select-con.c
 void update_sel_center(void);
@@ -247,7 +247,7 @@ int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset);
 int pushPerfMk(struct undo_proto **stack_r, int index, int done);
 int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf, 
 		struct set_proto *firstset, int done);
-int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int done);
+int pushPerfmv(struct undo_proto **stack_r, int index, double x, double y, int done);
 int pushTempo(struct undo_proto **stack_r, int tempo);
 int pushCounts(struct undo_proto **stack_r, int set_num, int counts, int done);
 int sourcePop(struct undo_proto **sourcebr_r);

@@ -4,12 +4,12 @@
 void change_ss_entry(GtkWidget *widget)
 {
 	// change side-to-side
-	float cx = pshow->center->x;
-	float cy = pshow->center->y;
+	double cx = pshow->center->x;
+	double cy = pshow->center->y;
 	int yardrel;
 	int fieldside;
-	float new_cx;
-	float ssStep;
+	double new_cx;
+	double ssStep;
 	const gchar *buffer;
 	char *newtext;
 	ssStep = getSidetoSide(&cx, &cy);
@@ -42,8 +42,8 @@ void toggle_ssYdRel(GtkWidget *widget)
 	// change relationship from 	outside->inside
 	// 				inside->outside
 	const gchar *buffer;
-	float cx, cy;
-	float ssStep;
+	double cx, cy;
+	double ssStep;
 	int fieldside;
 	int yardrel;
 	buffer = gtk_button_get_label(GTK_BUTTON(widget));
@@ -77,7 +77,7 @@ void toggle_ssSide(GtkWidget *widget)
 {
 	// change side from side 1 to side 2
 	// 	or side 2 to side 1
-	float cx, cy;
+	double cx, cy;
 	cx = pshow->center->x;
 
 	movexy(2*(80-cx), 0);
@@ -95,12 +95,12 @@ void toggle_ssYdLine(GtkWidget *widget)
 void change_fb_entry(GtkWidget *widget)
 {
 	// change front-to-back
-	float cx = pshow->center->x;
-	float cy = pshow->center->y;
+	double cx = pshow->center->x;
+	double cy = pshow->center->y;
 	int yardrel;
 	int fieldside;
-	float new_cy;
-	float fbStep;
+	double new_cy;
+	double fbStep;
 	const gchar *buffer;
 	char *newtext;
 	int inOut;
@@ -153,8 +153,8 @@ void toggle_fbHashRel(GtkWidget *widget)
 	// toggle relation from ins/out
 	// 			out/ins
 	const gchar *buffer;
-	float fbStep;
-	float cx, cy;
+	double fbStep;
+	double cx, cy;
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
@@ -207,10 +207,10 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	// toggle relation from front/back
 	const gchar *buffer;
 	buffer = gtk_button_get_label(GTK_BUTTON(widget));
-	float fbStep;
-	float shstep;
-	float shstart;
-	float cx, cy;
+	double fbStep;
+	double shstep;
+	double shstart;
+	double cx, cy;
 	int fb;
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
@@ -266,8 +266,8 @@ void toggle_HashSide(GtkWidget *widget)
 	// toggle hash/sideline
 	const gchar *buffer;
 	buffer = gtk_button_get_label(GTK_BUTTON(widget));
-	float fbStep;
-	float cx, cy;
+	double fbStep;
+	double cx, cy;
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
@@ -441,7 +441,7 @@ void move_right_small(GtkWidget *widget)
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 {
 	// caught a mouse movement event
-	float coordx, coordy;
+	double coordx, coordy;
 	gchar *buffer;
 	coordx = event->x;
 	coordy = event->y;

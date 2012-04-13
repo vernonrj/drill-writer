@@ -202,7 +202,7 @@ int main (int argc, char *argv[])
 	struct coord_proto *prevcr;
 	int excode;
 	int i, j;		// loop vars
-	float x, y;
+	double x, y;
 
 	// Hardcode tempo in
 	int tempo = 120;

@@ -56,7 +56,7 @@ int newset_create(struct set_proto *curr)
 	int i;
 	int excode;
 	int mid = 0;
-	float x, y;
+	double x, y;
 	int newcounts;
 
 	// set structures

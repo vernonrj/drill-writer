@@ -1,12 +1,12 @@
 #include "drill.h"
 
 // TODO: put side-to-side into one function like front-to-back
-int isInsideYard(float *x, float *y, int *field_side)
+int isInsideYard(double *x, double *y, int *field_side)
 {
 	// check to see if a dot is inside or outside
 	// a yardline
-	float ssrel;
-	float coordx, coordy;
+	double ssrel;
+	double coordx, coordy;
 	int relation;
 	coordx = *x;
 	coordy = *y;
@@ -64,12 +64,12 @@ int isInsideYard(float *x, float *y, int *field_side)
 	return 0;
 }
 
-int getYardline(float *x, float *y)
+int getYardline(double *x, double *y)
 {
 	// get yardline number
 	int yardline;
-	float coordx, coordy;
-	float inCheck;
+	double coordx, coordy;
+	double inCheck;
 	coordx = *x;
 	coordy = *y;
 	yardline = (coordx+4)/8;
@@ -82,11 +82,11 @@ int getYardline(float *x, float *y)
 }
 
 
-float getSidetoSide(float *x, float *y)
+double getSidetoSide(double *x, double *y)
 {
 	// get the side-to-side relation
-	float ssrel;
-	float coordx, coordy;
+	double ssrel;
+	double coordx, coordy;
 
 	coordx = *x;
 	coordy = *y;
@@ -99,7 +99,7 @@ float getSidetoSide(float *x, float *y)
 	return ssrel;
 }
 
-float getFronttoBack(float *x, float *y, char **inorout_r, char **frontback_r, char **hashorside_r)
+double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r)
 {
 	// check to see if a dot is inside or outside
 	// a hash/sideline, and whether it's on the front or back
@@ -110,15 +110,15 @@ float getFronttoBack(float *x, float *y, char **inorout_r, char **frontback_r, c
 	char *inorout;
 	char *frontback;
 	char *hashorside;
-	float fbrel;
+	double fbrel;
 	// back hash to back sideline
 	int bhbs = (back_hash - back_side) / 2 + back_side;
 	// front hash to back hash
 	int bhfh = (front_hash - back_hash) / 2 + back_hash;	
 	// front sideline to front hash
 	int fhfs = (front_side - front_hash) / 2 + front_hash;
-	float coordx = *x;
-	float coordy = *y;
+	double coordx = *x;
+	double coordy = *y;
 	// Get front-to-back
 	if (coordy == back_side)
 	{
@@ -213,7 +213,7 @@ float getFronttoBack(float *x, float *y, char **inorout_r, char **frontback_r, c
 }
 
 
-void xy_to_relation(float *x, float *y, char **buffer_r)
+void xy_to_relation(double *x, double *y, char **buffer_r)
 {
 	// convert event to side-side and front-back relation
 	int yardline;
@@ -221,8 +221,8 @@ void xy_to_relation(float *x, float *y, char **buffer_r)
 	int sidetoside;
 	int size;
 
-	float ssrel;
-	float fbrel;
+	double ssrel;
+	double fbrel;
 	char *buffer;
 	char *fbbuffer;
 	char *xbuff, *ybuff;
@@ -230,7 +230,7 @@ void xy_to_relation(float *x, float *y, char **buffer_r)
 	char *side;
 	char *hash;
 	char *frontback_relation;
-	float coordx, coordy;
+	double coordx, coordy;
 	char *inorout;
 	char *frontback;
 	char *hashorside;

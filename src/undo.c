@@ -195,7 +195,7 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	return excode;
 }
 
-int pushPerfmv(struct undo_proto **stack_r, int index, float x, float y, int done)
+int pushPerfmv(struct undo_proto **stack_r, int index, double x, double y, int done)
 {
 	// push the relative movement of perf onto stack
 	struct undo_proto *unredo;
@@ -302,8 +302,8 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 	int excode;
 	int done = 1;
 	int index;
-	float x, y;			// coords for moving dot
-	float xold, yold;
+	double x, y;			// coords for moving dot
+	double xold, yold;
 
 
 	// get operation
