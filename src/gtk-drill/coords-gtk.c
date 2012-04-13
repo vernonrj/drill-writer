@@ -11,7 +11,7 @@ void change_ss_entry(GtkWidget *widget)
 	double new_cx;
 	double ssStep;
 	const gchar *buffer;
-	char *newtext;
+	//char *newtext;
 	ssStep = getSidetoSide(&cx, &cy);
 	yardrel = isInsideYard(&cx, &cy, &fieldside);
 	buffer = gtk_entry_get_text(GTK_ENTRY(widget));
@@ -41,12 +41,12 @@ void toggle_ssYdRel(GtkWidget *widget)
 {
 	// change relationship from 	outside->inside
 	// 				inside->outside
-	const gchar *buffer;
+	//const gchar *buffer;
 	double cx, cy;
 	double ssStep;
 	int fieldside;
 	int yardrel;
-	buffer = gtk_button_get_label(GTK_BUTTON(widget));
+	//buffer = gtk_button_get_label(GTK_BUTTON(widget));
 	cx = pshow->center->x;
 	cy = pshow->center->y;
 	ssStep = getSidetoSide(&cx, &cy);
@@ -77,7 +77,7 @@ void toggle_ssSide(GtkWidget *widget)
 {
 	// change side from side 1 to side 2
 	// 	or side 2 to side 1
-	double cx, cy;
+	double cx;
 	cx = pshow->center->x;
 
 	movexy(2*(80-cx), 0);
@@ -97,12 +97,12 @@ void change_fb_entry(GtkWidget *widget)
 	// change front-to-back
 	double cx = pshow->center->x;
 	double cy = pshow->center->y;
-	int yardrel;
-	int fieldside;
+	//int yardrel;
+	//int fieldside;
 	double new_cy;
 	double fbStep;
 	const gchar *buffer;
-	char *newtext;
+	//char *newtext;
 	int inOut;
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
@@ -152,7 +152,7 @@ void toggle_fbHashRel(GtkWidget *widget)
 {
 	// toggle relation from ins/out
 	// 			out/ins
-	const gchar *buffer;
+	//const gchar *buffer;
 	double fbStep;
 	double cx, cy;
 	gchar *fb_hashrel;
@@ -205,11 +205,11 @@ void toggle_fbHashRel(GtkWidget *widget)
 void toggle_fbFrontBack(GtkWidget *widget)
 {
 	// toggle relation from front/back
-	const gchar *buffer;
-	buffer = gtk_button_get_label(GTK_BUTTON(widget));
+	//const gchar *buffer;
+	//buffer = gtk_button_get_label(GTK_BUTTON(widget));
 	double fbStep;
 	double shstep;
-	double shstart;
+	//double shstart;
 	double cx, cy;
 	int fb;
 	gchar *fb_hashrel;
@@ -222,14 +222,14 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	if (!strcmp(fb_hashside, "hash"))
 	{
 		// hash info
-		shstart = 32;
+		//shstart = 32;
 		shstep = 85-64;
 	}
 	else
 	{
 		// sideline info
 		shstep = 85;
-		shstart = 0;
+		//shstart = 0;
 	}
 	if (!strcmp(fb_frontback, "front"))
 	{
@@ -264,16 +264,16 @@ void toggle_fbFrontBack(GtkWidget *widget)
 void toggle_HashSide(GtkWidget *widget)
 {
 	// toggle hash/sideline
-	const gchar *buffer;
-	buffer = gtk_button_get_label(GTK_BUTTON(widget));
-	double fbStep;
+	//const gchar *buffer;
+	//buffer = gtk_button_get_label(GTK_BUTTON(widget));
+	//double fbStep;
 	double cx, cy;
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
 	cx = pshow->center->x;
 	cy = pshow->center->y;
-	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
+	getFronttoBack(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	int fb;
 	if (!strcmp(fb_frontback, "front"))

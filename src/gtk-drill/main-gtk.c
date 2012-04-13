@@ -15,10 +15,12 @@ static void not_implemented ()
 }
 
 
+/*
 static void quit_action ()
 {	// Quit (will have more here later)
 	gtk_main_quit();
 }
+*/
 
 void button_upifCh(GtkWidget *button, char *newinfo)
 {
@@ -64,9 +66,9 @@ int update_entries(void)
 	gchar *fb_frontback;
 	gchar *fb_hashside;
 	//const gchar *buffer;
-	const gchar *b_ssStepE;
-	const gchar *b_ssYdRel;
-	const gchar *b_ssSideRel;
+	//const gchar *b_ssStepE;
+	//const gchar *b_ssYdRel;
+	//const gchar *b_ssSideRel;
 	// Update all the entries
 	cx = pshow->center->x;
 	cy = pshow->center->y;
@@ -146,7 +148,7 @@ int buildIfacegtk(void)
 	GtkUIManager *menu_manager;	// menus
 	GError *error;	
 	GtkWidget *menubar;		// for menus
-	GtkWidget *toolbar;
+	//GtkWidget *toolbar;
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
 	GtkWidget *box1;
@@ -155,12 +157,12 @@ int buildIfacegtk(void)
 	GtkWidget *perfSSbox;
 	GtkWidget *perfFBbox;
 	GtkWidget *perfEnbox;
-	GtkWidget *box3;
+	//GtkWidget *box3;
 	GtkWidget *menu_box;		// First-level packing box (for menus)
 	GtkWidget *media_box;		// For media buttons
 	// buttons, checks, etc
 	GtkWidget *button;		// buttons
-	GtkWidget *check;
+	//GtkWidget *check;
 	GtkWidget *label;
 	GtkWidget *separator;
 	GtkWidget *image;
@@ -172,15 +174,15 @@ int buildIfacegtk(void)
 	//struct gtk_ssRel sidesideBtns;
 	//struct gtk_fbRel frbkBtns;
 
-	gint tmp_pos;
+	//gint tmp_pos;
 
 	int tempo;
 	char set_buf[5];
 	char count_buf[5];
 	char tempo_buf[5];
 	char perf_buf[5];
-	char perf_buf_x[5];
-	char perf_buf_y[5];
+	//char perf_buf_x[5];
+	//char perf_buf_y[5];
 	char ss_buf[20];
 	char fb_buf[20];
 
@@ -486,7 +488,7 @@ int buildIfacegtk(void)
 	gtk_entry_set_max_length (GTK_ENTRY (entry_sets), 50);
 	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set_gtk), entry_sets);
 	gtk_entry_set_text (GTK_ENTRY (entry_sets), set_buf);
-	tmp_pos = GTK_ENTRY (entry_sets)->text_length;
+	//tmp_pos = GTK_ENTRY (entry_sets)->text_length;
 	gtk_editable_set_editable(GTK_EDITABLE(entry_sets), FALSE);
 	gtk_editable_select_region (GTK_EDITABLE (entry_sets),
 			0, GTK_ENTRY (entry_sets)->text_length);
@@ -507,7 +509,7 @@ int buildIfacegtk(void)
 	gtk_entry_set_max_length (GTK_ENTRY (entry_counts), 50);
 	g_signal_connect(entry_counts, "activate", G_CALLBACK (change_counts), entry_counts);
 	gtk_entry_set_text (GTK_ENTRY (entry_counts), count_buf);
-	tmp_pos = GTK_ENTRY (entry_counts)->text_length;
+	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	//gtk_editable_insert_text (GTK_EDITABLE (entry_counts), " world", -1, &tmp_pos);
 	gtk_editable_select_region (GTK_EDITABLE (entry_counts),
 			0, GTK_ENTRY (entry_counts)->text_length);
@@ -527,7 +529,7 @@ int buildIfacegtk(void)
 	gtk_entry_set_max_length(GTK_ENTRY(entry_tempo), 50);
 	g_signal_connect(entry_tempo, "activate", G_CALLBACK(change_tempo_gtk), entry_tempo);
 	gtk_entry_set_text(GTK_ENTRY(entry_tempo), tempo_buf);
-	tmp_pos = GTK_ENTRY(entry_tempo)->text_length;
+	//tmp_pos = GTK_ENTRY(entry_tempo)->text_length;
 	gtk_editable_select_region(GTK_EDITABLE(entry_tempo),
 			0, GTK_ENTRY(entry_tempo)->text_length);
 	gtk_entry_set_alignment(GTK_ENTRY(entry_tempo), 1);
@@ -600,7 +602,7 @@ int buildIfacegtk(void)
 	g_signal_connect(sidesideBtns.ssStepEntry, "activate",
 		       	G_CALLBACK(change_ss_entry), sidesideBtns.ssStepEntry);
 	gtk_entry_set_text(GTK_ENTRY(sidesideBtns.ssStepEntry), ss_buf);
-	tmp_pos = GTK_ENTRY(sidesideBtns.ssStepEntry)->text_length;
+	//tmp_pos = GTK_ENTRY(sidesideBtns.ssStepEntry)->text_length;
 	gtk_editable_select_region(GTK_EDITABLE(sidesideBtns.ssStepEntry),
 			0, GTK_ENTRY(sidesideBtns.ssStepEntry)->text_length);
 	gtk_entry_set_alignment(GTK_ENTRY(sidesideBtns.ssStepEntry), 1);
@@ -653,7 +655,7 @@ int buildIfacegtk(void)
 	g_signal_connect(frbkBtns.fbStepEntry, "activate",
 		       	G_CALLBACK(change_fb_entry), frbkBtns.fbStepEntry);
 	gtk_entry_set_text(GTK_ENTRY(frbkBtns.fbStepEntry), fb_buf);
-	tmp_pos = GTK_ENTRY(frbkBtns.fbStepEntry)->text_length;
+	//tmp_pos = GTK_ENTRY(frbkBtns.fbStepEntry)->text_length;
 	gtk_editable_select_region(GTK_EDITABLE(frbkBtns.fbStepEntry),
 			0, GTK_ENTRY(frbkBtns.fbStepEntry)->text_length);
 	gtk_entry_set_alignment(GTK_ENTRY(frbkBtns.fbStepEntry), 1);
