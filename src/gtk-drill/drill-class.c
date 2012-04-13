@@ -23,18 +23,18 @@ void zoom_amnt(double x, double y)
 	if (x == 0 && y == 0)
 	{
 		// zoom to 100%
-		//zoom_x = width;
-		//zoom_y = height;
-		zoom_x = 921;
-		zoom_y = 550;
+		//pstate.zoom_x = width;
+		//pstate.zoom_y = height;
+		pstate.zoom_x = 921;
+		pstate.zoom_y = 550;
 	}
 	else
 	{
-		zoom_x = zoom_x + x;
-		zoom_y = zoom_y + y;
+		pstate.zoom_x = pstate.zoom_x + x;
+		pstate.zoom_y = pstate.zoom_y + y;
 		do_field = 1;
 	}
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 	return;
 }
 
@@ -45,18 +45,18 @@ void zoom_fit(GtkWidget *widget)
 	s_height = (double)scrolled_window->allocation.height;
 	//printf("scrolled = (%.2f, %.2f)\n", s_width, s_height);
 	//printf("window = (%.2f, %.2f)\n", width, height);
-	if (width > s_width || height > s_height)
+	if (pstate.width > s_width || pstate.height > s_height)
 	{
-		zoom_x = s_width;
-		zoom_y = s_height;
+		pstate.zoom_x = s_width;
+		pstate.zoom_y = s_height;
 	}
 	else
 	{
-		zoom_x = width;
-		zoom_y = height;
+		pstate.zoom_x = pstate.width;
+		pstate.zoom_y = pstate.height;
 	}
 	do_field = 1;
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 	return;
 }
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
@@ -71,17 +71,17 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 	{
 		// zoom in
 		zoom_amnt(10, 10);
-		//zoom_x = zoom_x + 10;
-		//zoom_y = zoom_y + 10;
-		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
+		//pstate.zoom_x = pstate.zoom_x + 10;
+		//pstate.zoom_y = pstate.zoom_y + 10;
+		gtk_widget_set_size_request(widget, pstate.zoom_x, pstate.zoom_y);
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
 	{
 		// zoom out
 		zoom_amnt(-10, -10);
-		//zoom_x = zoom_x - 10;
-		//zoom_y = zoom_y - 10;
-		gtk_widget_set_size_request(widget, zoom_x, zoom_y);
+		//pstate.zoom_x = pstate.zoom_x - 10;
+		//pstate.zoom_y = pstate.zoom_y - 10;
+		gtk_widget_set_size_request(widget, pstate.zoom_x, pstate.zoom_y);
 	}
 	return TRUE;
 }
@@ -90,21 +90,21 @@ void zoom_in(GtkWidget *widget)
 {
 	// zoom in
 	zoom_amnt(10, 10);
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 }
 
 void zoom_out(GtkWidget *widget)
 {
 	// zoom out
 	zoom_amnt(-10, -10);
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 }
 
 void zoom_standard(GtkWidget *widget)
 {
 	// zoom to 100%
 	zoom_amnt(0, 0);
-	gtk_widget_set_size_request(drill, zoom_x, zoom_y);
+	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 }
 
 
@@ -195,8 +195,8 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 static void gtk_drill_init (GtkDrill *drill)
 {
 	drill->sel = 0;
-	zoom_x = 800;
-	zoom_y = 425;
+	pstate.zoom_x = 800;
+	pstate.zoom_y = 425;
 }
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
@@ -207,8 +207,8 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 	//printf("ping size request\n");
 
 
-	//requisition->width = zoom_x;
-	//requisition->height = zoom_y;
+	//requisition->width = pstate.zoom_x;
+	//requisition->height = pstate.zoom_y;
 
 	//requisition->width = 850;
 	//requisition->height = 450;

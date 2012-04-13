@@ -35,7 +35,8 @@ void change_tempo(int tempo, struct tempo_proto **currtempo_r)
 	{
 		// Tempo is valid. Make changes thusly
 		pushTempo(&pshow->undobr, currtempo->tempo);
-		if (currtempo->anchorpoint == setnum)
+		//if (currtempo->anchorpoint == setnum)
+		if (currtempo->anchorpoint == pstate.setnum)
 		{
 			// changing an existing tempo
 			currtempo->tempo = tempo;
@@ -46,7 +47,8 @@ void change_tempo(int tempo, struct tempo_proto **currtempo_r)
 			stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
 			// store data to new node
 			stempo->tempo = tempo;
-			stempo->anchorpoint = setnum;
+			//stempo->anchorpoint = setnum;
+			stempo->anchorpoint = pstate.setnum;
 			// link new node
 			stempo->next = currtempo->next;
 			currtempo->next = stempo;
@@ -105,10 +107,14 @@ void update_tempo(void)
 
 	currtempo = pshow->currtempo;
 	// Go back to general location
-	if (currtempo->anchorpoint > setnum)
+	//if (currtempo->anchorpoint > setnum)
+	if (currtempo->anchorpoint > pstate.setnum)
 	{
 		// Go backward to tempo
-		while (currtempo->anchorpoint > setnum && currtempo->prev != NULL)
+		//while (currtempo->anchorpoint > setnum 
+				//&& currtempo->prev != NULL)
+		while (currtempo->anchorpoint > pstate.setnum 
+				&& currtempo->prev != NULL)
 			currtempo = currtempo->prev;
 	}
 	else
@@ -120,7 +126,8 @@ void update_tempo(void)
 			//cset = currtempo->anchorpoint;
 			nset = othertempo->anchorpoint;
 			// find correct tempo forward
-			if (nset <= setnum)
+			//if (nset <= setnum)
+			if (nset <= pstate.setnum)
 			{
 				// go to next tempo
 				currtempo = othertempo;

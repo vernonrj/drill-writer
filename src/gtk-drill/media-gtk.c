@@ -7,7 +7,7 @@ gboolean play_show (GtkWidget *widget)
 	struct set_proto *nextset;
 	int local_tempo = pshow->currtempo->tempo;
 	time_elapsed = g_timer_elapsed(timer, &dumb_API);
-	if (playing == 1 && time_elapsed >= (double)60/(double)local_tempo && !expose_flag)
+	if (pstate.playing == 1 && time_elapsed >= (double)60/(double)local_tempo && !expose_flag)
 	{	
 		//set_step++;
 		pshow->step++;
@@ -20,14 +20,15 @@ gboolean play_show (GtkWidget *widget)
 			if (pshow->currset->next == NULL)
 			{
 				// last set
-				playing = 0;
+				pstate.playing = 0;
 			}
 		}
 		//g_print("width=%i\theight=%i\n", width, height);
 		expose_flag =1;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		gtk_widget_queue_draw_area(window, 0, 0, 
+				pstate.width, pstate.height);
 		//g_print("Play_show %i %i %i\n", setnum, set_step, playing);
-		if (playing)
+		if (pstate.playing)
 		{
 			g_timer_start(timer);
 			return TRUE;
@@ -35,7 +36,7 @@ gboolean play_show (GtkWidget *widget)
 		else
 			return FALSE;
 	}
-	else if (playing == 0)
+	else if (pstate.playing == 0)
 		return FALSE;
 	return TRUE;
 }
@@ -43,25 +44,26 @@ gboolean play_show (GtkWidget *widget)
 
 void stop_show (GtkWidget *widget)
 {
-	playing=0;
-	gtk_widget_queue_draw_area(window, 0, 0, width, height);
+	pstate.playing=0;
+	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 }
 
 
 void queue_show (GtkWidget *widget)//, GtkWidget *window)
 {
-	if (!playing)
+	if (!pstate.playing)
 	{
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 		do_field=0;	// don't need to redraw field
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		gtk_widget_queue_draw_area(window, 0, 0, 
+				pstate.width, pstate.height);
 		if (pshow->currset->next != NULL)
-			playing = 1;
+			pstate.playing = 1;
 		else
 		{
 			// play the last set
 			set_prev();
-			playing = 1;
+			pstate.playing = 1;
 		}
 		g_timer_start(timer);	// start up the timer
 	}
@@ -72,15 +74,16 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 
 void play_show_from_start (GtkWidget *widget)
 {
-	if (!playing)
+	if (!pstate.playing)
 	{
 		pshow->currset = pshow->firstset;
 		pshow->prevset = 0;
 		pshow->step = 0;
-		setnum=0;
+		pstate.setnum=0;
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
-		playing=1;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		pstate.playing=1;
+		gtk_widget_queue_draw_area(window, 0, 0, 
+				pstate.width, pstate.height);
 		g_timer_start(timer);
 	}
 }

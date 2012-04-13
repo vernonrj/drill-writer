@@ -117,7 +117,7 @@ int tbSets(void)
 	{
 		fifo = new queue;
 		set_buf = new char [20];
-		sprintf(set_buf, "Set (%i)", setnum);
+		sprintf(set_buf, "Set (%i)", pstate.setnum);
 		fifo->enqueue(set_buf);
 		delete [] set_buf;
 		fifo->enqueue("Attributes...");
@@ -203,7 +203,7 @@ int tbCoords(void)
 
 	fifo = new queue;
 	set_buf = new char [25];
-	sprintf(set_buf, "Coords (Set %i)", setnum);
+	sprintf(set_buf, "Coords (Set %i)", pstate.setnum);
 	fifo->enqueue(set_buf);
 	delete [] set_buf;
 	fifo->enqueue("View Dot...");

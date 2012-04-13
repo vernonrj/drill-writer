@@ -118,7 +118,10 @@ int update_entries(void)
 	
 	// Convert all numbers into strings first
 	if (!pshow->currset->name[0])
-		sprintf(set_buf, "%i", setnum);
+	{
+		//sprintf(set_buf, "%i", setnum);
+		sprintf(set_buf, "%i", pstate.setnum);
+	}
 	else
 		strcpy(set_buf, pshow->currset->name);
 	update_tempo();
@@ -194,7 +197,7 @@ int buildIfacegtk(void)
 	char ss_buf[20];
 	char fb_buf[20];
 
-	first_time = 1;
+	pstate.first_time = 1;
 
 	// Build the menu
 	static GtkActionEntry entries[] =
@@ -491,7 +494,8 @@ int buildIfacegtk(void)
 	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
 
 	// Set entry
-	sprintf(set_buf, "%i", setnum);
+	//sprintf(set_buf, "%i", setnum);
+	sprintf(set_buf, "%i", pstate.setnum);
 	entry_sets = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_sets), 50);
 	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set_gtk), entry_sets);
@@ -835,23 +839,30 @@ void do_undo_gtk(GtkWidget *widget)
 {
 	int done;
 	int first_one = 2;
+	double lwidth, lheight;
 	do
 	{
 		done = popFromStack(pshow, &pshow->undobr, &pshow->redobr);
 		if (first_one)
 			first_one = first_one - 1;
 	} while ((done == 0 || first_one) && pshow->undobr);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	lwidth = pstate.width;
+	lheight = pstate.height+2*pstate.step;
+	//gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	gtk_widget_queue_draw_area(window, 0, 0, lwidth, lheight);
 	return;
 }
 void do_redo_gtk(GtkWidget *widget)
 {
 	int done;
+	double lwidth, lheight;
 	do
 	{
 		done = popFromStack(pshow, &pshow->redobr, &pshow->undobr);
 	} while (done == 0);
-	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	lwidth = pstate.width;
+	lheight = pstate.height+2*pstate.step;
+	gtk_widget_queue_draw_area(window, 0, 0, lwidth, lheight);
 	return;
 }
 

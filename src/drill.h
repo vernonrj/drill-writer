@@ -43,21 +43,24 @@ struct showstate_proto
 	time_t undo_timer;	// time since last undo
 } pstate;
 
+/*
 int setnum;			// current set
-int do_field;			// whether or not to redraw field
+int playing;
+int first_time;
 double xoff, yoff;		// x offset
 double xo2, yo2;		// y offset
 double width, height;		// window width, height
-int playing;
-int set_step;
 double step;			// size of 8:5 step in window
-int expose_flag;
 double zoom_x;
 double zoom_y;
 time_t undo_timer;
+*/
+
+int do_field;			// whether or not to redraw field
+int set_step;
+int expose_flag;
 int perf_cur;	// current selected performer
 // check to make sure void surface isn't destroyed
-int first_time;
 
 // undo/redo LLL stack node
 struct undo_proto

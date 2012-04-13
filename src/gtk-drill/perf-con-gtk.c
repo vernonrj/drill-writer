@@ -12,13 +12,13 @@ void goto_perf (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
 	int perf_buffer;
-	if (!playing)
+	if (!pstate.playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf));
 		perf_buffer = atoi(entry_buffer);
 		if (perf_buffer<pshow->perfnum)
 			perf_cur=perf_buffer;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 	}
 }
 
@@ -26,7 +26,7 @@ int add_perf_gtk(GtkWidget *widget)
 {
 	int excode;
 	excode = add_perf();
-	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	if (excode != -1)
 		return 0;
 	return excode;
@@ -36,10 +36,10 @@ int add_perf_gtk(GtkWidget *widget)
 void revert_perf_gtk(GtkWidget *widget)
 {
 	// revert selected performers
-	if (!playing)
+	if (!pstate.playing)
 	{
 		revert_perf_selected(pshow);
-		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	}
 	return;
 }
@@ -47,10 +47,10 @@ void revert_perf_gtk(GtkWidget *widget)
 void delete_perf_gtk(GtkWidget *widget)
 {
 	// Delete selected performers
-	if (!playing)
+	if (!pstate.playing)
 	{
 		delete_perf_selected();
-		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	}
 }
 
@@ -61,7 +61,7 @@ void xperf_change (GtkWidget *widget)
 	const gchar *entry_buffer;
 	double perf_buffer;
 	struct coord_proto *coords = pshow->currset->coords[perf_cur];
-	if (!playing)
+	if (!pstate.playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf_x));
 		perf_buffer = atof(entry_buffer);
@@ -70,7 +70,7 @@ void xperf_change (GtkWidget *widget)
 			set_coord(pshow, perf_cur, perf_buffer, coords->y);
 			//perf[setnum][perf_cur][0] = perf_buffer;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 	}
 }
 
@@ -79,7 +79,7 @@ void yperf_change (GtkWidget *widget)
 	const gchar *entry_buffer;
 	double perf_buffer;
 	struct coord_proto *coords = pshow->currset->coords[perf_cur];
-	if (!playing)
+	if (!pstate.playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf_y));
 		perf_buffer = atoi(entry_buffer);
@@ -88,7 +88,7 @@ void yperf_change (GtkWidget *widget)
 			set_coord(pshow, perf_cur, coords->x, perf_buffer);
 			//perf[setnum][perf_cur][1] = perf_buffer;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	}
 }
 
@@ -99,7 +99,7 @@ void next_perf(GtkWidget *widget)
 	if (perf_cur < pshow->perfnum-1)
 	{
 		perf_cur++;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 	}
 }
 
@@ -109,14 +109,14 @@ void prev_perf(GtkWidget *widget)
 	if (perf_cur > 0)
 	{
 		perf_cur--;
-		gtk_widget_queue_draw_area(window, 0, 0, width, height);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 	}
 }
 
 int select_all_gtk (GtkWidget *widget)
 {
 	select_all();
-	gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
+	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	return 0;
 }
 
@@ -134,19 +134,19 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 			case SELECTONE:
 				// select 1 performer
 				select_oneperf_gtk(widget, event);
-				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 			case SELECTDRAG:
 				// Select (by dragging) performers
-				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 			case ADDPERF:
 				// Add performers by clicking on canvas
-				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 			case MVPERF:
 				// Move performers by clicking on canvas?
-				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 		}
 	}
@@ -172,9 +172,9 @@ int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 	coordy = event->y;
 	//printf("x = %g, y = %g\n", coordx, coordy);
 	// Adjust for various canvas offsets
-	coordx = (coordx-xo2)/step;
+	coordx = (coordx-pstate.xo2)/pstate.step;
 	//coordy = (coordy-yo2-25)/step;
-	coordy = (coordy-yo2)/step;
+	coordy = (coordy-pstate.yo2)/pstate.step;
 
 	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 	perfnum = pshow->perfnum;

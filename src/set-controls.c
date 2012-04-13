@@ -261,7 +261,8 @@ void goto_set(int set_buffer)
 		{
 			pshow->currset = last;
 			pshow->prevset = curr;
-			setnum = i;
+			//setnum = i;
+			pstate.setnum = i;
 		}
 	}
 	return;
@@ -312,7 +313,10 @@ void add_set(void)
 	newset_create(pshow->currset);
 	set_next();
 	if (newcounts)
-		pushCounts(&pshow->undobr, setnum, newcounts, 0);
+	{
+		//pushCounts(&pshow->undobr, setnum, newcounts, 0);
+		pushCounts(&pshow->undobr, pstate.setnum, newcounts, 0);
+	}
 	pushSetMk(&pshow->undobr);
 
 	return;
@@ -334,7 +338,8 @@ void set_first(void)
 		pshow->currset = pshow->firstset;
 		pshow->prevset = 0;
 		pshow->step = 0;
-		setnum=0;
+		//setnum=0;
+		pstate.setnum=0;
 		//set_step=0;
 	}
 }
@@ -352,7 +357,8 @@ void set_last(void)
 			else
 				pshow->prevset = pshow->prevset->next;
 			pshow->currset = pshow->currset->next;
-			setnum++;
+			//setnum++;
+			pstate.setnum++;
 		}
 		pshow->step = 0;
 
@@ -369,7 +375,8 @@ void set_next(void)
 		{
 			pshow->prevset = pshow->currset;
 			pshow->currset = pshow->currset->next;
-			setnum++;
+			//setnum++;
+			pstate.setnum++;
 			pshow->step = 0;
 		}
 	}
@@ -451,7 +458,8 @@ void set_prev(void)
 			{
 				// first set
 				pshow->prevset = 0;
-				setnum = 0;
+				//setnum = 0;
+				pstate.setnum = 0;
 			}
 			else
 			{
@@ -463,12 +471,14 @@ void set_prev(void)
 				if (last != NULL)
 				{
 					pshow->prevset = last;
-					setnum--;
+					//setnum--;
+					pstate.setnum--;
 				}
 				else
 				{
 					pshow->prevset = 0;
-					setnum = 0;
+					//setnum = 0;
+					pstate.setnum = 0;
 				}
 			}
 		}

@@ -282,7 +282,8 @@ double check_stepsize_selected(struct headset_proto *dshow)
 	struct coord_proto **coords = currset->coords;
 	struct coord_proto **pcoords;
 
-	if (setnum == 0)
+	//if (setnum == 0)
+	if (pstate.setnum == 0)
 		return 0;
 	pcoords = prevset->coords;
 	sCounts = currset->counts;
@@ -331,7 +332,8 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 	struct coord_proto **pcoords;
 
 	double stepsize = 0;
-	if (setnum == 0)
+	//if (setnum == 0)
+	if (pstate.setnum == 0)
 		return 0;
 	pcoords = prevset->coords;
 	sCounts = currset->counts;

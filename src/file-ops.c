@@ -491,7 +491,7 @@ void save_file(void)
 		coords = currset->coords;
 		update_tempo();
 
-		fprintf(fp, "set = %i\n", setnum);
+		fprintf(fp, "set = %i\n", pstate.setnum);
 		fprintf(fp, "counts = %i\n", currset->counts);
 		fprintf(fp, "tempo = %i\n", pshow->currtempo->tempo);
 		fprintf(fp, "coords:\n");

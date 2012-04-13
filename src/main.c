@@ -25,6 +25,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		printf("headset allocation failure\n");
 		return -1;
 	}
+	// make some info
 	dshow->showname = (char*) malloc(sizeof(char));
 	dshow->showinfo = (char*) malloc(sizeof(char));
 	dshow->perfnum = perfs;
@@ -84,9 +85,12 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		return -1;
 	}
 	// Construct selection moments
+	coord_construct(&dshow->center, 0, 0);
+	/*
 	dshow->center = (struct coord_proto*)malloc(sizeof(struct coord_proto));
 	dshow->center->x = 0;
 	dshow->center->y = 0;
+	*/
 	// Set the selection to "none"
 	dshow->select = 0;
 	// Set the current set to opening set
@@ -95,7 +99,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// init undo/redo to NULL
 	dshow->undobr = 0;
 	dshow->redobr = 0;
-	time(&undo_timer);
+	time(&pstate.undo_timer);
 
 	// start at the beginning of the set
 	dshow->step = 0;
@@ -267,7 +271,8 @@ int main (int argc, char *argv[])
 	}
 
 	// Start at first set
-	setnum = 0;
+	//setnum = 0;
+	pstate.setnum = 0;
 	pshow->currset = pshow->firstset;
 	pshow->prevset = 0;
 

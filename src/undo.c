@@ -56,8 +56,9 @@ int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
 	if (!unredo)
 		return -1;
 	time(&new_undo_timer);
- 	tdiff = difftime(new_undo_timer, undo_timer);
-	undo_timer = new_undo_timer;
+ 	//tdiff = difftime(new_undo_timer, undo_timer);
+ 	tdiff = difftime(new_undo_timer, pstate.undo_timer);
+	pstate.undo_timer = new_undo_timer;
 	stack = *stack_r;
 
 	unredo->next = stack;
@@ -77,7 +78,8 @@ int pushSetMk(struct undo_proto **stack_r)
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
 	{
-		unredo->set_num = setnum;
+		//unredo->set_num = setnum;
+		unredo->set_num = pstate.setnum;
 		//printf("setnum = %i\n", setnum);
 		unredo->operation = 0;	// set to be created
 		unredo->done = 1;
@@ -98,7 +100,8 @@ int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset)
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
 	{
-		unredo->set_num = setnum;
+		//unredo->set_num = setnum;
+		unredo->set_num = pstate.setnum;
 		unredo->operation = 1;		// set to be deleted
 		unredo->ud.set = oldset;	// store set
 		unredo->done = 1;		// finished
@@ -119,7 +122,8 @@ int pushPerfMk(struct undo_proto **stack_r, int index, int done)
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
 	{
-		unredo->set_num = setnum;
+		//unredo->set_num = setnum;
+		unredo->set_num = pstate.setnum;
 		unredo->operation = 2;		// Performer adding
 		unredo->ud.pindex = index;	// store perf index
 		unredo->done = done;		// check if finished
@@ -155,7 +159,8 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	}
 	oldperf = *oldperf_r;
 	index = oldperf->index;
-	unredo->set_num = setnum;
+	//unredo->set_num = setnum;
+	unredo->set_num = pstate.setnum;
 	unredo->operation = 3;		// Performer removed
 	unredo->ud.sperf = *oldperf_r;	// store performer data 
 	*oldperf_r = 0;
@@ -170,7 +175,10 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	// store coordinates for performer
 	// get total number of sets
 	set_last();
-	unredo->coords = (struct coord_proto**)malloc((setnum+1)*sizeof(struct coord_proto*));
+	//unredo->coords = (struct coord_proto**)malloc(
+	//		(setnum+1)*sizeof(struct coord_proto*));
+	unredo->coords = (struct coord_proto**)malloc(
+			(pstate.setnum+1)*sizeof(struct coord_proto*));
 	if (!unredo->coords)
 		return -1;
 	goto_set(unredo->set_num);
@@ -205,7 +213,8 @@ int pushPerfmv(struct undo_proto **stack_r, int index, double x, double y, int d
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
 	{
-		unredo->set_num = setnum;
+		//unredo->set_num = setnum;
+		unredo->set_num = pstate.setnum;
 		unredo->operation = 4;		// Performer moved
 		unredo->ud.pindex = index;	// store perf index
 		unredo->x = x;			// store coords
@@ -230,7 +239,8 @@ int pushTempo(struct undo_proto **stack_r, int tempo)
 	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
 	if (unredo)
 	{
-		unredo->set_num = setnum;
+		//unredo->set_num = setnum;
+		unredo->set_num = pstate.setnum;
 		unredo->operation = 5;		// tempo changed
 		unredo->ud.tempo = tempo;	// store tempo
 		unredo->done = 1;		// finished
@@ -356,7 +366,8 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 				dshow->prevset = sourcebr->ud.set;
 				set_first();
 			}
-			else if (sourcebr->set_num > setnum)
+			//else if (sourcebr->set_num > setnum)
+			else if (sourcebr->set_num > pstate.setnum)
 			{
 				// last set needs to be added
 				set_last();
@@ -446,7 +457,10 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			break;
 		case 6:		// count structure was changed
 			// change counts back
-			excode = pushCounts(&destbr, setnum, dshow->currset->counts, 1);
+			//excode = pushCounts(&destbr, setnum, 
+					//dshow->currset->counts, 1);
+			excode = pushCounts(&destbr, pstate.setnum, 
+					dshow->currset->counts, 1);
 			if (excode != -1)
 				dshow->currset->counts = sourcebr->ud.counts;
 			done = sourcePop(&sourcebr);
