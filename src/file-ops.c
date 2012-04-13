@@ -362,6 +362,7 @@ void open_file(void)
 		{
 			// tempo
 			change_tempo(atoi(data), &pshow->currtempo);
+			update_tempo();
 			//printf("ping\n");
 
 		}
@@ -463,6 +464,7 @@ void save_file(void)
 
 	// open file
 	set_first();
+	update_tempo();
 	currset = pshow->firstset;
 	fp = fopen("save_file","w");
 	fprintf(fp, "name = %s\n", pshow->showname);
@@ -487,6 +489,7 @@ void save_file(void)
 	{
 		// store set info
 		coords = currset->coords;
+		update_tempo();
 
 		fprintf(fp, "set = %i\n", setnum);
 		fprintf(fp, "counts = %i\n", currset->counts);
@@ -500,7 +503,6 @@ void save_file(void)
 		fprintf(fp, "done\n");
 		fprintf(fp, "\n");
 		set_next();
-		update_tempo();
 		if (currset->next == NULL)
 			done = 1;
 		currset = pshow->currset;
