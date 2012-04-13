@@ -11,6 +11,7 @@ int startTk(int argc, char *argv[])
 
 int runTk(void)
 {
+	// run selected toolkit
 	gtk_main();
 	return 0;
 }

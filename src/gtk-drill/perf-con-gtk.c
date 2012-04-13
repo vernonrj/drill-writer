@@ -129,11 +129,25 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 
 	if (event->button == 1)
 	{
-		if (mouse_currentMode == SELECTONE)
+		switch(mouse_currentMode)
 		{
-			// select 1 performer
-			select_oneperf_gtk(widget, event);
-			gtk_widget_queue_draw_area(window, 0, 0, width, height);
+			case SELECTONE:
+				// select 1 performer
+				select_oneperf_gtk(widget, event);
+				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				break;
+			case SELECTDRAG:
+				// Select (by dragging) performers
+				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				break;
+			case ADDPERF:
+				// Add performers by clicking on canvas
+				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				break;
+			case MVPERF:
+				// Move performers by clicking on canvas?
+				gtk_widget_queue_draw_area(window, 0, 0, width, height);
+				break;
 		}
 	}
 	return TRUE;
