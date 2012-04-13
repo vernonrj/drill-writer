@@ -217,7 +217,7 @@ int buildIfacegtk(void)
 	{ "NewAction", GTK_STOCK_NEW,
 		"_New", "<control>N",
 		"Create a new file",
-		G_CALLBACK (not_implemented) },
+		G_CALLBACK (new_file_gtk) },
 	{ "OpenAction", GTK_STOCK_OPEN,
 		"_Open", "<control>O",
 		"Open an existing file",

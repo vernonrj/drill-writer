@@ -25,6 +25,18 @@ int place;
 int counts[50];
 */
 
+int new_file_gtk(GtkWidget *widget)
+{
+	// make a new file
+	int excode;
+	show_destroy(&pshow);
+	excode = show_construct(&pshow, 5);
+	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	if (excode == -1)
+		return -1;
+	return 0;
+}
+
 int wrap_load_dep(GtkWidget *widget)
 {
 	// a wrapper for the deprecated load function
