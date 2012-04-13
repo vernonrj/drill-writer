@@ -361,6 +361,8 @@ void open_file(void)
 		else if (!strcmp(operation, "tempo"))
 		{
 			// tempo
+			printf("changing tempo\n");
+			printf("%i: new tempo = %i\n", pstate.setnum, atoi(data));
 			change_tempo(atoi(data), &pshow->currtempo);
 			update_tempo();
 			//printf("ping\n");

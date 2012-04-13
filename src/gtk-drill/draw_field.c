@@ -193,99 +193,99 @@ int draw_dots (GtkWidget *widget)
 	//if (setnum+1<set_tot)
 	//if (currset->next != NULL)
 	{	// Not the last set, can step to next set
-		//g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
-		// get next set
-		//lastset = currset->next;
-		// get previous set
-		prevset = pshow->prevset;
-		// get first selected dot
-		selects = pshow->select;
-		// draw performers at certain point
-		for (i=0; i<pshow->perfnum; i++)
-		{	// Draw performers only if they have valid dots
-			if (!perf[i])
-				return -1;
-			if (perf[i]->valid)
+	//g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
+	// get next set
+	//lastset = currset->next;
+	// get previous set
+	prevset = pshow->prevset;
+	// get first selected dot
+	selects = pshow->select;
+	// draw performers at certain point
+	for (i=0; i<pshow->perfnum; i++)
+	{	// Draw performers only if they have valid dots
+		if (!perf[i])
+			return -1;
+		if (perf[i]->valid)
+		{
+			// performer should be drawn
+			// Get dots for current set and next set
+			retr_coord(currset->coords[i], &x, &y);
+			if (prevset != NULL && x == 0 && y == 0)
 			{
-				// performer should be drawn
-				// Get dots for current set and next set
-				retr_coord(currset->coords[i], &x, &y);
-				if (prevset != NULL && x == 0 && y == 0)
-				{
-					retr_coord(prevset->coords[i], &x, &y);
-					set_coord(pshow, i, x, y);
-				}
-				if (lastset != NULL)
-				{
-					// not on last set
-					retr_coord(lastset->coords[i], &xcalc, &ycalc);
-					// Build horizontal location
-					xcalc = (xcalc - x) / lastset->counts;
-					xcalc = xcalc*pshow->step + x;
-					x = pstate.xo2 + pstate.step*xcalc;
-					// Build vertical location
-					ycalc = (ycalc - y) / lastset->counts;
-					ycalc = ycalc*pshow->step + y;
-					y = pstate.yo2 + pstate.step*ycalc;
-				}
-				else
-				{
-					// on last set
-					x = pstate.xo2+pstate.step*x;
-					y = pstate.yo2+pstate.step*y;
-				}
+				retr_coord(prevset->coords[i], &x, &y);
+				set_coord(pshow, i, x, y);
+			}
+			if (lastset != NULL)
+			{
+				// not on last set
+				retr_coord(lastset->coords[i], &xcalc, &ycalc);
+				// Build horizontal location
+				xcalc = (xcalc - x) / lastset->counts;
+				xcalc = xcalc*pshow->step + x;
+				x = pstate.xo2 + pstate.step*xcalc;
+				// Build vertical location
+				ycalc = (ycalc - y) / lastset->counts;
+				ycalc = ycalc*pshow->step + y;
+				y = pstate.yo2 + pstate.step*ycalc;
+			}
+			else
+			{
+				// on last set
+				x = pstate.xo2+pstate.step*x;
+				y = pstate.yo2+pstate.step*y;
+			}
 
-				// print selection if dot is selected
-				was_selected = 0;
-				if (selects)
-				{
-					// check to see if dot is selected
-					if (selects->index == i)
-					{
-						// dot is selected
-						drawing_method(selected, x, y);
-						selects = selects->next;
-						was_selected = 1;
-					}
-				}
-				if (was_selected == 0)
-				{
-					drawing_method(dots, x, y);
-				}
-			}
-		}
-		if (lastset)
-		{
-			if (pshow->step >= lastset->counts)
+			// print selection if dot is selected
+			was_selected = 0;
+			if (selects)
 			{
-				// Go to next set
-				set_next();
-				/*
-				pshow->step = 0;
-				pshow->prevset = pshow->currset;
-				pshow->currset = lastset;
-				lastset = lastset->next;
-				pstate.setnum++;
-				*/
-				lastset = pshow->currset->next;
+				// check to see if dot is selected
+				if (selects->index == i)
+				{
+					// dot is selected
+					drawing_method(selected, x, y);
+					selects = selects->next;
+					was_selected = 1;
+				}
+			}
+			if (was_selected == 0)
+			{
+				drawing_method(dots, x, y);
 			}
 		}
-		if (pshow->currset->next == NULL)
+	}
+	if (lastset)
+	{
+		if (pshow->step >= lastset->counts)
 		{
-			// At last set, playing is done
-			pstate.playing = 0;
+			// Go to next set
+			set_next();
+			/*
+			pshow->step = 0;
+			pshow->prevset = pshow->currset;
+			pshow->currset = lastset;
+			lastset = lastset->next;
+			pstate.setnum++;
+			*/
+			lastset = pshow->currset->next;
 		}
-		/*
-		if (setnum+1>=set_tot)
-		{	// At last set, playingis done
-			playing=0;
-		}
-		*/
-		// Show all the dots
-		cairo_stroke(dots);
-		cairo_stroke(selected);
-		cairo_fill (dots);
-		cairo_fill (selected);
+	}
+	if (pshow->currset->next == NULL)
+	{
+		// At last set, playing is done
+		pstate.playing = 0;
+	}
+	/*
+	if (setnum+1>=set_tot)
+	{	// At last set, playingis done
+		playing=0;
+	}
+	*/
+	// Show all the dots
+	cairo_stroke(dots);
+	cairo_stroke(selected);
+	cairo_fill (dots);
+	cairo_fill (selected);
 	}
 	/*
 	else
