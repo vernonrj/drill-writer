@@ -228,7 +228,9 @@ int movexy_grid(float xoff, float yoff)
 
 void scale_form(float s_step)
 {
+	// move every dot s_step toward/away from center
 	// basic expansion or contraction of form
+	
 	// center
 	float cx, cy;
 	// distance
@@ -286,6 +288,87 @@ void scale_form(float s_step)
 	}
 	return;
 }
+
+
+void box_scale_form(float s_step)
+{
+	// move furthest dot (s_step, s_step) toward/away from center
+	// move other dots a ratio of
+	// (dotPLD / maxPLD) * s_step * (1,1)
+	// forms should retain shape with this
+	
+	// center
+	float cx, cy;
+	float x, y;
+	float distx, disty;
+	float maxdx, maxdy;
+	// selection
+	struct select_proto *last;
+	// coords
+	struct coord_proto **coords;
+	struct coord_proto *coord;
+	// index
+	int index;
+
+	last = pshow->select;
+	coords = pshow->currset->coords;
+	cx = pshow->center->x;
+	cy = pshow->center->y;
+	undo_tclose();
+	maxdx = 0;
+	maxdy = 0;
+	if (last == NULL)
+		return;
+	while (last != NULL)
+	{
+		// get maxes separately
+		index = last->index;
+		coord = coords[index];
+		retr_coord(coord, &x, &y);
+		distx = abs(x - cx);
+		disty = abs(y - cy);
+		if (distx > maxdx)
+		{
+			maxdx = distx;
+		}
+		if (disty > maxdy)
+		{
+			maxdy = disty;
+		}
+		last = last->next;
+	}
+	last = pshow->select;
+
+	// change all dots based on distance ratio
+	// stored in maxdx and maxdy
+	
+	while (last != NULL)
+	{
+		// get coords for selected dot
+		index = last->index;
+		coord = coords[index];
+		retr_coord(coord, &x, &y);
+		pushPerfmv(&pshow->undobr, index, x, y, 0);
+		if (maxdx != 0)
+		{
+			x = (x - cx) / maxdx * s_step;
+			coord->x = coord->x + x;
+		}
+		if (maxdy != 0)
+		{
+			y = (y - cy) / maxdy * s_step;
+			coord->y = coord->y + y;
+		}
+		// next dot
+		last = last->next;
+	}
+	undo_tclose();
+	return;
+
+}
+
+
+
 
 
 void rot_form(float s_step)

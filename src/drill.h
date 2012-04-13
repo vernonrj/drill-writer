@@ -175,6 +175,7 @@ int retr_midset(struct set_proto *currset, int index, float *x_r, float *y_r);
 int movexy(float xoff, float yoff);
 int align_dots(void);
 int movexy_grid(float xoff, float yoff);
+void box_scale_form(float s_step);
 void scale_form(float s_step);
 void rot_form(float s_step);
 

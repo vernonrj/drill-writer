@@ -321,7 +321,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		currset = dshow->currset;
 		i++;
 	}
-	printf("on set %i\n", setnum);
+	//printf("on set %i\n", setnum);
 	if (currset == NULL)
 	{
 		// might have been last set. For testing purposes (i.e. for now),

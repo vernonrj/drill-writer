@@ -305,7 +305,7 @@ void toggle_HashSide(GtkWidget *widget)
 void expand_form(GtkWidget *widget)
 {
 	// expand the form by 1 step
-	scale_form(1);
+	box_scale_form(1);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return;
 }
@@ -313,7 +313,7 @@ void expand_form(GtkWidget *widget)
 void contract_form(GtkWidget *widget)
 {
 	// contract the form by 1 step
-	scale_form(-1);
+	box_scale_form(-1);
 	gtk_widget_queue_draw_area(window, 0, 0, width, height);
 	return;
 }
