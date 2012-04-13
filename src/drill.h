@@ -16,6 +16,15 @@
 #include <math.h>
 
 
+// mouse mode (what executes when user clicks on field)
+enum MOUSE_MODE
+{
+	SELECTONE,	// select one performer
+	SELECTDRAG,	// drag-select performers
+	ADDPERF,	// add performer
+	MVPERF,		// move performer
+};
+
 int setnum;			// current set
 int do_field;			// whether or not to redraw field
 double xoff, yoff;		// x offset
