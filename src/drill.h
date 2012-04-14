@@ -99,6 +99,14 @@ struct select_proto
 };
 
 
+struct group_proto
+{
+	// node with grouping information
+	struct select_proto *gr_perfs;
+	struct group_proto *next;
+};
+
+
 // tempo LLL node
 struct tempo_proto
 {
@@ -153,6 +161,16 @@ struct set_proto
 	struct set_proto *next;
 };
 
+
+struct set_container
+{
+	// node with info on the sets
+	// in a show
+	struct set_proto *firstset;
+	struct set_proto *currset;
+	struct set_proto *prevset;
+};
+
 struct headset_proto
 {
 	// first node in sets,
@@ -167,12 +185,14 @@ struct headset_proto
 	int perfnum;
 	// links to performers
 	struct perf_proto **perfs;
+	// set structure
+	struct set_container *sets;
 	// link to first set
-	struct set_proto *firstset;
+	//struct set_proto *firstset;
 	// link to current set
-	struct set_proto *currset;
+	//struct set_proto *currset;
 	// link to previous set
-	struct set_proto *prevset;
+	//struct set_proto *prevset;
 	// count of the current set
 	int step;
 	// Tempo control
@@ -195,6 +215,8 @@ struct headset_proto *pshow;
 int startTk(int argc, char *argv[]);
 int buildIfacegtk(void);
 int runTk(void);
+// c++ functions
+int menuIface(void);
 
 // coords.c
 // create container for dots
@@ -205,9 +227,13 @@ int set_coord(struct headset_proto *dshow, int index, double x, double y);
 int set_coord_valid(struct coord_proto **curr, int index, double x, double y);
 int retr_coord(struct coord_proto *curr, double *x, double *y);
 int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r);
+//int retr_midset(struct set_container *sets, int index, double *x_r, double *y_r);
 int movexy(double xoff, double yoff);
+//int movexy(struct set_container *sets, struct select_proto *selects, double xoff, double yoff);
 int align_dots(void);
+//int align_dots(struct set_container *sets, struct select_proto *select);
 int movexy_grid(double xoff, double yoff);
+//int movexy_grid(struct set_container *sets, struct select_proto *selects, double xoff, double yoff);
 void box_scale_form(double s_step);
 void scale_form(double s_step);
 void rot_form(double s_step);
@@ -251,6 +277,7 @@ int select_all(void);
 
 // set-controls.c
 // create a set with a given amount of performers
+int set_container_construct(struct set_container **setC_r, int perfs);
 int set_construct(struct set_proto **sets_r, int perfs);
 int newset_create(struct set_proto *curr);
 int set_cldestroy(struct set_proto **setcurr_r, int perfnum);

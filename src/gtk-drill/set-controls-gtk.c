@@ -108,7 +108,7 @@ void set_set_name_gtk(GtkWidget *widget)
 	// name is currently taken from entry_sets
 	const gchar *entry_buffer;
 	//int set_buffer;
-	struct set_proto *setcurr = pshow->currset;
+	struct set_proto *setcurr = pshow->sets->currset;
 	int size;
 
 	if (!pstate.playing)
@@ -152,7 +152,7 @@ void goto_count (GtkWidget *widget)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_counts));
 		count_buffer = atoi(entry_buffer);
-		if (!isLastSet() && pshow->step < pshow->currset->counts)
+		if (!isLastSet() && pshow->step < pshow->sets->currset->counts)
 			pshow->step = count_buffer;
 		//if (setnum+1<set_tot && count_buffer < counts[setnum+1])
 			//set_step=count_buffer;
@@ -170,8 +170,8 @@ void change_counts (GtkWidget *widget)
 		count_buffer = atoi(entry_buffer);
 		if (count_buffer > 0)
 		{
-			pushCounts(&pshow->undobr, pstate.setnum, pshow->currset->counts, 1);
-			pshow->currset->counts = count_buffer;
+			pushCounts(&pshow->undobr, pstate.setnum, pshow->sets->currset->counts, 1);
+			pshow->sets->currset->counts = count_buffer;
 			//counts[setnum] = count_buffer;
 		}
 	}

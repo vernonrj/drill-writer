@@ -86,7 +86,7 @@ int add_perf(void)
 		// no open nodes found, 
 		// have to make more nodes
 		// in every set
-		last = pshow->firstset;
+		last = pshow->sets->firstset;
 		newperfs = (struct perf_proto**)malloc((perfnum+5)*sizeof(struct perf_proto*));
 		for (i=0; i<perfnum; i++)
 		{
@@ -169,7 +169,7 @@ void revert_perf_selected(struct headset_proto *dshow)
 	{
 		// set dots as invalid
 		index = last->index;
-		coord = dshow->currset->coords[index];
+		coord = dshow->sets->currset->coords[index];
 		if (last->next)
 		{
 			// more to delete
@@ -197,8 +197,8 @@ void revert_perf(struct headset_proto *dshow, int index)
 	//struct coord_proto *coord;
 	struct coord_proto *prevcoord;
 
-	//currset = dshow->currset;
-	prevset = dshow->prevset;
+	//currset = dshow->sets->currset;
+	prevset = dshow->sets->prevset;
 
 	//coord = currset->coords[index];
 
@@ -240,7 +240,7 @@ void delete_perf_selected(void)
 			// no more to delete
 			done = 1;
 		}
-		pushPerfDel(&pshow->undobr, &perf, pshow->firstset, done);
+		pushPerfDel(&pshow->undobr, &perf, pshow->sets->firstset, done);
 		// TODO: eventually have to unlink perf struct for undo
 		pshow->perfs[index] = perf;
 		delete_perf(perf);
@@ -274,8 +274,8 @@ double check_stepsize_selected(struct headset_proto *dshow)
 	double dx, dy;
 	double dxy;
 	// sets
-	struct set_proto *currset = dshow->currset;
-	struct set_proto *prevset = dshow->prevset;
+	struct set_proto *currset = dshow->sets->currset;
+	struct set_proto *prevset = dshow->sets->prevset;
 	// selection
 	struct select_proto *last = dshow->select;
 	// coords
@@ -323,8 +323,8 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 	double dx, dy;
 	double dxy;
 	// sets
-	struct set_proto *currset = dshow->currset;
-	struct set_proto *prevset = dshow->prevset;
+	struct set_proto *currset = dshow->sets->currset;
+	struct set_proto *prevset = dshow->sets->prevset;
 	// selection
 	struct select_proto *last = dshow->select;
 	// coords

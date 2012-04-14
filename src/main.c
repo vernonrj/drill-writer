@@ -60,14 +60,17 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// Make the setlist
 	// Make the first set
 	setcurr = 0;
-	excode = set_construct(&setcurr, perfs);
+	dshow->sets = 0;
+	excode = set_container_construct(&dshow->sets, perfs);
+	setcurr = dshow->sets->currset;
+	//excode = set_construct(&setcurr, perfs);
 	if (excode == -1)
 	{
 		// sets not allocated
 		printf("Set allocation error\n");
 		return -1;
 	}
-	dshow->firstset = setcurr;
+	dshow->sets->firstset = setcurr;
 
 	// Make the index of dots for the first set
 	//printf("coords = %g\n", coords[0]->x);
@@ -94,8 +97,8 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// Set the selection to "none"
 	dshow->select = 0;
 	// Set the current set to opening set
-	dshow->currset = dshow->firstset;
-	dshow->prevset = 0;
+	dshow->sets->currset = dshow->sets->firstset;
+	dshow->sets->prevset = 0;
 	// init undo/redo to NULL
 	dshow->undobr = 0;
 	dshow->redobr = 0;
@@ -145,7 +148,7 @@ int show_destroy(struct headset_proto **dshow_r)
 	free(dshow->showinfo);
 
 	// delete sets
-	setcurr = dshow->firstset;
+	setcurr = dshow->sets->firstset;
 	snum = 0;
 	while (setcurr != NULL)
 	{
@@ -154,6 +157,7 @@ int show_destroy(struct headset_proto **dshow_r)
 		set_cldestroy(&setlast, perfnum);
 		snum = snum + 1;
 	}
+	free(dshow->sets);
 	// delete performers
 	perfs = pshow->perfs;
 	for (i=0; i<perfnum; i++)
@@ -223,7 +227,7 @@ int main (int argc, char *argv[])
 		printf("Allocation error\n");
 		return -1;
 	}
-	currset = pshow->firstset;
+	currset = pshow->sets->firstset;
 	//pshow->perfnum = 15;
 	currset->counts = 0;
 	set_coord(pshow, 0, 32, 53);
@@ -246,8 +250,8 @@ int main (int argc, char *argv[])
 	prevset = currset;
 	currset = currset->next;
 	*/
-	currset = pshow->currset;
-	prevset = pshow->prevset;
+	currset = pshow->sets->currset;
+	prevset = pshow->sets->prevset;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
@@ -261,8 +265,8 @@ int main (int argc, char *argv[])
 	prevset = currset;
 	currset = currset->next;
 	*/
-	currset = pshow->currset;
-	prevset = pshow->prevset;
+	currset = pshow->sets->currset;
+	prevset = pshow->sets->prevset;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
@@ -273,8 +277,8 @@ int main (int argc, char *argv[])
 	// Start at first set
 	//setnum = 0;
 	pstate.setnum = 0;
-	pshow->currset = pshow->firstset;
-	pshow->prevset = 0;
+	pshow->sets->currset = pshow->sets->firstset;
+	pshow->sets->prevset = 0;
 
 	perf_cur = 0;
 	undo_destroy(&pshow->undobr, pshow);
@@ -291,7 +295,7 @@ int main (int argc, char *argv[])
 	runTk();
 	// */
 	
-	//foo();
+	//menuIface();
 	show_destroy(&pshow);
 
 	return 0;

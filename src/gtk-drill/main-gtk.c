@@ -117,13 +117,13 @@ int update_entries(void)
 	g_free(fb_hashside);
 	
 	// Convert all numbers into strings first
-	if (!pshow->currset->name[0])
+	if (!pshow->sets->currset->name[0])
 	{
 		//sprintf(set_buf, "%i", setnum);
 		sprintf(set_buf, "%i", pstate.setnum);
 	}
 	else
-		strcpy(set_buf, pshow->currset->name);
+		strcpy(set_buf, pshow->sets->currset->name);
 	update_tempo();
 	tempo = pshow->currtempo->tempo;
 	sprintf(tempo_buf, "%i", tempo);
@@ -131,16 +131,16 @@ int update_entries(void)
 	if (pshow->step)
 	{
 		// take the counts from the next set
-		sprintf(count_buf, "%i", pshow->currset->next->counts);
+		sprintf(count_buf, "%i", pshow->sets->currset->next->counts);
 	}
 	else
 	{
 		// Take the counts from this set
-		sprintf(count_buf, "%i", pshow->currset->counts);
+		sprintf(count_buf, "%i", pshow->sets->currset->counts);
 	}
 	// side-to-side relations
 	sprintf(perf_buf, "%i", perf_cur);
-	//retr_coord(pshow->currset->coords[perf_cur], &x, &y);
+	//retr_coord(pshow->sets->currset->coords[perf_cur], &x, &y);
 	sprintf(perf_buf_x, "%g", pshow->center->x);
 	sprintf(perf_buf_y, "%g", pshow->center->y);
 	// Now Update entries with new data
@@ -516,7 +516,7 @@ int buildIfacegtk(void)
 	label = gtk_label_new ("Counts:");
 	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
 
-	sprintf(count_buf, "%i", pshow->currset->counts);
+	sprintf(count_buf, "%i", pshow->sets->currset->counts);
 	entry_counts = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_counts), 50);
 	g_signal_connect(entry_counts, "activate", G_CALLBACK (change_counts), entry_counts);
@@ -711,7 +711,7 @@ int buildIfacegtk(void)
 	label = gtk_label_new ("X:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
-	//sprintf(perf_buf_x, "%g", pshow->currset->coords[perf_cur]->x);
+	//sprintf(perf_buf_x, "%g", pshow->sets->currset->coords[perf_cur]->x);
 	sprintf(perf_buf_x, "%g", pshow->center->x);
 	entry_perf_x = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_x), 5);
@@ -724,7 +724,7 @@ int buildIfacegtk(void)
 	label = gtk_label_new ("Y:");
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
-	//sprintf(perf_buf_y, "%g", pshow->currset->coords[perf_cur]->y);
+	//sprintf(perf_buf_y, "%g", pshow->sets->currset->coords[perf_cur]->y);
 	sprintf(perf_buf_y, "%g", pshow->center->y);
 	entry_perf_y = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_y), 5);

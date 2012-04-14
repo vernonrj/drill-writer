@@ -2,7 +2,7 @@
 
 using namespace std;
 
-extern "C" int foo(void)
+extern "C" int menuIface(void)
 {
 	mainmenu();
 	return 0;
@@ -281,7 +281,7 @@ int tbSelect(void)
 int tbSelect_view(void)
 {
 	select_proto *selects = pshow->select;
-	coord_proto **coords = pshow->currset->coords;
+	coord_proto **coords = pshow->sets->currset->coords;
 	perf_proto **perfs = pshow->perfs;
 	int i = 0;
 	int index;

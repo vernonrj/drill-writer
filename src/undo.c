@@ -323,13 +323,13 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		return 1;
 	destbr = *destbr_r;
 	operation = sourcebr->operation;
-	currset = dshow->firstset;
+	currset = dshow->sets->firstset;
 	i = 0;
 	set_first();
 	while (i < sourcebr->set_num)
 	{
 		set_next();
-		currset = dshow->currset;
+		currset = dshow->sets->currset;
 		i++;
 	}
 	//printf("on set %i\n", setnum);
@@ -340,12 +340,12 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		printf("WARNING(pop): passed set number we were looking for\n");
 		printf("\tcontinuing using last set instead\n");
 		set_last();
-		currset = dshow->currset;
+		currset = dshow->sets->currset;
 	}
 	switch(operation)
 	{
 		case 0:		// set was created
-			currset = dshow->currset;
+			currset = dshow->sets->currset;
 			excode = pushSetDel(&destbr, currset);
 			if (!excode)
 			{
@@ -361,9 +361,9 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			{
 				// first set
 				set_first();
-				sourcebr->ud.set->next = dshow->firstset;
-				dshow->firstset = sourcebr->ud.set;
-				dshow->prevset = sourcebr->ud.set;
+				sourcebr->ud.set->next = dshow->sets->firstset;
+				dshow->sets->firstset = sourcebr->ud.set;
+				dshow->sets->prevset = sourcebr->ud.set;
 				set_first();
 			}
 			//else if (sourcebr->set_num > setnum)
@@ -371,14 +371,14 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			{
 				// last set needs to be added
 				set_last();
-				currset = dshow->currset;
+				currset = dshow->sets->currset;
 				sourcebr->ud.set->next = 0;
 				currset->next = sourcebr->ud.set;
 			}
 			else
 			{
 				set_prev();
-				currset = dshow->currset;
+				currset = dshow->sets->currset;
 				sourcebr->ud.set->next = currset->next;
 				currset->next = sourcebr->ud.set;
 			}
@@ -396,7 +396,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			perfcurr = dshow->perfs[sourcebr->ud.pindex];
 			perfcurr->valid = 0;
 			done = sourcePop(&sourcebr);
-			excode = pushPerfDel(&destbr, &perfcurr, dshow->firstset, done);
+			excode = pushPerfDel(&destbr, &perfcurr, dshow->sets->firstset, done);
 			break;
 		case 3:		// perf was deleted
 			// re-add performer
@@ -411,7 +411,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			perfcurr = sourcebr->ud.sperf;
 			sourcebr->ud.sperf = 0;
 			perfcurr->index = index;
-			currset = dshow->firstset;
+			currset = dshow->sets->firstset;
 			i = 0;
 			// re-add coordinates for performer
 			coords = currset->coords;
@@ -436,7 +436,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 			break;
 		case 4:		// performer moved
 			// move performer back
-			currset = dshow->currset;
+			currset = dshow->sets->currset;
 			index = sourcebr->ud.pindex;
 			perfcurr = dshow->perfs[index];
 			xold = currset->coords[index]->x;
@@ -458,11 +458,11 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 		case 6:		// count structure was changed
 			// change counts back
 			//excode = pushCounts(&destbr, setnum, 
-					//dshow->currset->counts, 1);
+					//dshow->sets->currset->counts, 1);
 			excode = pushCounts(&destbr, pstate.setnum, 
-					dshow->currset->counts, 1);
+					dshow->sets->currset->counts, 1);
 			if (excode != -1)
-				dshow->currset->counts = sourcebr->ud.counts;
+				dshow->sets->currset->counts = sourcebr->ud.counts;
 			done = sourcePop(&sourcebr);
 			printf("done = %i\n", done);
 			break;

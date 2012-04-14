@@ -60,7 +60,7 @@ void xperf_change (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
 	double perf_buffer;
-	struct coord_proto *coords = pshow->currset->coords[perf_cur];
+	struct coord_proto *coords = pshow->sets->currset->coords[perf_cur];
 	if (!pstate.playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf_x));
@@ -78,7 +78,7 @@ void yperf_change (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
 	double perf_buffer;
-	struct coord_proto *coords = pshow->currset->coords[perf_cur];
+	struct coord_proto *coords = pshow->sets->currset->coords[perf_cur];
 	if (!pstate.playing)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (entry_perf_y));
@@ -182,7 +182,7 @@ int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 	perf_cur = 0;
 	for (i=0; i<perfnum; i++)
 	{
-		retr_midset(pshow->currset, i, &workx, &worky);
+		retr_midset(pshow->sets->currset, i, &workx, &worky);
 		workx = workx - coordx;
 		worky = worky - coordy;
 		distance = pow(workx, 2) + pow(worky, 2);

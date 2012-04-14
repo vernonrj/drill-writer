@@ -122,7 +122,7 @@ int draw_dots (GtkWidget *widget)
 	struct set_proto *currset;	
 	struct set_proto *lastset;
 	struct set_proto *prevset;
-	struct set_proto *nextset;
+	//struct set_proto *nextset;
 	// performer container
 	struct perf_proto **perf;
 	// coordinate containers
@@ -169,9 +169,9 @@ int draw_dots (GtkWidget *widget)
 	cairo_set_line_width(selected, 1.5);
 
 	// grab sets from data structure
-	currset = pshow->currset;
+	currset = pshow->sets->currset;
 	lastset = currset->next;
-	prevset = pshow->prevset;
+	prevset = pshow->sets->prevset;
 	perf = pshow->perfs;
 
 
@@ -197,7 +197,7 @@ int draw_dots (GtkWidget *widget)
 	// get next set
 	//lastset = currset->next;
 	// get previous set
-	prevset = pshow->prevset;
+	prevset = pshow->sets->prevset;
 	// get first selected dot
 	selects = pshow->select;
 	// draw performers at certain point
@@ -262,15 +262,15 @@ int draw_dots (GtkWidget *widget)
 			set_next();
 			/*
 			pshow->step = 0;
-			pshow->prevset = pshow->currset;
-			pshow->currset = lastset;
+			pshow->sets->prevset = pshow->sets->currset;
+			pshow->sets->currset = lastset;
 			lastset = lastset->next;
 			pstate.setnum++;
 			*/
-			lastset = pshow->currset->next;
+			lastset = pshow->sets->currset->next;
 		}
 	}
-	if (pshow->currset->next == NULL)
+	if (pshow->sets->currset->next == NULL)
 	{
 		// At last set, playing is done
 		pstate.playing = 0;
@@ -292,7 +292,7 @@ int draw_dots (GtkWidget *widget)
 	{	// We're on the last set
 		selects = pshow->select;
 		// get previous set
-		prevset = pshow->prevset;
+		prevset = pshow->sets->prevset;
 		for (i=0; i< pshow->perfnum; i++)
 		{	// Draw dots here
 			if (!perf[i])

@@ -62,7 +62,8 @@ int set_coord(struct headset_proto *dshow, int index, double x, double y)
 	// set coordinates from the coord struct
 	struct coord_proto *coord;
 	struct perf_proto *perf;
-	coord = dshow->currset->coords[index];
+	//coord = dshow->currset->coords[index];
+	coord = dshow->sets->currset->coords[index];
 	perf = dshow->perfs[index];
 	if (perf->valid == 0 || perf->valid == -1)
 		perf->valid = 1;
@@ -104,10 +105,12 @@ int retr_coord(struct coord_proto *curr, double *x, double *y)
 
 
 
+//int retr_midset(struct set_container *sets, int index, double *x_r, double *y_r)
 int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r)
 {
 	// retrieve midset coordinates from set struct
 	//struct set_proto *last;
+	//struct set_proto *currset = sets->currset;
 	double xcurr, ycurr;
 	double xnext, ynext;
 	double xbias, ybias;
@@ -145,11 +148,13 @@ int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r)
 	return 0;
 }
 
+//int movexy(struct set_container *sets, struct select_proto *selects, double xoff, double yoff)
 int movexy(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff
 	double x, y;
-	struct coord_proto **coords = pshow->currset->coords;
+	struct coord_proto **coords = pshow->sets->currset->coords;
+	//struct coord_proto **coords = sets->currset->coords;
 	struct select_proto *selects = pshow->select;
 	int done = 0;
 	while(selects != NULL)
@@ -173,12 +178,12 @@ int movexy(double xoff, double yoff)
 
 
 
-
-
+//int align_dots(struct set_container *sets, struct select_proto *select)
 int align_dots(void)
 {
 	// align selected dots to 8:5 grid
-	struct coord_proto **coords = pshow->currset->coords;
+	//struct coord_proto **coords = pshow->currset->coords;
+	struct coord_proto **coords = pshow->sets->currset->coords;
 	struct select_proto *select = pshow->select;
 	double x, y;
 	int done = 0;
@@ -199,11 +204,13 @@ int align_dots(void)
 
 
 
+//int movexy_grid(struct set_container *sets, struct select_proto *selects, double xoff, double yoff)
 int movexy_grid(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff on 1-step intervals
 	double x, y;
-	struct coord_proto **coords = pshow->currset->coords;
+	struct coord_proto **coords = pshow->sets->currset->coords;
+	//struct coord_proto **coords = sets->currset->coords;
 	struct select_proto *selects = pshow->select;
 	while(selects != NULL)
 	{
@@ -250,7 +257,8 @@ void scale_form(double s_step)
 	int index;
 
 	last = pshow->select;
-	coords = pshow->currset->coords;
+	//coords = pshow->currset->coords;
+	coords = pshow->sets->currset->coords;
 	cx = pshow->center->x;
 	cy = pshow->center->y;
 	undo_tclose();
@@ -311,7 +319,8 @@ void box_scale_form(double s_step)
 	int index;
 
 	last = pshow->select;
-	coords = pshow->currset->coords;
+	//coords = pshow->currset->coords;
+	coords = pshow->sets->currset->coords;
 	cx = pshow->center->x;
 	cy = pshow->center->y;
 	undo_tclose();
@@ -392,7 +401,8 @@ void rot_form(double s_step)
 	// index
 	int index;
 	last = pshow->select;
-	coords = pshow->currset->coords;
+	//coords = pshow->currset->coords;
+	coords = pshow->sets->currset->coords;
 	cx = pshow->center->x;
 	cy = pshow->center->y;
 	undo_tclose();

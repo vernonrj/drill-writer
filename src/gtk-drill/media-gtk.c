@@ -12,12 +12,12 @@ gboolean play_show (GtkWidget *widget)
 		//set_step++;
 		pshow->step++;
 		do_field=0;	// don't need to redraw field
-		nextset = pshow->currset->next;
+		nextset = pshow->sets->currset->next;
 		if (pshow->step >= nextset->counts)
 		{
 			// next set
 			set_next();
-			if (pshow->currset->next == NULL)
+			if (pshow->sets->currset->next == NULL)
 			{
 				// last set
 				pstate.playing = 0;
@@ -57,7 +57,7 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 		do_field=0;	// don't need to redraw field
 		gtk_widget_queue_draw_area(window, 0, 0, 
 				pstate.width, pstate.height);
-		if (pshow->currset->next != NULL)
+		if (pshow->sets->currset->next != NULL)
 			pstate.playing = 1;
 		else
 		{
@@ -76,8 +76,8 @@ void play_show_from_start (GtkWidget *widget)
 {
 	if (!pstate.playing)
 	{
-		pshow->currset = pshow->firstset;
-		pshow->prevset = 0;
+		pshow->sets->currset = pshow->sets->firstset;
+		pshow->sets->prevset = 0;
 		pshow->step = 0;
 		pstate.setnum=0;
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);

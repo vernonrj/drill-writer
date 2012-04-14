@@ -3,7 +3,7 @@ extern "C" {
 }
 #include <iostream>
 #include "util.hpp"
-extern "C" int foo(void);
+extern "C" int menuIface(void);
 int mainmenu(void);
 int tbPerfs(void);
 int tbSets(void);

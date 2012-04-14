@@ -220,6 +220,7 @@ void open_file(void)
 	struct perf_proto *perf;
 	// Set structure
 	struct set_proto *currset;
+	struct set_container *sets;
 	// Coord structure
 	//struct coord_proto **coords;
 
@@ -328,7 +329,7 @@ void open_file(void)
 
 	// go to first set
 	set_first();
-	currset = pshow->currset;
+	currset = pshow->sets->currset;
 	// get set information
 	do
 	{
@@ -349,11 +350,11 @@ void open_file(void)
 				// need a new set
 				add_set();
 				/*
-				newset_create(pshow->currset);
+				newset_create(pshow->sets->currset);
 				set_next();
-				currset = pshow->currset;
+				currset = pshow->sets->currset;
 				*/
-				currset = pshow->currset;
+				currset = pshow->sets->currset;
 			}
 		}
 		else if (!strcmp(operation, "counts"))
@@ -470,7 +471,7 @@ void save_file(void)
 	// open file
 	set_first();
 	update_tempo();
-	currset = pshow->firstset;
+	currset = pshow->sets->firstset;
 	fp = fopen("save_file","w");
 	fprintf(fp, "name = %s\n", pshow->showname);
 	fprintf(fp, "info = %s\n", pshow->showinfo);
@@ -510,7 +511,7 @@ void save_file(void)
 		set_next();
 		if (currset->next == NULL)
 			done = 1;
-		currset = pshow->currset;
+		currset = pshow->sets->currset;
 	} while (done == 0);
 	fclose(fp);
 	return;

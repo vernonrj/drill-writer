@@ -21,7 +21,7 @@ void update_sel_center(void)
 	maxy = 0;
 	*/
 	last = pshow->select;
-	coords = pshow->currset->coords;
+	coords = pshow->sets->currset->coords;
 	while (last)
 	{
 		// get coordinates for selected dot
@@ -159,7 +159,7 @@ int select_add(int index)
 		curr->index = index;
 		pshow->select = curr;
 		// update selection center
-		add_sel_center(pshow->currset->coords[index]);
+		add_sel_center(pshow->sets->currset->coords[index]);
 	}
 	else
 	{
@@ -186,7 +186,7 @@ int select_add(int index)
 				}
 				loop_done = 1;
 				matched = 1;
-				rem_sel_center(pshow->currset->coords[index]);
+				rem_sel_center(pshow->sets->currset->coords[index]);
 			}
 			else if (last->index > index)
 			{
@@ -224,7 +224,7 @@ int select_add(int index)
 				selects->next = curr;
 			}
 		}
-		add_sel_center(pshow->currset->coords[index]);
+		add_sel_center(pshow->sets->currset->coords[index]);
 	}
 	return 0;
 }
