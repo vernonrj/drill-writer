@@ -68,7 +68,7 @@ int set_construct(struct set_proto **sets_r, int perfs)
 }
 
 
-int newset_create(struct set_proto *curr)
+int newset_create(struct set_container *sets)
 {
 	// make a new set at a point right after index
 	int i;
@@ -78,6 +78,7 @@ int newset_create(struct set_proto *curr)
 	//int newcounts;
 
 	// set structures
+	struct set_proto *curr = sets->currset;
 	//struct set_proto *sets;
 	struct set_proto *last;
 	//struct set_proto *fset;
@@ -321,19 +322,20 @@ int isFirstSet(void)
 void add_set(void)
 {
 	// Add a set after the current one
+	struct headset_proto *dshow = pshow;
 	struct set_proto *nextset;
 	int newcounts = 0;
-	nextset = pshow->sets->currset->next;
-	if (nextset && pshow->step)
+	nextset = dshow->sets->currset->next;
+	if (nextset && dshow->step)
 		newcounts = nextset->counts;
-	newset_create(pshow->sets->currset);
+	newset_create(dshow->sets);
 	set_next();
 	if (newcounts)
 	{
 		//pushCounts(&pshow->undobr, setnum, newcounts, 0);
-		pushCounts(&pshow->undobr, pstate.setnum, newcounts, 0);
+		pushCounts(&dshow->undobr, pstate.setnum, newcounts, 0);
 	}
-	pushSetMk(&pshow->undobr);
+	pushSetMk(&dshow->undobr);
 
 	return;
 }

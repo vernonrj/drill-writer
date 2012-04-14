@@ -268,6 +268,7 @@ void delete_perf(struct perf_proto *perf);
 double check_stepsize_selected(struct headset_proto *dshow);
 
 // select-con.c
+// Selection control functions
 void update_sel_center(void);
 void add_sel_center(struct coord_proto *coord);
 void rem_sel_center(struct coord_proto *coord);
@@ -279,7 +280,7 @@ int select_all(void);
 // create a set with a given amount of performers
 int set_container_construct(struct set_container **setC_r, int perfs);
 int set_construct(struct set_proto **sets_r, int perfs);
-int newset_create(struct set_proto *curr);
+int newset_create(struct set_container *sets);
 int set_cldestroy(struct set_proto **setcurr_r, int perfnum);
 int set_destroy(void);
 void goto_set(int set_buffer);
