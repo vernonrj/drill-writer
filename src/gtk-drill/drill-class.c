@@ -89,14 +89,14 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 void zoom_in(GtkWidget *widget)
 {
 	// zoom in
-	zoom_amnt(10, 10);
+	zoom_amnt(20, 20);
 	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 }
 
 void zoom_out(GtkWidget *widget)
 {
 	// zoom out
-	zoom_amnt(-10, -10);
+	zoom_amnt(-20, -20);
 	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 }
 
