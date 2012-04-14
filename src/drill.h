@@ -1,8 +1,6 @@
 /* drill.h */
 //TODO: add copy for dots
 // TODO: encapsulate all set structs & info into a "class"
-// TODO: put currently global variables into a settings
-// 		struct to pass around
 // TODO: free gtk widgets
 
 //#ifndef __DRILL_H
