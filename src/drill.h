@@ -55,6 +55,8 @@ time_t undo_timer;
 */
 
 int do_field;			// whether or not to redraw field
+int do_dots;
+int do_selected;
 int set_step;
 int expose_flag;
 int perf_cur;	// current selected performer

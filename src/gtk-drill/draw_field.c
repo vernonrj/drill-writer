@@ -36,11 +36,6 @@ void def_canvas (GtkWidget *widget)
 	pstate.height = widget->allocation.height;	// Get the height
 	//z_x = 100 * width / (double)scrolled_window->allocation.width;
 	//z_y = 100 * height / (double)scrolled_window->allocation.height;
-	//printf("width = %.2f%\n", z_x);
-	//printf("height = %.2f%\n", z_y);
-	//printf("(pstate.xoff, pstate.yoff) = (%.2f, %.2f)\n", pstate.xoff, pstate.yoff);
-	//printf("(width, height) = (%.2f, %.2f)\n", width, height);
-	//printf("zoom = (%.2f, %.2f)\n", pstate.zoom_x, pstate.zoom_y);
 	if (pstate.width != pstate.zoom_x || pstate.height != pstate.zoom_y)
 	{
 		// Catch zoom < 100% and handle
@@ -115,6 +110,75 @@ void drawing_method(cairo_t *cdots, double x, double y)
 }
 
 
+int field_to_pixel(double *x_r, double *y_r)
+{
+	// convert field coordinates to 
+	// locations to draw on a screen
+	double x, y;
+	x = *x_r;
+	y = *y_r;
+
+	x = pstate.xo2 + pstate.step * x;
+	y = pstate.yo2 + pstate.step * y;
+
+	*x_r = x;
+	*y_r = y;
+	return 0;
+}
+
+
+int draw_selected(GtkWidget *widget)
+{
+	// draw selected dots, not normal dots
+	struct select_proto *select;
+	//struct coord_proto **coords;
+	//struct coord_proto **ncoords;
+	//struct coord_proto *coord;
+	struct set_container *sets;
+	struct set_proto *currset;
+	//struct set_proto *prevset;
+	//struct set_proto *nextset;
+	int index;
+	double x, y;
+
+	cairo_t *selected; // this will eventually have a struct to get dots
+
+	selected = gdk_cairo_create(widget->window);
+	cairo_set_line_width(selected, 1.5);
+	cairo_set_source_rgb(selected, 1, 0, 0);
+	// get set information
+	sets = pshow->sets;
+	currset = sets->currset;
+	/*
+	prevset = sets->prevset;
+	nextset = currset->next;
+	// get coord information
+	coords = currset->coords;
+	if (nextset != NULL)
+		ncoords = nextset->coords;
+	else
+		ncoords = 0;
+	*/
+	// get select information
+	select = pshow->select;
+	while (select != NULL)
+	{
+		index = select->index;
+		retr_midset(currset, index, &x, &y);
+		field_to_pixel(&x, &y);
+		drawing_method(selected, x, y);
+		select = select->next;
+	}
+	cairo_stroke(selected);
+	cairo_fill (selected);
+	cairo_destroy(selected);
+	do_selected = 0;
+	return 0;
+}
+
+
+	
+
 int draw_dots (GtkWidget *widget)
 {
 	int i;		// loop variable
@@ -133,7 +197,7 @@ int draw_dots (GtkWidget *widget)
 	//double xprev, yprev;
 	// canvases
 	//cairo_t *dots;	// context for all dots
-	cairo_t *selected; // this will eventually have a struct to get dots
+	//cairo_t *selected; // this will eventually have a struct to get dots
 	//cairo_surface_t *field_surface;
 	//cairo_surface_t *bak_surface;
 	cairo_t *surface_write;
@@ -152,162 +216,58 @@ int draw_dots (GtkWidget *widget)
 	cairo_surface_destroy(bak_surface);
 	*/
 
-	//field_surface = cairo_image_surface_create_from_png("field.png");
-	surface_write = gdk_cairo_create(widget->window);
-
-	//cairo_set_source_surface(surface_write, field_surface, 1, 1);
-	cairo_set_source_surface(surface_write, surface, 1, 1);
-	cairo_paint (surface_write);
-	cairo_destroy(surface_write);
-
-
-	// Define canvases
-	dots = gdk_cairo_create(widget->window);
-	selected = gdk_cairo_create(widget->window);
-
-	cairo_set_line_width(dots, 1.5);
-	cairo_set_line_width(selected, 1.5);
-
-	// grab sets from data structure
-	currset = pshow->sets->currset;
-	lastset = currset->next;
-	prevset = pshow->sets->prevset;
-	perf = pshow->perfs;
-
-
-
-	// Draw dots
-	if (pshow)
+	if (do_dots)
 	{
-		// draw grayed out if stepped
-		if (pshow->step)
+		//field_surface = cairo_image_surface_create_from_png("field.png");
+		surface_write = gdk_cairo_create(widget->window);
+
+		//cairo_set_source_surface(surface_write, field_surface, 1, 1);
+		cairo_set_source_surface(surface_write, surface, 1, 1);
+		cairo_paint (surface_write);
+		cairo_destroy(surface_write);
+
+
+		// Define canvases
+		dots = gdk_cairo_create(widget->window);
+
+		cairo_set_line_width(dots, 1.5);
+
+		// grab sets from data structure
+		currset = pshow->sets->currset;
+		lastset = currset->next;
+		prevset = pshow->sets->prevset;
+		perf = pshow->perfs;
+
+
+
+		// Draw dots
+		if (pshow)
 		{
-			cairo_set_source_rgb(dots, 0.3, 0.3, 0.3);
+			// draw grayed out if stepped
+			if (pshow->step)
+			{
+				cairo_set_source_rgb(dots, 0.3, 0.3, 0.3);
+			}
+			else
+				cairo_set_source_rgb(dots, 0, 0, 0);
 		}
 		else
 			cairo_set_source_rgb(dots, 0, 0, 0);
-	}
-	else
-		cairo_set_source_rgb(dots, 0, 0, 0);
-	cairo_set_source_rgb(selected, 1, 0, 0);
-	//if (setnum+1<set_tot)
-	//if (currset->next != NULL)
-	{	// Not the last set, can step to next set
-	//g_print("Info from draw_dots function:\nCurrent Set: %i\tPerformers: %i\n", setnum, pshow->perfnum);
-	// get next set
-	//lastset = currset->next;
-	// get previous set
-	prevset = pshow->sets->prevset;
-	// get first selected dot
-	selects = pshow->select;
-	// draw performers at certain point
-	for (i=0; i<pshow->perfnum; i++)
-	{	// Draw performers only if they have valid dots
-		if (!perf[i])
-			return -1;
-		if (perf[i]->valid)
-		{
-			// performer should be drawn
-			// Get dots for current set and next set
-			retr_coord(currset->coords[i], &x, &y);
-			if (prevset != NULL && x == 0 && y == 0)
-			{
-				retr_coord(prevset->coords[i], &x, &y);
-				set_coord(pshow, i, x, y);
-			}
-			if (lastset != NULL)
-			{
-				// not on last set
-				retr_coord(lastset->coords[i], &xcalc, &ycalc);
-				// Build horizontal location
-				xcalc = (xcalc - x) / lastset->counts;
-				xcalc = xcalc*pshow->step + x;
-				x = pstate.xo2 + pstate.step*xcalc;
-				// Build vertical location
-				ycalc = (ycalc - y) / lastset->counts;
-				ycalc = ycalc*pshow->step + y;
-				y = pstate.yo2 + pstate.step*ycalc;
-			}
-			else
-			{
-				// on last set
-				x = pstate.xo2+pstate.step*x;
-				y = pstate.yo2+pstate.step*y;
-			}
-
-			// print selection if dot is selected
-			was_selected = 0;
-			if (selects)
-			{
-				// check to see if dot is selected
-				if (selects->index == i)
-				{
-					// dot is selected
-					drawing_method(selected, x, y);
-					selects = selects->next;
-					was_selected = 1;
-				}
-			}
-			if (was_selected == 0)
-			{
-				drawing_method(dots, x, y);
-			}
-		}
-	}
-	if (lastset)
-	{
-		if (pshow->step >= lastset->counts)
-		{
-			// Go to next set
-			set_next();
-			/*
-			pshow->step = 0;
-			pshow->sets->prevset = pshow->sets->currset;
-			pshow->sets->currset = lastset;
-			lastset = lastset->next;
-			pstate.setnum++;
-			*/
-			lastset = pshow->sets->currset->next;
-		}
-	}
-	if (pshow->sets->currset->next == NULL)
-	{
-		// At last set, playing is done
-		pstate.playing = 0;
-	}
-	/*
-	if (setnum+1>=set_tot)
-	{	// At last set, playingis done
-		playing=0;
-	}
-	*/
-	// Show all the dots
-	cairo_stroke(dots);
-	cairo_stroke(selected);
-	cairo_fill (dots);
-	cairo_fill (selected);
-	}
-	/*
-	else
-	{	// We're on the last set
-		selects = pshow->select;
 		// get previous set
 		prevset = pshow->sets->prevset;
-		for (i=0; i< pshow->perfnum; i++)
-		{	// Draw dots here
+		// get first selected dot
+		selects = pshow->select;
+		// draw performers at certain point
+		for (i=0; i<pshow->perfnum; i++)
+		{	// Draw performers only if they have valid dots
 			if (!perf[i])
 				return -1;
 			if (perf[i]->valid)
 			{
-				// draw only if valid
-				retr_coord(currset->coords[i], &x, &y);
-				if (prevset != NULL && x == 0 && y == 0)
-				{
-					retr_coord(prevset->coords[i], &x, &y);
-					set_coord(pshow, i, x, y);
-				}
-				x = pstate.xo2+pstate.step*x;
-				y = pstate.yo2+pstate.step*y;
+				// performer should be drawn
+				// Get dots for current set and next set
+				retr_midset(currset, i, &x, &y);
+				field_to_pixel(&x, &y);
 				// print selection if dot is selected
 				was_selected = 0;
 				if (selects)
@@ -316,41 +276,43 @@ int draw_dots (GtkWidget *widget)
 					if (selects->index == i)
 					{
 						// dot is selected
-						//cairo_new_sub_path(selected);
-						//cairo_arc(selected, x, y, 2*(double)pstate.step/3, 0, 360);
-						drawing_method(selected, x, y);
+						//drawing_method(selected, x, y);
+						// TODO: Should draw_selected
+						// 	be broken up to be used indiv.
+						// 	and called here?
 						selects = selects->next;
 						was_selected = 1;
 					}
 				}
 				if (was_selected == 0)
 				{
-					// dot is not selected
 					drawing_method(dots, x, y);
 				}
-
-				//cairo_rectangle(dots, x, y, pstate.step, pstate.step);
-				//cairo_new_sub_path(dots);
-				//cairo_arc(dots, x, y, 2*pstate.step/3, 0, 360);
 			}
 		}
-		// Draw selected dots
-		//retr_coord(currset->coords[perf_cur], &x, &y);
-		//x = pstate.xo2+pstate.step*x;
-		//y = pstate.yo2+pstate.step*y;
-		//cairo_set_source_rgb(dots, 1, 0, 0);
-		//cairo_rectangle(selected, x, y, pstate.step, pstate.step);
-		//cairo_new_sub_path(selected);
-		//cairo_arc(selected, x, y, 2*pstate.step/3, 0, 360);
+		if (lastset)
+		{
+			if (pshow->step >= lastset->counts)
+			{
+				// Go to next set
+				set_next();
+				lastset = pshow->sets->currset->next;
+			}
+		}
+		if (pshow->sets->currset->next == NULL)
+		{
+			// At last set, playing is done
+			pstate.playing = 0;
+		}
+		// Show all the dots
 		cairo_stroke(dots);
-		cairo_stroke(selected);
-		cairo_fill(dots);
-		cairo_fill(selected);
+		cairo_fill (dots);
+		// Cleanup loose ends
+		cairo_destroy(dots);
+		do_dots = 0;
+		if (do_selected)
+			draw_selected(widget);
 	}
-	*/
-	// Cleanup loose ends
-	cairo_destroy(dots);
-	cairo_destroy(selected);
 	//cairo_surface_destroy(field_surface);
 	return 0;
 }
@@ -372,11 +334,13 @@ void draw_field (GtkWidget *widget)
 	def_canvas(widget);	// Refresh dimensions and such
 	// Set up to redraw the field
 	//printf("do_field %i\n", do_field);
+	do_dots = 1;
+	do_selected = 1;
 	if (do_field)
 	{
-		//printf("Redrawing: (width, height) = (%.2f, %.2f)\n", width, height);
-		//printf(">>>>>zoom: (width, height) = (%.2f, %.2f)\n\n", pstate.zoom_x, pstate.zoom_y);
-		// Set background to White
+		// draw dots also
+		do_dots = 1;
+		do_selected = 1;
 		// (Re)allocate field
 		if (!pstate.first_time)
 		{

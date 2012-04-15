@@ -611,7 +611,9 @@ int buildIfacegtk(void)
 	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	//g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 	// draw the field the first time
-	do_field=1;
+	do_field = 1;
+	do_dots = 1;
+	do_selected = 1;
 
 	perfbox = gtk_hbox_new (FALSE, 5);	// Dot attributes
 	// make alignment for performers

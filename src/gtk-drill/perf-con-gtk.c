@@ -26,7 +26,7 @@ int add_perf_gtk(GtkWidget *widget)
 {
 	int excode = 0;
 	mouse_currentMode = ADDPERF;
-	gtk_button_set_label(GTK_MENU(menuButton), "Add");
+	gtk_button_set_label(GTK_BUTTON(menuButton), "Add");
 	//excode = add_perf();
 	//gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	if (excode != -1)
