@@ -186,6 +186,7 @@ void yperf_change (GtkWidget *widget);
 void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
+int select_mode_gtk (GtkWidget *widget);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 

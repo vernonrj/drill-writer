@@ -24,9 +24,10 @@ void goto_perf (GtkWidget *widget)
 
 int add_perf_gtk(GtkWidget *widget)
 {
-	int excode;
-	excode = add_perf();
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+	int excode = 0;
+	mouse_currentMode = ADDPERF;
+	//excode = add_perf();
+	//gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	if (excode != -1)
 		return 0;
 	return excode;
@@ -120,10 +121,20 @@ int select_all_gtk (GtkWidget *widget)
 	return 0;
 }
 
+int select_mode_gtk (GtkWidget *widget)
+{
+	// go back to normal selectmode
+	mouse_currentMode = SELECTONE;
+	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+	return 0;
+}
+
 gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// Handle click event on canvas
 	
+	int index;
+	double coordx, coordy;
 	// Length from click location to nearest dot
 
 
@@ -142,7 +153,16 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				break;
 			case ADDPERF:
 				// Add performers by clicking on canvas
+				coordx = event->x;
+				coordy = event->y;
+				// Adjust for various canvas offsets
+				coordx = round((coordx-pstate.xo2)/pstate.step);
+				//coordy = (coordy-yo2-25)/step;
+				coordy = round((coordy-pstate.yo2)/pstate.step);
+				index = add_perf();
+				set_coord(pshow, index, coordx, coordy);
 				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+				//mouse_currentMode = SELECTONE;
 				break;
 			case MVPERF:
 				// Move performers by clicking on canvas?

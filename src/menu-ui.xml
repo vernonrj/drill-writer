@@ -13,6 +13,7 @@
 			<menuitem name="UndoProc" action="UndoProcAction"/>
 			<menuitem name="RedoProc" action="RedoProcAction"/>
 			<menuitem name="SelectAll" action="SelectAllAction"/>
+			<menuitem name="SelectMode" action="SelectModeAction"/>
 			<menuitem name="AddPerf" action="AddPerfAction"/>
 			<menuitem name="RevPerf" action="RevPerfAction"/>
 			<menuitem name="DelPerf" action="DelPerfAction"/>
