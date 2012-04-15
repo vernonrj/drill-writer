@@ -153,8 +153,22 @@ int update_entries(void)
 	return 0;
 }
 
+static gboolean msel_buttonsel(GtkWidget *widget, GdkEvent *event)
+{
+	// change mouse mode from menu button
+	if (event->type == GDK_BUTTON_PRESS)
+	{
+		GdkEventButton *bevent = (GdkEventButton*)event;
+		gtk_menu_popup(GTK_MENU(widget), NULL, NULL, NULL, NULL,
+				bevent->button, bevent->time);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 int buildIfacegtk(void)
 {
+	// Build the Gtk Interface
 	GtkActionGroup *action_group;	// menus
 	GtkUIManager *menu_manager;	// menus
 	GError *error;	
@@ -179,7 +193,13 @@ int buildIfacegtk(void)
 	GtkWidget *image;
 	GtkWidget *alignment;
 	GtkWidget *frame;
+	// mouse mode (menu)
+	GtkWidget *mMode;		// mouse mode
+	GtkWidget *mMenuBar;
+	GtkWidget *item;
+	// statusbar
 	gchar *sbinfo;
+
 
 	// Field relation buttons
 	//struct gtk_ssRel sidesideBtns;
@@ -551,6 +571,28 @@ int buildIfacegtk(void)
 	gtk_entry_set_alignment(GTK_ENTRY(entry_tempo), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_tempo), 4);
 	gtk_box_pack_start(GTK_BOX(setbox), entry_tempo, FALSE, TRUE, 0);
+
+
+	// mouse mode
+	mMode = gtk_menu_new();
+	item = gtk_menu_item_new_with_label("Select");
+	g_signal_connect(item, "activate", G_CALLBACK(select_mode_gtk), NULL);
+	gtk_widget_show(item);
+	gtk_menu_shell_append(GTK_MENU_SHELL(mMode), item);
+
+	item = gtk_menu_item_new_with_label("Add");
+	g_signal_connect(item, "activate", G_CALLBACK(add_perf_gtk), NULL);
+	gtk_widget_show(item);
+	gtk_menu_shell_append(GTK_MENU_SHELL(mMode), item);
+
+	mMenuBar = gtk_menu_bar_new();
+	gtk_widget_show(mMode);
+	gtk_widget_show(mMenuBar);
+
+	menuButton = gtk_button_new_with_label("Select");
+	g_signal_connect_swapped(menuButton, "event", G_CALLBACK(msel_buttonsel), mMode);
+	gtk_box_pack_start(GTK_BOX(setbox), menuButton, TRUE, TRUE, 0);
+	gtk_widget_show(menuButton);
 
 
 	// create field canvas scroll container

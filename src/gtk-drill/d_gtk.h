@@ -17,6 +17,7 @@ GtkWidget *entry_perf;
 GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
 GtkWidget *statusbar;
+GtkWidget *menuButton;
 // Side-to-Side relation buttons
 struct gtk_ssRel
 {
