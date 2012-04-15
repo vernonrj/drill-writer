@@ -48,7 +48,9 @@ cairo_surface_t *surface;
 cairo_t *field;
 cairo_t *gaks;
 cairo_t *fnums;
-cairo_t *dots;
+cairo_t *dots;		// regular dots
+cairo_t *selected; 	// selected dots
+cairo_t *surface_write; // field to draw to
 
 gdouble time_elapsed;
 GTimer *timer;

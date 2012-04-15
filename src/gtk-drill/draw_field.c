@@ -18,6 +18,18 @@ void force_redraw(GtkWidget *widget)
 	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 }
 
+int field_init(void)
+{
+	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, pstate.width, pstate.height);
+	field = cairo_create (surface);
+	gaks = cairo_create (surface);
+	fnums = cairo_create (surface);
+	dots = gdk_cairo_create(drill->window);
+	selected = gdk_cairo_create(drill->window);
+	pstate.first_time = 0;
+	return 0;
+}
+
 void def_canvas (GtkWidget *widget)
 {
 	// define the canvas
@@ -131,18 +143,12 @@ int draw_selected(GtkWidget *widget)
 {
 	// draw selected dots, not normal dots
 	struct select_proto *select;
-	//struct coord_proto **coords;
-	//struct coord_proto **ncoords;
-	//struct coord_proto *coord;
 	struct set_container *sets;
 	struct set_proto *currset;
-	//struct set_proto *prevset;
-	//struct set_proto *nextset;
 	int index;
 	double x, y;
 
-	cairo_t *selected; // this will eventually have a struct to get dots
-
+	cairo_destroy(selected);
 	selected = gdk_cairo_create(widget->window);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
@@ -171,7 +177,6 @@ int draw_selected(GtkWidget *widget)
 	}
 	cairo_stroke(selected);
 	cairo_fill (selected);
-	cairo_destroy(selected);
 	do_selected = 0;
 	return 0;
 }
@@ -185,7 +190,7 @@ int draw_dots (GtkWidget *widget)
 	// set containers
 	struct set_proto *currset;	
 	struct set_proto *lastset;
-	struct set_proto *prevset;
+	//struct set_proto *prevset;
 	//struct set_proto *nextset;
 	// performer container
 	struct perf_proto **perf;
@@ -193,41 +198,32 @@ int draw_dots (GtkWidget *widget)
 	//struct coord_proto *coords;
 	// coordinates
 	double x, y;	// x and y location
-	double xcalc, ycalc;
+	//double xcalc, ycalc;
 	//double xprev, yprev;
 	// canvases
 	//cairo_t *dots;	// context for all dots
 	//cairo_t *selected; // this will eventually have a struct to get dots
 	//cairo_surface_t *field_surface;
 	//cairo_surface_t *bak_surface;
-	cairo_t *surface_write;
 	struct select_proto *selects;
 	int was_selected;
 
 	// Generate field
-	def_canvas(widget);
-
-	/*
-	bak_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
-	surface_write = cairo_create(bak_surface);
-	cairo_set_source_rgb(surface_write, 1, 1, 1);	
-	cairo_paint (surface_write);
-	cairo_destroy(surface_write);
-	cairo_surface_destroy(bak_surface);
-	*/
+	//def_canvas(widget);
 
 	if (do_dots)
 	{
-		//field_surface = cairo_image_surface_create_from_png("field.png");
+		// Draw the field
+		cairo_destroy(surface_write);
 		surface_write = gdk_cairo_create(widget->window);
 
 		//cairo_set_source_surface(surface_write, field_surface, 1, 1);
 		cairo_set_source_surface(surface_write, surface, 1, 1);
 		cairo_paint (surface_write);
-		cairo_destroy(surface_write);
 
 
 		// Define canvases
+		cairo_destroy(dots);
 		dots = gdk_cairo_create(widget->window);
 
 		cairo_set_line_width(dots, 1.5);
@@ -235,7 +231,7 @@ int draw_dots (GtkWidget *widget)
 		// grab sets from data structure
 		currset = pshow->sets->currset;
 		lastset = currset->next;
-		prevset = pshow->sets->prevset;
+		//prevset = pshow->sets->prevset;
 		perf = pshow->perfs;
 
 
@@ -254,7 +250,7 @@ int draw_dots (GtkWidget *widget)
 		else
 			cairo_set_source_rgb(dots, 0, 0, 0);
 		// get previous set
-		prevset = pshow->sets->prevset;
+		//prevset = pshow->sets->prevset;
 		// get first selected dot
 		selects = pshow->select;
 		// draw performers at certain point
@@ -308,10 +304,9 @@ int draw_dots (GtkWidget *widget)
 		cairo_stroke(dots);
 		cairo_fill (dots);
 		// Cleanup loose ends
-		cairo_destroy(dots);
-		do_dots = 0;
 		if (do_selected)
 			draw_selected(widget);
+		do_dots = 0;
 	}
 	//cairo_surface_destroy(field_surface);
 	return 0;
