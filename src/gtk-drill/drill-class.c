@@ -48,17 +48,19 @@ void zoom_fit(GtkWidget *widget)
 	if (pstate.width > s_width || pstate.height > s_height)
 	{
 		pstate.zoom_x = s_width;
-		pstate.zoom_y = s_height;
+		pstate.zoom_y = s_height+20;
 	}
 	else
 	{
 		pstate.zoom_x = pstate.width;
-		pstate.zoom_y = pstate.height;
+		pstate.zoom_y = pstate.height+20;
 	}
 	do_field = 1;
 	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 	return;
 }
+
+
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
@@ -196,7 +198,7 @@ static void gtk_drill_init (GtkDrill *drill)
 {
 	drill->sel = 0;
 	pstate.zoom_x = 800;
-	pstate.zoom_y = 425;
+	pstate.zoom_y = 480;
 }
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)

@@ -605,7 +605,7 @@ int buildIfacegtk(void)
 
 	// get and pack canvas
 	drill = gtk_drill_new();
-	gtk_widget_set_size_request(drill, 801, 426);
+	gtk_widget_set_size_request(drill, 801, 486);
 	gtk_scrolled_window_add_with_viewport(
 			GTK_SCROLLED_WINDOW(scrolled_window), drill);
 	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);

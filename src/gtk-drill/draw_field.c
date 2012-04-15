@@ -112,10 +112,11 @@ void drawing_method(cairo_t *cdots, double x, double y)
 {
 	// dot drawing
 	double size = 0.5;
-	cairo_move_to(cdots, x-size*pstate.step, y-size*pstate.step);
-	cairo_rel_line_to(cdots, 2*size*pstate.step, 2*size*pstate.step);
-	cairo_move_to(cdots, x-size*pstate.step, y+size*pstate.step);
-	cairo_rel_line_to(cdots, 2*size*pstate.step, -2*size*pstate.step);
+	double oset = size*pstate.step;
+	cairo_move_to(cdots, x-oset, y-oset);
+	cairo_rel_line_to(cdots, 2*oset, 2*oset);
+	cairo_move_to(cdots, x-oset, y+oset);
+	cairo_rel_line_to(cdots, 2*oset, -2*oset);
 	//cairo_new_sub_path(cdots);
 	//cairo_arc(cdots, x, y, 2*(double)pstate.step/3, 0, 360);
 	return;
