@@ -215,8 +215,8 @@ int movexy_grid(double xoff, double yoff)
 	while(selects != NULL)
 	{
 		retr_coord(coords[selects->index], &x, &y);
-		x = floorf(x + xoff);
-		y = floorf(y + yoff);
+		x = round(x + xoff);
+		y = round(y + yoff);
 		set_coord(pshow, selects->index, x, y);
 		selects = selects->next;
 	}
