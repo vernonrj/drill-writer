@@ -147,7 +147,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				pixel_to_field(&x, &y);
 				mousex = x - mousex;
 				mousey = y - mousey;
-				printf("event->state == %i\n", event->state);
+				//printf("event->state == %i\n", event->state);
 				if (event->state != 260)
 				{
 					if ((mousex != 0 || mousey != 0) && !mouse_discarded)
@@ -189,7 +189,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					// ctrl-click
 					select_add(index);
 				}
-				else
+				else if (event->state != 4)
 				{
 					// regular click
 					if (!isSelected(index))
@@ -235,6 +235,7 @@ int isSelected(int index)
 	// check to see if a dot is in selected dots
 	struct select_proto *select;
 	int isin = 0;
+
 	select = pshow->select;
 	while (select != NULL)
 	{
@@ -252,7 +253,7 @@ int isSelected(int index)
 
 int checkSelected(GtkWidget *widget, GdkEventButton *event)
 {
-	guint state = event->state;
+	//guint state = event->state;
 	double dist_threshold = 9;
 	double distance;
 	double workx, worky;
@@ -260,6 +261,7 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 	int perfnum;
 	int i;
 	int found_dot = 0;
+
 	coordx = event->x;
 	coordy = event->y;
 	// Adjust for various canvas offsets

@@ -220,7 +220,7 @@ void open_file(void)
 	struct perf_proto *perf;
 	// Set structure
 	struct set_proto *currset;
-	struct set_container *sets;
+	//struct set_container *sets;
 	// Coord structure
 	//struct coord_proto **coords;
 
