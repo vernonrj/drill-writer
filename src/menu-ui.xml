@@ -13,12 +13,13 @@
 			<menuitem name="UndoProc" action="UndoProcAction"/>
 			<menuitem name="RedoProc" action="RedoProcAction"/>
 			<menuitem name="SelectAll" action="SelectAllAction"/>
+			<menuitem name="AddSet" action="AddSetAction"/>
+			<menuitem name="DelSet" action="DelSetAction"/>
+			<menuitem name="GroupAdd" action="GroupAddAction"/>
 			<menuitem name="SelectMode" action="SelectModeAction"/>
 			<menuitem name="AddPerf" action="AddPerfAction"/>
 			<menuitem name="RevPerf" action="RevPerfAction"/>
 			<menuitem name="DelPerf" action="DelPerfAction"/>
-			<menuitem name="AddSet" action="AddSetAction"/>
-			<menuitem name="DelSet" action="DelSetAction"/>
 			<placeholder name="EditMenuAddition"/>
 		</menu>
 		<menu name="ViewMenu" action="ViewMenuAction">

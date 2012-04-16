@@ -27,6 +27,7 @@ int field_init(void)
 	dots = gdk_cairo_create(drill->window);
 	selected = gdk_cairo_create(drill->window);
 	pstate.first_time = 0;
+	//do_field = 1;
 	return 0;
 }
 
@@ -46,6 +47,8 @@ void def_canvas (GtkWidget *widget)
 	// update width and height
 	pstate.width = widget->allocation.width;	// Get the width
 	pstate.height = widget->allocation.height;	// Get the height
+	//pstate.width = scrolled_window->allocation.width;	// Get the width
+	//pstate.height = scrolled_window->allocation.height;	// Get the height
 	//z_x = 100 * width / (double)scrolled_window->allocation.width;
 	//z_y = 100 * height / (double)scrolled_window->allocation.height;
 	if (pstate.width != pstate.zoom_x || pstate.height != pstate.zoom_y)

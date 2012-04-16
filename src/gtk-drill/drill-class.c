@@ -284,6 +284,10 @@ static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
 	g_return_val_if_fail(event != NULL, FALSE);
 
 	//gtk_drill_paint(widget);
+	/*
+	if (pstate.first_time)
+		field_init();
+		*/
 	draw_field(widget);
 	expose_flag=0;
 	// Never EVER explicitly redraw the field from here.

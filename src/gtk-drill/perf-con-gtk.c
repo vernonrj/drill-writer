@@ -122,6 +122,15 @@ int select_all_gtk (GtkWidget *widget)
 	return 0;
 }
 
+
+int add_group_gtk (GtkWidget *widget)
+{
+	// add selection to group
+	add_group();
+	return 0;
+}
+
+
 int select_mode_gtk (GtkWidget *widget)
 {
 	// go back to normal selectmode

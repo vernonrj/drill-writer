@@ -106,8 +106,15 @@ struct select_proto
 struct group_proto
 {
 	// node with grouping information
-	struct select_proto *gr_perfs;
+	struct select_proto *selects;
 	struct group_proto *next;
+};
+
+struct group_container
+{
+	// node that contains groups for a set
+	struct group_proto *head;
+	struct select_proto *include;
 };
 
 
@@ -160,6 +167,7 @@ struct set_proto
 	char *name;	// set name
 	char *info;	// set info
 	struct coord_proto **coords;
+	struct group_container *groups;
 	int counts;
 	int midset;
 	struct set_proto *next;
@@ -279,6 +287,7 @@ void rem_sel_center(struct coord_proto *coord);
 void select_discard(void);
 int select_add(int index);
 int select_all(void);
+int add_group(void);
 
 // set-controls.c
 // create a set with a given amount of performers

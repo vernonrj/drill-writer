@@ -250,4 +250,107 @@ int select_all(void)
 }
 
 
+int add_group(void)
+{
+	// make a group from selected dots
+	struct select_proto *select;
+	struct select_proto *gselect;
+	struct select_proto *glast;
+	struct select_proto *clast;
+	struct select_proto *ccurr;
+	struct select_proto *cdum;
+	// grouping
+	struct group_container *groups;
+	struct group_proto *group;
+
+	groups = pshow->sets->currset->groups;
+	clast = groups->include;
+	ccurr = groups->include;
+	group = (struct group_proto*)malloc(sizeof(struct group_proto));
+	if (!group)
+		return -1;
+	if (!groups->head)
+	{
+		groups->head = group;
+		group->next = 0;
+	}
+	else
+	{
+		group->next = groups->head;
+		groups->head = group;
+	}
+	select = pshow->select;
+	gselect = 0;
+	while (select != NULL)
+	{
+		// copy selects
+		glast = (struct select_proto*)malloc(sizeof(struct select_proto));
+		if (!glast)
+			return -1;
+		if (gselect)
+		{
+			// has head for group
+			gselect->next = glast;
+		}
+		else
+		{
+			// no head for group yet
+			group->selects = glast;
+		}
+		gselect = glast;
+		gselect->next = 0;
+		gselect->index = select->index;
+		if (clast)
+		{
+			// not at the end of current data
+			if (select->index < clast->index)
+			{
+				// make a new node for this one
+				cdum = (struct select_proto*)malloc(
+						sizeof(struct select_proto));
+				if (!cdum)
+					return -1;
+				cdum->index = select->index;
+				cdum->next = clast;
+				ccurr->next = cdum;
+				ccurr = cdum;
+			}
+			else if (select->index > clast->index)
+			{
+				ccurr = clast;
+				clast = clast->next;
+			}
+		}
+		else if (ccurr)
+		{
+			// have data indexed, but these
+			// dots are definitely new
+			cdum = (struct select_proto*)malloc(
+					sizeof(struct select_proto));
+			if (!cdum)
+				return -1;
+			cdum->index = select->index;
+			ccurr->next = cdum;
+			clast = cdum;
+			clast->next = 0;
+		}
+		else
+		{
+			// build list
+			groups->include = (struct select_proto*)malloc(
+					sizeof(struct select_proto));
+			if (!groups->include)
+				return -1;
+			groups->include->next = 0;
+			groups->include->index = select->index;
+			clast = 0;
+			ccurr = groups->include;
+		}
+		select = select->next;
+	}
+	return 0;
+}
+
+
+
 

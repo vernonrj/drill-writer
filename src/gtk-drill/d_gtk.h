@@ -126,6 +126,7 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 
 // drawfield.c
 void force_redraw(GtkWidget *widget);
+int field_init(void);
 void def_canvas (GtkWidget *widget);
 int pixel_to_field(double *x_r, double *y_r);
 int field_to_pixel(double *x_r, double *y_r);
@@ -193,6 +194,7 @@ void yperf_change (GtkWidget *widget);
 void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
+int add_group_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
 gboolean unclicked(GtkWidget *widget, GdkEventButton *event);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);

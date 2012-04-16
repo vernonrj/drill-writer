@@ -41,6 +41,9 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	sets->name[0] = '\0';
 	sets->info[0] = '\0';
 	sets->counts = 0;
+	sets->groups = (struct group_container*)malloc(sizeof(struct group_container));
+	sets->groups->head = 0;
+	sets->groups->include = 0;
 	// make sure not classified as midset
 	sets->midset = 0;
 	// make coordinate system
