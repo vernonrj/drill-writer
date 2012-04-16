@@ -18,6 +18,8 @@ GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
 GtkWidget *statusbar;
 GtkWidget *menuButton;
+
+double mousex, mousey;
 // Side-to-Side relation buttons
 struct gtk_ssRel
 {
@@ -125,6 +127,8 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 // drawfield.c
 void force_redraw(GtkWidget *widget);
 void def_canvas (GtkWidget *widget);
+int pixel_to_field(double *x_r, double *y_r);
+int field_to_pixel(double *x_r, double *y_r);
 void drawing_method(cairo_t *cdots, double x, double y);
 int draw_dots (GtkWidget *widget);
 void draw_field (GtkWidget *widget);
@@ -190,6 +194,7 @@ void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
+gboolean unclicked(GtkWidget *widget, GdkEventButton *event);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 

@@ -131,6 +131,30 @@ int select_mode_gtk (GtkWidget *widget)
 	return 0;
 }
 
+
+gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
+{
+	// handle un-click events on canvas
+	double x, y;
+	if (event->button == 1)
+	{
+		switch(mouse_currentMode)
+		{
+			case SELECTONE:
+				// move a performer
+				x = event->x;
+				y = event->y;
+				pixel_to_field(&x, &y);
+				mousex = x - mousex;
+				mousey = y - mousey;
+				movexy(mousex, mousey);
+				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+				break;
+		}
+	}
+	return TRUE;
+}
+
 gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// Handle click event on canvas
@@ -142,6 +166,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 
 	if (event->button == 1)
 	{
+		mousex = event->x;
+		mousey = event->y;
+		pixel_to_field(&mousex, &mousey);
 		switch(mouse_currentMode)
 		{
 			case SELECTONE:

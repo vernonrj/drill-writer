@@ -123,6 +123,22 @@ void drawing_method(cairo_t *cdots, double x, double y)
 }
 
 
+int pixel_to_field(double *x_r, double *y_r)
+{
+	// convert event coords on screen to
+	// field coordinates for dots
+	double x, y;
+	x = *x_r;
+	y = *y_r;
+
+	x = (x-pstate.xo2) / pstate.step;
+	y = (y-pstate.yo2) / pstate.step;
+
+	*x_r = x;
+	*y_r = y;
+	return 0;
+}
+
 int field_to_pixel(double *x_r, double *y_r)
 {
 	// convert field coordinates to 

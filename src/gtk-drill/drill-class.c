@@ -176,6 +176,7 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	widget_class->expose_event = gtk_drill_expose;
 	widget_class->motion_notify_event = xy_movement;
 	widget_class->button_press_event = clicked;
+	widget_class->button_release_event = unclicked;
 	widget_class->scroll_event = zoom_scroll;
 	
 	object_class->destroy = gtk_drill_destroy;
@@ -258,6 +259,7 @@ static void gtk_drill_realize(GtkWidget *widget)
 		| GDK_EXPOSURE_MASK
 		| GDK_POINTER_MOTION_MASK
 		| GDK_BUTTON_PRESS_MASK
+		| GDK_BUTTON_RELEASE_MASK
 		| GDK_SCROLL_MASK;
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y;
