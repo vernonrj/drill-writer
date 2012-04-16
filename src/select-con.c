@@ -264,8 +264,11 @@ int add_group(void)
 	struct group_proto *group;
 
 	groups = pshow->sets->currset->groups;
-	clast = groups->include;
 	ccurr = groups->include;
+	if (ccurr)
+		clast = ccurr->next;
+	else
+		clast = 0;
 	group = (struct group_proto*)malloc(sizeof(struct group_proto));
 	if (!group)
 		return -1;
@@ -303,7 +306,30 @@ int add_group(void)
 		if (clast)
 		{
 			// not at the end of current data
-			if (select->index < clast->index)
+			while (select->index > clast->index)
+			{
+				ccurr = clast;
+				clast = clast->next;
+				if (!clast)
+					break;
+			}
+		}
+		if (clast)
+		{
+			if (select->index < ccurr->index)
+			{
+				// make a new node at the beginning
+				cdum = (struct select_proto*)malloc(
+						sizeof(struct select_proto));
+				if (!cdum)
+					return -1;
+				cdum->index = select->index;
+				cdum->next = ccurr;
+				groups->include = cdum;
+				clast = ccurr;
+				ccurr = cdum;
+			}
+			else if (select->index < clast->index)
 			{
 				// make a new node for this one
 				cdum = (struct select_proto*)malloc(
@@ -314,11 +340,6 @@ int add_group(void)
 				cdum->next = clast;
 				ccurr->next = cdum;
 				ccurr = cdum;
-			}
-			else if (select->index > clast->index)
-			{
-				ccurr = clast;
-				clast = clast->next;
 			}
 		}
 		else if (ccurr)
@@ -331,8 +352,8 @@ int add_group(void)
 				return -1;
 			cdum->index = select->index;
 			ccurr->next = cdum;
-			clast = cdum;
-			clast->next = 0;
+			ccurr = cdum;
+			ccurr->next = 0;
 		}
 		else
 		{
@@ -341,11 +362,17 @@ int add_group(void)
 					sizeof(struct select_proto));
 			if (!groups->include)
 				return -1;
-			groups->include->next = 0;
-			groups->include->index = select->index;
-			clast = 0;
 			ccurr = groups->include;
+			ccurr->next = 0;
+			ccurr->index = select->index;
+			clast = 0;
 		}
+		select = select->next;
+	}
+	select = groups->include;
+	while (select != NULL)
+	{
+		printf("new index @ %i\n", select->index);
 		select = select->next;
 	}
 	return 0;
