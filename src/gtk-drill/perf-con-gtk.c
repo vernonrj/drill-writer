@@ -147,13 +147,20 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				pixel_to_field(&x, &y);
 				mousex = x - mousex;
 				mousey = y - mousey;
-				movexy(mousex, mousey);
+				if (mousex == 0 && mousey == 0)
+				{
+					select_discard();
+					select_oneperf_gtk(widget, event);
+				}
+				else
+					movexy(mousex, mousey);
 				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 		}
 	}
 	return TRUE;
 }
+
 
 gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 {
@@ -202,6 +209,27 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	return TRUE;
 }
 
+
+int inSelected(int index)
+{
+	// check to see if a dot is in selected dots
+	struct select_proto *select;
+	int isin = 0;
+	select = pshow->select;
+	while (select != NULL)
+	{
+		if (index == select->index)
+		{
+			isin = 1;
+			break;
+		}
+		select = select->next;
+	}
+	return isin;
+}
+
+
+
 int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 {
 	guint state = event->state;
@@ -212,11 +240,13 @@ int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 	int perfnum;
 	int i;
 	int found_dot = 0;
+	/*
 	if (state == 0)
 	{
 		// normal click; discard other clicks
 		select_discard();
 	}
+	*/
 	coordx = event->x;
 	coordy = event->y;
 	//printf("x = %g, y = %g\n", coordx, coordy);
@@ -255,7 +285,16 @@ int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 
 	}
 	if (found_dot == 1)
-		select_add(perf_cur);
+	{
+		i = inSelected(perf_cur);
+		if (state != 4) 
+		{
+			if (!i)
+				select_discard();
+		}
+		if (state != 0 || !i)
+			select_add(perf_cur);
+	}
 	return 0;
 }
 
