@@ -158,6 +158,8 @@ int select_add(int index)
 		curr->next = 0;
 		curr->index = index;
 		pshow->select = curr;
+		if (select_in_group(index))
+			printf("%i in group\n", index);
 		// update selection center
 		add_sel_center(pshow->sets->currset->coords[index]);
 	}
@@ -169,6 +171,9 @@ int select_add(int index)
 		selects = 0;
 		while (loop_done == 0)
 		{
+			// check for grouping
+			if (select_in_group(last->index))
+				printf("%i in group\n", last->index);
 			if (last->index == index)
 			{
 				// found a match, toggle off
@@ -369,15 +374,35 @@ int add_group(void)
 		}
 		select = select->next;
 	}
+	/*
 	select = groups->include;
 	while (select != NULL)
 	{
 		printf("new index @ %i\n", select->index);
 		select = select->next;
 	}
+	*/
 	return 0;
 }
 
 
+int select_in_group(int index)
+{
+	// return if the dot is in a group or not
+	int ingroup = 0;
+	struct select_proto *select;
+
+	select = pshow->sets->currset->groups->include;
+	while (select != NULL)
+	{
+		if (select->index == index)
+		{
+			ingroup = 1;
+			break;
+		}
+		select = select->next;
+	}
+	return ingroup;
+}
 
 

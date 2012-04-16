@@ -288,6 +288,7 @@ void select_discard(void);
 int select_add(int index);
 int select_all(void);
 int add_group(void);
+int select_in_group(int index);
 
 // set-controls.c
 // create a set with a given amount of performers
