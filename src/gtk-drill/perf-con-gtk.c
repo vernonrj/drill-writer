@@ -147,13 +147,17 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				pixel_to_field(&x, &y);
 				mousex = x - mousex;
 				mousey = y - mousey;
-				if (mousex == 0 && mousey == 0)
+				printf("event->state == %i\n", event->state);
+				if (event->state != 260)
 				{
-					select_discard();
-					select_oneperf_gtk(widget, event);
+					if (mousex == 0 && mousey == 0)
+					{
+						select_discard();
+						select_oneperf_gtk(widget, event);
+					}
+					else
+						movexy(mousex, mousey);
 				}
-				else
-					movexy(mousex, mousey);
 				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 		}
