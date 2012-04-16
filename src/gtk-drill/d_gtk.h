@@ -196,8 +196,9 @@ int select_all_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
 gboolean unclicked(GtkWidget *widget, GdkEventButton *event);
 gboolean clicked(GtkWidget *widget, GdkEventButton *event);
-int inSelected(int index);
-int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
+int isSelected(int index);
+int checkSelected(GtkWidget *widget, GdkEventButton *event);
+//int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 
 // set-controls-gtk.c
 void add_set_gtk(GtkWidget *widget);

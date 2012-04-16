@@ -150,15 +150,13 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				printf("event->state == %i\n", event->state);
 				if (event->state != 260)
 				{
-					if (mousex == 0 && mousey == 0)
+					if ((mousex != 0 || mousey != 0) && !mouse_discarded)
 					{
-						select_discard();
-						select_oneperf_gtk(widget, event);
-					}
-					else
 						movexy(mousex, mousey);
+						mouse_discarded = 0;
+						gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+					}
 				}
-				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 		}
 	}
@@ -175,6 +173,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	// Length from click location to nearest dot
 
 
+	mouse_discarded = 0;
 	if (event->button == 1)
 	{
 		mousex = event->x;
@@ -184,7 +183,24 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				select_oneperf_gtk(widget, event);
+				index = checkSelected(widget, event);
+				if (event->state == 4 && index != -1)
+				{
+					// ctrl-click
+					select_add(index);
+				}
+				else
+				{
+					// regular click
+					if (!isSelected(index))
+					{
+						// dot is not selected
+						select_discard();
+						mouse_discarded = 1;
+						if (index != -1)
+							select_add(index);
+					}
+				}
 				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 				break;
 			case SELECTDRAG:
@@ -214,7 +230,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 }
 
 
-int inSelected(int index)
+int isSelected(int index)
 {
 	// check to see if a dot is in selected dots
 	struct select_proto *select;
@@ -234,7 +250,7 @@ int inSelected(int index)
 
 
 
-int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
+int checkSelected(GtkWidget *widget, GdkEventButton *event)
 {
 	guint state = event->state;
 	double dist_threshold = 9;
@@ -244,16 +260,8 @@ int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 	int perfnum;
 	int i;
 	int found_dot = 0;
-	/*
-	if (state == 0)
-	{
-		// normal click; discard other clicks
-		select_discard();
-	}
-	*/
 	coordx = event->x;
 	coordy = event->y;
-	//printf("x = %g, y = %g\n", coordx, coordy);
 	// Adjust for various canvas offsets
 	coordx = (coordx-pstate.xo2)/pstate.step;
 	//coordy = (coordy-yo2-25)/step;
@@ -290,6 +298,8 @@ int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 	}
 	if (found_dot == 1)
 	{
+		return perf_cur;
+		/*
 		i = inSelected(perf_cur);
 		if (state != 4) 
 		{
@@ -298,7 +308,10 @@ int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event)
 		}
 		if (state != 0 || !i)
 			select_add(perf_cur);
+		*/
 	}
+	else
+		return -1;
 	return 0;
 }
 

@@ -24,6 +24,7 @@ enum ENUM_MOUSE_MODE
 };
 
 int mouse_currentMode;
+int mouse_discarded;
 // current state of show
 struct showstate_proto
 {
