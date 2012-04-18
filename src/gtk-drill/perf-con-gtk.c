@@ -126,8 +126,8 @@ int select_all_gtk (GtkWidget *widget)
 int add_group_gtk (GtkWidget *widget)
 {
 	// add selection to group
-	add_group();
-	return 0;
+	int excode = add_group();
+	return excode;
 }
 
 
@@ -179,6 +179,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	
 	int index;
 	double coordx, coordy;
+	int excode;
 	// Length from click location to nearest dot
 
 
@@ -196,7 +197,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				if (event->state == 4 && index != -1)
 				{
 					// ctrl-click
-					select_add(index);
+					excode = select_add(index);
+					if (excode == -1)
+						return -1;
 				}
 				else if (event->state != 4)
 				{
@@ -207,7 +210,11 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 						select_discard();
 						mouse_discarded = 1;
 						if (index != -1)
-							select_add(index);
+						{
+							excode = select_add(index);
+							if (excode == -1)
+								return -1;
+						}
 					}
 				}
 				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);

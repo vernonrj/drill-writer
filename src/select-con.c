@@ -240,6 +240,7 @@ int select_all(void)
 	int i;
 	int perfnum;
 	struct perf_proto **perfs;
+	int excode;
 	select_discard();
 	perfnum = pshow->perfnum;
 	perfs = pshow->perfs;
@@ -248,7 +249,9 @@ int select_all(void)
 		if (perfs[i]->valid != 0)
 		{
 			// performer is valid. Add
-			select_add(i);
+			excode = select_add(i);
+			if (excode == -1)
+				return -1;
 		}
 	}
 	return 0;

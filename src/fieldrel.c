@@ -209,7 +209,7 @@ double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r
 }
 
 
-void xy_to_relation(double *x, double *y, char **buffer_r)
+int xy_to_relation(double *x, double *y, char **buffer_r)
 {
 	// convert event to side-side and front-back relation
 	int yardline;
@@ -240,6 +240,8 @@ void xy_to_relation(double *x, double *y, char **buffer_r)
 	relation = isInsideYard(x, y, &sidetoside);
 	ssrel = getSidetoSide(x, y);
 	sideside_relation = (char*)malloc(21*sizeof(char));
+	if (!sideside_relation)
+		return -1;
 	if (relation == 1)
 	{
 		// inside
@@ -276,9 +278,13 @@ void xy_to_relation(double *x, double *y, char **buffer_r)
 
 	fbrel = getFronttoBack(x, y, &inorout, &frontback, &hashorside);
 	fbbuffer = (char*)malloc(21*sizeof(char));
+	if (!fbbuffer)
+		return -1;
 	snprintf(fbbuffer, 20, "%.2f", fbrel);
 	size = strlen(fbbuffer) + strlen(inorout) + strlen(frontback) + strlen(hashorside) + 10;
 	frontback_relation = (char*)malloc(size*sizeof(char));
+	if (!frontback_relation)
+		return -1;
 	snprintf(frontback_relation, size-1, "%s %s %s %s", fbbuffer, inorout, frontback, hashorside);
 	free(fbbuffer);
 	free(inorout);
@@ -287,11 +293,15 @@ void xy_to_relation(double *x, double *y, char **buffer_r)
 
 	xbuff = (char*)malloc(21*sizeof(char));
 	ybuff = (char*)malloc(21*sizeof(char));
+	if (!xbuff || !ybuff)
+		return -1;
 	snprintf(xbuff, 20, "%.2f", coordx);
 	snprintf(ybuff, 20, "%.2f", coordy);
 	size = strlen(xbuff) + strlen(ybuff) + strlen(sideside_relation) + strlen(frontback_relation) + 25;
 	// put everything together
 	buffer = (char*)malloc(size*sizeof(char));
+	if (!buffer)
+		return -1;
 	snprintf(buffer, size-1, "(%s, %s): %.2f %s %i %s", xbuff, ybuff, ssrel, sideside_relation, yardline, frontback_relation);
 	free(sideside_relation);
 	free(frontback_relation);
@@ -299,6 +309,6 @@ void xy_to_relation(double *x, double *y, char **buffer_r)
 	free(ybuff);
 
 	*buffer_r = buffer;
-	return;
+	return 0;
 }
 	

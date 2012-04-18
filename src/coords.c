@@ -25,6 +25,8 @@ int coords_construct(struct coord_proto *** coords_r, int perfs)
 	{
 		// Make the first set of dots
 		ccurr = (struct coord_proto*) malloc(sizeof(struct coord_proto));
+		if (!ccurr)
+			return -1;
 		coords[i] = ccurr;
 		ccurr->x = 0;
 		ccurr->y = 0;

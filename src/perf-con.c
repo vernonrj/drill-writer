@@ -69,6 +69,7 @@ int add_perf(void)
 	struct perf_proto *perf;
 	//struct coord_proto *coord;
 	struct set_proto *last;
+	int excode;
 
 	// find an open node
 	for (i=0; i<perfnum && found_dot == 0; i++)
@@ -88,6 +89,8 @@ int add_perf(void)
 		// in every set
 		last = pshow->sets->firstset;
 		newperfs = (struct perf_proto**)malloc((perfnum+5)*sizeof(struct perf_proto*));
+		if (!newperfs)
+			return -1;
 		for (i=0; i<perfnum; i++)
 		{
 			// copy old performers
@@ -97,7 +100,9 @@ int add_perf(void)
 		for (i=perfnum; i<perfnum+5; i++)
 		{
 			// make new performers
-			perf_construct(&newperfs[i]);
+			excode = perf_construct(&newperfs[i]);
+			if (excode == -1)
+				return -1;
 			/*
 			newperfs[i] = (struct perf_proto*)malloc(sizeof(struct perf_proto));
 			if (newperfs[i] == NULL)
@@ -146,7 +151,9 @@ int add_perf(void)
 	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 1;
 	select_discard();
-	select_add(index);
+	excode = select_add(index);
+	if (excode == -1)
+		return -1;
 	pushPerfMk(&pshow->undobr, index, 1);
 	return index;
 }

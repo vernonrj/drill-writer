@@ -54,6 +54,8 @@ int file_getline(FILE *fp, char **buffer_r)
 			oldbuff = buffer;
 			size = size+def_size;
 			buffer = (char*)malloc(size*sizeof(char));
+			if (!buffer)
+				return -1;
 			strcpy(buffer, oldbuff);
 			free(oldbuff);
 		}
@@ -169,7 +171,7 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 }
 
 
-void open_file(void)
+int open_file(void)
 {
 	// open a file (for now, just save_file)
 	
@@ -230,6 +232,8 @@ void open_file(void)
 	excode = file_getValidLine(fp, &buffer);
 	size = strlen(buffer);
 	name = (char*)malloc((size+2)*sizeof(char));
+	if (!name)
+		return -1;
 	strncpy(name, buffer, size+1);
 	excode = file_linetoOps(name, &op, '=');
 	free(op);
@@ -237,6 +241,8 @@ void open_file(void)
 	// store name
 	free(pshow->showname);
 	pshow->showname = (char*)malloc((strlen(name)+1)*sizeof(char));
+	if (!pshow->showname)
+		return -1;
 	strcpy(pshow->showname, name);
 	free(name);
 
@@ -244,6 +250,8 @@ void open_file(void)
 	excode = file_getValidLine(fp, &buffer);
 	size = strlen(buffer);
 	info = (char*)malloc((size+2)*sizeof(char));
+	if (!info)
+		return -1;
 	strncpy(info, buffer, size+1);
 	excode = file_linetoOps(info, &op, '=');
 	free(op);
@@ -251,6 +259,8 @@ void open_file(void)
 	// store info
 	free(pshow->showinfo);
 	pshow->showinfo = (char*)malloc((strlen(info)+1)*sizeof(char));
+	if (!pshow->showinfo)
+		return -1;
 	strcpy(pshow->showinfo, info);
 	free(info);
 
@@ -258,6 +268,8 @@ void open_file(void)
 	excode = file_getValidLine(fp, &buffer);
 	size = strlen(buffer);
 	perfnum_buffer = (char*)malloc((size+2)*sizeof(char));
+	if (!perfnum_buffer)
+		return -1;
 	strncpy(perfnum_buffer, buffer, size+1);
 	excode = file_linetoOps(perfnum_buffer, &op, '=');
 	free(op);
@@ -273,6 +285,8 @@ void open_file(void)
 	
 	// build performers
 	buffer = (char*)malloc(sizeof(char));
+	if (!buffer)
+		return -1;
 	// get performer info
 	perfs = pshow->perfs;
 	perf = perfs[0];
@@ -294,6 +308,8 @@ void open_file(void)
 		size = strlen(buffer);
 		// get operations at data from line
 		data = (char*)malloc((size+2)*sizeof(char));
+		if (!data)
+			return -1;
 		strncpy(data, buffer, size+1);
 		excode = file_linetoOps(data, &operation, '=');
 		// interpret data based on operation
@@ -308,6 +324,8 @@ void open_file(void)
 			// symbol
 			free(perf->symbol);
 			perf->symbol = (char*)malloc((size+1)*sizeof(char));
+			if (!perf->symbol)
+				return -1;
 			strcpy(perf->symbol, data);
 		}
 		else if (!strcmp(operation, "valid"))
@@ -338,6 +356,8 @@ void open_file(void)
 		//printf("buffer = %s\n", buffer);
 		size = strlen(buffer);
 		data = (char*)malloc((size+2)*sizeof(char));
+		if (!data)
+			return -1;
 		strncpy(data, buffer, size+1);
 		file_linetoOps(data, &operation, '=');
 		//printf("op = %s data = %s\n", operation, data);
@@ -445,7 +465,7 @@ void open_file(void)
 
 	undo_destroy(&pshow->undobr, pshow);
 		
-	return;
+	return 0;
 }
 
 

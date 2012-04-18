@@ -255,12 +255,12 @@ int isInsideYard(double *x, double *y, int *field_side);
 int getYardline(double *x, double *y);
 double getSidetoSide(double *x, double *y);
 double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r);
-void xy_to_relation(double *x, double *y, char **buffer_r);
+int xy_to_relation(double *x, double *y, char **buffer_r);
 
 // file-ops.c
 int file_getline(FILE *fp, char **buffer_r);
 int file_getValidLine(FILE *fp, char **buffer_r);
-void open_file(void);
+int open_file(void);
 void save_file(void);
 
 // main.c

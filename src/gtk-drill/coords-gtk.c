@@ -448,6 +448,7 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	gchar *buffer;
 	double xo2, yo2;
 	double step;
+	int excode;
 	xo2 = pstate.xo2;
 	yo2 = pstate.yo2;
 	step = pstate.step;
@@ -456,7 +457,9 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	coordy = event->y;
 	coordx = (coordx-xo2)/step;
 	coordy = (coordy-yo2)/step;
-	xy_to_relation(&coordx, &coordy, &buffer);
+	excode = xy_to_relation(&coordx, &coordy, &buffer);
+	if (excode == -1)
+		return FALSE;
 	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id));
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buffer);
 	g_free(buffer);
