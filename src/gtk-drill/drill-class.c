@@ -64,11 +64,13 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
 	// propagate everything except control modifier
+	double oldwidth, oldheight;
+	double newwidth, newheight;
 	double width, height;
 	double xoff, yoff;
 	GtkAdjustment *xadj, *yadj;
-	width = (double)scrolled_window->allocation.width / 2;
-	height = (double)scrolled_window->allocation.height / 2;
+	oldwidth = widget->allocation.width;
+	oldheight = widget->allocation.height;
 	if (event->state == 0)
 		return FALSE;
 	else if (event->state != 4)
@@ -77,19 +79,29 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 	{
 		// zoom in
 		zoom_amnt(10, 10);
+		gtk_widget_set_size_request(widget, pstate.zoom_x, pstate.zoom_y);
+
+		// I think this stuff needs to go into the realize member
+		/*
+		newwidth = widget->allocation.width;
+		newheight = widget->allocation.height;
+		newwidth = pstate.zoom_x;
+		newheight = pstate.zoom_y;
+		width = fabs((oldwidth - newwidth) / 2);
+		height = fabs((oldheight - newheight) / 2);
+		width = 5;
+		height = 5;
 		//pstate.zoom_x = pstate.zoom_x + 10;
 		//pstate.zoom_y = pstate.zoom_y + 10;
-		/*
 		xadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
 		yadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
-		xoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(xadj)) + 1;//width;
-		yoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(yadj)) + 1;//height;
+		xoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(xadj)) + width;
+		yoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(yadj)) + height;
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(xadj), xoff);
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(yadj), yoff);
 		gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), GTK_ADJUSTMENT(xadj));
 		gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), GTK_ADJUSTMENT(yadj));
 		*/
-		gtk_widget_set_size_request(widget, pstate.zoom_x, pstate.zoom_y);
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
 	{
