@@ -37,7 +37,6 @@ void zoom_amnt(double x, double y)
 	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
 	return;
 }
-
 void zoom_fit(GtkWidget *widget)
 {
 	double s_width, s_height;
@@ -65,6 +64,11 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
 	// propagate everything except control modifier
+	double width, height;
+	double xoff, yoff;
+	GtkAdjustment *xadj, *yadj;
+	width = (double)scrolled_window->allocation.width / 2;
+	height = (double)scrolled_window->allocation.height / 2;
 	if (event->state == 0)
 		return FALSE;
 	else if (event->state != 4)
@@ -75,6 +79,16 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 		zoom_amnt(10, 10);
 		//pstate.zoom_x = pstate.zoom_x + 10;
 		//pstate.zoom_y = pstate.zoom_y + 10;
+		/*
+		xadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+		yadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+		xoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(xadj)) + 1;//width;
+		yoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(yadj)) + 1;//height;
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(xadj), xoff);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(yadj), yoff);
+		gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), GTK_ADJUSTMENT(xadj));
+		gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), GTK_ADJUSTMENT(yadj));
+		*/
 		gtk_widget_set_size_request(widget, pstate.zoom_x, pstate.zoom_y);
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)

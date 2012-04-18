@@ -2,10 +2,6 @@ name =
 info = 
 perfnum = 15
 
-index = 4
-symbol =  
-valid = 1
-
 index = 5
 symbol =  
 valid = 1
@@ -27,6 +23,10 @@ symbol =
 valid = 1
 
 index = 10
+symbol =  
+valid = 1
+
+index = 11
 symbol =  
 valid = 1
 
@@ -449,7 +449,25 @@ coords:
 done
 
 set = 22
-counts = 6
+counts = 4
+tempo = 200
+coords:
+0: 39.750001 58.583333
+1: 30.666667 57.000000
+2: 33.333333 58.333333
+3: 36.000000 59.666666
+4: 42.416667 53.833333
+5: 38.666665 60.999999
+6: 53.333333 53.000000
+7: 45.333333 49.000000
+8: 48.000000 50.333333
+9: 50.666667 51.666667
+10: 44.000000 51.666667
+11: 41.083333 56.416666
+done
+
+set = 23
+counts = 2
 tempo = 200
 coords:
 0: 40.000001 56.999999
@@ -466,7 +484,7 @@ coords:
 11: 40.000000 52.999999
 done
 
-set = 23
+set = 24
 counts = 4
 tempo = 200
 coords:
@@ -484,7 +502,7 @@ coords:
 11: 40.000000 57.000000
 done
 
-set = 24
+set = 25
 counts = 4
 tempo = 200
 coords:
