@@ -245,6 +245,24 @@ static gboolean msel_buttonsel(GtkWidget *widget, GdkEvent *event)
 	return FALSE;
 }
 
+
+GtkWidget *
+create_combo_box (const char **strings)
+{
+  GtkWidget *combo_box;
+  const char **str;
+
+  combo_box = gtk_combo_box_text_new ();
+  
+  for (str = strings; *str; str++)
+    gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_box), *str);
+
+  gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
+
+  return combo_box;
+}
+
+
 int buildIfacegtk(void)
 {
 	// Build the Gtk Interface
@@ -254,6 +272,12 @@ int buildIfacegtk(void)
 	GtkWidget *menubar;		// for menus
 	// panes
 	GtkWidget *hpaned;
+	GtkWidget *sidebar_box;
+	GtkSizeGroup *size_group;
+	static const char *sidebar_opts[] = {
+		"Performer", "Set", "Groups", "Form"
+	};
+	GtkWidget *combo_box;
 	//GtkWidget *toolbar;
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
@@ -688,16 +712,25 @@ int buildIfacegtk(void)
 
 	// create field canvas scroll container
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+	//gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_paned_add2(GTK_PANED(hpaned), scrolled_window);
 	gtk_widget_show(scrolled_window);
 
+	sidebar_box = gtk_vbox_new(FALSE, 0);
+	gtk_paned_add1(GTK_PANED(hpaned), sidebar_box);
+	combo_box = create_combo_box(sidebar_opts);
+	gtk_box_pack_start(GTK_BOX(sidebar_box), combo_box, FALSE, FALSE, 0);
+	gtk_widget_show(combo_box);
+	//gtk_container_add(GTK_CONTAINER(frame), combo_box);
+	//gtk_paned_add1(GTK_PANED(hpaned), frame);
+
 	frame = gtk_frame_new(NULL);
-	gtk_paned_add1(GTK_PANED(hpaned), frame);
-	gtk_widget_set_size_request(frame, 150, 60);
+	//gtk_widget_set_size_request(frame, 150, 60);
+	gtk_box_pack_start(GTK_BOX(sidebar_box), frame, TRUE, TRUE, 0);
 	gtk_widget_show(frame);
+
 
 	// get and pack canvas
 	drill = gtk_drill_new();
