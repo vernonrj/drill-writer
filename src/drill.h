@@ -35,6 +35,8 @@ int mouse_discarded;
 // current state of show
 struct showstate_proto
 {
+	// file ops
+	char *filename;		// opened file
 	// show variables
 	int setnum;		// current set
 	int playing;		// play flag
@@ -267,7 +269,8 @@ int xy_to_relation(double *x, double *y, char **buffer_r);
 int file_getline(FILE *fp, char **buffer_r);
 int file_getValidLine(FILE *fp, char **buffer_r);
 int open_file(char *filename);
-void save_file(void);
+int save_file(char *filename);
+
 
 // main.c
 int show_construct(struct headset_proto **dshow_r, int perfs);

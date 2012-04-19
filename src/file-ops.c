@@ -486,7 +486,7 @@ int open_file(char *filename)
 
 
 
-void save_file(void)
+int save_file(char *filename)
 {
 	// save a file
 	// sets
@@ -508,7 +508,10 @@ void save_file(void)
 	set_first();
 	update_tempo();
 	currset = pshow->sets->firstset;
-	fp = fopen("save_file","w");
+	if (!filename)
+		return -1;
+	if (!(fp = fopen(filename,"w")))
+		return -1;
 	fprintf(fp, "#drillwriter\n");
 	fprintf(fp, "name = %s\n", pshow->showname);
 	fprintf(fp, "info = %s\n", pshow->showinfo);
@@ -551,6 +554,6 @@ void save_file(void)
 		currset = pshow->sets->currset;
 	} while (done == 0);
 	fclose(fp);
-	return;
+	return 0;
 }
 

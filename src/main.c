@@ -19,6 +19,8 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// coords
 
 	dshow = (struct headset_proto*) malloc(sizeof(struct headset_proto));
+	// initialize filename to empty
+	pstate.filename = 0;
 	if (dshow == NULL)
 	{
 		// allocation error

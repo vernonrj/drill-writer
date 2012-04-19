@@ -1,9 +1,11 @@
 #include "d_gtk.h"
 
+/*
 void save_file_gtk(GtkWidget *widget)
 {
 	save_file();
 }
+*/
 
 
 /*
@@ -54,13 +56,74 @@ int open_file_gtk(GtkWidget *widget)
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		printf("file = %s\n", filename);
 		excode = open_file(filename);
-		g_free(filename);
+		if (excode == 0)
+		{
+			// worked. Save filename for savefile use
+			pstate.filename = filename;
+		}
+		else
+			g_free(filename);
 	}
 	gtk_widget_destroy(dialog);
 	return excode;
 }
 
 
+int save_file_gtk(GtkWidget *widget)
+{
+	// save a file
+	int excode;
+	if (pstate.filename)
+	{
+		// should have a valid save file.
+		// use that
+		excode = save_file(pstate.filename);
+	}
+	else
+	{
+		// no save file found. do save as dialog
+		excode = save_file_as_gtk(widget);
+	}
+	return excode;
+}
+
+
+
+int save_file_as_gtk(GtkWidget *widget)
+{
+	// save a file as a specified filename
+	int excode = 0;
+	char *filename;
+	GtkWidget *dialog;
+
+	dialog = gtk_file_chooser_dialog_new ("Save File",
+			GTK_WINDOW(window),
+			GTK_FILE_CHOOSER_ACTION_SAVE,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			NULL);
+	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER(dialog), TRUE);
+	if (!pstate.filename)
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "Untitled");
+	else
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), pstate.filename);
+	if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER(dialog));
+		excode = save_file(filename);
+		if (excode == 0)
+		{
+			// worked. Save new filename for savefile use
+			pstate.filename = filename;
+		}
+		else
+			g_free(filename);
+	}
+	gtk_widget_destroy(dialog);
+	return excode;
+}
+
+	
 
 int wrap_load_dep(GtkWidget *widget)
 {
