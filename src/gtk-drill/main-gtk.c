@@ -252,6 +252,8 @@ int buildIfacegtk(void)
 	GtkUIManager *menu_manager;	// menus
 	GError *error;	
 	GtkWidget *menubar;		// for menus
+	// panes
+	GtkWidget *hpaned;
 	//GtkWidget *toolbar;
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
@@ -680,14 +682,22 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX(setbox), menuButton, TRUE, TRUE, 0);
 	gtk_widget_show(menuButton);
 
+	// make the sidebar pane
+	hpaned = gtk_hpaned_new();
+	gtk_box_pack_start(GTK_BOX(box0), hpaned, TRUE, TRUE, 0);
 
 	// create field canvas scroll container
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-	gtk_box_pack_start(GTK_BOX(box0), scrolled_window, TRUE, TRUE, 0);
+	gtk_paned_add2(GTK_PANED(hpaned), scrolled_window);
 	gtk_widget_show(scrolled_window);
+
+	frame = gtk_frame_new(NULL);
+	gtk_paned_add1(GTK_PANED(hpaned), frame);
+	gtk_widget_set_size_request(frame, 150, 60);
+	gtk_widget_show(frame);
 
 	// get and pack canvas
 	drill = gtk_drill_new();
