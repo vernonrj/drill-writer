@@ -187,6 +187,7 @@ enum {
 
 static void gtk_drill_class_init(GtkDrillClass *class)
 {
+	printf("ping drill_class_init\n");
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
 	//GtkBindingSet *binding_set;
@@ -223,6 +224,7 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 
 static void gtk_drill_init (GtkDrill *drill)
 {
+	printf("ping drill init\n");
 	drill->sel = 0;
 	pstate.zoom_x = 800;
 	pstate.zoom_y = 480;
@@ -230,6 +232,7 @@ static void gtk_drill_init (GtkDrill *drill)
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
 {
+	printf("gtk_drill request\n");
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_DRILL(widget));
 	g_return_if_fail(requisition != NULL);
@@ -245,6 +248,7 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 {
+	printf("gtk_drill size allocate\n");
 	//printf("ping allocate\n");
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_DRILL(widget));
@@ -263,7 +267,7 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 }
 static void gtk_drill_realize(GtkWidget *widget)
 {
-	//printf("ping realize\n");
+	printf("ping realize\n");
 	//GtkDrill *drill;
 	GdkWindowAttr attributes;
 	guint attributes_mask;

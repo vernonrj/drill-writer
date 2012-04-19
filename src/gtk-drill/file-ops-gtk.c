@@ -37,6 +37,30 @@ int new_file_gtk(GtkWidget *widget)
 	return 0;
 }
 
+
+int open_file_gtk(GtkWidget *widget)
+{
+	GtkWidget *dialog;
+	char *filename;
+	dialog = gtk_file_chooser_dialog_new("Open File",
+			GTK_WINDOW(window),
+			GTK_FILE_CHOOSER_ACTION_OPEN,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+			NULL);
+	if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		printf("file = %s\n", filename);
+		//open_file(filename);
+		g_free(filename);
+	}
+	gtk_widget_destroy(dialog);
+	return 0;
+}
+
+
+
 int wrap_load_dep(GtkWidget *widget)
 {
 	// a wrapper for the deprecated load function

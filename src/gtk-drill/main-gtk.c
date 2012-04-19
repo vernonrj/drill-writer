@@ -320,7 +320,7 @@ int buildIfacegtk(void)
 	{ "OpenAction", GTK_STOCK_OPEN,
 		"_Open", "<control>O",
 		"Open an existing file",
-		G_CALLBACK (wrap_load_dep) },
+		G_CALLBACK (open_file_gtk) },
 	{ "SaveAction", GTK_STOCK_SAVE,
 		"_Save", "<control>S",
 		"Save file",

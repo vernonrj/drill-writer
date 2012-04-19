@@ -158,6 +158,7 @@ static void gtk_drill_destroy(GtkObject *object);
 
 // file-ops-gtk.c
 int new_file_gtk(GtkWidget *widget);
+int open_file_gtk(GtkWidget *widget);
 void save_file_gtk(GtkWidget *widget);
 int wrap_load_dep(GtkWidget *widget);
 void absolute_dot (void);

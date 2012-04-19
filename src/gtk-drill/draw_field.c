@@ -15,7 +15,9 @@ extern GTimer * timer;
 void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	//gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_set_size_request(drill, widget->allocation.width, widget->allocation.height);
+	gtk_widget_queue_draw_area(drill, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
 int field_init(void)
