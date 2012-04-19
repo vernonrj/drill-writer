@@ -266,7 +266,7 @@ int xy_to_relation(double *x, double *y, char **buffer_r);
 // file-ops.c
 int file_getline(FILE *fp, char **buffer_r);
 int file_getValidLine(FILE *fp, char **buffer_r);
-int open_file(void);
+int open_file(char *filename);
 void save_file(void);
 
 // main.c

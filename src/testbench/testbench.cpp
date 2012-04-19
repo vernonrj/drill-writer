@@ -15,6 +15,9 @@ int mainmenu(void)
 	int mysel;
 	int excode;
 	queue *fifo;
+	char *filename;
+	filename = new char [11];
+	sprintf(filename, "save_file");
 
 	// build menu
 	fifo = new queue;
@@ -49,7 +52,7 @@ int mainmenu(void)
 				excode = tbUnRedo();
 				break;
 			case 6:		// Open
-				open_file();
+				open_file(filename);
 				break;
 			case 7:		// Save
 				//save_file();
@@ -61,6 +64,7 @@ int mainmenu(void)
 	} while (excode == 0);
 
 	delete fifo;
+	delete filename;
 
 	return 0;
 }

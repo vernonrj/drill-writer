@@ -171,7 +171,7 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 }
 
 
-int open_file(void)
+int open_file(char *filename)
 {
 	// open a file (for now, just save_file)
 	
@@ -227,9 +227,23 @@ int open_file(void)
 	//struct coord_proto **coords;
 
 	// open file for reading
+	if (!filename)
+		return -1;
+	if (!(fp = fopen(filename,"r")))
+		return -1;
+	/*
 	fp = fopen("save_file","r");
 	if (!fp)
 		return -1;
+		*/
+	// check for valid file
+	excode = file_getValidLine(fp, &buffer);
+	if (strcmp(buffer, "#drillwriter"))
+	{
+		// not a valid save file
+		return -1;
+	}
+	free(buffer);
 	// get the name
 	excode = file_getValidLine(fp, &buffer);
 	size = strlen(buffer);
@@ -495,6 +509,7 @@ void save_file(void)
 	update_tempo();
 	currset = pshow->sets->firstset;
 	fp = fopen("save_file","w");
+	fprintf(fp, "#drillwriter\n");
 	fprintf(fp, "name = %s\n", pshow->showname);
 	fprintf(fp, "info = %s\n", pshow->showinfo);
 	fprintf(fp, "perfnum = %i\n", pshow->perfnum);

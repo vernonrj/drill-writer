@@ -42,6 +42,7 @@ int open_file_gtk(GtkWidget *widget)
 {
 	GtkWidget *dialog;
 	char *filename;
+	int excode = 0;
 	dialog = gtk_file_chooser_dialog_new("Open File",
 			GTK_WINDOW(window),
 			GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -52,11 +53,11 @@ int open_file_gtk(GtkWidget *widget)
 	{
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		printf("file = %s\n", filename);
-		//open_file(filename);
+		excode = open_file(filename);
 		g_free(filename);
 	}
 	gtk_widget_destroy(dialog);
-	return 0;
+	return excode;
 }
 
 
@@ -65,7 +66,7 @@ int wrap_load_dep(GtkWidget *widget)
 {
 	// a wrapper for the deprecated load function
 	// interface with the old static array type
-	open_file();
+	open_file("save_file");
 	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 	return 0;
 }

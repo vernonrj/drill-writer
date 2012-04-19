@@ -1,10 +1,7 @@
+#drillwriter
 name = 
 info = 
 perfnum = 15
-
-index = 7
-symbol =  
-valid = 1
 
 index = 8
 symbol =  
@@ -15,6 +12,10 @@ symbol =
 valid = 1
 
 index = 10
+symbol =  
+valid = 1
+
+index = 11
 symbol =  
 valid = 1
 
