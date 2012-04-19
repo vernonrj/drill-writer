@@ -228,6 +228,8 @@ int open_file(void)
 
 	// open file for reading
 	fp = fopen("save_file","r");
+	if (!fp)
+		return -1;
 	// get the name
 	excode = file_getValidLine(fp, &buffer);
 	size = strlen(buffer);
