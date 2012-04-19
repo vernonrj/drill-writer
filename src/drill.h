@@ -2,6 +2,12 @@
 //TODO: add copy for dots
 // TODO: encapsulate all set structs & info into a "class"
 // TODO: free gtk widgets
+// TODO: pstate.height, when being passed to
+// 		gtk_widget_queue_drawing_area(),
+// 		is too small. This causes the artifacts
+// 		on the bottom of the screen. I don't know
+// 		why it's wrong, it just is. Fix it fix it
+// 		fix it fix it.
 
 //#ifndef __DRILL_H
 //#define __DRILL_H
