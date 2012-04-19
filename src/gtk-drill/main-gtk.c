@@ -278,6 +278,8 @@ int buildIfacegtk(void)
 		"Performer", "Set", "Groups", "Form"
 	};
 	GtkWidget *combo_box;
+	// notebook
+	GtkWidget *notebook;
 	//GtkWidget *toolbar;
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
@@ -726,11 +728,19 @@ int buildIfacegtk(void)
 	//gtk_container_add(GTK_CONTAINER(frame), combo_box);
 	//gtk_paned_add1(GTK_PANED(hpaned), frame);
 
+	// sidebar notebook
+	notebook = gtk_notebook_new();
+	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
+	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
+	gtk_box_pack_start(GTK_BOX(sidebar_box), notebook, TRUE, TRUE, 0);
+	gtk_widget_show(notebook);
+
+	/*
 	frame = gtk_frame_new(NULL);
 	//gtk_widget_set_size_request(frame, 150, 60);
 	gtk_box_pack_start(GTK_BOX(sidebar_box), frame, TRUE, TRUE, 0);
 	gtk_widget_show(frame);
-
+	*/
 
 	// get and pack canvas
 	drill = gtk_drill_new();
