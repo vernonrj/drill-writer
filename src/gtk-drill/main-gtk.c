@@ -1,5 +1,84 @@
 #include "d_gtk.h"
 
+static const gchar *ui_info = 
+"<ui>"
+"	<menubar name='MainMenu'>"
+"		<menu name='FileMenu' action='FileMenuAction'>"
+"			<menuitem name='New' action='NewAction' />"
+"			<menuitem name='Open' action='OpenAction' />"
+"			<menuitem name='Save' action='SaveAction' />"
+"			<menuitem name='Save As' action='SaveAsAction' />"
+"			<menuitem name='Export to PDF' action='ExportPDFAction' />"
+"			<menuitem name='Quit' action='QuitAction' />"
+"			<placeholder name='FileMenuAdditions' />"
+"		</menu>"
+"		<menu name='EditMenu' action='EditMenuAction'>"
+"			<menuitem name='UndoProc' action='UndoProcAction'/>"
+"			<menuitem name='RedoProc' action='RedoProcAction'/>"
+"			<menuitem name='SelectAll' action='SelectAllAction'/>"
+"			<menuitem name='AddSet' action='AddSetAction'/>"
+"			<menuitem name='DelSet' action='DelSetAction'/>"
+"			<menuitem name='GroupAdd' action='GroupAddAction'/>"
+"			<menuitem name='SelectMode' action='SelectModeAction'/>"
+"			<menuitem name='AddPerf' action='AddPerfAction'/>"
+"			<menuitem name='RevPerf' action='RevPerfAction'/>"
+"			<menuitem name='DelPerf' action='DelPerfAction'/>"
+"			<placeholder name='EditMenuAddition'/>"
+"		</menu>"
+"		<menu name='ViewMenu' action='ViewMenuAction'>"
+"			<menuitem name='ZoomIn' action='ZoomInAction'/>"
+"			<menuitem name='ZoomOut' action='ZoomOutAction'/>"
+"			<menuitem name='ZoomStandard' action='ZoomStandardAction'/>"
+"			<menuitem name='ZoomFit' action='ZoomFitAction'/>"
+"			<menuitem name='StepSize' action='StepSizeAction'/>"
+"			<placeholder name='ViewMenuAddition'/>"
+"		</menu>"
+"		<menu name='DotMenu' action='DotMenuAction'>"
+"			<menuitem name='AlignGrid' action='AlignGridAction'/>"
+"			<menuitem name='MoveUp' action='MoveUpAction'/>"
+"			<menuitem name='MoveDown' action='MoveDownAction'/>"
+"			<menuitem name='MoveLeft' action='MoveLeftAction'/>"
+"			<menuitem name='MoveRight' action='MoveRightAction'/>"
+"			<menuitem name='MoveUpSmall' action='MoveUpSmallAction'/>"
+"			<menuitem name='MoveDownSmall' action='MoveDownSmallAction'/>"
+"			<menuitem name='MoveLeftSmall' action='MoveLeftSmallAction'/>"
+"			<menuitem name='MoveRightSmall' action='MoveRightSmallAction'/>"
+"			<menuitem name='NextPerf' action='NextPerfAction'/>"
+"			<menuitem name='PrevPerf' action='PrevPerfAction'/>"
+"			<menuitem name='ExpandPerf' action='ExpandPerfAction'/>"
+"			<menuitem name='ContractPerf' action='ContractPerfAction'/>"
+"			<menuitem name='RotCWPerf' action='RotCWPerfAction'/>"
+"			<menuitem name='RotCCWPerf' action='RotCCWPerfAction'/>"
+"			<menuitem name='RotCWSPerf' action='RotCWSPerfAction'/>"
+"			<menuitem name='RotCCWSPerf' action='RotCCWSPerfAction'/>"
+"			<placeholder name='DotMenuAdditioin'/>"
+"		</menu>"
+"		<menu name='SetMenu' action='SetMenuAction'>"
+"			<menuitem name='SetSetName' action='SetSetNameAction'/>"
+"			<menuitem name='NextSet' action='NextSetAction'/>"
+"			<menuitem name='StepNextSet' action='StepNextSetAction'/>"
+"			<menuitem name='StepPrevSet' action='StepPrevSetAction'/>"
+"			<menuitem name='PrevSet' action='PrevSetAction'/>"
+"			<menuitem name='FirstSet' action='FirstSetAction'/>"
+"			<menuitem name='LastSet' action = 'LastSetAction'/>"
+"			<menuitem name='PlayHere' action='PlayHereAction'/>"
+"			<menuitem name='PlayFromStart' action='PlayFromStartAction'/>"
+"			<menuitem name='StopPlay' action='StopPlayAction'/>"
+"			<placeholder name='SetMenuAdditions' />"
+"		</menu>"
+"		<menu name='ToolsMenu' action='ToolsMenuAction'>"
+"			<menuitem name='Force Redraw' action='ForceRedrawAction'/>"
+"			<menuitem name='Calculate Step-size' action='StepsizeAction' />"
+"			<menuitem name='Snapshot' action='SnapshotAction' />"
+"			<placeholder name='ToolsMenuAdditions' />"
+"		</menu>"
+"		<menu name='HelpMenu' action='HelpMenuAction'>"
+"			<menuitem name='About' action='AboutAction' />"
+"			<placeholder name='HelpMenuAdditions' />"
+"		</menu>"
+"	</menubar>"
+"</ui>";
+
 int startTk(int argc, char *argv[])
 {
 	// Start Toolkit of choice
@@ -481,12 +560,15 @@ int buildIfacegtk(void)
 
 	// Read menu UI from XML file
 	error = NULL;
+	/*
 	gtk_ui_manager_add_ui_from_file (menu_manager, "menu-ui.xml", &error);
 	if (error)
 	{
 		g_message ("building menus failed: %s", error->message);
 		g_error_free (error);
 	}
+	*/
+	gtk_ui_manager_add_ui_from_string(menu_manager, ui_info, -1, &error);
 
 	// Get the menubar and toolbar and put them in vertical packing box
 	menubar = gtk_ui_manager_get_widget (menu_manager, "/MainMenu");

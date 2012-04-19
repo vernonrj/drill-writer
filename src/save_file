@@ -2,14 +2,6 @@ name =
 info = 
 perfnum = 15
 
-index = 5
-symbol =  
-valid = 1
-
-index = 6
-symbol =  
-valid = 1
-
 index = 7
 symbol =  
 valid = 1
@@ -23,6 +15,14 @@ symbol =
 valid = 1
 
 index = 10
+symbol =  
+valid = 1
+
+index = 11
+symbol =  
+valid = 1
+
+index = 11
 symbol =  
 valid = 1
 
