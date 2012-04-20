@@ -45,9 +45,10 @@ void set_next_gtk(GtkWidget *widget);
 void set_next_count_gtk(GtkWidget *widget);
 void set_prev_count_gtk(GtkWidget *widget);
 void set_prev_gtk(GtkWidget *widget);
-void set_set_name_gtk(GtkWidget *widget, DrSetbar *setbar);
-void goto_set_gtk (GtkWidget *widget, DrSetbar *setbar);
-void goto_count (GtkWidget *widget, DrSetbar *setbar);
-void change_counts (GtkWidget *widget, DrSetbar *setbar);
-void change_tempo_gtk (GtkWidget *widget, DrSetbar *setbar);
+void set_set_name_gtk(GtkWidget *widget, DrSetbar *drsetbar);
+void goto_set_gtk (GtkWidget *widget, DrSetbar *drsetbar);
+void goto_count (GtkWidget *widget, DrSetbar *drsetbar);
+void change_counts (GtkWidget *widget, DrSetbar *drsetbar);
+void change_tempo_gtk (GtkWidget *widget, DrSetbar *drsetbar);
+void dr_setbar_update_entries(GtkWidget *drsetbar);
 

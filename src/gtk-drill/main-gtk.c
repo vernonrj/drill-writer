@@ -130,10 +130,6 @@ void entry_upifCh(GtkWidget *entry, char *newinfo)
 
 int update_entries(void)
 {
-	int tempo;
-	char set_buf[5];
-	char count_buf[5];
-	char tempo_buf[5];
 	char perf_buf[5];
 	char perf_buf_x[5];
 	char perf_buf_y[5];
@@ -194,29 +190,10 @@ int update_entries(void)
 	g_free(fb_hashrel);
 	g_free(fb_frontback);
 	g_free(fb_hashside);
+
+	dr_setbar_update_entries(setbar);
 	
 	// Convert all numbers into strings first
-	if (!pshow->sets->currset->name[0])
-	{
-		//sprintf(set_buf, "%i", setnum);
-		sprintf(set_buf, "%i", pstate.setnum);
-	}
-	else
-		strcpy(set_buf, pshow->sets->currset->name);
-	update_tempo();
-	tempo = pshow->currtempo->tempo;
-	sprintf(tempo_buf, "%i", tempo);
-	//printf("tempo = %i\n", tempo);
-	if (pshow->step)
-	{
-		// take the counts from the next set
-		sprintf(count_buf, "%i", pshow->sets->currset->next->counts);
-	}
-	else
-	{
-		// Take the counts from this set
-		sprintf(count_buf, "%i", pshow->sets->currset->counts);
-	}
 	// side-to-side relations
 	sprintf(perf_buf, "%i", perf_cur);
 	//retr_coord(pshow->sets->currset->coords[perf_cur], &x, &y);
@@ -232,6 +209,7 @@ int update_entries(void)
 	return 0;
 }
 
+/*
 static gboolean msel_buttonsel(GtkWidget *widget, GdkEvent *event)
 {
 	// change mouse mode from menu button
@@ -244,6 +222,7 @@ static gboolean msel_buttonsel(GtkWidget *widget, GdkEvent *event)
 	}
 	return FALSE;
 }
+*/
 
 
 GtkWidget *
@@ -273,7 +252,7 @@ int buildIfacegtk(void)
 	// panes
 	GtkWidget *hpaned;
 	GtkWidget *sidebar_box;
-	GtkSizeGroup *size_group;
+	//GtkSizeGroup *size_group;
 	static const char *sidebar_opts[] = {
 		"Performer", "Set", "Groups", "Form"
 	};
@@ -284,7 +263,7 @@ int buildIfacegtk(void)
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
 	GtkWidget *box1;
-	GtkWidget *setbox;		// Set attributes go in this box
+	//GtkWidget *setbox;		// Set attributes go in this box
 	GtkWidget *perfbox;		// Dot attributes go in this box
 	GtkWidget *perfSSbox;
 	GtkWidget *perfFBbox;
@@ -295,15 +274,15 @@ int buildIfacegtk(void)
 	// buttons, checks, etc
 	GtkWidget *button;		// buttons
 	//GtkWidget *check;
-	GtkWidget *label;
+	//GtkWidget *label;
 	GtkWidget *separator;
 	GtkWidget *image;
 	GtkWidget *alignment;
 	GtkWidget *frame;
 	// mouse mode (menu)
-	GtkWidget *mMode;		// mouse mode
-	GtkWidget *mMenuBar;
-	GtkWidget *item;
+	//GtkWidget *mMode;		// mouse mode
+	//GtkWidget *mMenuBar;
+	//GtkWidget *item;
 	// statusbar
 	gchar *sbinfo;
 
@@ -315,10 +294,12 @@ int buildIfacegtk(void)
 
 	//gint tmp_pos;
 
+	/*
 	int tempo;
 	char set_buf[5];
 	char count_buf[5];
 	char tempo_buf[5];
+	*/
 	char perf_buf[5];
 	//char perf_buf_x[5];
 	//char perf_buf_y[5];
@@ -707,7 +688,7 @@ int buildIfacegtk(void)
 	*/
 	setbar = dr_setbar_new();
 	gtk_box_pack_start(GTK_BOX(box0), setbar, FALSE, FALSE, 0);
-	gtk_widget_show(setbar);
+	//gtk_widget_show(setbar);
 
 	// make the sidebar pane
 	hpaned = gtk_hpaned_new();

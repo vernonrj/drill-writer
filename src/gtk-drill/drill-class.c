@@ -64,13 +64,13 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
 	// propagate everything except control modifier
-	double oldwidth, oldheight;
-	double newwidth, newheight;
-	double width, height;
-	double xoff, yoff;
-	GtkAdjustment *xadj, *yadj;
-	oldwidth = widget->allocation.width;
-	oldheight = widget->allocation.height;
+	//double oldwidth, oldheight;
+	//double newwidth, newheight;
+	//double width, height;
+	//double xoff, yoff;
+	//GtkAdjustment *xadj, *yadj;
+	//oldwidth = widget->allocation.width;
+	//oldheight = widget->allocation.height;
 	if (event->state == 0)
 		return FALSE;
 	else if (event->state != 4)

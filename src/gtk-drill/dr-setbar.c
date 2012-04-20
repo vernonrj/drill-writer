@@ -337,3 +337,41 @@ void change_tempo_gtk (GtkWidget *widget, DrSetbar *setbar)
 
 	return;
 }
+
+void dr_setbar_update_entries(GtkWidget *drsetbar)
+{
+	DrSetbar *asetbar;
+	char set_buf[5];
+	char count_buf[5];
+	char tempo_buf[5];
+	int tempo;
+	asetbar = (DrSetbar*)drsetbar;
+	if (!pshow->sets->currset->name[0])
+	{
+		//sprintf(set_buf, "%i", setnum);
+		sprintf(set_buf, "%i", pstate.setnum);
+	}
+	else
+		strcpy(set_buf, pshow->sets->currset->name);
+	update_tempo();
+	tempo = pshow->currtempo->tempo;
+	sprintf(tempo_buf, "%i", tempo);
+	//printf("tempo = %i\n", tempo);
+	if (pshow->step)
+	{
+		// take the counts from the next set
+		sprintf(count_buf, "%i", pshow->sets->currset->next->counts);
+	}
+	else
+	{
+		// Take the counts from this set
+		sprintf(count_buf, "%i", pshow->sets->currset->counts);
+	}
+
+	gtk_entry_set_text(GTK_ENTRY (asetbar->priv->entry_sets), set_buf);
+	gtk_entry_set_text(GTK_ENTRY (asetbar->priv->entry_tempo), tempo_buf);
+	gtk_entry_set_text(GTK_ENTRY (asetbar->priv->entry_counts), count_buf);
+
+	return;
+}
+
