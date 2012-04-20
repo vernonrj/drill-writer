@@ -223,9 +223,9 @@ int update_entries(void)
 	sprintf(perf_buf_x, "%g", pshow->center->x);
 	sprintf(perf_buf_y, "%g", pshow->center->y);
 	// Now Update entries with new data
-	gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);
-	gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);
+	//gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
+	//gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);
+	//gtk_entry_set_text(GTK_ENTRY (entry_counts), count_buf);
 	gtk_entry_set_text(GTK_ENTRY (entry_perf), perf_buf);
 	//gtk_entry_set_text(GTK_ENTRY (entry_perf_x), perf_buf_x);
 	//gtk_entry_set_text(GTK_ENTRY (entry_perf_y), perf_buf_y);
@@ -306,6 +306,7 @@ int buildIfacegtk(void)
 	GtkWidget *item;
 	// statusbar
 	gchar *sbinfo;
+
 
 
 	// Field relation buttons
@@ -614,13 +615,9 @@ int buildIfacegtk(void)
 	media_box = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
 
+	/*
 	// Set attributes (set, counts, tempo, etc)
 	setbox = gtk_hbox_new (FALSE, 5);	
-	/*
-	setbox = gtk_hbutton_box_new();
-       	gtk_button_box_set_layout(GTK_BUTTON_BOX(setbox), GTK_BUTTONBOX_START);
-	gtk_box_set_spacing(GTK_BOX(setbox), 20);
-	*/
 	// make alignment for sets
 	alignment = gtk_alignment_new(0.015,0.5, 0, 0);
 	gtk_container_add(GTK_CONTAINER(alignment), setbox);
@@ -707,6 +704,10 @@ int buildIfacegtk(void)
 	g_signal_connect_swapped(menuButton, "event", G_CALLBACK(msel_buttonsel), mMode);
 	gtk_box_pack_start(GTK_BOX(setbox), menuButton, TRUE, TRUE, 0);
 	gtk_widget_show(menuButton);
+	*/
+	setbar = dr_setbar_new();
+	gtk_box_pack_start(GTK_BOX(box0), setbar, FALSE, FALSE, 0);
+	gtk_widget_show(setbar);
 
 	// make the sidebar pane
 	hpaned = gtk_hpaned_new();
@@ -1006,7 +1007,7 @@ int buildIfacegtk(void)
 	gtk_widget_show(drill);
 	gtk_widget_show(box0);
 	gtk_widget_show(box1);
-	gtk_widget_show(setbox);
+	//gtk_widget_show(setbox);
 	gtk_widget_show(perfEnbox);
 	gtk_widget_show(perfSSbox);
 	gtk_widget_show(perfFBbox);

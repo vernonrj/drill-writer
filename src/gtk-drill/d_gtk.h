@@ -1,4 +1,5 @@
 #include "drill.h"
+#include "dr_setbar.h"
 #ifndef __DRILL_H
 #define __DRILL_H
 
@@ -10,9 +11,12 @@
 GtkWidget *window;		// Everything goes in here
 GtkWidget *drill;		// custom cairo widget
 GtkWidget *scrolled_window;	// for the field
+/*
 GtkWidget *entry_sets;
 GtkWidget *entry_counts;
 GtkWidget *entry_tempo;
+*/
+GtkWidget *setbar;
 GtkWidget *entry_perf;
 GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
@@ -204,6 +208,7 @@ int isSelected(int index);
 int checkSelected(GtkWidget *widget, GdkEventButton *event);
 //int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 
+/*
 // set-controls-gtk.c
 void add_set_gtk(GtkWidget *widget);
 void delete_set_gtk(GtkWidget *widget);
@@ -218,4 +223,4 @@ void goto_set_gtk (GtkWidget *widget);
 void goto_count (GtkWidget *widget);
 void change_counts (GtkWidget *widget);
 void change_tempo_gtk (GtkWidget *widget);
-
+*/

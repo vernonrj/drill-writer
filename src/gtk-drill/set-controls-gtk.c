@@ -1,4 +1,6 @@
+/*
 #include "d_gtk.h"
+#include "dr_setbar.h"
 void add_set_gtk(GtkWidget *widget)
 {
 	// add a set from a Gtk entry
@@ -101,7 +103,7 @@ void set_prev_gtk(GtkWidget *widget)
 
 
 
-void set_set_name_gtk(GtkWidget *widget)
+void set_set_name_gtk(GtkWidget *widget, DrSetbar *setbar)
 {
 	// Set the name of the set
 	// Name hard-limited to 4 chars currently
@@ -113,7 +115,7 @@ void set_set_name_gtk(GtkWidget *widget)
 
 	if (!pstate.playing)
 	{	
-		entry_buffer = gtk_entry_get_text(GTK_ENTRY(entry_sets));
+		entry_buffer = gtk_entry_get_text(GTK_ENTRY(setbar->priv->entry_sets));
 		size = strlen(entry_buffer);
 		if (size < 5)
 		{
@@ -197,3 +199,4 @@ void change_tempo_gtk (GtkWidget *widget)
 
 	return;
 }
+*/
