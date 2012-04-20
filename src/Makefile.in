@@ -75,7 +75,6 @@ am_drillwriter_OBJECTS = drillwriter-coords.$(OBJEXT) \
 	drillwriter-coords-gtk.$(OBJEXT) \
 	drillwriter-main-gtk.$(OBJEXT) drillwriter-media-gtk.$(OBJEXT) \
 	drillwriter-perf-con-gtk.$(OBJEXT) \
-	drillwriter-set-controls-gtk.$(OBJEXT) \
 	drillwriter-draw_field.$(OBJEXT) \
 	drillwriter-drill-class.$(OBJEXT) \
 	drillwriter-dr-setbar.$(OBJEXT) testbench.$(OBJEXT) \
@@ -270,7 +269,6 @@ drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.
 		      select-con.c set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/media-gtk.c gtk-drill/perf-con-gtk.c \
-		      gtk-drill/set-controls-gtk.c \
 		      gtk-drill/draw_field.c gtk-drill/drill-class.c \
 		      gtk-drill/dr-setbar.h gtk-drill/dr-setbar.c \
 		      testbench/testbench.cpp testbench/util.cpp
@@ -383,7 +381,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-perf-con-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-perf-con.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-select-con.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-set-controls-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-set-controls.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-tempo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-undo.Po@am__quote@
@@ -606,20 +603,6 @@ drillwriter-perf-con-gtk.obj: gtk-drill/perf-con-gtk.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/perf-con-gtk.c' object='drillwriter-perf-con-gtk.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-perf-con-gtk.obj `if test -f 'gtk-drill/perf-con-gtk.c'; then $(CYGPATH_W) 'gtk-drill/perf-con-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/perf-con-gtk.c'; fi`
-
-drillwriter-set-controls-gtk.o: gtk-drill/set-controls-gtk.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-set-controls-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-set-controls-gtk.Tpo -c -o drillwriter-set-controls-gtk.o `test -f 'gtk-drill/set-controls-gtk.c' || echo '$(srcdir)/'`gtk-drill/set-controls-gtk.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-set-controls-gtk.Tpo $(DEPDIR)/drillwriter-set-controls-gtk.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/set-controls-gtk.c' object='drillwriter-set-controls-gtk.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-set-controls-gtk.o `test -f 'gtk-drill/set-controls-gtk.c' || echo '$(srcdir)/'`gtk-drill/set-controls-gtk.c
-
-drillwriter-set-controls-gtk.obj: gtk-drill/set-controls-gtk.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-set-controls-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-set-controls-gtk.Tpo -c -o drillwriter-set-controls-gtk.obj `if test -f 'gtk-drill/set-controls-gtk.c'; then $(CYGPATH_W) 'gtk-drill/set-controls-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/set-controls-gtk.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-set-controls-gtk.Tpo $(DEPDIR)/drillwriter-set-controls-gtk.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/set-controls-gtk.c' object='drillwriter-set-controls-gtk.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-set-controls-gtk.obj `if test -f 'gtk-drill/set-controls-gtk.c'; then $(CYGPATH_W) 'gtk-drill/set-controls-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/set-controls-gtk.c'; fi`
 
 drillwriter-draw_field.o: gtk-drill/draw_field.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-draw_field.o -MD -MP -MF $(DEPDIR)/drillwriter-draw_field.Tpo -c -o drillwriter-draw_field.o `test -f 'gtk-drill/draw_field.c' || echo '$(srcdir)/'`gtk-drill/draw_field.c
