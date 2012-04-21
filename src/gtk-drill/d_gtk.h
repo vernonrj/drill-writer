@@ -3,6 +3,7 @@
 #include "dr-media.h"		// mediabar class
 #include "dr-drill.h"
 #include "dr-perfbar.h"
+#include "dr-sidebar.h"
 
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -15,6 +16,7 @@ GtkWidget *scrolled_window;	// for the field
 // class holding info about show/set
 GtkWidget *setbar;
 GtkWidget *perfbar;
+GtkWidget *sidebar;
 
 // performer info
 GtkWidget *entry_perf_x;

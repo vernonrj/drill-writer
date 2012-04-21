@@ -145,21 +145,6 @@ static gboolean msel_buttonsel(GtkWidget *widget, GdkEvent *event)
 */
 
 
-GtkWidget *
-create_combo_box (const char **strings)
-{
-  GtkWidget *combo_box;
-  const char **str;
-
-  combo_box = gtk_combo_box_text_new ();
-  
-  for (str = strings; *str; str++)
-    gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_box), *str);
-
-  gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
-
-  return combo_box;
-}
 
 
 int buildIfacegtk(void)
@@ -171,28 +156,11 @@ int buildIfacegtk(void)
 	GtkWidget *menubar;		// for menus
 	// panes
 	GtkWidget *hpaned;
-	GtkWidget *sidebar_box;
-	//GtkSizeGroup *size_group;
-	static const char *sidebar_opts[] = {
-		"Performer", "Set", "Groups", "Form"
-	};
-	GtkWidget *combo_box;
-	// notebook
-	GtkWidget *notebook;
-	//GtkWidget *toolbar;
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
-	//GtkWidget *box1;
-	//GtkWidget *setbox;		// Set attributes go in this box
-	//GtkWidget *box3;
 	GtkWidget *menu_box;		// First-level packing box (for menus)
-	//GtkWidget *media_box;		// For media buttons
 	// buttons, checks, etc
-	//GtkWidget *check;
-	//GtkWidget *label;
-	//GtkWidget *separator;
 	GtkWidget *alignment;
-	//GtkWidget *frame;
 	// mouse mode (menu)
 	//GtkWidget *mMode;		// mouse mode
 	//GtkWidget *mMenuBar;
@@ -201,21 +169,6 @@ int buildIfacegtk(void)
 	gchar *sbinfo;
 
 	GtkWidget *mediabar;
-
-
-
-	// Field relation buttons
-	//struct gtk_ssRel sidesideBtns;
-	//struct gtk_fbRel frbkBtns;
-
-	//gint tmp_pos;
-
-	/*
-	int tempo;
-	char set_buf[5];
-	char count_buf[5];
-	char tempo_buf[5];
-	*/
 
 	pstate.first_time = 1;
 
@@ -550,34 +503,15 @@ int buildIfacegtk(void)
 	gtk_paned_add2(GTK_PANED(hpaned), scrolled_window);
 	gtk_widget_show(scrolled_window);
 
-	sidebar_box = gtk_vbox_new(FALSE, 0);
-	gtk_paned_add1(GTK_PANED(hpaned), sidebar_box);
-	combo_box = create_combo_box(sidebar_opts);
-	gtk_box_pack_start(GTK_BOX(sidebar_box), combo_box, FALSE, FALSE, 0);
-	gtk_widget_show(combo_box);
-	//gtk_container_add(GTK_CONTAINER(frame), combo_box);
-	//gtk_paned_add1(GTK_PANED(hpaned), frame);
+	sidebar = dr_sidebar_new();
+	gtk_paned_add1(GTK_PANED(hpaned), sidebar);
 
-	// sidebar notebook
-	notebook = gtk_notebook_new();
-	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
-	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
-	gtk_box_pack_start(GTK_BOX(sidebar_box), notebook, TRUE, TRUE, 0);
-	gtk_widget_show(notebook);
-
-	/*
-	frame = gtk_frame_new(NULL);
-	//gtk_widget_set_size_request(frame, 150, 60);
-	gtk_box_pack_start(GTK_BOX(sidebar_box), frame, TRUE, TRUE, 0);
-	gtk_widget_show(frame);
-	*/
 
 	// get and pack canvas
 	drill = gtk_drill_new();
 	gtk_widget_set_size_request(drill, 801, 486);
 	gtk_scrolled_window_add_with_viewport(
 			GTK_SCROLLED_WINDOW(scrolled_window), drill);
-	//gtk_box_pack_start(GTK_BOX (box0), drill, TRUE, TRUE, 0);
 	//g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 	// draw the field the first time
 	do_field = 1;
