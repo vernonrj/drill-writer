@@ -8,6 +8,7 @@ void view_stepsize_gtk(GtkWidget *widget)
 	return;
 }
 
+/*
 void goto_perf (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
@@ -21,6 +22,7 @@ void goto_perf (GtkWidget *widget)
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
 	}
 }
+*/
 
 int add_perf_gtk(GtkWidget *widget)
 {
@@ -58,6 +60,7 @@ void delete_perf_gtk(GtkWidget *widget)
 
 
 
+/*
 void xperf_change (GtkWidget *widget)
 {
 	const gchar *entry_buffer;
@@ -93,6 +96,7 @@ void yperf_change (GtkWidget *widget)
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
 	}
 }
+*/
 
 
 void next_perf(GtkWidget *widget)

@@ -2,6 +2,7 @@
 #include "dr-setbar.h"		// setbar class
 #include "dr-media.h"		// mediabar class
 #include "dr-drill.h"
+#include "dr-perfbar.h"
 
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -13,9 +14,9 @@ GtkWidget *drill;		// custom cairo widget
 GtkWidget *scrolled_window;	// for the field
 // class holding info about show/set
 GtkWidget *setbar;
+GtkWidget *perfbar;
 
 // performer info
-GtkWidget *entry_perf;
 GtkWidget *entry_perf_x;
 GtkWidget *entry_perf_y;
 
@@ -24,6 +25,7 @@ GtkWidget *statusbar;
 GtkWidget *menuButton;
 
 double mousex, mousey;
+/*
 // Side-to-Side relation buttons
 struct gtk_ssRel
 {
@@ -48,6 +50,7 @@ struct gtk_fbRel
 	// Hash/Sideline
 	GtkWidget *HashSideButton;
 } frbkBtns;
+*/
 gint context_id;
 
 
@@ -103,7 +106,6 @@ int runTk(void);
 //static void quit_action ();
 void button_upifCh(GtkWidget *button, char *newinfo);
 void entry_upifCh(GtkWidget *entry, char *newinfo);
-int update_entries(void);
 int buildIfacegtk(void);
 void do_undo_gtk(GtkWidget *widget);
 void do_redo_gtk(GtkWidget *widget);
@@ -118,12 +120,12 @@ void play_show_from_start (GtkWidget *widget);
 
 // perf-con-gtk.c
 void view_stepsize_gtk(GtkWidget *widget);
-void goto_perf (GtkWidget *widget);
+//void goto_perf (GtkWidget *widget);
 int add_perf_gtk(GtkWidget *widget);
 void revert_perf_gtk(GtkWidget *widget);
 void delete_perf_gtk(GtkWidget *widget);
-void xperf_change (GtkWidget *widget);
-void yperf_change (GtkWidget *widget);
+//void xperf_change (GtkWidget *widget);
+//void yperf_change (GtkWidget *widget);
 void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);

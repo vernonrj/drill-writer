@@ -77,7 +77,8 @@ am_drillwriter_OBJECTS = drillwriter-coords.$(OBJEXT) \
 	drillwriter-perf-con-gtk.$(OBJEXT) \
 	drillwriter-drill-class.$(OBJEXT) \
 	drillwriter-dr-setbar.$(OBJEXT) drillwriter-dr-media.$(OBJEXT) \
-	testbench.$(OBJEXT) util.$(OBJEXT)
+	drillwriter-dr-perfbar.$(OBJEXT) testbench.$(OBJEXT) \
+	util.$(OBJEXT)
 drillwriter_OBJECTS = $(am_drillwriter_OBJECTS)
 drillwriter_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -271,6 +272,7 @@ drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.
 		      gtk-drill/dr-drill.h gtk-drill/drill-class.c \
 		      gtk-drill/dr-setbar.h gtk-drill/dr-setbar.c \
 		      gtk-drill/dr-media.h gtk-drill/dr-media.c \
+		      gtk-drill/dr-perfbar.h gtk-drill/dr-perfbar.c \
 		      testbench/testbench.cpp testbench/util.cpp
 
 drillwriter_LDFLAGS = $(GTK_LIBS) -lm -Wall
@@ -370,6 +372,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-coords-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-coords.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-media.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-perfbar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-setbar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-drill-class.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-fieldrel.Po@am__quote@
@@ -630,6 +633,20 @@ drillwriter-dr-media.obj: gtk-drill/dr-media.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/dr-media.c' object='drillwriter-dr-media.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-dr-media.obj `if test -f 'gtk-drill/dr-media.c'; then $(CYGPATH_W) 'gtk-drill/dr-media.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/dr-media.c'; fi`
+
+drillwriter-dr-perfbar.o: gtk-drill/dr-perfbar.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-dr-perfbar.o -MD -MP -MF $(DEPDIR)/drillwriter-dr-perfbar.Tpo -c -o drillwriter-dr-perfbar.o `test -f 'gtk-drill/dr-perfbar.c' || echo '$(srcdir)/'`gtk-drill/dr-perfbar.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-dr-perfbar.Tpo $(DEPDIR)/drillwriter-dr-perfbar.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/dr-perfbar.c' object='drillwriter-dr-perfbar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-dr-perfbar.o `test -f 'gtk-drill/dr-perfbar.c' || echo '$(srcdir)/'`gtk-drill/dr-perfbar.c
+
+drillwriter-dr-perfbar.obj: gtk-drill/dr-perfbar.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-dr-perfbar.obj -MD -MP -MF $(DEPDIR)/drillwriter-dr-perfbar.Tpo -c -o drillwriter-dr-perfbar.obj `if test -f 'gtk-drill/dr-perfbar.c'; then $(CYGPATH_W) 'gtk-drill/dr-perfbar.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/dr-perfbar.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-dr-perfbar.Tpo $(DEPDIR)/drillwriter-dr-perfbar.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/dr-perfbar.c' object='drillwriter-dr-perfbar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-dr-perfbar.obj `if test -f 'gtk-drill/dr-perfbar.c'; then $(CYGPATH_W) 'gtk-drill/dr-perfbar.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/dr-perfbar.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
