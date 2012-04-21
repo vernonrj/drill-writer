@@ -262,7 +262,7 @@ int buildIfacegtk(void)
 	//GtkWidget *toolbar;
 	// Container Widgets
 	GtkWidget *box0;		// second-level packing box (for canvas)
-	GtkWidget *box1;
+	//GtkWidget *box1;
 	//GtkWidget *setbox;		// Set attributes go in this box
 	GtkWidget *perfbox;		// Dot attributes go in this box
 	GtkWidget *perfSSbox;
@@ -270,13 +270,11 @@ int buildIfacegtk(void)
 	GtkWidget *perfEnbox;
 	//GtkWidget *box3;
 	GtkWidget *menu_box;		// First-level packing box (for menus)
-	GtkWidget *media_box;		// For media buttons
+	//GtkWidget *media_box;		// For media buttons
 	// buttons, checks, etc
-	GtkWidget *button;		// buttons
 	//GtkWidget *check;
 	//GtkWidget *label;
 	GtkWidget *separator;
-	GtkWidget *image;
 	GtkWidget *alignment;
 	GtkWidget *frame;
 	// mouse mode (menu)
@@ -285,6 +283,8 @@ int buildIfacegtk(void)
 	//GtkWidget *item;
 	// statusbar
 	gchar *sbinfo;
+
+	GtkWidget *mediabar;
 
 
 
@@ -593,78 +593,15 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX (menu_box), box0, TRUE, TRUE, 0);
 
 	// set controls and media controls
-	media_box = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
+	//media_box = gtk_vbox_new (FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
+	
+
+	mediabar = dr_mediabar_new();
+	gtk_box_pack_start(GTK_BOX(box0), mediabar, FALSE, FALSE, 0);
+
 
 	/*
-	// Set attributes (set, counts, tempo, etc)
-	setbox = gtk_hbox_new (FALSE, 5);	
-	// make alignment for sets
-	alignment = gtk_alignment_new(0.015,0.5, 0, 0);
-	gtk_container_add(GTK_CONTAINER(alignment), setbox);
-
-	gtk_box_pack_start(GTK_BOX (box0), alignment, FALSE, FALSE, 0);
-	//gtk_box_pack_start(GTK_BOX (box0), setbox, FALSE, FALSE, 0);
-
-	label = gtk_label_new ("Set:");
-	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
-
-	// Set entry
-	//sprintf(set_buf, "%i", setnum);
-	sprintf(set_buf, "%i", pstate.setnum);
-	entry_sets = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry_sets), 50);
-	g_signal_connect(entry_sets, "activate", G_CALLBACK (goto_set_gtk), entry_sets);
-	gtk_entry_set_text (GTK_ENTRY (entry_sets), set_buf);
-	//tmp_pos = GTK_ENTRY (entry_sets)->text_length;
-	gtk_editable_set_editable(GTK_EDITABLE(entry_sets), FALSE);
-	gtk_editable_select_region (GTK_EDITABLE (entry_sets),
-			0, GTK_ENTRY (entry_sets)->text_length);
-	gtk_entry_set_alignment (GTK_ENTRY (entry_sets), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY (entry_sets), 4);
-	gtk_box_pack_start (GTK_BOX (setbox), entry_sets, FALSE, TRUE, 0);
-	gtk_widget_show(entry_sets);
-
-	//separator = gtk_vseparator_new ();
-	//gtk_box_pack_start (GTK_BOX (setbox), separator, FALSE, TRUE, 0);
-
-	// Count entry
-	label = gtk_label_new ("Counts:");
-	gtk_box_pack_start (GTK_BOX (setbox), label, FALSE, TRUE, 0);
-
-	sprintf(count_buf, "%i", pshow->sets->currset->counts);
-	entry_counts = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry_counts), 50);
-	g_signal_connect(entry_counts, "activate", G_CALLBACK (change_counts), entry_counts);
-	gtk_entry_set_text (GTK_ENTRY (entry_counts), count_buf);
-	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
-	//gtk_editable_insert_text (GTK_EDITABLE (entry_counts), " world", -1, &tmp_pos);
-	gtk_editable_select_region (GTK_EDITABLE (entry_counts),
-			0, GTK_ENTRY (entry_counts)->text_length);
-	gtk_entry_set_alignment (GTK_ENTRY (entry_counts), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY (entry_counts), 4);
-	gtk_box_pack_start (GTK_BOX (setbox), entry_counts, FALSE, TRUE, 0);
-	gtk_widget_show(entry_counts);
-
-	// Tempo box (embedded in set attribute box)
-	label = gtk_label_new ("Tempo");
-	gtk_box_pack_start(GTK_BOX(setbox), label, FALSE, TRUE, 0);
-
-	// Tempo entry box
-	tempo = pshow->currtempo->tempo;
-	sprintf(tempo_buf, "%i", tempo);
-	entry_tempo = gtk_entry_new();
-	gtk_entry_set_max_length(GTK_ENTRY(entry_tempo), 50);
-	g_signal_connect(entry_tempo, "activate", G_CALLBACK(change_tempo_gtk), entry_tempo);
-	gtk_entry_set_text(GTK_ENTRY(entry_tempo), tempo_buf);
-	//tmp_pos = GTK_ENTRY(entry_tempo)->text_length;
-	gtk_editable_select_region(GTK_EDITABLE(entry_tempo),
-			0, GTK_ENTRY(entry_tempo)->text_length);
-	gtk_entry_set_alignment(GTK_ENTRY(entry_tempo), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY(entry_tempo), 4);
-	gtk_box_pack_start(GTK_BOX(setbox), entry_tempo, FALSE, TRUE, 0);
-
-
 	// mouse mode
 	mMode = gtk_menu_new();
 	item = gtk_menu_item_new_with_label("Select");
@@ -745,8 +682,8 @@ int buildIfacegtk(void)
 
 
 	// Media Controls (First, prev, next, last)
-	box1 = gtk_hbox_new (FALSE, 0);	
-	gtk_box_pack_start(GTK_BOX (media_box), box1, FALSE, FALSE, 0);
+	//box1 = gtk_hbox_new (FALSE, 0);	
+	//gtk_box_pack_start(GTK_BOX (media_box), box1, FALSE, FALSE, 0);
 
 
 	// Performer entry box
@@ -904,75 +841,6 @@ int buildIfacegtk(void)
 	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf_y, FALSE, TRUE, 0);
 	*/
 
-	// Play
-	button = gtk_button_new_with_label ("Play");
-	g_signal_connect(button, "clicked", G_CALLBACK(queue_show), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image (GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, FALSE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
-
-	// Stop
-	button = gtk_button_new_with_label ("Stop");
-	g_signal_connect(button, "clicked", G_CALLBACK(stop_show), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_STOP, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, FALSE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
-
-	// Play from Start
-	button = gtk_button_new_with_label ("Play Start");
-	g_signal_connect(button, "clicked", G_CALLBACK(play_show_from_start), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PREVIOUS, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, FALSE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
-
-
-	// First Set
-	button = gtk_button_new_with_label ("First");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_first_gtk), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_GOTO_FIRST, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, TRUE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
-
-	// Previous Set
-	button = gtk_button_new_with_label ("Prev"); 
-	g_signal_connect(button, "clicked", G_CALLBACK(set_prev_gtk), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_REWIND, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (box1), button, TRUE, TRUE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
-
-	// Step
-	button = gtk_button_new_with_label ("Step");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_next_count_gtk), NULL);
-	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, FALSE, 0);
-	gtk_widget_show(button);
-
-	// Next Set
-	button = gtk_button_new_with_label ("Next");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_next_gtk), NULL);//, window);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (box1), button, TRUE, TRUE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
-
-	// Last Set
-	button = gtk_button_new_with_label ("Last");
-	image = gtk_image_new_from_stock (GTK_STOCK_GOTO_LAST, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	g_signal_connect(button, "clicked", G_CALLBACK(set_last_gtk), NULL);
-	gtk_box_pack_start(GTK_BOX (box1), button, FALSE, TRUE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
 
 	// status bar
 	statusbar = gtk_statusbar_new();
@@ -987,14 +855,14 @@ int buildIfacegtk(void)
 	// Show everything
 	gtk_widget_show(drill);
 	gtk_widget_show(box0);
-	gtk_widget_show(box1);
+	//gtk_widget_show(box1);
 	//gtk_widget_show(setbox);
 	gtk_widget_show(perfEnbox);
 	gtk_widget_show(perfSSbox);
 	gtk_widget_show(perfFBbox);
 	gtk_widget_show(perfbox);
 	//gtk_widget_show(box3);
-	gtk_widget_show(media_box);
+	//gtk_widget_show(media_box);
 	gtk_widget_show(menu_box);
 	gtk_widget_show_all (window);
 	gtk_widget_grab_focus(scrolled_window);

@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include "dr_setbar.h"
+#include "dr-setbar.h"
 #include "d_gtk.h"
 
 static void dr_setbar_class_init(DrSetbarClass *klass);

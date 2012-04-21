@@ -1,5 +1,6 @@
 #include "drill.h"
-#include "dr_setbar.h"
+#include "dr-setbar.h"
+#include "dr-media.h"
 #ifndef __DRILL_H
 #define __DRILL_H
 
@@ -183,11 +184,13 @@ int buildIfacegtk(void);
 void do_undo_gtk(GtkWidget *widget);
 void do_redo_gtk(GtkWidget *widget);
 
+/*
 // media-gtk.c
 gboolean play_show (GtkWidget *widget);
 void stop_show (GtkWidget *widget);
 void queue_show (GtkWidget *widget);
 void play_show_from_start (GtkWidget *widget);
+*/
 
 // perf-con-gtk.c
 void view_stepsize_gtk(GtkWidget *widget);
