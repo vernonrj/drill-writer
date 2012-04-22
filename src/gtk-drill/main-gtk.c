@@ -505,6 +505,7 @@ int buildIfacegtk(void)
 
 	sidebar = dr_sidebar_new();
 	gtk_paned_add1(GTK_PANED(hpaned), sidebar);
+	gtk_widget_set_size_request(sidebar, 180, 486);
 
 
 	// get and pack canvas

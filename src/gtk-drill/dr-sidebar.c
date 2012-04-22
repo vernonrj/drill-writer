@@ -35,7 +35,7 @@ static void dr_sidebar_init(DrSidebar *lsidebar)
 	GtkWidget *notebook;
 	GtkWidget *sidebarsets;
 	static const char *sidebar_opts[] = {
-		"Performer", "Set", "Groups"
+		"Set", "Performer", "Groups"
 	};
 
 	lsidebar->priv = DR_SIDEBAR_GET_PRIVATE(lsidebar);
@@ -55,11 +55,11 @@ static void dr_sidebar_init(DrSidebar *lsidebar)
 	gtk_widget_show(notebook);
 	lsidebar->priv->notebook = notebook;
 
-	lsidebar->priv->sidebarperfs = dr_sidebar_perfs_new();
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), lsidebar->priv->sidebarperfs, NULL);
-
 	lsidebar->priv->sidebarsets = dr_sidebar_sets_new();
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), lsidebar->priv->sidebarsets, NULL);
+
+	lsidebar->priv->sidebarperfs = dr_sidebar_perfs_new();
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), lsidebar->priv->sidebarperfs, NULL);
 
 	lsidebar->priv->sidebargroups = dr_sidebar_groups_new();
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), lsidebar->priv->sidebargroups, NULL);

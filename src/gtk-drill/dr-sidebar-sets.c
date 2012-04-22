@@ -23,10 +23,19 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 {
 	g_return_if_fail(IS_SIDEBAR_SETS(sidebarsets));
 	GtkWidget *entry_setname;
+	GtkWidget *label;
+	GtkWidget *namebox;
 
 	char setname_buf[20];
 
 	sidebarsets->priv = DR_SIDEBAR_SETS_GET_PRIVATE(sidebarsets);
+
+	namebox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (sidebarsets), namebox, FALSE, TRUE, 5);
+
+	label = gtk_label_new("Set: ");
+	gtk_box_pack_start (GTK_BOX (namebox), label, FALSE, FALSE, 5);
+	gtk_widget_show(label);
 
 	sprintf(setname_buf, "%i", pstate.setnum);
 	entry_setname = gtk_entry_new ();
@@ -37,7 +46,7 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 	gtk_entry_set_alignment(GTK_ENTRY (entry_setname), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_setname), 4);
 	//gtk_box_pack_start (GTK_BOX (perfbar), entry_setname, FALSE, TRUE, 5);
-	gtk_box_pack_start (GTK_BOX (sidebarsets), entry_setname, FALSE, TRUE, 5);
+	gtk_box_pack_end (GTK_BOX (namebox), entry_setname, FALSE, FALSE, 5);
 	gtk_widget_show(entry_setname);
 	sidebarsets->priv->entry_setname = entry_setname;
 	return;
