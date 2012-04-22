@@ -12,7 +12,7 @@ struct _DrMediabarPrivate {
 };
 */
 
-G_DEFINE_TYPE (DrMediabar, dr_mediabar, GTK_TYPE_HBOX)
+G_DEFINE_TYPE (DrMediabar, dr_mediabar, GTK_TYPE_VBOX)
 
 #define DR_MEDIABAR_GET_PRIVATE(obj) \
 		(G_TYPE_INSTANCE_GET_PRIVATE ((obj), DR_MEDIABAR_TYPE, DrMediabarPrivate))
@@ -26,18 +26,26 @@ static void dr_mediabar_class_init(DrMediabarClass *class)
 
 static void dr_mediabar_init(DrMediabar *mediabar)
 {
+	GtkWidget *playbox;
+	GtkWidget *firstlastbox;
+	GtkWidget *nextprevbox;
+
 	GtkWidget *button;
 	GtkWidget *image;
+
+	playbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mediabar), playbox, FALSE, FALSE, 0);
 
 	// Play
 	button = gtk_button_new_with_label ("Play");
 	g_signal_connect(button, "clicked", G_CALLBACK(queue_show), NULL);
 	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image (GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (mediabar), button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (playbox), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
 
+	/*
 	// Stop
 	button = gtk_button_new_with_label ("Stop");
 	g_signal_connect(button, "clicked", G_CALLBACK(stop_show), NULL);
@@ -46,32 +54,57 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	gtk_box_pack_start(GTK_BOX (mediabar), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
+	*/
 
 	// Play from Start
-	button = gtk_button_new_with_label ("Play Start");
+	button = gtk_button_new_with_label ("Start");
 	g_signal_connect(button, "clicked", G_CALLBACK(play_show_from_start), NULL);
 	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PREVIOUS, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (mediabar), button, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX (playbox), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
 
+
+	firstlastbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mediabar), firstlastbox, FALSE, FALSE, 0);
 
 	// First Set
 	button = gtk_button_new_with_label ("First");
 	g_signal_connect(button, "clicked", G_CALLBACK(set_first_gtk), NULL);
 	image = gtk_image_new_from_stock (GTK_STOCK_GOTO_FIRST, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (mediabar), button, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX (firstlastbox), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
+
+	// Last Set
+	button = gtk_button_new_with_label ("Last");
+	image = gtk_image_new_from_stock (GTK_STOCK_GOTO_LAST, GTK_ICON_SIZE_MENU);
+	gtk_button_set_image(GTK_BUTTON (button), image);
+	g_signal_connect(button, "clicked", G_CALLBACK(set_last_gtk), NULL);
+	gtk_box_pack_start(GTK_BOX (firstlastbox), button, TRUE, TRUE, 0);
+	gtk_widget_show(button);
+	gtk_widget_show(image);
+
+	nextprevbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mediabar), nextprevbox, FALSE, FALSE, 0);
 
 	// Previous Set
 	button = gtk_button_new_with_label ("Prev"); 
 	g_signal_connect(button, "clicked", G_CALLBACK(set_prev_gtk), NULL);
 	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_REWIND, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (mediabar), button, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX (nextprevbox), button, TRUE, TRUE, 0);
+	gtk_widget_show(button);
+	gtk_widget_show(image);
+
+	// Next Set
+	button = gtk_button_new_with_label ("Next");
+	g_signal_connect(button, "clicked", G_CALLBACK(set_next_gtk), NULL);//, window);
+	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_MENU);
+	gtk_button_set_image(GTK_BUTTON (button), image);
+	gtk_box_pack_start(GTK_BOX (nextprevbox), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
 
@@ -81,23 +114,7 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	gtk_box_pack_start(GTK_BOX (mediabar), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);
 
-	// Next Set
-	button = gtk_button_new_with_label ("Next");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_next_gtk), NULL);//, window);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (mediabar), button, TRUE, TRUE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
 
-	// Last Set
-	button = gtk_button_new_with_label ("Last");
-	image = gtk_image_new_from_stock (GTK_STOCK_GOTO_LAST, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	g_signal_connect(button, "clicked", G_CALLBACK(set_last_gtk), NULL);
-	gtk_box_pack_start(GTK_BOX (mediabar), button, FALSE, TRUE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
 }
 
 GtkWidget *dr_mediabar_new(void)

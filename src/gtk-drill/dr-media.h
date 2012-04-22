@@ -17,13 +17,13 @@ typedef struct _DrMediabarClass DrMediabarClass;
 //typedef struct _DrMediabarPrivate DrMediabarPrivate;
 
 struct _DrMediabar {
-	GtkHBox base_instance;
+	GtkVBox base_instance;
 
 	//DrMediabarPrivate *priv;
 };
 
 struct _DrMediabarClass {
-	GtkHBoxClass parent_class;
+	GtkVBoxClass parent_class;
 	void (* dr_mediabar) (DrMediabar *mediabar);
 };
 

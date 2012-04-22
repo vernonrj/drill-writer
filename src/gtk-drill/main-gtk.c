@@ -461,8 +461,8 @@ int buildIfacegtk(void)
 	//gtk_box_pack_start(GTK_BOX (box0), media_box, FALSE, FALSE, 0);
 	
 
-	mediabar = dr_mediabar_new();
-	gtk_box_pack_start(GTK_BOX(box0), mediabar, FALSE, FALSE, 0);
+	//mediabar = dr_mediabar_new();
+	//gtk_box_pack_start(GTK_BOX(box0), mediabar, FALSE, FALSE, 0);
 
 
 	/*

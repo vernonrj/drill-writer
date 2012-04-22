@@ -6,6 +6,7 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebar_sets);
 
 struct _DrSidebarSetsPrivate {
 	GtkWidget *entry_setname;
+	GtkWidget *mediabar;
 };
 
 G_DEFINE_TYPE (DrSidebarSets, dr_sidebar_sets, GTK_TYPE_VBOX)
@@ -25,6 +26,7 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 	GtkWidget *entry_setname;
 	GtkWidget *label;
 	GtkWidget *namebox;
+	GtkWidget *mediabar;
 
 	char setname_buf[20];
 
@@ -49,6 +51,10 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 	gtk_box_pack_end (GTK_BOX (namebox), entry_setname, FALSE, FALSE, 5);
 	gtk_widget_show(entry_setname);
 	sidebarsets->priv->entry_setname = entry_setname;
+
+	mediabar = dr_mediabar_new();
+	gtk_box_pack_start(GTK_BOX(sidebarsets), mediabar, FALSE, FALSE, 5);
+	sidebarsets->priv->mediabar = mediabar;
 	return;
 }
 
