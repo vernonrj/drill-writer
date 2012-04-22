@@ -1,5 +1,6 @@
-#include "dr-setbar.h"
 #include "d_gtk.h"
+#include "dr-setbar.h"
+
 
 static void dr_perfbar_class_init(DrPerfbarClass *klass);
 static void dr_perfbar_init(DrPerfbar *perfbar);

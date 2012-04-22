@@ -827,6 +827,7 @@ void draw_field (GtkWidget *widget)
 	// Make sure field won't be redrawn by default
 	do_field = 0;
 	update_entries();
+	dr_sidebar_update((DrSidebar*)sidebar);
 
 
 }

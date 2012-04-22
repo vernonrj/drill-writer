@@ -4,6 +4,7 @@
 #include "dr-drill.h"
 #include "dr-perfbar.h"
 #include "dr-sidebar.h"
+#include "dr-sidebar-sets.h"
 
 #include <gtk/gtk.h>
 #include <glib.h>

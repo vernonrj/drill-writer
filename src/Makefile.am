@@ -35,6 +35,7 @@ drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.
 		      gtk-drill/dr-media.h gtk-drill/dr-media.c \
 		      gtk-drill/dr-perfbar.h gtk-drill/dr-perfbar.c \
 		      gtk-drill/dr-sidebar.h gtk-drill/dr-sidebar.c \
+		      gtk-drill/dr-sidebar-sets.h gtk-drill/dr-sidebar-sets.c \
 		      testbench/testbench.cpp testbench/util.cpp
 
 ## Define an independent executable script for inclusion in the distribution
