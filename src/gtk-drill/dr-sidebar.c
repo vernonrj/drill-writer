@@ -2,6 +2,7 @@
 #include "dr-sidebar.h"
 #include "dr-sidebar-perfs.h"
 #include "dr-sidebar-sets.h"
+#include "dr-sidebar-groups.h"
 
 static void dr_sidebar_class_init(DrSidebarClass *class);
 static void dr_sidebar_init(DrSidebar *sidebar);
@@ -13,6 +14,7 @@ struct _DrSidebarPrivate
 	GtkWidget *notebook;
 	GtkWidget *sidebarsets;
 	GtkWidget *sidebarperfs;
+	GtkWidget *sidebargroups;
 };
 
 G_DEFINE_TYPE (DrSidebar, dr_sidebar, GTK_TYPE_VBOX)
@@ -58,6 +60,9 @@ static void dr_sidebar_init(DrSidebar *lsidebar)
 
 	lsidebar->priv->sidebarsets = dr_sidebar_sets_new();
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), lsidebar->priv->sidebarsets, NULL);
+
+	lsidebar->priv->sidebargroups = dr_sidebar_groups_new();
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), lsidebar->priv->sidebargroups, NULL);
 
 	//lsidebar->priv->sidebarsets = sidebarsets;
 }
