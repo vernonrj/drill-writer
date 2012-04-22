@@ -85,6 +85,7 @@ GtkWidget *create_combo_box (const char **strings)
 void dr_sidebar_changed(GtkComboBox *widget, DrSidebar *lsidebar)
 {
 	int sel = gtk_combo_box_get_active(widget);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(lsidebar->priv->notebook), sel);
 	return;
 }
 
