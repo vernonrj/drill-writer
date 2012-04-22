@@ -35,7 +35,7 @@ static void dr_sidebar_init(DrSidebar *lsidebar)
 	GtkWidget *notebook;
 	GtkWidget *sidebarsets;
 	static const char *sidebar_opts[] = {
-		"Performer", "Set", "Groups", "Form"
+		"Performer", "Set", "Groups"
 	};
 
 	lsidebar->priv = DR_SIDEBAR_GET_PRIVATE(lsidebar);

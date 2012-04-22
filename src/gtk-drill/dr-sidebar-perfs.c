@@ -6,6 +6,7 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebar_perfs);
 
 struct _DrSidebarPerfsPrivate {
 	GtkWidget *entry_perf;
+	GtkWidget *entry_stepsize;
 };
 
 G_DEFINE_TYPE (DrSidebarPerfs, dr_sidebar_perfs, GTK_TYPE_VBOX)
@@ -23,8 +24,11 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 {
 	g_return_if_fail(IS_SIDEBAR_PERFS(sidebarperfs));
 	GtkWidget *entry_perf;
+	GtkWidget *entry_stepsize;
 
 	char perf_buf[20];
+	char stepsize_buf[20];
+	double stepsize;
 
 	sidebarperfs->priv = DR_SIDEBAR_PERFS_GET_PRIVATE(sidebarperfs);
 
@@ -40,6 +44,17 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	gtk_box_pack_start (GTK_BOX (sidebarperfs), entry_perf, FALSE, TRUE, 5);
 	gtk_widget_show(entry_perf);
 	sidebarperfs->priv->entry_perf = entry_perf;
+
+	stepsize = check_stepsize_selected(pshow);
+	sprintf(stepsize_buf, "%.2f:5", stepsize);
+	entry_stepsize = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (entry_stepsize), 10);
+	gtk_entry_set_text (GTK_ENTRY (entry_stepsize), stepsize_buf);
+	gtk_entry_set_alignment(GTK_ENTRY (entry_stepsize), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY (entry_stepsize), 4);
+	gtk_box_pack_start (GTK_BOX (sidebarperfs), entry_stepsize, FALSE, TRUE, 5);
+	gtk_widget_show(entry_stepsize);
+	sidebarperfs->priv->entry_stepsize = entry_stepsize;
 	return;
 }
 
@@ -52,11 +67,19 @@ void dr_sidebar_perfs_update(GtkWidget *sidebarperfs)
 {
 	g_return_if_fail(IS_SIDEBAR_PERFS(sidebarperfs));
 	char perf_buf[20];
+	char stepsize_buf[20];
+	double stepsize;
+
 	DrSidebarPerfs *lsidebarperfs;
 	lsidebarperfs = (DrSidebarPerfs*)sidebarperfs;
 
 	snprintf(perf_buf, 19, "%i", perf_cur);
 	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_perf), perf_buf);
+
+	stepsize = check_stepsize_selected(pshow);
+	snprintf(stepsize_buf, 19, "%.2f:5", stepsize);
+	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_stepsize), stepsize_buf);
+
 }
 
 
