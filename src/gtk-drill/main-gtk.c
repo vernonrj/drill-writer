@@ -30,6 +30,7 @@ static const gchar *ui_info =
 "			<menuitem name='ZoomOut' action='ZoomOutAction'/>"
 "			<menuitem name='ZoomStandard' action='ZoomStandardAction'/>"
 "			<menuitem name='ZoomFit' action='ZoomFitAction'/>"
+"			<menuitem name='ViewSidebar' action='ViewSidebarAction'/>"
 "			<menuitem name='StepSize' action='StepSizeAction'/>"
 "			<placeholder name='ViewMenuAddition'/>"
 "		</menu>"
@@ -269,6 +270,10 @@ int buildIfacegtk(void)
 		"_Zoom Fit", "<control>plus",
 		"Fit the field in the window",
 		G_CALLBACK(zoom_fit) },
+	{ "ViewSidebarAction", NULL,
+		"_Sidebar", "F9",
+		"Toggle Sidebar",
+		G_CALLBACK(dr_sidebar_toggle) },
 	{ "StepSizeAction", NULL,
 		"_View Stepsize", NULL,
 		"View stepsize of selected dots",

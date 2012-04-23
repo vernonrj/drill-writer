@@ -36,4 +36,5 @@ G_END_DECLS
 GtkWidget *create_combo_box (const char **strings);
 void dr_sidebar_changed(GtkComboBox *widget, DrSidebar *lsidebar);
 void dr_sidebar_update(DrSidebar *lsidebar);
+void dr_sidebar_toggle(GtkWidget *widget);
 

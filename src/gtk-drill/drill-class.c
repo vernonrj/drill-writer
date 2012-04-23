@@ -330,6 +330,7 @@ static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
 
 static void gtk_drill_paint(GtkWidget *widget)
 {
+	printf("ping paint\n");
 	
 	//cairo_t *cr;
 	//cr = gdk_cairo_create(widget->window);

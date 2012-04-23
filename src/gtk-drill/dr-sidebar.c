@@ -10,6 +10,7 @@ static void dr_sidebar_init(DrSidebar *sidebar);
 
 struct _DrSidebarPrivate 
 {
+	int shown;
 	GtkWidget *combo_box;
 	GtkWidget *notebook;
 	GtkWidget *sidebarsets;
@@ -39,6 +40,7 @@ static void dr_sidebar_init(DrSidebar *lsidebar)
 	};
 
 	lsidebar->priv = DR_SIDEBAR_GET_PRIVATE(lsidebar);
+	lsidebar->priv->shown = 1;
 
 	combo_box = create_combo_box(sidebar_opts);
 	gtk_box_pack_start(GTK_BOX(lsidebar), combo_box, FALSE, FALSE, 0);
@@ -101,3 +103,21 @@ void dr_sidebar_update(DrSidebar *lsidebar)
 	dr_sidebar_perfs_update(lsidebar->priv->sidebarperfs);
 	return;
 }
+
+void dr_sidebar_toggle(GtkWidget *widget)
+{
+	DrSidebar *lsidebar;
+	lsidebar = (DrSidebar*)sidebar;
+	if (lsidebar->priv->shown)
+	{
+		gtk_widget_hide(sidebar);
+		lsidebar->priv->shown = 0;
+	}
+	else
+	{
+		gtk_widget_show(sidebar);
+		lsidebar->priv->shown = 1;
+	}
+	return;
+}
+
