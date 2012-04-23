@@ -1,5 +1,5 @@
-#include "dr-sidebar-sets.h"
 #include "d_gtk.h"
+#include "dr-sidebar-sets.h"
 
 static void dr_sidebar_sets_class_init(DrSidebarSetsClass *klass);
 static void dr_sidebar_sets_init(DrSidebarSets *sidebar_sets);

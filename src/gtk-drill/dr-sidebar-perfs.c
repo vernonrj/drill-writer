@@ -1,5 +1,5 @@
-#include "dr-sidebar-perfs.h"
 #include "d_gtk.h"
+#include "dr-sidebar-perfs.h"
 
 static void dr_sidebar_perfs_class_init(DrSidebarPerfsClass *klass);
 static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebar_perfs);
@@ -7,6 +7,8 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebar_perfs);
 struct _DrSidebarPerfsPrivate {
 	GtkWidget *entry_perf;
 	GtkWidget *entry_stepsize;
+	GtkWidget *entry_stepsize_max;
+	GtkWidget *entry_perf_max;
 };
 
 G_DEFINE_TYPE (DrSidebarPerfs, dr_sidebar_perfs, GTK_TYPE_VBOX)
@@ -24,13 +26,23 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 {
 	GtkWidget *entry_perf;
 	GtkWidget *entry_stepsize;
+	GtkWidget *entry_stepsize_max;
+	GtkWidget *entry_perf_max;
 	GtkWidget *pnumbox;
 	GtkWidget *pstszbox;
+	GtkWidget *pstszmaxbox;
+	GtkWidget *perfmaxbox;
 	GtkWidget *label;
+	GtkWidget *frame;
+	GtkWidget *framebox;
 
 	char perf_buf[20];
 	char stepsize_buf[20];
+	char stepsize_max_buf[20];
+	char perf_max_buf[20];
 	double stepsize;
+	int index;
+	double stepsize_max;
 
 	sidebarperfs->priv = DR_SIDEBAR_PERFS_GET_PRIVATE(sidebarperfs);
 
@@ -54,15 +66,23 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	gtk_widget_show(entry_perf);
 	sidebarperfs->priv->entry_perf = entry_perf;
 
-	pstszbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX (sidebarperfs), pstszbox, FALSE, TRUE, 5);
+	frame = gtk_frame_new("Stepsize");
+	gtk_box_pack_start(GTK_BOX (sidebarperfs), frame, FALSE, TRUE, 5);
+	framebox = gtk_vbox_new(FALSE, 0);
+	gtk_container_add (GTK_CONTAINER(frame), framebox);
 
-	label = gtk_label_new("Stepsize: ");
+	pstszbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (framebox), pstszbox, FALSE, TRUE, 5);
+
+	label = gtk_label_new("Avg: ");
 	gtk_box_pack_start(GTK_BOX (pstszbox), label, FALSE, FALSE, 5);
 	gtk_widget_show(label);
 
 	stepsize = check_stepsize_selected(pshow);
-	sprintf(stepsize_buf, "%.2f:5", stepsize);
+	if (stepsize < 0.1)
+		snprintf(stepsize_buf, 19, "None");
+	else
+		sprintf(stepsize_buf, "%.2f:5", stepsize);
 	entry_stepsize = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_stepsize), 10);
 	gtk_entry_set_text (GTK_ENTRY (entry_stepsize), stepsize_buf);
@@ -71,6 +91,48 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	gtk_box_pack_end (GTK_BOX (pstszbox), entry_stepsize, FALSE, FALSE, 5);
 	gtk_widget_show(entry_stepsize);
 	sidebarperfs->priv->entry_stepsize = entry_stepsize;
+
+	pstszmaxbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(framebox), pstszmaxbox, FALSE, TRUE, 5);
+
+	label = gtk_label_new("Max: ");
+	gtk_box_pack_start(GTK_BOX (pstszmaxbox), label, FALSE, FALSE, 5);
+	gtk_widget_show(label);
+
+	index = max_stepsize_selected(pshow, &stepsize_max);
+	if (stepsize_max < 0.1)
+		snprintf(stepsize_max_buf, 19, "None");
+	else
+		sprintf(stepsize_max_buf, "%.2f:5", stepsize_max);
+	entry_stepsize_max = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (entry_stepsize_max), 10);
+	gtk_entry_set_text (GTK_ENTRY (entry_stepsize_max), stepsize_max_buf);
+	gtk_entry_set_alignment(GTK_ENTRY (entry_stepsize_max), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY (entry_stepsize_max), 10);
+	gtk_box_pack_end (GTK_BOX (pstszmaxbox), entry_stepsize_max, FALSE, FALSE, 5);
+	gtk_widget_show(entry_stepsize_max);
+	sidebarperfs->priv->entry_stepsize_max = entry_stepsize_max;
+
+	perfmaxbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(framebox), perfmaxbox, FALSE, TRUE, 5);
+
+	label = gtk_label_new("Max (Dot): ");
+	gtk_box_pack_start(GTK_BOX (perfmaxbox), label, FALSE, FALSE, 5);
+	gtk_widget_show(label);
+
+	if (index == -1)
+		snprintf(perf_max_buf, 19, "None");
+	else
+		snprintf(perf_max_buf, 19, "%i", index);
+	entry_perf_max = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_max), 10);
+	gtk_entry_set_text (GTK_ENTRY (entry_perf_max), perf_max_buf);
+	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_max), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_max), 4);
+	gtk_box_pack_end (GTK_BOX (perfmaxbox), entry_perf_max, FALSE, FALSE, 5);
+	gtk_widget_show(entry_perf_max);
+	sidebarperfs->priv->entry_perf_max = entry_perf_max;
+
 	return;
 }
 
@@ -84,7 +146,11 @@ void dr_sidebar_perfs_update(GtkWidget *sidebarperfs)
 	g_return_if_fail(IS_SIDEBAR_PERFS(sidebarperfs));
 	char perf_buf[20];
 	char stepsize_buf[20];
+	char stepsize_max_buf[20];
+	char perf_max_buf[20];
 	double stepsize;
+	double stepsize_max;
+	int index;
 
 	DrSidebarPerfs *lsidebarperfs;
 	lsidebarperfs = (DrSidebarPerfs*)sidebarperfs;
@@ -93,8 +159,26 @@ void dr_sidebar_perfs_update(GtkWidget *sidebarperfs)
 	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_perf), perf_buf);
 
 	stepsize = check_stepsize_selected(pshow);
-	snprintf(stepsize_buf, 19, "%.2f:5", stepsize);
+	if (stepsize < 0.1)
+		snprintf(stepsize_buf, 19, "None");
+	else
+		sprintf(stepsize_buf, "%.2f:5", stepsize);
 	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_stepsize), stepsize_buf);
+
+	index = max_stepsize_selected(pshow, &stepsize_max);
+	if (stepsize_max < 0.1)
+		snprintf(stepsize_max_buf, 19, "None");
+	else
+		snprintf(stepsize_max_buf, 19, "%.2f:5", stepsize_max);
+	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_stepsize_max), stepsize_max_buf);
+
+	if (index == -1)
+		snprintf(perf_max_buf, 19, "None");
+	else
+		snprintf(perf_max_buf, 19, "%i", index);
+	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_perf_max), perf_max_buf);
+
+
 
 }
 

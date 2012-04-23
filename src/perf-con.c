@@ -337,7 +337,7 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 	// coords
 	struct coord_proto **coords = currset->coords;
 	struct coord_proto **pcoords;
-
+	// stepsize
 	double stepsize = 0;
 	//if (setnum == 0)
 	if (pstate.setnum == 0)
@@ -356,7 +356,7 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 		dxy = sqrt(powf(dx,2)+powf(dy,2));
 		if (dxy)
 			dxy = 8 * sCounts / dxy;
-		if (stepsize > dxy)
+		if ((stepsize > dxy && dxy >= 0.1) || stepsize <= 0.1)
 		{
 			stepsize = dxy;
 			largest = index;

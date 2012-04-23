@@ -1,5 +1,5 @@
-#include "dr-sidebar-groups.h"
 #include "d_gtk.h"
+#include "dr-sidebar-groups.h"
 
 static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *klass);
 static void dr_sidebar_groups_init(DrSidebarGroups *sidebar_groups);

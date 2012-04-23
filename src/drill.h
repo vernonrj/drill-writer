@@ -287,6 +287,7 @@ void revert_perf(struct headset_proto *dshow, int index);
 void delete_perf_selected(void);
 void delete_perf(struct perf_proto *perf);
 double check_stepsize_selected(struct headset_proto *dshow);
+int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 
 // select-con.c
 // Selection control functions
