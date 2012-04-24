@@ -3,11 +3,11 @@ name =
 info = 
 perfnum = 15
 
-index = 9
+index = 10
 symbol =  
 valid = 1
 
-index = 10
+index = 11
 symbol =  
 valid = 1
 
@@ -450,7 +450,7 @@ coords:
 done
 
 set = 22
-counts = 4
+counts = 6
 tempo = 200
 coords:
 0: 39.750001 58.583333
@@ -468,7 +468,7 @@ coords:
 done
 
 set = 23
-counts = 2
+counts = 4
 tempo = 200
 coords:
 0: 40.000001 56.999999

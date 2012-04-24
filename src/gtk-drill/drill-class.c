@@ -279,11 +279,11 @@ static void gtk_drill_realize(GtkWidget *widget)
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
 	//drill = GTK_DRILL(widget);
 
-	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.x = widget->allocation.x;
 	attributes.y = widget->allocation.y;
 	attributes.width = widget->allocation.width;
 	attributes.height = widget->allocation.height;
+	attributes.window_type = GDK_WINDOW_CHILD;
 
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.event_mask = gtk_widget_get_events (widget) 
@@ -295,14 +295,11 @@ static void gtk_drill_realize(GtkWidget *widget)
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y;
 
-	widget->window = gdk_window_new(
-			gtk_widget_get_parent_window(widget),
-			& attributes, attributes_mask
-			);
+	widget->window = gdk_window_new(gtk_widget_get_parent_window(widget), &attributes, attributes_mask);
+	widget->style = gtk_style_attach(widget->style, widget->window);
 
 	gdk_window_set_user_data(widget->window, widget);
 
-	widget->style = gtk_style_attach(widget->style, widget->window);
 	gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
 	//g_signal_connect(widget, "dotright", G_CALLBACK (gtk_main_quit), NULL);
 }

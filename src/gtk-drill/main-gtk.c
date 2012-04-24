@@ -418,12 +418,9 @@ int buildIfacegtk(void)
 	gtk_window_set_title(GTK_WINDOW(window), "Drill-Writer Pre-Alpha");
 	gtk_window_set_default_size(GTK_WINDOW(window), 1000, 700);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	
 	// Might need these in the future
 	//gtk_widget_set_app_paintable(window, TRUE);
 	//gtk_widget_set_double_buffered(window, FALSE);
-
-
 	// Window Signals
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -460,6 +457,8 @@ int buildIfacegtk(void)
 	// Start packing canvas
 	box0 = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (menu_box), box0, TRUE, TRUE, 0);
+	gtk_widget_show(menu_box);
+	gtk_widget_show(box0);
 
 	// set controls and media controls
 	//media_box = gtk_vbox_new (FALSE, 0);
@@ -523,6 +522,7 @@ int buildIfacegtk(void)
 	do_field = 1;
 	do_dots = 1;
 	do_selected = 1;
+	gtk_widget_show(drill);
 	
 	perfbar = dr_perfbar_new();
 
@@ -589,13 +589,10 @@ int buildIfacegtk(void)
 	context_id = 0;
 
 	// Show everything
-	gtk_widget_show(drill);
-	gtk_widget_show(box0);
 	//gtk_widget_show(box1);
 	//gtk_widget_show(setbox);
 	//gtk_widget_show(box3);
 	//gtk_widget_show(media_box);
-	gtk_widget_show(menu_box);
 	gtk_widget_show_all (window);
 	gtk_widget_grab_focus(scrolled_window);
 
