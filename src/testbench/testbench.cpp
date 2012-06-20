@@ -173,7 +173,7 @@ int tbSets(void)
 
 int tbUnRedo(void)
 {
-	popFromStack(pshow, &pshow->undobr, &pshow->redobr);
+	popFromStack(pshow, &pstate.undobr, &pstate.redobr);
 	return 0;
 }
 

@@ -218,7 +218,7 @@ int set_destroy(void)
 	prevset = last->prev;
 	//perfnum = pshow->perfnum;
 
-	pushSetDel(&pshow->undobr, pshow->sets->currset);
+	pushSetDel(&pstate.undobr, pshow->sets->currset);
 	// free memory in nodes
 	/*
 	free(last->name);
@@ -349,10 +349,10 @@ int add_set(void)
 	set_next();
 	if (newcounts)
 	{
-		//pushCounts(&pshow->undobr, setnum, newcounts, 0);
-		pushCounts(&dshow->undobr, pstate.setnum, newcounts, 0);
+		//pushCounts(&pstate.undobr, setnum, newcounts, 0);
+		pushCounts(&pstate.undobr, pstate.setnum, newcounts, 0);
 	}
-	pushSetMk(&dshow->undobr);
+	pushSetMk(&pstate.undobr);
 
 	return 0;
 }

@@ -162,7 +162,7 @@ int movexy(double xoff, double yoff)
 	while(selects != NULL)
 	{
 		retr_coord(coords[selects->index], &x, &y);
-		pushPerfmv(&pshow->undobr, selects->index, x, y, done);
+		pushPerfmv(&pstate.undobr, selects->index, x, y, done);
 		x = x + xoff;
 		y = y + yoff;
 		set_coord(pshow, selects->index, x, y);
@@ -192,7 +192,7 @@ int align_dots(void)
 	while (select != NULL)
 	{
 		retr_coord(coords[select->index], &x, &y);
-		pushPerfmv(&pshow->undobr, select->index, x, y, done);
+		pushPerfmv(&pstate.undobr, select->index, x, y, done);
 		x = roundf(x);
 		y = roundf(y);
 		set_coord(pshow, select->index, x, y);
@@ -269,7 +269,7 @@ void scale_form(double s_step)
 		// get coords for selected dot
 		index = last->index;
 		coord = coords[index];
-		pushPerfmv(&pshow->undobr, index, coord->x, coord->y, 0);
+		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
 		distx = cx - coord->x;
 		disty = cy - coord->y;
 		signx = distx < 0;
@@ -359,7 +359,7 @@ void box_scale_form(double s_step)
 		index = last->index;
 		coord = coords[index];
 		retr_coord(coord, &x, &y);
-		pushPerfmv(&pshow->undobr, index, x, y, 0);
+		pushPerfmv(&pstate.undobr, index, x, y, 0);
 		if (maxdx != 0)
 		{
 			x = (x - cx) / maxdx * s_step;
@@ -415,7 +415,7 @@ void rot_form(double s_step)
 		coord = coords[index];
 		distx = cx - coord->x;
 		disty = cy - coord->y;
-		pushPerfmv(&pshow->undobr, index, coord->x, coord->y, 0);
+		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
 		if (distx != 0 || disty != 0)
 		{
 			//signx = distx < 0;

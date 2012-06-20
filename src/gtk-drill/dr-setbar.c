@@ -310,7 +310,7 @@ void change_counts (GtkWidget *widget, DrSetbar *setbar)
 		count_buffer = atoi(entry_buffer);
 		if (count_buffer > 0)
 		{
-			pushCounts(&pshow->undobr, pstate.setnum, pshow->sets->currset->counts, 1);
+			pushCounts(&pstate.undobr, pstate.setnum, pshow->sets->currset->counts, 1);
 			pshow->sets->currset->counts = count_buffer;
 			//counts[setnum] = count_buffer;
 		}

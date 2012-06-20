@@ -479,7 +479,7 @@ int open_file(char *filename)
 		perfs[i]->valid = valid[i];
 		*/
 
-	undo_destroy(&pshow->undobr, pshow);
+	undo_destroy(&pstate.undobr, pshow);
 		
 	return 0;
 }

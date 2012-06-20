@@ -154,7 +154,7 @@ int add_perf(void)
 	excode = select_add(index);
 	if (excode == -1)
 		return -1;
-	pushPerfMk(&pshow->undobr, index, 1);
+	pushPerfMk(&pstate.undobr, index, 1);
 	return index;
 }
 
@@ -187,7 +187,7 @@ void revert_perf_selected(struct headset_proto *dshow)
 			// no more to delete
 			done = 1;
 		}
-		pushPerfmv(&dshow->undobr, index, coord->x, coord->y, done);
+		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, done);
 		revert_perf(dshow, index);
 		// go to next performer
 		last = last->next;
@@ -247,7 +247,7 @@ void delete_perf_selected(void)
 			// no more to delete
 			done = 1;
 		}
-		pushPerfDel(&pshow->undobr, &perf, pshow->sets->firstset, done);
+		pushPerfDel(&pstate.undobr, &perf, pshow->sets->firstset, done);
 		// TODO: eventually have to unlink perf struct for undo
 		pshow->perfs[index] = perf;
 		delete_perf(perf);

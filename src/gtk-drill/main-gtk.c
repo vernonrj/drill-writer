@@ -623,10 +623,10 @@ void do_undo_gtk(GtkWidget *widget)
 	double lwidth, lheight;
 	do
 	{
-		done = popFromStack(pshow, &pshow->undobr, &pshow->redobr);
+		done = popFromStack(pshow, &pstate.undobr, &pstate.redobr);
 		if (first_one)
 			first_one = first_one - 1;
-	} while ((done == 0 || first_one) && pshow->undobr);
+	} while ((done == 0 || first_one) && pstate.undobr);
 	lwidth = pstate.width;
 	lheight = pstate.height+2*pstate.step;
 	//gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
@@ -639,7 +639,7 @@ void do_redo_gtk(GtkWidget *widget)
 	double lwidth, lheight;
 	do
 	{
-		done = popFromStack(pshow, &pshow->redobr, &pshow->undobr);
+		done = popFromStack(pshow, &pstate.redobr, &pstate.undobr);
 	} while (done == 0);
 	lwidth = pstate.width;
 	lheight = pstate.height+2*pstate.step;

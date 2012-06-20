@@ -102,8 +102,8 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->sets->currset = dshow->sets->firstset;
 	//dshow->sets->prevset = 0;
 	// init undo/redo to NULL
-	dshow->undobr = 0;
-	dshow->redobr = 0;
+	pstate.undobr = 0;
+	pstate.redobr = 0;
 	time(&pstate.undo_timer);
 
 	// start at the beginning of the set
@@ -177,8 +177,8 @@ int show_destroy(struct headset_proto **dshow_r)
 		select = sellast;
 	}
 	// delete undo
-	undo_destroy(&dshow->undobr, dshow);
-	undo_destroy(&dshow->redobr, dshow);
+	undo_destroy(&pstate.undobr, dshow);
+	undo_destroy(&pstate.redobr, dshow);
 	// delete tempo
 	tlast = dshow->currtempo;
 	if (tlast)
@@ -285,7 +285,7 @@ int main (int argc, char *argv[])
 	//pshow->sets->prevset = 0;
 
 	perf_cur = 0;
-	undo_destroy(&pshow->undobr, pshow);
+	undo_destroy(&pstate.undobr, pshow);
 
 	///*
 	// Start up gtk

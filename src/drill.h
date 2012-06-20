@@ -49,6 +49,8 @@ struct showstate_proto
 	double zoom_x, zoom_y;	// zoom size
 	// undo state
 	time_t undo_timer;	// time since last undo
+	struct undo_proto *undobr;
+	struct undo_proto *redobr;
 } pstate;
 
 /*
@@ -224,8 +226,6 @@ struct headset_proto
 	struct coord_proto *center;
 	int selnum;
 	// undo/redo branch structs
-	struct undo_proto *undobr;
-	struct undo_proto *redobr;
 };
 
 // main show container
