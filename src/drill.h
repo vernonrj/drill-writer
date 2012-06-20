@@ -219,7 +219,6 @@ struct headset_proto
 	// dot moments
 	struct coord_proto *center;
 	int selnum;
-	// undo/redo branch structs
 };
 
 // main show container

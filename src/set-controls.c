@@ -2,26 +2,24 @@
 #include "drill.h"
 
 
-int set_container_construct(struct set_container **setC_r, int perfs)
+int set_container_construct(struct set_container **setCont_r, int perfs)
 {
 	// construct the set container
 	struct set_proto *sets = 0;
-	struct set_container *setC;
+	struct set_container *setCont;
 	int excode;
 
-	setC = (struct set_container*)malloc(sizeof(struct set_container));
-	if (!setC)
+	setCont = (struct set_container*)malloc(sizeof(struct set_container));
+	if (!setCont)
 		return -1;
 	excode = set_construct(&sets, perfs);
 	if (excode == -1)
 		return -1;
-	//setC->firstset = sets;
-	//setC->prevset = 0;
-	setC->currset = sets;
+	setCont->currset = sets;
 
 	//sets->prev = setC->prevset;
 	sets->next = 0;
-	*setC_r = setC;
+	*setCont_r = setCont;
 	return 0;
 }
 
@@ -32,30 +30,30 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	//int i;
 	int excode;
 	
-	struct set_proto *sets;
+	struct set_proto *newset;
 	struct set_proto *last;
 
-	sets = (struct set_proto*) malloc(sizeof(struct set_proto));
-	if (sets == NULL)
+	newset = (struct set_proto*) malloc(sizeof(struct set_proto));
+	if (newset == NULL)
 	{
 		// allocation error
 		return -1;
 	}
 	// allocate values inside set
-	sets->name = (char*) malloc(1*sizeof(char));
-	sets->info = (char*) malloc(1*sizeof(char));
-	if (!sets->name || !sets->info)
+	newset->name = (char*) malloc(1*sizeof(char));
+	newset->info = (char*) malloc(1*sizeof(char));
+	if (!newset->name || !newset->info)
 		return -1;
-	sets->name[0] = '\0';
-	sets->info[0] = '\0';
-	sets->counts = 0;
-	sets->groups = (struct group_container*)malloc(sizeof(struct group_container));
-	sets->groups->head = 0;
-	sets->groups->include = 0;
+	newset->name[0] = '\0';
+	newset->info[0] = '\0';
+	newset->counts = 0;
+	newset->groups = (struct group_container*)malloc(sizeof(struct group_container));
+	newset->groups->head = 0;
+	newset->groups->include = 0;
 	// make sure not classified as midset
-	sets->midset = 0;
+	newset->midset = 0;
 	// make coordinate system
-	excode = coords_construct(&sets->coords, perfs);
+	excode = coords_construct(&newset->coords, perfs);
 	if (excode == -1)
 		return -1;
 
@@ -64,16 +62,16 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	if (last != NULL)
 	{
 		// Link previous set
-		sets->next = last->next;
-		sets->prev = last;
-		last->next = sets;
-		last = sets;
+		newset->next = last->next;
+		newset->prev = last;
+		last->next = newset;
+		last = newset;
 	}
 	else
 	{
-		sets->next = NULL;
-		sets->prev = NULL;
-		*sets_r = sets;
+		newset->next = NULL;
+		newset->prev = NULL;
+		*sets_r = newset;
 	}
 
 	return 0;
