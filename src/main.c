@@ -97,7 +97,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->center->y = 0;
 	*/
 	// Set the selection to "none"
-	dshow->select = 0;
+	pstate.select = 0;
 	// Set the current set to opening set
 	dshow->sets->currset = dshow->sets->firstset;
 	//dshow->sets->prevset = 0;
@@ -169,7 +169,7 @@ int show_destroy(struct headset_proto **dshow_r)
 	}
 	free(perfs);
 	// delete selects
-	select = dshow->select;
+	select = pstate.select;
 	while (select != NULL)
 	{
 		sellast = select->next;

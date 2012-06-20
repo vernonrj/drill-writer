@@ -256,7 +256,7 @@ int isSelected(int index)
 	struct select_proto *select;
 	int isin = 0;
 
-	select = pshow->select;
+	select = pstate.select;
 	while (select != NULL)
 	{
 		if (index == select->index)

@@ -20,7 +20,7 @@ void update_sel_center(void)
 	maxx = 0;
 	maxy = 0;
 	*/
-	last = pshow->select;
+	last = pstate.select;
 	coords = pshow->sets->currset->coords;
 	while (last)
 	{
@@ -119,10 +119,10 @@ void select_discard(void)
 	// remove all selections from selection list
 	struct select_proto *selects;
 	struct select_proto *last;
-	if (pshow->select != 0)
+	if (pstate.select != 0)
 	{
-		selects = pshow->select;
-		last = pshow->select;
+		selects = pstate.select;
+		last = pstate.select;
 		while (selects != NULL)
 		{
 			// remove
@@ -130,7 +130,7 @@ void select_discard(void)
 			free(selects);
 			selects = last;
 		}
-		pshow->select = 0;
+		pstate.select = 0;
 	}
 	pshow->selnum = 0;
 	update_sel_center();
@@ -149,7 +149,7 @@ int select_add(int index)
 	int matched = 0;
 	int loop_done = 0;
 
-	if (!pshow->select)
+	if (!pstate.select)
 	{
 		// no selection yet
 		curr = (struct select_proto*)malloc(sizeof(struct select_proto));
@@ -157,7 +157,7 @@ int select_add(int index)
 			return -1;
 		curr->next = 0;
 		curr->index = index;
-		pshow->select = curr;
+		pstate.select = curr;
 		if (select_in_group(index))
 			printf("%i in group\n", index);
 		// update selection center
@@ -167,7 +167,7 @@ int select_add(int index)
 	{
 		// have some selections; 
 		// add inorder or remove if already selected
-		last = pshow->select;
+		last = pstate.select;
 		selects = 0;
 		while (loop_done == 0)
 		{
@@ -180,7 +180,7 @@ int select_add(int index)
 				if (selects == NULL)
 				{
 					// match is first node
-					pshow->select = last->next;
+					pstate.select = last->next;
 					free(last);
 				}
 				else
@@ -219,8 +219,8 @@ int select_add(int index)
 			if (selects == NULL)
 			{
 				// insert at beginning
-				curr->next = pshow->select;
-				pshow->select = curr;
+				curr->next = pstate.select;
+				pstate.select = curr;
 			}
 			else
 			{
@@ -290,7 +290,7 @@ int add_group(void)
 		group->next = groups->head;
 		groups->head = group;
 	}
-	select = pshow->select;
+	select = pstate.select;
 	gselect = 0;
 	while (select != NULL)
 	{

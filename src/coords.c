@@ -157,7 +157,7 @@ int movexy(double xoff, double yoff)
 	double x, y;
 	struct coord_proto **coords = pshow->sets->currset->coords;
 	//struct coord_proto **coords = sets->currset->coords;
-	struct select_proto *selects = pshow->select;
+	struct select_proto *selects = pstate.select;
 	int done = 0;
 	while(selects != NULL)
 	{
@@ -186,7 +186,7 @@ int align_dots(void)
 	// align selected dots to 8:5 grid
 	//struct coord_proto **coords = pshow->currset->coords;
 	struct coord_proto **coords = pshow->sets->currset->coords;
-	struct select_proto *select = pshow->select;
+	struct select_proto *select = pstate.select;
 	double x, y;
 	int done = 0;
 	while (select != NULL)
@@ -213,7 +213,7 @@ int movexy_grid(double xoff, double yoff)
 	double x, y;
 	struct coord_proto **coords = pshow->sets->currset->coords;
 	//struct coord_proto **coords = sets->currset->coords;
-	struct select_proto *selects = pshow->select;
+	struct select_proto *selects = pstate.select;
 	while(selects != NULL)
 	{
 		retr_coord(coords[selects->index], &x, &y);
@@ -258,7 +258,7 @@ void scale_form(double s_step)
 	// index
 	int index;
 
-	last = pshow->select;
+	last = pstate.select;
 	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
 	cx = pshow->center->x;
@@ -320,7 +320,7 @@ void box_scale_form(double s_step)
 	// index
 	int index;
 
-	last = pshow->select;
+	last = pstate.select;
 	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
 	cx = pshow->center->x;
@@ -348,7 +348,7 @@ void box_scale_form(double s_step)
 		}
 		last = last->next;
 	}
-	last = pshow->select;
+	last = pstate.select;
 
 	// change all dots based on distance ratio
 	// stored in maxdx and maxdy
@@ -402,7 +402,7 @@ void rot_form(double s_step)
 	struct coord_proto *coord;
 	// index
 	int index;
-	last = pshow->select;
+	last = pstate.select;
 	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
 	cx = pshow->center->x;

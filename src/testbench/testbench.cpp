@@ -284,7 +284,7 @@ int tbSelect(void)
 
 int tbSelect_view(void)
 {
-	select_proto *selects = pshow->select;
+	select_proto *selects = pstate.select;
 	coord_proto **coords = pshow->sets->currset->coords;
 	perf_proto **perfs = pshow->perfs;
 	int i = 0;

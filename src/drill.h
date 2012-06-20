@@ -39,6 +39,8 @@ struct showstate_proto
 	char *filename;		// opened file
 	// show variables
 	int setnum;		// current set
+	// selection list
+	struct select_proto *select;
 	// current count of the current set
 	int curr_step;
 	int playing;		// play flag
@@ -214,8 +216,6 @@ struct headset_proto
 	struct set_container *sets;
 	// Tempo control
 	struct tempo_proto *currtempo;
-	// selection list
-	struct select_proto *select;
 	// dot moments
 	struct coord_proto *center;
 	int selnum;

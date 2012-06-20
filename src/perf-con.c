@@ -170,7 +170,7 @@ void revert_perf_selected(struct headset_proto *dshow)
 	struct coord_proto *coord;
 	// finished
 	int done;
-	last = dshow->select;
+	last = pstate.select;
 	undo_tclose();
 	while (last)
 	{
@@ -230,7 +230,7 @@ void delete_perf_selected(void)
 	struct perf_proto *perf;
 	struct perf_proto **perfs;
 	int done;
-	last = pshow->select;
+	last = pstate.select;
 	perfs = pshow->perfs;
 	while (last)
 	{
@@ -284,7 +284,7 @@ double check_stepsize_selected(struct headset_proto *dshow)
 	struct set_proto *currset = dshow->sets->currset;
 	struct set_proto *prevset = dshow->sets->currset->prev;
 	// selection
-	struct select_proto *last = dshow->select;
+	struct select_proto *last = pstate.select;
 	// coords
 	struct coord_proto **coords = currset->coords;
 	struct coord_proto **pcoords;
@@ -333,7 +333,7 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 	struct set_proto *currset = dshow->sets->currset;
 	struct set_proto *prevset = dshow->sets->currset->prev;
 	// selection
-	struct select_proto *last = dshow->select;
+	struct select_proto *last = pstate.select;
 	// coords
 	struct coord_proto **coords = currset->coords;
 	struct coord_proto **pcoords;

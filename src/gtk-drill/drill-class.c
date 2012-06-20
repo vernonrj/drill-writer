@@ -538,7 +538,7 @@ int draw_selected(GtkWidget *widget)
 		ncoords = 0;
 	*/
 	// get select information
-	select = pshow->select;
+	select = pstate.select;
 	while (select != NULL)
 	{
 		index = select->index;
@@ -618,7 +618,7 @@ int draw_dots (GtkWidget *widget)
 		// get previous set
 		//prevset = pshow->sets->prevset;
 		// get first selected dot
-		selects = pshow->select;
+		selects = pstate.select;
 		// draw performers at certain point
 		for (i=0; i<pshow->perfnum; i++)
 		{	// Draw performers only if they have valid dots
