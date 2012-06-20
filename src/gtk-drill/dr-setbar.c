@@ -292,8 +292,8 @@ void goto_count (GtkWidget *widget, DrSetbar *setbar)
 	{
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (setbar->priv->entry_counts));
 		count_buffer = atoi(entry_buffer);
-		if (!isLastSet() && pshow->step < pshow->sets->currset->counts)
-			pshow->step = count_buffer;
+		if (!isLastSet() && pstate.curr_step < pshow->sets->currset->counts)
+			pstate.curr_step = count_buffer;
 		//if (setnum+1<set_tot && count_buffer < counts[setnum+1])
 			//set_step=count_buffer;
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -357,7 +357,7 @@ void dr_setbar_update_entries(GtkWidget *drsetbar)
 	tempo = pshow->currtempo->tempo;
 	sprintf(tempo_buf, "%i", tempo);
 	//printf("tempo = %i\n", tempo);
-	if (pshow->step)
+	if (pstate.curr_step)
 	{
 		// take the counts from the next set
 		sprintf(count_buf, "%i", pshow->sets->currset->next->counts);

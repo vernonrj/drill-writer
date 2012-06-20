@@ -107,7 +107,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	time(&pstate.undo_timer);
 
 	// start at the beginning of the set
-	dshow->step = 0;
+	pstate.curr_step = 0;
 
 	*dshow_r = dshow;
 	return 0;

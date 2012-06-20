@@ -132,10 +132,10 @@ gboolean play_show (GtkWidget *widget)
 	if (pstate.playing == 1 && time_elapsed >= (double)60/(double)local_tempo && !expose_flag)
 	{	
 		//set_step++;
-		pshow->step++;
+		pstate.curr_step++;
 		do_field=0;	// don't need to redraw field
 		nextset = pshow->sets->currset->next;
-		if (pshow->step >= nextset->counts)
+		if (pstate.curr_step >= nextset->counts)
 		{
 			// next set
 			set_next();
@@ -200,7 +200,7 @@ void play_show_from_start (GtkWidget *widget)
 	{
 		pshow->sets->currset = pshow->sets->firstset;
 		pshow->sets->currset->prev = 0;
-		pshow->step = 0;
+		pstate.curr_step = 0;
 		pstate.setnum=0;
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 		pstate.playing=1;

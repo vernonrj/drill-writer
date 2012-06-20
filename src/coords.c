@@ -128,7 +128,7 @@ int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r)
 		// need to check to see if midset should be found
 		nextset = currset->next;
 		retr_coord(nextset->coords[index], &xnext, &ynext);
-		cstep = pshow->step;
+		cstep = pstate.curr_step;
 		if (cstep != 0)
 		{
 			// there is a bias that should be calculated

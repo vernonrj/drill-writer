@@ -39,6 +39,8 @@ struct showstate_proto
 	char *filename;		// opened file
 	// show variables
 	int setnum;		// current set
+	// current count of the current set
+	int curr_step;
 	int playing;		// play flag
 	int first_time;		// dealloc flag
 	// field state
@@ -210,8 +212,6 @@ struct headset_proto
 	struct perf_proto **perfs;
 	// set structure
 	struct set_container *sets;
-	// count of the current set
-	int step;
 	// Tempo control
 	struct tempo_proto *currtempo;
 	// selection list

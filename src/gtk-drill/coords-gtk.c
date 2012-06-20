@@ -364,7 +364,7 @@ void dot_align_to_grid(GtkWidget *widget)
 void move_up(GtkWidget *widget)
 {
 	// Move a dot backfield if not stepped
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(0, -1);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -374,7 +374,7 @@ void move_up(GtkWidget *widget)
 void move_down(GtkWidget *widget)
 {
 	// Move a dot frontfield
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(0, 1);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -384,7 +384,7 @@ void move_down(GtkWidget *widget)
 void move_left(GtkWidget *widget)
 {
 	// Move a dot toward left goal line
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(-1, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -394,7 +394,7 @@ void move_left(GtkWidget *widget)
 void move_right(GtkWidget *widget)
 {
 	// Move a dot toward right goal line
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(1, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -404,7 +404,7 @@ void move_right(GtkWidget *widget)
 void move_up_small(GtkWidget *widget)
 {
 	// Move a dot toward back sideline (0.25)
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(0, -0.25);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -414,7 +414,7 @@ void move_up_small(GtkWidget *widget)
 void move_down_small(GtkWidget *widget)
 {
 	// Move a dot toward front sideline (0.25)
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(0, 0.25);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -424,7 +424,7 @@ void move_down_small(GtkWidget *widget)
 void move_left_small(GtkWidget *widget)
 {
 	// Move a dot toward left goal line (0.25)
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(-0.25, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -434,7 +434,7 @@ void move_left_small(GtkWidget *widget)
 void move_right_small(GtkWidget *widget)
 {
 	// Move a dot toward right goal line (0.25)
-	if (pshow->step == 0)
+	if (pstate.curr_step == 0)
 	{
 		movexy(0.25, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);

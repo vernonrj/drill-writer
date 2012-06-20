@@ -609,7 +609,7 @@ int draw_dots (GtkWidget *widget)
 
 
 		// Draw dots grayed out if stepped
-		if (pshow && pshow->step)
+		if (pshow && pstate.curr_step)
 		{
 			cairo_set_source_rgb(dots, 0.3, 0.3, 0.3);
 		}
@@ -654,7 +654,7 @@ int draw_dots (GtkWidget *widget)
 		}
 		if (lastset)
 		{
-			if (pshow->step >= lastset->counts)
+			if (pstate.curr_step >= lastset->counts)
 			{
 				// Go to next set
 				set_next();

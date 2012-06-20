@@ -133,7 +133,7 @@ int newset_create(struct set_container *sets)
 		pcoords = curr->coords;
 		coords = last->coords;
 		nextset = curr->next;
-		if (nextset && pshow->step)
+		if (nextset && pstate.curr_step)
 		{
 			ncoords = nextset->coords;
 			mid = 1;
@@ -144,9 +144,9 @@ int newset_create(struct set_container *sets)
 			if (mid)
 			{
 				x = (ncoords[i]->x - pcoords[i]->x) / nextset->counts;
-				coords[i]->x = x*pshow->step + pcoords[i]->x;
+				coords[i]->x = x*pstate.curr_step + pcoords[i]->x;
 				y = (ncoords[i]->y - pcoords[i]->y) / nextset->counts;
-				coords[i]->y = y*pshow->step + pcoords[i]->y;
+				coords[i]->y = y*pstate.curr_step + pcoords[i]->y;
 			}
 			else
 			{
@@ -158,9 +158,9 @@ int newset_create(struct set_container *sets)
 		{
 			// change counts to reflect a midset creation
 			//newcounts = nextset->counts;
-			nextset->counts = nextset->counts - pshow->step;
-			last->counts = pshow->step;
-			pshow->step = 0;
+			nextset->counts = nextset->counts - pstate.curr_step;
+			last->counts = pstate.curr_step;
+			pstate.curr_step = 0;
 		}
 		else
 			last->counts = curr->counts;
@@ -341,7 +341,7 @@ int add_set(void)
 	int excode;
 
 	nextset = dshow->sets->currset->next;
-	if (nextset && dshow->step)
+	if (nextset && pstate.curr_step)
 		newcounts = nextset->counts;
 	excode = newset_create(dshow->sets);
 	if (excode == -1)
@@ -372,7 +372,7 @@ void set_first(void)
 	{
 		pshow->sets->currset = pshow->sets->firstset;
 		//pshow->sets->prevset = 0;
-		pshow->step = 0;
+		pstate.curr_step = 0;
 		//setnum=0;
 		pstate.setnum=0;
 		//set_step=0;
@@ -400,7 +400,7 @@ void set_last(void)
 		pstate.setnum++;
 	}
 	pshow->sets->currset = last;
-	pshow->step = 0;
+	pstate.curr_step = 0;
 
 	//setnum=set_tot-1;
 	//set_step=0;
@@ -417,7 +417,7 @@ void set_next(void)
 			pshow->sets->currset = pshow->sets->currset->next;
 			//setnum++;
 			pstate.setnum++;
-			pshow->step = 0;
+			pstate.curr_step = 0;
 		}
 	}
 }
@@ -431,15 +431,15 @@ void set_next_count(void)
 		//printf("set_next setnum=%i\nset_tot=%i\nset_step=%i\n", setnum, set_tot, set_step);
 		if (!isLastSet())
 		{
-			pshow->step++;
+			pstate.curr_step++;
 			nextset = pshow->sets->currset;
 			nextset = nextset->next;
-			if (pshow->step >= nextset->counts)
+			if (pstate.curr_step >= nextset->counts)
 			{
 				// to the next set
 				set_next();
 				/*
-				pshow->step = 0;
+				pstate.curr_step = 0;
 				pshow->sets->prevset = pshow->sets->currset;
 				pshow->sets->currset = nextset;
 				setnum++;
@@ -464,15 +464,15 @@ void set_prev_count(void)
 {
 	// go to the previous count
 	//struct set_proto *nextset;
-	if (!isFirstSet() || pshow->step)
+	if (!isFirstSet() || pstate.curr_step)
 	{
-		pshow->step--;
-		if (pshow->step < 0)
+		pstate.curr_step--;
+		if (pstate.curr_step < 0)
 		{
 			// to the next set
-			pshow->step = 0;
+			pstate.curr_step = 0;
 			set_prev();
-			pshow->step = pshow->sets->currset->next->counts-1;
+			pstate.curr_step = pshow->sets->currset->next->counts-1;
 		}
 	}
 	return;
@@ -488,8 +488,8 @@ void set_prev(void)
 		// if in the middle of set,
 		// go to beginning of set
 		last = pshow->sets->currset;
-		if (pshow->step)
-			pshow->step = 0;
+		if (pstate.curr_step)
+			pstate.curr_step = 0;
 		//else if (pshow->sets->prevset != NULL)
 		else if (last->prev != NULL)
 		{
