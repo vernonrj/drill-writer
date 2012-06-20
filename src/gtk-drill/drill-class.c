@@ -24,18 +24,18 @@ void zoom_amnt(double x, double y)
 	if (x == 0 && y == 0)
 	{
 		// zoom to 100%
-		//pstate.zoom_x = width;
-		//pstate.zoom_y = height;
-		pstate.zoom_x = 921;
-		pstate.zoom_y = 550;
+		//fldstate.zoom_x = width;
+		//fldstate.zoom_y = height;
+		fldstate.zoom_x = 921;
+		fldstate.zoom_y = 550;
 	}
 	else
 	{
-		pstate.zoom_x = pstate.zoom_x + x;
-		pstate.zoom_y = pstate.zoom_y + y;
+		fldstate.zoom_x = fldstate.zoom_x + x;
+		fldstate.zoom_y = fldstate.zoom_y + y;
 		do_field = 1;
 	}
-	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
+	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
 	return;
 }
 void zoom_fit(GtkWidget *widget)
@@ -45,18 +45,18 @@ void zoom_fit(GtkWidget *widget)
 	s_height = (double)scrolled_window->allocation.height;
 	//printf("scrolled = (%.2f, %.2f)\n", s_width, s_height);
 	//printf("window = (%.2f, %.2f)\n", width, height);
-	if (pstate.width > s_width || pstate.height > s_height)
+	if (fldstate.width > s_width || fldstate.height > s_height)
 	{
-		pstate.zoom_x = s_width;
-		pstate.zoom_y = s_height+20;
+		fldstate.zoom_x = s_width;
+		fldstate.zoom_y = s_height+20;
 	}
 	else
 	{
-		pstate.zoom_x = pstate.width;
-		pstate.zoom_y = pstate.height+20;
+		fldstate.zoom_x = fldstate.width;
+		fldstate.zoom_y = fldstate.height+20;
 	}
 	do_field = 1;
-	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
+	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
 	return;
 }
 
@@ -80,20 +80,20 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 	{
 		// zoom in
 		zoom_amnt(10, 10);
-		gtk_widget_set_size_request(widget, pstate.zoom_x, pstate.zoom_y);
+		gtk_widget_set_size_request(widget, fldstate.zoom_x, fldstate.zoom_y);
 
 		// I think this stuff needs to go into the realize member
 		/*
 		newwidth = widget->allocation.width;
 		newheight = widget->allocation.height;
-		newwidth = pstate.zoom_x;
-		newheight = pstate.zoom_y;
+		newwidth = fldstate.zoom_x;
+		newheight = fldstate.zoom_y;
 		width = fabs((oldwidth - newwidth) / 2);
 		height = fabs((oldheight - newheight) / 2);
 		width = 5;
 		height = 5;
-		//pstate.zoom_x = pstate.zoom_x + 10;
-		//pstate.zoom_y = pstate.zoom_y + 10;
+		//fldstate.zoom_x = fldstate.zoom_x + 10;
+		//fldstate.zoom_y = fldstate.zoom_y + 10;
 		xadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
 		yadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
 		xoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(xadj)) + width;
@@ -108,9 +108,9 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 	{
 		// zoom out
 		zoom_amnt(-10, -10);
-		//pstate.zoom_x = pstate.zoom_x - 10;
-		//pstate.zoom_y = pstate.zoom_y - 10;
-		gtk_widget_set_size_request(widget, pstate.zoom_x, pstate.zoom_y);
+		//fldstate.zoom_x = fldstate.zoom_x - 10;
+		//fldstate.zoom_y = fldstate.zoom_y - 10;
+		gtk_widget_set_size_request(widget, fldstate.zoom_x, fldstate.zoom_y);
 	}
 	return TRUE;
 }
@@ -119,21 +119,21 @@ void zoom_in(GtkWidget *widget)
 {
 	// zoom in
 	zoom_amnt(20, 20);
-	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
+	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
 }
 
 void zoom_out(GtkWidget *widget)
 {
 	// zoom out
 	zoom_amnt(-20, -20);
-	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
+	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
 }
 
 void zoom_standard(GtkWidget *widget)
 {
 	// zoom to 100%
 	zoom_amnt(0, 0);
-	gtk_widget_set_size_request(drill, pstate.zoom_x, pstate.zoom_y);
+	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
 }
 
 
@@ -227,8 +227,8 @@ static void gtk_drill_init (GtkDrill *drill)
 {
 	printf("ping drill init\n");
 	drill->sel = 0;
-	pstate.zoom_x = 800;
-	pstate.zoom_y = 480;
+	fldstate.zoom_x = 800;
+	fldstate.zoom_y = 480;
 }
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
@@ -240,8 +240,8 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 	//printf("ping size request\n");
 
 
-	//requisition->width = pstate.zoom_x;
-	//requisition->height = pstate.zoom_y;
+	//requisition->width = fldstate.zoom_x;
+	//requisition->height = fldstate.zoom_y;
 
 	//requisition->width = 850;
 	//requisition->height = 450;
@@ -365,14 +365,14 @@ extern GTimer * timer;
 void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
-	//gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	gtk_widget_set_size_request(drill, widget->allocation.width, widget->allocation.height);
 	gtk_widget_queue_draw_area(drill, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
 int field_init(void)
 {
-	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, pstate.width, pstate.height);
+	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 	field = cairo_create (surface);
 	gaks = cairo_create (surface);
 	fnums = cairo_create (surface);
@@ -392,18 +392,18 @@ void def_canvas (GtkWidget *widget)
 	//double z_x;
 	//double z_y;
 	// use default values for width and height
-	if (pstate.width != widget->allocation.width || pstate.height != widget->allocation.height)
+	if (fldstate.width != widget->allocation.width || fldstate.height != widget->allocation.height)
 	{
 		do_field=1;
 	}
 	// update width and height
-	pstate.width = widget->allocation.width;	// Get the width
-	pstate.height = widget->allocation.height;	// Get the height
-	//pstate.width = scrolled_window->allocation.width;	// Get the width
-	//pstate.height = scrolled_window->allocation.height;	// Get the height
+	fldstate.width = widget->allocation.width;	// Get the width
+	fldstate.height = widget->allocation.height;	// Get the height
+	//fldstate.width = scrolled_window->allocation.width;	// Get the width
+	//fldstate.height = scrolled_window->allocation.height;	// Get the height
 	//z_x = 100 * width / (double)scrolled_window->allocation.width;
 	//z_y = 100 * height / (double)scrolled_window->allocation.height;
-	if (pstate.width != pstate.zoom_x || pstate.height != pstate.zoom_y)
+	if (fldstate.width != fldstate.zoom_x || fldstate.height != fldstate.zoom_y)
 	{
 		// Catch zoom < 100% and handle
 		// TODO: narrow scope of conditional to only catch
@@ -412,53 +412,53 @@ void def_canvas (GtkWidget *widget)
 		// watch closely
 		//printf("ping\n");
 		//do_field = 1;
-		if (pstate.zoom_x < pstate.width)
+		if (fldstate.zoom_x < fldstate.width)
 		{
-			c_width = pstate.zoom_x;
+			c_width = fldstate.zoom_x;
 		}
 		else
-			c_width = pstate.width;
-		if (pstate.zoom_y < pstate.height)
+			c_width = fldstate.width;
+		if (fldstate.zoom_y < fldstate.height)
 		{
-			c_height = pstate.zoom_y;
+			c_height = fldstate.zoom_y;
 		}
 		else
-			c_height = pstate.height;
+			c_height = fldstate.height;
 	}	
 	else
 	{
-		c_width = pstate.width;
-		c_height = pstate.height;
+		c_width = fldstate.width;
+		c_height = fldstate.height;
 	}
 	//c_width = 801;
 	//c_height = 426;
-	//printf("width=%g\theight=%g\tstep=%g\n", width, height, pstate.canv_step);
-	pstate.xoff = (int)c_width % 160; 		// extra margin for the width
-	if (!pstate.xoff)	// need some margin
-		pstate.xoff = (int)(c_width-1) % 160;
-	pstate.xo2 = pstate.xoff / 2;			// half of the offset
-	pstate.canv_step = (c_width-pstate.xoff) / 160;	// length of one 8:5 step
-	yheight = pstate.canv_step * 85;		// height of the field
+	//printf("width=%g\theight=%g\tstep=%g\n", width, height, fldstate.canv_step);
+	fldstate.xoff = (int)c_width % 160; 		// extra margin for the width
+	if (!fldstate.xoff)	// need some margin
+		fldstate.xoff = (int)(c_width-1) % 160;
+	fldstate.xo2 = fldstate.xoff / 2;			// half of the offset
+	fldstate.canv_step = (c_width-fldstate.xoff) / 160;	// length of one 8:5 step
+	yheight = fldstate.canv_step * 85;		// height of the field
 	//printf("yheight = %g height = %g\n", yheight, height);
 	if (yheight > c_height)
 	{	// limiting factor is height, adjust
-		pstate.yoff = (int)c_height % 85;
-		pstate.yo2 = pstate.yoff / 2;
-		pstate.canv_step = (c_height - pstate.yoff) / 85;
-		yheight = pstate.canv_step * 85;
-		pstate.xoff = c_width - (160*pstate.canv_step);
-		pstate.xo2 = pstate.xoff / 2;
+		fldstate.yoff = (int)c_height % 85;
+		fldstate.yo2 = fldstate.yoff / 2;
+		fldstate.canv_step = (c_height - fldstate.yoff) / 85;
+		yheight = fldstate.canv_step * 85;
+		fldstate.xoff = c_width - (160*fldstate.canv_step);
+		fldstate.xo2 = fldstate.xoff / 2;
 	}
 	else
 	{
-		pstate.yoff = c_height - yheight;	// y offset
-		pstate.yo2 = pstate.yoff / 2;			// half of the offset
+		fldstate.yoff = c_height - yheight;	// y offset
+		fldstate.yo2 = fldstate.yoff / 2;			// half of the offset
 	}
 	// account for zooming
-	pstate.xoff = pstate.xoff + (pstate.width - c_width);
-	pstate.yoff = pstate.yoff + (pstate.height - c_height);
-	pstate.xo2 = pstate.xoff / 2;
-	pstate.yo2 = pstate.yoff / 2;
+	fldstate.xoff = fldstate.xoff + (fldstate.width - c_width);
+	fldstate.yoff = fldstate.yoff + (fldstate.height - c_height);
+	fldstate.xo2 = fldstate.xoff / 2;
+	fldstate.yo2 = fldstate.yoff / 2;
 	
 	return;
 }
@@ -467,13 +467,13 @@ void drawing_method(cairo_t *cdots, double x, double y)
 {
 	// dot drawing
 	double size = 0.5;
-	double oset = size*pstate.canv_step;
+	double oset = size*fldstate.canv_step;
 	cairo_move_to(cdots, x-oset, y-oset);
 	cairo_rel_line_to(cdots, 2*oset, 2*oset);
 	cairo_move_to(cdots, x-oset, y+oset);
 	cairo_rel_line_to(cdots, 2*oset, -2*oset);
 	//cairo_new_sub_path(cdots);
-	//cairo_arc(cdots, x, y, 2*(double)pstate.canv_step/3, 0, 360);
+	//cairo_arc(cdots, x, y, 2*(double)fldstate.canv_step/3, 0, 360);
 	return;
 }
 
@@ -486,8 +486,8 @@ int pixel_to_field(double *x_r, double *y_r)
 	x = *x_r;
 	y = *y_r;
 
-	x = (x-pstate.xo2) / pstate.canv_step;
-	y = (y-pstate.yo2) / pstate.canv_step;
+	x = (x-fldstate.xo2) / fldstate.canv_step;
+	y = (y-fldstate.yo2) / fldstate.canv_step;
 
 	*x_r = x;
 	*y_r = y;
@@ -502,8 +502,8 @@ int field_to_pixel(double *x_r, double *y_r)
 	x = *x_r;
 	y = *y_r;
 
-	x = pstate.xo2 + pstate.canv_step * x;
-	y = pstate.yo2 + pstate.canv_step * y;
+	x = fldstate.xo2 + fldstate.canv_step * x;
+	y = fldstate.yo2 + fldstate.canv_step * y;
 
 	*x_r = x;
 	*y_r = y;
@@ -712,7 +712,7 @@ void draw_field (GtkWidget *widget)
 		}
 		else
 			pstate.first_time = 0;
-		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, pstate.width, pstate.height);
+		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 		field = cairo_create (surface);
 		gaks = cairo_create (surface);
 		fnums = cairo_create (surface);
@@ -722,22 +722,22 @@ void draw_field (GtkWidget *widget)
 		cairo_set_source_rgb(field, 1, 1, 1);	
 		cairo_paint (field);
 
-		for (i=pstate.xo2; i<=pstate.width-(int)pstate.xo2; i+=(pstate.width-(int)pstate.xoff)/20)
+		for (i=fldstate.xo2; i<=fldstate.width-(int)fldstate.xo2; i+=(fldstate.width-(int)fldstate.xoff)/20)
 		{	// Yardlines
 			cairo_set_line_width(field, 1);
 			cairo_set_source_rgb(field, 0, 0, 0);
-			cairo_move_to (field, i, pstate.height-yheight-pstate.yo2);
-			cairo_line_to (field, i, yheight+pstate.yo2);
+			cairo_move_to (field, i, fldstate.height-yheight-fldstate.yo2);
+			cairo_line_to (field, i, yheight+fldstate.yo2);
 			// Yardline Numbers
 			sprintf(text, "%i", ynum);
 			cairo_text_extents (fnums, text, &te);
 			//cairo_get_font_options(fnums, fopts);
-			//cairo_font_options_set_height(fopts, 4*pstate.canv_step);
+			//cairo_font_options_set_height(fopts, 4*fldstate.canv_step);
 			x_bear = te.x_bearing + te.width / 2;
 			//y_bear = te.y_bearing + te.height / 2;
-			cairo_move_to (fnums, i - x_bear, pstate.height-pstate.yo2-pstate.canv_step*12);
+			cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*12);
 			cairo_show_text(fnums, text);
-			cairo_move_to (fnums, i - x_bear, pstate.height-pstate.yo2-pstate.canv_step*73);
+			cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*73);
 			cairo_show_text(fnums, text);
 			if (ynum == 50)
 				past_fifty = 1;
@@ -752,38 +752,38 @@ void draw_field (GtkWidget *widget)
 				ynum = ynum - 5;
 			}
 			// Front Hash
-			cairo_move_to (field, i-2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*32);
-			cairo_line_to (field, i+2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*32);
+			cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+			cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
 			// Back Hash
-			cairo_move_to (field, i-2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*53);
-			cairo_line_to (field, i+2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*53);
+			cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+			cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
 			cairo_stroke (field);
 
 			
 			// Split Yardlines
-			if (i<((int)pstate.xo2+(int)pstate.canv_step*160))
+			if (i<((int)fldstate.xo2+(int)fldstate.canv_step*160))
 			{
 				// Light Stroke
 				// only draw if window is large enough
 				cairo_set_line_width (gaks, 0.5);
 				//cairo_set_source_rgb(gaks, 0.9, 0.9, 0.9);
 				cairo_set_source_rgb(gaks, 0.9, 0.9, 1);
-				if (pstate.width-pstate.xo2 > 800)
+				if (fldstate.width-fldstate.xo2 > 800)
 				{
-					for (j=i; j<i+(int)pstate.canv_step*4; j+=(int)pstate.canv_step)
+					for (j=i; j<i+(int)fldstate.canv_step*4; j+=(int)fldstate.canv_step)
 					{	// 1-step yardlines
-						cairo_move_to (gaks, j, pstate.height-yheight-pstate.yo2);
-						cairo_line_to (gaks, j, yheight+pstate.yo2);
+						cairo_move_to (gaks, j, fldstate.height-yheight-fldstate.yo2);
+						cairo_line_to (gaks, j, yheight+fldstate.yo2);
 						
-						cairo_move_to (gaks, j+pstate.canv_step*5, pstate.height-yheight-pstate.yo2);
-						cairo_line_to (gaks, j+pstate.canv_step*5, yheight+pstate.yo2);
+						cairo_move_to (gaks, j+fldstate.canv_step*5, fldstate.height-yheight-fldstate.yo2);
+						cairo_line_to (gaks, j+fldstate.canv_step*5, yheight+fldstate.yo2);
 					}
-					for (j=pstate.yo2+yheight; j>=pstate.yo2; j-=(int)pstate.canv_step)
+					for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=(int)fldstate.canv_step)
 					{	// 1-step y-grid
-						if (((int)(j-pstate.yo2-pstate.canv_step)%(int)(pstate.canv_step*4)) == 0)
+						if (((int)(j-fldstate.yo2-fldstate.canv_step)%(int)(fldstate.canv_step*4)) == 0)
 							continue;
 						cairo_move_to (gaks, i, j);
-						cairo_line_to (gaks, i+pstate.canv_step*8, j);
+						cairo_line_to (gaks, i+fldstate.canv_step*8, j);
 					}
 					// Light Stroke Draw
 					cairo_stroke (gaks);
@@ -791,18 +791,18 @@ void draw_field (GtkWidget *widget)
 
 				// Med Stroke
 				// only draw if window is large enough
-				if (pstate.width-pstate.xo2 > 600)
+				if (fldstate.width-fldstate.xo2 > 600)
 				{
 					// 4-step X
 					//cairo_set_source_rgb(gaks, 0.5, 0.5, 0.5);
 					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
-					cairo_move_to (gaks, i+(int)pstate.canv_step*4, pstate.height-yheight-pstate.yo2);
-					cairo_line_to (gaks, i+(int)pstate.canv_step*4, yheight+pstate.yo2);
+					cairo_move_to (gaks, i+(int)fldstate.canv_step*4, fldstate.height-yheight-fldstate.yo2);
+					cairo_line_to (gaks, i+(int)fldstate.canv_step*4, yheight+fldstate.yo2);
 					
-					for (j=pstate.yo2+yheight; j>=pstate.yo2; j-=4*(int)pstate.canv_step)
+					for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=4*(int)fldstate.canv_step)
 					{	// 4-Step Gaks
 						cairo_move_to (gaks, i, j);
-						cairo_line_to (gaks, i+(int)pstate.canv_step*8, j);
+						cairo_line_to (gaks, i+(int)fldstate.canv_step*8, j);
 					}
 					// Med Stroke Draw
 					cairo_stroke(gaks);

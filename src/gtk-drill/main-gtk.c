@@ -627,8 +627,8 @@ void do_undo_gtk(GtkWidget *widget)
 		if (first_one)
 			first_one = first_one - 1;
 	} while ((done == 0 || first_one) && pstate.undobr);
-	lwidth = pstate.width;
-	lheight = pstate.height+2*pstate.canv_step;
+	lwidth = fldstate.width;
+	lheight = fldstate.height+2*fldstate.canv_step;
 	//gtk_widget_queue_draw_area(window, 0, 0, width, height+2*step);
 	gtk_widget_queue_draw_area(window, 0, 0, lwidth, lheight);
 	return;
@@ -641,8 +641,8 @@ void do_redo_gtk(GtkWidget *widget)
 	{
 		done = popFromStack(pshow, &pstate.redobr, &pstate.undobr);
 	} while (done == 0);
-	lwidth = pstate.width;
-	lheight = pstate.height+2*pstate.canv_step;
+	lwidth = fldstate.width;
+	lheight = fldstate.height+2*fldstate.canv_step;
 	gtk_widget_queue_draw_area(window, 0, 0, lwidth, lheight);
 	return;
 }

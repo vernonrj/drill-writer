@@ -145,7 +145,7 @@ void add_set_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		add_set();
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -157,7 +157,7 @@ void delete_set_gtk(GtkWidget *widget)
 	{
 		delete_set();
 		do_field = 0;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -171,7 +171,7 @@ void set_first_gtk(GtkWidget *widget)
 	{
 		set_first();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -183,7 +183,7 @@ void set_last_gtk(GtkWidget *widget)
 	{
 		set_last();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 
 	}
 	return;
@@ -197,7 +197,7 @@ void set_next_gtk(GtkWidget *widget)
 		set_next();
 		do_field=0;
 		//gdk_drawable_get_size(widget->window, &width, &height);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -210,7 +210,7 @@ void set_next_count_gtk(GtkWidget *widget)
 	{
 		set_next_count();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -222,7 +222,7 @@ void set_prev_count_gtk(GtkWidget *widget)
 	{
 		set_prev_count();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -234,7 +234,7 @@ void set_prev_gtk(GtkWidget *widget)
 	{
 		set_prev();
 		do_field=0;	// don't need to draw field
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -263,7 +263,7 @@ void set_set_name_gtk(GtkWidget *widget, DrSetbar *setbar)
 			strcpy(setcurr->name, entry_buffer);
 		}
 		do_field = 0;	// don't need to redraw field yet
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -278,7 +278,7 @@ void goto_set_gtk (GtkWidget *widget, DrSetbar *setbar)
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (setbar->priv->entry_sets));
 		set_buffer = atoi(entry_buffer);
 		goto_set(set_buffer);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -296,7 +296,7 @@ void goto_count (GtkWidget *widget, DrSetbar *setbar)
 			pstate.curr_step = count_buffer;
 		//if (setnum+1<set_tot && count_buffer < counts[setnum+1])
 			//set_step=count_buffer;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 		
@@ -333,7 +333,7 @@ void change_tempo_gtk (GtkWidget *widget, DrSetbar *setbar)
 	currtempo = pshow->currtempo;
 	change_tempo(tmpo, &currtempo);
 	pshow->currtempo = currtempo;
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 
 	return;
 }

@@ -19,7 +19,7 @@ void goto_perf (GtkWidget *widget)
 		perf_buffer = atoi(entry_buffer);
 		if (perf_buffer<pshow->perfnum)
 			perf_cur=perf_buffer;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 */
@@ -30,7 +30,7 @@ int add_perf_gtk(GtkWidget *widget)
 	mouse_currentMode = ADDPERF;
 	//gtk_button_set_label(GTK_BUTTON(menuButton), "Add");
 	//excode = add_perf();
-	//gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
+	//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
 	if (excode != -1)
 		return 0;
 	return excode;
@@ -43,7 +43,7 @@ void revert_perf_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		revert_perf_selected(pshow);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
 	}
 	return;
 }
@@ -54,7 +54,7 @@ void delete_perf_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		delete_perf_selected();
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
 	}
 }
 
@@ -75,7 +75,7 @@ void xperf_change (GtkWidget *widget)
 			set_coord(pshow, perf_cur, perf_buffer, coords->y);
 			//perf[setnum][perf_cur][0] = perf_buffer;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -93,7 +93,7 @@ void yperf_change (GtkWidget *widget)
 			set_coord(pshow, perf_cur, coords->x, perf_buffer);
 			//perf[setnum][perf_cur][1] = perf_buffer;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
 	}
 }
 */
@@ -105,7 +105,7 @@ void next_perf(GtkWidget *widget)
 	if (perf_cur < pshow->perfnum-1)
 	{
 		perf_cur++;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -115,14 +115,14 @@ void prev_perf(GtkWidget *widget)
 	if (perf_cur > 0)
 	{
 		perf_cur--;
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
 int select_all_gtk (GtkWidget *widget)
 {
 	select_all();
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
 	return 0;
 }
 
@@ -140,7 +140,7 @@ int select_mode_gtk (GtkWidget *widget)
 	// go back to normal selectmode
 	mouse_currentMode = SELECTONE;
 	//gtk_button_set_label(GTK_BUTTON(menuButton), "Select");
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
 	return 0;
 }
 
@@ -167,7 +167,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 					{
 						movexy(mousex, mousey);
 						mouse_discarded = 0;
-						gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+						gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 					}
 				}
 				break;
@@ -221,28 +221,28 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 						}
 					}
 				}
-				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+				gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 				break;
 			case SELECTDRAG:
 				// Select (by dragging) performers
-				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+				gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 				break;
 			case ADDPERF:
 				// Add performers by clicking on canvas
 				coordx = event->x;
 				coordy = event->y;
 				// Adjust for various canvas offsets
-				coordx = round((coordx-pstate.xo2)/pstate.canv_step);
+				coordx = round((coordx-fldstate.xo2)/fldstate.canv_step);
 				//coordy = (coordy-yo2-25)/step;
-				coordy = round((coordy-pstate.yo2)/pstate.canv_step);
+				coordy = round((coordy-fldstate.yo2)/fldstate.canv_step);
 				index = add_perf();
 				set_coord(pshow, index, coordx, coordy);
-				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+				gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 				//mouse_currentMode = SELECTONE;
 				break;
 			case MVPERF:
 				// Move performers by clicking on canvas?
-				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+				gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 				break;
 		}
 	}
@@ -285,9 +285,9 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 	coordx = event->x;
 	coordy = event->y;
 	// Adjust for various canvas offsets
-	coordx = (coordx-pstate.xo2)/pstate.canv_step;
+	coordx = (coordx-fldstate.xo2)/fldstate.canv_step;
 	//coordy = (coordy-yo2-25)/step;
-	coordy = (coordy-pstate.yo2)/pstate.canv_step;
+	coordy = (coordy-fldstate.yo2)/fldstate.canv_step;
 
 	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 	perfnum = pshow->perfnum;

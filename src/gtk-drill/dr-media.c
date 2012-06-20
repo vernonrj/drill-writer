@@ -148,7 +148,7 @@ gboolean play_show (GtkWidget *widget)
 		//g_print("width=%i\theight=%i\n", width, height);
 		expose_flag =1;
 		gtk_widget_queue_draw_area(window, 0, 0, 
-				pstate.width, pstate.height);
+				fldstate.width, fldstate.height);
 		//g_print("Play_show %i %i %i\n", setnum, set_step, playing);
 		if (pstate.playing)
 		{
@@ -167,7 +167,7 @@ gboolean play_show (GtkWidget *widget)
 void stop_show (GtkWidget *widget)
 {
 	pstate.playing=0;
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 }
 
 
@@ -178,7 +178,7 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 		do_field=0;	// don't need to redraw field
 		gtk_widget_queue_draw_area(window, 0, 0, 
-				pstate.width, pstate.height);
+				fldstate.width, fldstate.height);
 		if (pshow->sets->currset->next != NULL)
 			pstate.playing = 1;
 		else
@@ -205,7 +205,7 @@ void play_show_from_start (GtkWidget *widget)
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 		pstate.playing=1;
 		gtk_widget_queue_draw_area(window, 0, 0, 
-				pstate.width, pstate.height);
+				fldstate.width, fldstate.height);
 		g_timer_start(timer);
 	}
 }

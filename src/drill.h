@@ -48,12 +48,6 @@ struct showstate_proto
 	int curr_step;
 	int playing;		// play flag
 	int first_time;		// dealloc flag
-	// field state
-	double xoff, yoff;	// field offset
-	double xo2, yo2;	// field centering
-	double width, height;	// allocated size
-	double canv_step;	// 8:5 step in pixels
-	double zoom_x, zoom_y;	// zoom size
 	// undo state
 	time_t undo_timer;	// time since last undo
 	struct undo_proto *undobr;

@@ -28,6 +28,15 @@ GtkWidget *statusbar;
 GtkWidget *menuButton;
 
 double mousex, mousey;
+struct fieldstate_proto
+{
+	double xoff, yoff;	// field offset
+	double xo2, yo2;	// field centering
+	double width, height;	// allocated size
+	double canv_step;	// 8:5 step in pixels
+	double zoom_x, zoom_y;	// zoom size
+} fldstate;
+
 /*
 // Side-to-Side relation buttons
 struct gtk_ssRel

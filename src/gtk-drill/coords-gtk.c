@@ -32,7 +32,7 @@ void change_ss_entry(GtkWidget *widget)
 			movexy(new_cx-ssStep, 0);
 		}	
 		gtk_widget_queue_draw_area(window, 0, 0, 
-				pstate.width, pstate.height);
+				fldstate.width, fldstate.height);
 	}
 
 	return;
@@ -63,7 +63,7 @@ void toggle_ssYdRel(GtkWidget *widget)
 		// move right
 		movexy(2*ssStep, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, 
-				pstate.width, pstate.height);
+				fldstate.width, fldstate.height);
 	}
 	else if ((yardrel == 1 && fieldside == 1) 
 			|| (yardrel == -1 && fieldside == 2))
@@ -71,7 +71,7 @@ void toggle_ssYdRel(GtkWidget *widget)
 		// move left
 		movexy(-2*ssStep, 0);
 		gtk_widget_queue_draw_area(window, 0, 0, 
-				pstate.width, pstate.height);
+				fldstate.width, fldstate.height);
 	}
 	return;
 }
@@ -84,7 +84,7 @@ void toggle_ssSide(GtkWidget *widget)
 	cx = pstate.center->x;
 
 	movexy(2*(80-cx), 0);
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 
 	return;
 }
@@ -135,13 +135,13 @@ void change_fb_entry(GtkWidget *widget)
 		{
 			// front
 			movexy(0, inOut * (new_cy-fbStep));
-			gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+			gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 		}
 		else if (!strcmp(fb_frontback, "back"))
 		{
 			// back
 			movexy(0, -inOut*(new_cy-fbStep));
-			gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+			gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 		}
 	}
 	g_free (fb_hashrel);
@@ -172,13 +172,13 @@ void toggle_fbHashRel(GtkWidget *widget)
 		{
 			// inside front, add
 			movexy(0, 2*fbStep);
-			gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+			gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 		}
 		else if (!strcmp(fb_hashrel, "outside"))
 		{
 			// outside front, subtract
 			movexy(0, -2*fbStep);
-			gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+			gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 		}
 	}
 	else if (!strcmp(fb_frontback, "back"))
@@ -188,13 +188,13 @@ void toggle_fbHashRel(GtkWidget *widget)
 		{
 			// inside back, subtract
 			movexy(0, -2*fbStep);
-			gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+			gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 		}
 		else if (!strcmp(fb_hashrel, "outside"))
 		{
 			// outside back, add
 			movexy(0, 2*fbStep);
-			gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+			gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 		}
 	}
 
@@ -250,13 +250,13 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	{
 		// inside front hash/side
 		movexy(0, fb * (shstep - 2*fbStep));
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	else if (!strcmp(fb_hashrel, "outside"))
 	{
 		// outside front hash/side
 		movexy(0, fb * (shstep + 2*fbStep));
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	g_free (fb_hashrel);
 	g_free (fb_frontback);
@@ -289,13 +289,13 @@ void toggle_HashSide(GtkWidget *widget)
 	{
 		// front/back hash
 		movexy(0, fb * 32);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 	else if (!strcmp(fb_hashside, "sideline"))
 	{
 		// front/back sideline
 		movexy(0, -fb*32);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 
 	g_free (fb_hashrel);
@@ -309,7 +309,7 @@ void expand_form(GtkWidget *widget)
 {
 	// expand the form by 1 step
 	box_scale_form(1);
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 
@@ -317,7 +317,7 @@ void contract_form(GtkWidget *widget)
 {
 	// contract the form by 1 step
 	box_scale_form(-1);
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 
@@ -325,7 +325,7 @@ void rot_cw(GtkWidget *widget)
 {
 	// rotate form clockwise
 	rot_form(M_PI/16);
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 
@@ -333,7 +333,7 @@ void rot_countercw(GtkWidget *widget)
 {
 	// rotate form clockwise
 	rot_form(-M_PI/16);
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 
@@ -341,7 +341,7 @@ void rot_cw_small(GtkWidget *widget)
 {
 	// rotate form clockwise
 	rot_form(M_PI/64);
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 
@@ -349,7 +349,7 @@ void rot_countercw_small(GtkWidget *widget)
 {
 	// rotate form clockwise
 	rot_form(-M_PI/64);
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 
@@ -357,7 +357,7 @@ void dot_align_to_grid(GtkWidget *widget)
 {
 	// align dots to 8:5 grid (called from gtk)
 	align_dots();
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 
@@ -367,7 +367,7 @@ void move_up(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(0, -1);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -377,7 +377,7 @@ void move_down(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(0, 1);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -387,7 +387,7 @@ void move_left(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(-1, 0);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -397,7 +397,7 @@ void move_right(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(1, 0);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -407,7 +407,7 @@ void move_up_small(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(0, -0.25);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -417,7 +417,7 @@ void move_down_small(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(0, 0.25);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 	
@@ -427,7 +427,7 @@ void move_left_small(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(-0.25, 0);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -437,7 +437,7 @@ void move_right_small(GtkWidget *widget)
 	if (pstate.curr_step == 0)
 	{
 		movexy(0.25, 0);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
+		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 	}
 }
 
@@ -449,9 +449,9 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	double xo2, yo2;
 	double step;
 	int excode;
-	xo2 = pstate.xo2;
-	yo2 = pstate.yo2;
-	step = pstate.canv_step;
+	xo2 = fldstate.xo2;
+	yo2 = fldstate.yo2;
+	step = fldstate.canv_step;
 
 	coordx = event->x;
 	coordy = event->y;
