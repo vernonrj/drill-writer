@@ -6,12 +6,12 @@
  * TODO:	Groups and forms will be separate entities.
  * TODO:	Groups can be nested (subgroups, subforms). Accessed on group sidebar
  * 		Forms can be linked (endpt to endpt).
- * TODO:	Move coord->field calculation out of canvas draw function.
- * 		This makes the canvas drawing more modular and less dependant on gtk
  * TODO:	Handle arc forms like javascript spline example seen.
  * TODO:	Research drag&drop to see if it can be used for moving dots
  * TODO:	Develop pango prototype for integration into program
  * TODO:	Work on open dialog to show only relevent files
+ * TODO:	Gray out undo & redo when no undo/redo paths
+ * TODO:	Fix redo
  *
  */
 

@@ -205,7 +205,7 @@ void revert_perf(struct headset_proto *dshow, int index)
 	struct coord_proto *prevcoord;
 
 	//currset = dshow->sets->currset;
-	prevset = dshow->sets->prevset;
+	prevset = dshow->sets->currset->prev;
 
 	//coord = currset->coords[index];
 
@@ -282,7 +282,7 @@ double check_stepsize_selected(struct headset_proto *dshow)
 	double dxy;
 	// sets
 	struct set_proto *currset = dshow->sets->currset;
-	struct set_proto *prevset = dshow->sets->prevset;
+	struct set_proto *prevset = dshow->sets->currset->prev;
 	// selection
 	struct select_proto *last = dshow->select;
 	// coords
@@ -331,7 +331,7 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 	double dxy;
 	// sets
 	struct set_proto *currset = dshow->sets->currset;
-	struct set_proto *prevset = dshow->sets->prevset;
+	struct set_proto *prevset = dshow->sets->currset->prev;
 	// selection
 	struct select_proto *last = dshow->select;
 	// coords

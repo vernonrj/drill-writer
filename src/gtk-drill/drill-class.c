@@ -608,16 +608,10 @@ int draw_dots (GtkWidget *widget)
 
 
 
-		// Draw dots
-		if (pshow)
+		// Draw dots grayed out if stepped
+		if (pshow && pshow->step)
 		{
-			// draw grayed out if stepped
-			if (pshow->step)
-			{
-				cairo_set_source_rgb(dots, 0.3, 0.3, 0.3);
-			}
-			else
-				cairo_set_source_rgb(dots, 0, 0, 0);
+			cairo_set_source_rgb(dots, 0.3, 0.3, 0.3);
 		}
 		else
 			cairo_set_source_rgb(dots, 0, 0, 0);

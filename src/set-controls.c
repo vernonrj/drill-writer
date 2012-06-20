@@ -7,11 +7,19 @@ int set_container_construct(struct set_container **setC_r, int perfs)
 	// construct the set container
 	struct set_proto *sets = 0;
 	struct set_container *setC;
+	int excode;
+
 	setC = (struct set_container*)malloc(sizeof(struct set_container));
-	set_construct(&sets, perfs);
-	setC->firstset = sets;
-	setC->prevset = 0;
+	if (!setC)
+		return -1;
+	excode = set_construct(&sets, perfs);
+	if (excode == -1)
+		return -1;
+	//setC->firstset = sets;
+	//setC->prevset = 0;
 	setC->currset = sets;
+
+	//sets->prev = setC->prevset;
 	sets->next = 0;
 	*setC_r = setC;
 	return 0;
@@ -51,19 +59,20 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	if (excode == -1)
 		return -1;
 
-
 	// link
 	last = *sets_r;
 	if (last != NULL)
 	{
 		// Link previous set
 		sets->next = last->next;
+		sets->prev = last;
 		last->next = sets;
 		last = sets;
 	}
 	else
 	{
-		sets->next = 0;
+		sets->next = NULL;
+		sets->prev = NULL;
 		*sets_r = sets;
 	}
 
@@ -157,6 +166,7 @@ int newset_create(struct set_container *sets)
 			last->counts = curr->counts;
 		// link
 		last->next = curr->next;
+		last->prev = curr;
 		curr->next = last;
 		// set counts
 		if (last->counts == 0)
@@ -205,7 +215,7 @@ int set_destroy(void)
 	int excode;
 
 	last = pshow->sets->currset;
-	prevset = pshow->sets->prevset;
+	prevset = last->prev;
 	//perfnum = pshow->perfnum;
 
 	pushSetDel(&pshow->undobr, pshow->sets->currset);
@@ -231,6 +241,7 @@ int set_destroy(void)
 		{
 			// next set does not exist. Put current set
 			// at new last set
+			// TODO: Make more efficient
 			set_first();
 			set_last();
 		}
@@ -264,26 +275,24 @@ void goto_set(int set_buffer)
 {
 	int i = 0;
 	struct set_proto *last = pshow->sets->firstset;
-	struct set_proto *curr = 0;
+	//struct set_proto *curr = 0;
+	for (i=0; i<set_buffer && last != NULL; i++)
 	{
-		for (i=0; i<set_buffer && last != NULL; i++)
-		{
-			// go to current set
-			curr = last;
-			last = last->next;
-			i++;
-		}
-		/*
-		if (set_buffer<set_tot)
-			setnum=set_buffer;
-		*/
-		if (last != NULL)
-		{
-			pshow->sets->currset = last;
-			pshow->sets->prevset = curr;
-			//setnum = i;
-			pstate.setnum = i;
-		}
+		// go to current set
+		//curr = last;
+		last = last->next;
+		i++;
+	}
+	/*
+	if (set_buffer<set_tot)
+		setnum=set_buffer;
+	*/
+	if (last != NULL)
+	{
+		pshow->sets->currset = last;
+		//pshow->sets->prevset = curr;
+		//setnum = i;
+		pstate.setnum = i;
 	}
 	return;
 }
@@ -309,7 +318,8 @@ int isLastSet(void)
 int isFirstSet(void)
 {
 	// check to see if we're at the first set
-	if (pshow->sets->currset == pshow->sets->firstset)
+	//if (pshow->sets->currset == pshow->sets->firstset)
+	if (pshow->sets->currset->prev == NULL)
 	{
 		// at the first set
 		return 1;
@@ -322,16 +332,20 @@ int isFirstSet(void)
 	return 0;
 }
 
-void add_set(void)
+int add_set(void)
 {
 	// Add a set after the current one
 	struct headset_proto *dshow = pshow;
 	struct set_proto *nextset;
 	int newcounts = 0;
+	int excode;
+
 	nextset = dshow->sets->currset->next;
 	if (nextset && dshow->step)
 		newcounts = nextset->counts;
-	newset_create(dshow->sets);
+	excode = newset_create(dshow->sets);
+	if (excode == -1)
+		return -1;
 	set_next();
 	if (newcounts)
 	{
@@ -340,7 +354,7 @@ void add_set(void)
 	}
 	pushSetMk(&dshow->undobr);
 
-	return;
+	return 0;
 }
 
 
@@ -357,7 +371,7 @@ void set_first(void)
 	//if (!playing)
 	{
 		pshow->sets->currset = pshow->sets->firstset;
-		pshow->sets->prevset = 0;
+		//pshow->sets->prevset = 0;
 		pshow->step = 0;
 		//setnum=0;
 		pstate.setnum=0;
@@ -369,23 +383,28 @@ void set_first(void)
 void set_last(void)
 {
 	// Goto the last set
-	//if (!playing)
+	struct set_proto *last = pshow->sets->currset;
+	if (!last)
+		return;
+	while (last->next != NULL)
 	{
-		while (pshow->sets->currset->next != NULL)
-		{
-			if (pshow->sets->prevset == NULL)
-				pshow->sets->prevset = pshow->sets->currset;
-			else
-				pshow->sets->prevset = pshow->sets->prevset->next;
-			pshow->sets->currset = pshow->sets->currset->next;
-			//setnum++;
-			pstate.setnum++;
-		}
-		pshow->step = 0;
-
-		//setnum=set_tot-1;
-		//set_step=0;
+		/*
+		if (pshow->sets->prevset == NULL)
+			pshow->sets->prevset = pshow->sets->currset;
+		else
+			pshow->sets->prevset = pshow->sets->prevset->next;
+		*/
+		//pshow->sets->currset = pshow->sets->currset->next;
+		last = last->next;
+		//setnum++;
+		pstate.setnum++;
 	}
+	pshow->sets->currset = last;
+	pshow->step = 0;
+
+	//setnum=set_tot-1;
+	//set_step=0;
+	return;
 }
 
 void set_next(void)
@@ -394,7 +413,7 @@ void set_next(void)
 	{
 		if (pshow->sets->currset->next != NULL)
 		{
-			pshow->sets->prevset = pshow->sets->currset;
+			//pshow->sets->prevset = pshow->sets->currset;
 			pshow->sets->currset = pshow->sets->currset->next;
 			//setnum++;
 			pstate.setnum++;
@@ -468,17 +487,28 @@ void set_prev(void)
 	{
 		// if in the middle of set,
 		// go to beginning of set
+		last = pshow->sets->currset;
 		if (pshow->step)
 			pshow->step = 0;
-		else if (pshow->sets->prevset != NULL)
+		//else if (pshow->sets->prevset != NULL)
+		else if (last->prev != NULL)
 		{
 			// not already at first set, move backwards
-			pshow->sets->currset = pshow->sets->prevset;
+			//pshow->sets->currset = pshow->sets->currset->prev;
+			last = last->prev;
+			pstate.setnum--;
+			if (!last->prev)
+			{
+				// first set
+				pstate.setnum = 0;
+			}
+			pshow->sets->currset = last;
+			/*
 			last = pshow->sets->firstset;
 			if (pshow->sets->currset == last)
 			{
 				// first set
-				pshow->sets->prevset = 0;
+				//pshow->sets->prevset = 0;
 				//setnum = 0;
 				pstate.setnum = 0;
 			}
@@ -502,15 +532,8 @@ void set_prev(void)
 					pstate.setnum = 0;
 				}
 			}
+			*/
 		}
-		/*
-		if (!set_step)
-			setnum--;
-		else	// go back to start of set, instead of set-1
-			set_step=0;
-		if (setnum < 0)
-			setnum = 0;
-		*/
 	}
 }
 

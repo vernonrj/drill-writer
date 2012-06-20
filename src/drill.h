@@ -179,6 +179,7 @@ struct set_proto
 	int counts;
 	int midset;
 	struct set_proto *next;
+	struct set_proto *prev;
 };
 
 
@@ -188,7 +189,7 @@ struct set_container
 	// in a show
 	struct set_proto *firstset;
 	struct set_proto *currset;
-	struct set_proto *prevset;
+	//struct set_proto *prevset;
 };
 
 struct headset_proto
@@ -310,7 +311,7 @@ int set_destroy(void);
 void goto_set(int set_buffer);
 int isLastSet(void);
 int isFirstSet(void);
-void add_set(void);
+int add_set(void);
 void delete_set(void);
 void set_first(void);
 void set_last(void);

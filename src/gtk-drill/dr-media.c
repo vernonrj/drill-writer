@@ -199,7 +199,7 @@ void play_show_from_start (GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		pshow->sets->currset = pshow->sets->firstset;
-		pshow->sets->prevset = 0;
+		pshow->sets->currset->prev = 0;
 		pshow->step = 0;
 		pstate.setnum=0;
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);

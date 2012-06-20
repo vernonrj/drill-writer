@@ -363,7 +363,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 				set_first();
 				sourcebr->ud.set->next = dshow->sets->firstset;
 				dshow->sets->firstset = sourcebr->ud.set;
-				dshow->sets->prevset = sourcebr->ud.set;
+				dshow->sets->currset->prev = sourcebr->ud.set;
 				set_first();
 			}
 			//else if (sourcebr->set_num > setnum)

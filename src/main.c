@@ -100,7 +100,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->select = 0;
 	// Set the current set to opening set
 	dshow->sets->currset = dshow->sets->firstset;
-	dshow->sets->prevset = 0;
+	//dshow->sets->prevset = 0;
 	// init undo/redo to NULL
 	dshow->undobr = 0;
 	dshow->redobr = 0;
@@ -253,7 +253,8 @@ int main (int argc, char *argv[])
 	currset = currset->next;
 	*/
 	currset = pshow->sets->currset;
-	prevset = pshow->sets->prevset;
+	prevset = currset->prev;
+	//prevset = pshow->sets->prevset;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
@@ -268,7 +269,8 @@ int main (int argc, char *argv[])
 	currset = currset->next;
 	*/
 	currset = pshow->sets->currset;
-	prevset = pshow->sets->prevset;
+	//prevset = pshow->sets->prevset;
+	prevset = currset->prev;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
@@ -280,7 +282,7 @@ int main (int argc, char *argv[])
 	//setnum = 0;
 	pstate.setnum = 0;
 	pshow->sets->currset = pshow->sets->firstset;
-	pshow->sets->prevset = 0;
+	//pshow->sets->prevset = 0;
 
 	perf_cur = 0;
 	undo_destroy(&pshow->undobr, pshow);
