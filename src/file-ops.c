@@ -2,6 +2,9 @@
 //#include "drill.h"
 #include "drill.h"
 
+int file_getline(FILE *fp, char **buffer_r);
+int file_getValidLine(FILE *fp, char **buffer_r);
+
 
 int file_getline(FILE *fp, char **buffer_r)
 {

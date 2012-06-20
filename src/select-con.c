@@ -45,8 +45,8 @@ void update_sel_center(void)
 		cy = cy / selnum;
 	}
 	// store
-	pshow->center->x = cx;
-	pshow->center->y = cy;
+	pstate.center->x = cx;
+	pstate.center->y = cy;
 	pstate.selnum = selnum;
 
 	return;
@@ -62,8 +62,8 @@ void add_sel_center(struct coord_proto *coord)
 	
 	// open up weight
 	selnum = pstate.selnum;
-	x = pshow->center->x * selnum;
-	y = pshow->center->y * selnum;
+	x = pstate.center->x * selnum;
+	y = pstate.center->y * selnum;
 
 	// add new dot to center
 	x = x + coord->x;
@@ -71,8 +71,8 @@ void add_sel_center(struct coord_proto *coord)
 	selnum++;
 
 	// take mean of new set
-	pshow->center->x = x / selnum;
-	pshow->center->y = y / selnum;
+	pstate.center->x = x / selnum;
+	pstate.center->y = y / selnum;
 	pstate.selnum = selnum;
 
 	return;
@@ -94,12 +94,12 @@ void rem_sel_center(struct coord_proto *coord)
 	else if (selnum == 1)
 	{
 		pstate.selnum = 0;
-		pshow->center->x = 0;
-		pshow->center->y = 0;
+		pstate.center->x = 0;
+		pstate.center->y = 0;
 		return;
 	}
-	x = pshow->center->x * selnum;
-	y = pshow->center->y * selnum;
+	x = pstate.center->x * selnum;
+	y = pstate.center->y * selnum;
 
 	// remove dot from center
 	x = x - coord->x;
@@ -107,8 +107,8 @@ void rem_sel_center(struct coord_proto *coord)
 	selnum--;
 
 	// take mean of new set if not 0
-	pshow->center->x = x / selnum;
-	pshow->center->y = y / selnum;
+	pstate.center->x = x / selnum;
+	pstate.center->y = y / selnum;
 	pstate.selnum = selnum;
 	
 	return;

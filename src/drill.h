@@ -42,6 +42,8 @@ struct showstate_proto
 	// selection list
 	struct select_proto *select;
 	int selnum;
+	// dot moments
+	struct coord_proto *center;
 	// current count of the current set
 	int curr_step;
 	int playing;		// play flag
@@ -217,8 +219,6 @@ struct headset_proto
 	struct set_container *sets;
 	// Tempo control
 	struct tempo_proto *currtempo;
-	// dot moments
-	struct coord_proto *center;
 };
 
 // main show container
@@ -260,8 +260,6 @@ double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r
 int xy_to_relation(double *x, double *y, char **buffer_r);
 
 // file-ops.c
-int file_getline(FILE *fp, char **buffer_r);
-int file_getValidLine(FILE *fp, char **buffer_r);
 int open_file(char *filename);
 int save_file(char *filename);
 

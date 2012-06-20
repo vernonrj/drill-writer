@@ -4,8 +4,8 @@
 void change_ss_entry(GtkWidget *widget)
 {
 	// change side-to-side
-	double cx = pshow->center->x;
-	double cy = pshow->center->y;
+	double cx = pstate.center->x;
+	double cy = pstate.center->y;
 	int yardrel;
 	int fieldside;
 	double new_cx;
@@ -48,8 +48,8 @@ void toggle_ssYdRel(GtkWidget *widget)
 	int fieldside;
 	int yardrel;
 	//buffer = gtk_button_get_label(GTK_BUTTON(widget));
-	cx = pshow->center->x;
-	cy = pshow->center->y;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
 	ssStep = getSidetoSide(&cx, &cy);
 	ssStep = roundf(4*ssStep)/4;
 	yardrel = isInsideYard(&cx, &cy, &fieldside);
@@ -81,7 +81,7 @@ void toggle_ssSide(GtkWidget *widget)
 	// change side from side 1 to side 2
 	// 	or side 2 to side 1
 	double cx;
-	cx = pshow->center->x;
+	cx = pstate.center->x;
 
 	movexy(2*(80-cx), 0);
 	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -98,8 +98,8 @@ void toggle_ssYdLine(GtkWidget *widget)
 void change_fb_entry(GtkWidget *widget)
 {
 	// change front-to-back
-	double cx = pshow->center->x;
-	double cy = pshow->center->y;
+	double cx = pstate.center->x;
+	double cy = pstate.center->y;
 	//int yardrel;
 	//int fieldside;
 	double new_cy;
@@ -161,8 +161,8 @@ void toggle_fbHashRel(GtkWidget *widget)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
-	cx = pshow->center->x;
-	cy = pshow->center->y;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
 	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	if (!strcmp(fb_frontback, "front"))
@@ -218,8 +218,8 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
-	cx = pshow->center->x;
-	cy = pshow->center->y;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
 	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	if (!strcmp(fb_hashside, "hash"))
@@ -274,8 +274,8 @@ void toggle_HashSide(GtkWidget *widget)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
-	cx = pshow->center->x;
-	cy = pshow->center->y;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
 	getFronttoBack(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	int fb;

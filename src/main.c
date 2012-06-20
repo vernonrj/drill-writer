@@ -90,11 +90,11 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 		return -1;
 	}
 	// Construct selection moments
-	coord_construct(&dshow->center, 0, 0);
+	coord_construct(&pstate.center, 0, 0);
 	/*
-	dshow->center = (struct coord_proto*)malloc(sizeof(struct coord_proto));
-	dshow->center->x = 0;
-	dshow->center->y = 0;
+	pstate.center = (struct coord_proto*)malloc(sizeof(struct coord_proto));
+	pstate.center->x = 0;
+	pstate.center->y = 0;
 	*/
 	// Set the selection to "none"
 	pstate.select = 0;
@@ -145,7 +145,7 @@ int show_destroy(struct headset_proto **dshow_r)
 	dshow = *dshow_r;
 	perfnum = dshow->perfnum;
 	// free toplevel allocs
-	free(dshow->center);
+	free(pstate.center);
 	free(dshow->showname);
 	free(dshow->showinfo);
 

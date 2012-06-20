@@ -569,7 +569,7 @@ int buildIfacegtk(void)
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
 	//sprintf(perf_buf_x, "%g", pshow->sets->currset->coords[perf_cur]->x);
-	sprintf(perf_buf_x, "%g", pshow->center->x);
+	sprintf(perf_buf_x, "%g", pstate.center->x);
 	entry_perf_x = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_x), 5);
 	g_signal_connect (entry_perf_x, "activate", G_CALLBACK (xperf_change), entry_perf_x);
@@ -582,7 +582,7 @@ int buildIfacegtk(void)
 	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
 
 	//sprintf(perf_buf_y, "%g", pshow->sets->currset->coords[perf_cur]->y);
-	sprintf(perf_buf_y, "%g", pshow->center->y);
+	sprintf(perf_buf_y, "%g", pstate.center->y);
 	entry_perf_y = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_y), 5);
 	g_signal_connect (entry_perf_y, "activate", G_CALLBACK (yperf_change), entry_perf_y);

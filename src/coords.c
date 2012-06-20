@@ -169,12 +169,12 @@ int movexy(double xoff, double yoff)
 		selects = selects->next;
 	}
 	// move center of selection
-	x = pshow->center->x;
-	y = pshow->center->y;
+	x = pstate.center->x;
+	y = pstate.center->y;
 	x = x + xoff;
 	y = y + yoff;
-	pshow->center->x = x;
-	pshow->center->y = y;
+	pstate.center->x = x;
+	pstate.center->y = y;
 	return 0;
 }
 
@@ -223,12 +223,12 @@ int movexy_grid(double xoff, double yoff)
 		selects = selects->next;
 	}
 	// move center of selection
-	x = pshow->center->x;
-	y = pshow->center->y;
+	x = pstate.center->x;
+	y = pstate.center->y;
 	x = x + xoff;
 	y = y + yoff;
-	pshow->center->x = x;
-	pshow->center->y = y;
+	pstate.center->x = x;
+	pstate.center->y = y;
 	return 0;
 }
 
@@ -261,8 +261,8 @@ void scale_form(double s_step)
 	last = pstate.select;
 	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
-	cx = pshow->center->x;
-	cy = pshow->center->y;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
 	undo_tclose();
 	while (last != NULL)
 	{
@@ -323,8 +323,8 @@ void box_scale_form(double s_step)
 	last = pstate.select;
 	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
-	cx = pshow->center->x;
-	cy = pshow->center->y;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
 	undo_tclose();
 	maxdx = 0;
 	maxdy = 0;
@@ -405,8 +405,8 @@ void rot_form(double s_step)
 	last = pstate.select;
 	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
-	cx = pshow->center->x;
-	cy = pshow->center->y;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
 	undo_tclose();
 	while (last != NULL)
 	{
