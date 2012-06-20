@@ -47,7 +47,7 @@ void update_sel_center(void)
 	// store
 	pshow->center->x = cx;
 	pshow->center->y = cy;
-	pshow->selnum = selnum;
+	pstate.selnum = selnum;
 
 	return;
 }
@@ -61,7 +61,7 @@ void add_sel_center(struct coord_proto *coord)
 	double x, y;
 	
 	// open up weight
-	selnum = pshow->selnum;
+	selnum = pstate.selnum;
 	x = pshow->center->x * selnum;
 	y = pshow->center->y * selnum;
 
@@ -73,7 +73,7 @@ void add_sel_center(struct coord_proto *coord)
 	// take mean of new set
 	pshow->center->x = x / selnum;
 	pshow->center->y = y / selnum;
-	pshow->selnum = selnum;
+	pstate.selnum = selnum;
 
 	return;
 }
@@ -88,12 +88,12 @@ void rem_sel_center(struct coord_proto *coord)
 	double x, y;
 
 	// open up weight
-	selnum = pshow->selnum;
+	selnum = pstate.selnum;
 	if (selnum == 0)
 		return;
 	else if (selnum == 1)
 	{
-		pshow->selnum = 0;
+		pstate.selnum = 0;
 		pshow->center->x = 0;
 		pshow->center->y = 0;
 		return;
@@ -109,7 +109,7 @@ void rem_sel_center(struct coord_proto *coord)
 	// take mean of new set if not 0
 	pshow->center->x = x / selnum;
 	pshow->center->y = y / selnum;
-	pshow->selnum = selnum;
+	pstate.selnum = selnum;
 	
 	return;
 }
@@ -132,7 +132,7 @@ void select_discard(void)
 		}
 		pstate.select = 0;
 	}
-	pshow->selnum = 0;
+	pstate.selnum = 0;
 	update_sel_center();
 	return;
 }

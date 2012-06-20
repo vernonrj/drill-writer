@@ -41,6 +41,7 @@ struct showstate_proto
 	int setnum;		// current set
 	// selection list
 	struct select_proto *select;
+	int selnum;
 	// current count of the current set
 	int curr_step;
 	int playing;		// play flag
@@ -218,7 +219,6 @@ struct headset_proto
 	struct tempo_proto *currtempo;
 	// dot moments
 	struct coord_proto *center;
-	int selnum;
 };
 
 // main show container
