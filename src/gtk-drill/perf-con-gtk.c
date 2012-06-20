@@ -30,7 +30,7 @@ int add_perf_gtk(GtkWidget *widget)
 	mouse_currentMode = ADDPERF;
 	//gtk_button_set_label(GTK_BUTTON(menuButton), "Add");
 	//excode = add_perf();
-	//gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+	//gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
 	if (excode != -1)
 		return 0;
 	return excode;
@@ -43,7 +43,7 @@ void revert_perf_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		revert_perf_selected(pshow);
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
 	}
 	return;
 }
@@ -54,7 +54,7 @@ void delete_perf_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		delete_perf_selected();
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
 	}
 }
 
@@ -93,7 +93,7 @@ void yperf_change (GtkWidget *widget)
 			set_coord(pshow, perf_cur, coords->x, perf_buffer);
 			//perf[setnum][perf_cur][1] = perf_buffer;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+		gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
 	}
 }
 */
@@ -122,7 +122,7 @@ void prev_perf(GtkWidget *widget)
 int select_all_gtk (GtkWidget *widget)
 {
 	select_all();
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
 	return 0;
 }
 
@@ -140,7 +140,7 @@ int select_mode_gtk (GtkWidget *widget)
 	// go back to normal selectmode
 	mouse_currentMode = SELECTONE;
 	//gtk_button_set_label(GTK_BUTTON(menuButton), "Select");
-	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.step);
+	gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height+2*pstate.canv_step);
 	return 0;
 }
 
@@ -232,9 +232,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				coordx = event->x;
 				coordy = event->y;
 				// Adjust for various canvas offsets
-				coordx = round((coordx-pstate.xo2)/pstate.step);
+				coordx = round((coordx-pstate.xo2)/pstate.canv_step);
 				//coordy = (coordy-yo2-25)/step;
-				coordy = round((coordy-pstate.yo2)/pstate.step);
+				coordy = round((coordy-pstate.yo2)/pstate.canv_step);
 				index = add_perf();
 				set_coord(pshow, index, coordx, coordy);
 				gtk_widget_queue_draw_area(window, 0, 0, pstate.width, pstate.height);
@@ -285,9 +285,9 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 	coordx = event->x;
 	coordy = event->y;
 	// Adjust for various canvas offsets
-	coordx = (coordx-pstate.xo2)/pstate.step;
+	coordx = (coordx-pstate.xo2)/pstate.canv_step;
 	//coordy = (coordy-yo2-25)/step;
-	coordy = (coordy-pstate.yo2)/pstate.step;
+	coordy = (coordy-pstate.yo2)/pstate.canv_step;
 
 	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 	perfnum = pshow->perfnum;

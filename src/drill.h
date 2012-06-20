@@ -45,7 +45,7 @@ struct showstate_proto
 	double xoff, yoff;	// field offset
 	double xo2, yo2;	// field centering
 	double width, height;	// allocated size
-	double step;		// 8:5 step in pixels
+	double canv_step;	// 8:5 step in pixels
 	double zoom_x, zoom_y;	// zoom size
 	// undo state
 	time_t undo_timer;	// time since last undo
@@ -210,12 +210,6 @@ struct headset_proto
 	struct perf_proto **perfs;
 	// set structure
 	struct set_container *sets;
-	// link to first set
-	//struct set_proto *firstset;
-	// link to current set
-	//struct set_proto *currset;
-	// link to previous set
-	//struct set_proto *prevset;
 	// count of the current set
 	int step;
 	// Tempo control

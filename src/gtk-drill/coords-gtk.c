@@ -451,7 +451,7 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	int excode;
 	xo2 = pstate.xo2;
 	yo2 = pstate.yo2;
-	step = pstate.step;
+	step = pstate.canv_step;
 
 	coordx = event->x;
 	coordy = event->y;

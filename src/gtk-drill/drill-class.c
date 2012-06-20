@@ -432,21 +432,21 @@ void def_canvas (GtkWidget *widget)
 	}
 	//c_width = 801;
 	//c_height = 426;
-	//printf("width=%g\theight=%g\tstep=%g\n", width, height, pstate.step);
+	//printf("width=%g\theight=%g\tstep=%g\n", width, height, pstate.canv_step);
 	pstate.xoff = (int)c_width % 160; 		// extra margin for the width
 	if (!pstate.xoff)	// need some margin
 		pstate.xoff = (int)(c_width-1) % 160;
 	pstate.xo2 = pstate.xoff / 2;			// half of the offset
-	pstate.step = (c_width-pstate.xoff) / 160;	// length of one 8:5 step
-	yheight = pstate.step * 85;		// height of the field
+	pstate.canv_step = (c_width-pstate.xoff) / 160;	// length of one 8:5 step
+	yheight = pstate.canv_step * 85;		// height of the field
 	//printf("yheight = %g height = %g\n", yheight, height);
 	if (yheight > c_height)
 	{	// limiting factor is height, adjust
 		pstate.yoff = (int)c_height % 85;
 		pstate.yo2 = pstate.yoff / 2;
-		pstate.step = (c_height - pstate.yoff) / 85;
-		yheight = pstate.step * 85;
-		pstate.xoff = c_width - (160*pstate.step);
+		pstate.canv_step = (c_height - pstate.yoff) / 85;
+		yheight = pstate.canv_step * 85;
+		pstate.xoff = c_width - (160*pstate.canv_step);
 		pstate.xo2 = pstate.xoff / 2;
 	}
 	else
@@ -467,13 +467,13 @@ void drawing_method(cairo_t *cdots, double x, double y)
 {
 	// dot drawing
 	double size = 0.5;
-	double oset = size*pstate.step;
+	double oset = size*pstate.canv_step;
 	cairo_move_to(cdots, x-oset, y-oset);
 	cairo_rel_line_to(cdots, 2*oset, 2*oset);
 	cairo_move_to(cdots, x-oset, y+oset);
 	cairo_rel_line_to(cdots, 2*oset, -2*oset);
 	//cairo_new_sub_path(cdots);
-	//cairo_arc(cdots, x, y, 2*(double)pstate.step/3, 0, 360);
+	//cairo_arc(cdots, x, y, 2*(double)pstate.canv_step/3, 0, 360);
 	return;
 }
 
@@ -486,8 +486,8 @@ int pixel_to_field(double *x_r, double *y_r)
 	x = *x_r;
 	y = *y_r;
 
-	x = (x-pstate.xo2) / pstate.step;
-	y = (y-pstate.yo2) / pstate.step;
+	x = (x-pstate.xo2) / pstate.canv_step;
+	y = (y-pstate.yo2) / pstate.canv_step;
 
 	*x_r = x;
 	*y_r = y;
@@ -502,8 +502,8 @@ int field_to_pixel(double *x_r, double *y_r)
 	x = *x_r;
 	y = *y_r;
 
-	x = pstate.xo2 + pstate.step * x;
-	y = pstate.yo2 + pstate.step * y;
+	x = pstate.xo2 + pstate.canv_step * x;
+	y = pstate.yo2 + pstate.canv_step * y;
 
 	*x_r = x;
 	*y_r = y;
@@ -732,12 +732,12 @@ void draw_field (GtkWidget *widget)
 			sprintf(text, "%i", ynum);
 			cairo_text_extents (fnums, text, &te);
 			//cairo_get_font_options(fnums, fopts);
-			//cairo_font_options_set_height(fopts, 4*pstate.step);
+			//cairo_font_options_set_height(fopts, 4*pstate.canv_step);
 			x_bear = te.x_bearing + te.width / 2;
 			//y_bear = te.y_bearing + te.height / 2;
-			cairo_move_to (fnums, i - x_bear, pstate.height-pstate.yo2-pstate.step*12);
+			cairo_move_to (fnums, i - x_bear, pstate.height-pstate.yo2-pstate.canv_step*12);
 			cairo_show_text(fnums, text);
-			cairo_move_to (fnums, i - x_bear, pstate.height-pstate.yo2-pstate.step*73);
+			cairo_move_to (fnums, i - x_bear, pstate.height-pstate.yo2-pstate.canv_step*73);
 			cairo_show_text(fnums, text);
 			if (ynum == 50)
 				past_fifty = 1;
@@ -752,16 +752,16 @@ void draw_field (GtkWidget *widget)
 				ynum = ynum - 5;
 			}
 			// Front Hash
-			cairo_move_to (field, i-2*pstate.step, pstate.height-pstate.yo2-pstate.step*32);
-			cairo_line_to (field, i+2*pstate.step, pstate.height-pstate.yo2-pstate.step*32);
+			cairo_move_to (field, i-2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*32);
+			cairo_line_to (field, i+2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*32);
 			// Back Hash
-			cairo_move_to (field, i-2*pstate.step, pstate.height-pstate.yo2-pstate.step*53);
-			cairo_line_to (field, i+2*pstate.step, pstate.height-pstate.yo2-pstate.step*53);
+			cairo_move_to (field, i-2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*53);
+			cairo_line_to (field, i+2*pstate.canv_step, pstate.height-pstate.yo2-pstate.canv_step*53);
 			cairo_stroke (field);
 
 			
 			// Split Yardlines
-			if (i<((int)pstate.xo2+(int)pstate.step*160))
+			if (i<((int)pstate.xo2+(int)pstate.canv_step*160))
 			{
 				// Light Stroke
 				// only draw if window is large enough
@@ -770,20 +770,20 @@ void draw_field (GtkWidget *widget)
 				cairo_set_source_rgb(gaks, 0.9, 0.9, 1);
 				if (pstate.width-pstate.xo2 > 800)
 				{
-					for (j=i; j<i+(int)pstate.step*4; j+=(int)pstate.step)
+					for (j=i; j<i+(int)pstate.canv_step*4; j+=(int)pstate.canv_step)
 					{	// 1-step yardlines
 						cairo_move_to (gaks, j, pstate.height-yheight-pstate.yo2);
 						cairo_line_to (gaks, j, yheight+pstate.yo2);
 						
-						cairo_move_to (gaks, j+pstate.step*5, pstate.height-yheight-pstate.yo2);
-						cairo_line_to (gaks, j+pstate.step*5, yheight+pstate.yo2);
+						cairo_move_to (gaks, j+pstate.canv_step*5, pstate.height-yheight-pstate.yo2);
+						cairo_line_to (gaks, j+pstate.canv_step*5, yheight+pstate.yo2);
 					}
-					for (j=pstate.yo2+yheight; j>=pstate.yo2; j-=(int)pstate.step)
+					for (j=pstate.yo2+yheight; j>=pstate.yo2; j-=(int)pstate.canv_step)
 					{	// 1-step y-grid
-						if (((int)(j-pstate.yo2-pstate.step)%(int)(pstate.step*4)) == 0)
+						if (((int)(j-pstate.yo2-pstate.canv_step)%(int)(pstate.canv_step*4)) == 0)
 							continue;
 						cairo_move_to (gaks, i, j);
-						cairo_line_to (gaks, i+pstate.step*8, j);
+						cairo_line_to (gaks, i+pstate.canv_step*8, j);
 					}
 					// Light Stroke Draw
 					cairo_stroke (gaks);
@@ -796,13 +796,13 @@ void draw_field (GtkWidget *widget)
 					// 4-step X
 					//cairo_set_source_rgb(gaks, 0.5, 0.5, 0.5);
 					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
-					cairo_move_to (gaks, i+(int)pstate.step*4, pstate.height-yheight-pstate.yo2);
-					cairo_line_to (gaks, i+(int)pstate.step*4, yheight+pstate.yo2);
+					cairo_move_to (gaks, i+(int)pstate.canv_step*4, pstate.height-yheight-pstate.yo2);
+					cairo_line_to (gaks, i+(int)pstate.canv_step*4, yheight+pstate.yo2);
 					
-					for (j=pstate.yo2+yheight; j>=pstate.yo2; j-=4*(int)pstate.step)
+					for (j=pstate.yo2+yheight; j>=pstate.yo2; j-=4*(int)pstate.canv_step)
 					{	// 4-Step Gaks
 						cairo_move_to (gaks, i, j);
-						cairo_line_to (gaks, i+(int)pstate.step*8, j);
+						cairo_line_to (gaks, i+(int)pstate.canv_step*8, j);
 					}
 					// Med Stroke Draw
 					cairo_stroke(gaks);
