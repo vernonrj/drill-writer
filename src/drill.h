@@ -129,6 +129,45 @@ struct group_container
 };
 
 
+typedef struct // fblock_t
+{
+	int points[4];	// 1 0
+			// 2 3
+	int hFiles;	// # of horizontal files
+	int vFiles;	// # of vertical files
+	int **dots;	// Grid for the dots (perf nums)
+			// allocation uses hFiles and vFiles
+} fblock_t;
+
+typedef struct // farc_t
+{
+	int points[2];	// endpoints
+	int *midpts;	// midpoints
+	int degree;	// number of midpoints
+	int *dots;	// list of the dots (perf nums)
+			// this is very intense computation,
+			// so an array will be needed
+} farc_t;
+
+
+
+typedef struct group_proto group_t;
+typedef union // formType_t
+{
+	fblock_t *block;
+	farc_t *arc;
+} formType_t;
+
+typedef struct  // form_t
+{
+	int type;
+	formType_t *form;
+	group_t *group;
+} form_t;
+
+
+
+
 // tempo LLL node
 struct tempo_proto
 {
