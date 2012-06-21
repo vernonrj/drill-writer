@@ -260,6 +260,7 @@ int select_all(void)
 
 int add_group(void)
 {
+	/*
 	// make a group from selected dots
 	struct select_proto *select;
 	struct select_proto *gselect;
@@ -377,13 +378,6 @@ int add_group(void)
 		}
 		select = select->next;
 	}
-	/*
-	select = groups->include;
-	while (select != NULL)
-	{
-		printf("new index @ %i\n", select->index);
-		select = select->next;
-	}
 	*/
 	return 0;
 }
@@ -391,6 +385,7 @@ int add_group(void)
 
 int select_in_group(int index)
 {
+	/*
 	// return if the dot is in a group or not
 	int ingroup = 0;
 	struct select_proto *select;
@@ -406,6 +401,8 @@ int select_in_group(int index)
 		select = select->next;
 	}
 	return ingroup;
+	*/
+	return 0;
 }
 
 

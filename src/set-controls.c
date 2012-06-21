@@ -47,9 +47,12 @@ int set_construct(struct set_proto **sets_r, int perfs)
 	newset->name[0] = '\0';
 	newset->info[0] = '\0';
 	newset->counts = 0;
-	newset->groups = (struct group_container*)malloc(sizeof(struct group_container));
-	newset->groups->head = 0;
-	newset->groups->include = 0;
+	newset->groups = (group_t*)malloc(sizeof(group_t));
+	// FIXME: Allocate group correctly
+	newset->groups->selects = NULL;
+	newset->groups->forms = NULL;
+	newset->groups->next = NULL;
+
 	// make sure not classified as midset
 	newset->midset = 0;
 	// make coordinate system

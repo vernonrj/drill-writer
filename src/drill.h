@@ -104,6 +104,7 @@ struct undo_proto
 	struct undo_proto *next;
 };
 
+/* Selection / Groups / Forms */
 // selection LLL node
 struct select_proto
 {
@@ -114,25 +115,14 @@ struct select_proto
 };
 
 
-struct group_proto
-{
-	// node with grouping information
-	struct select_proto *selects;
-	struct group_proto *next;
-};
-
-struct group_container
-{
-	// node that contains groups for a set
-	struct group_proto *head;
-	struct select_proto *include;
-};
 
 
+// Forms
 typedef struct // fblock_t
 {
-	int points[4];	// 1 0
+	bool points[4];	// 1 0
 			// 2 3
+	double coords[4];
 	int hFiles;	// # of horizontal files
 	int vFiles;	// # of vertical files
 	int **dots;	// Grid for the dots (perf nums)
@@ -142,7 +132,8 @@ typedef struct // fblock_t
 typedef struct // farc_t
 {
 	int points[2];	// endpoints
-	int *midpts;	// midpoints
+	double coords[2];
+	double *midpts;	// midpoints
 	int degree;	// number of midpoints
 	int *dots;	// list of the dots (perf nums)
 			// this is very intense computation,
@@ -150,21 +141,39 @@ typedef struct // farc_t
 } farc_t;
 
 
-
-typedef struct group_proto group_t;
 typedef union // formType_t
 {
 	fblock_t *block;
 	farc_t *arc;
 } formType_t;
 
-typedef struct  // form_t
+typedef struct  form_proto // form_t
 {
 	int type;
 	formType_t *form;
-	group_t *group;
+	struct form_proto *next;
 } form_t;
 
+
+// Groups
+typedef struct group_proto
+{
+	// node with grouping information
+	struct select_proto *selects;
+
+	form_t *forms;
+	struct group_proto *next;
+} group_t;
+
+/*
+struct group_container
+{
+	// node that contains groups for a set
+	struct group_proto *head;
+	struct select_proto *include;
+	struct select_proto *automanaged;
+};
+*/
 
 
 
@@ -186,7 +195,7 @@ struct tempo_proto
 struct coord_proto
 {
 	// stores dot for one performer on one set
-	// abs/rel dot 
+	// Manual/Managed Dot (Used for Forms)
 	bool type;
 	// location info
 	double x;
@@ -217,7 +226,7 @@ struct set_proto
 	char *name;	// set name
 	char *info;	// set info
 	struct coord_proto **coords;
-	struct group_container *groups;
+	group_t *groups;
 	int counts;
 	int midset;
 	struct set_proto *next;
