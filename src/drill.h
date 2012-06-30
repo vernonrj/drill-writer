@@ -261,6 +261,8 @@ struct headset_proto
 	struct set_container *sets;
 	// Tempo control
 	struct tempo_proto *currtempo;
+	// Toplevel groups
+	group_t *topgroups;
 };
 
 // main show container
@@ -336,7 +338,7 @@ int select_in_group(int index);
 
 // set-controls.c
 // create a set with a given amount of performers
-int set_container_construct(struct set_container **setC_r, int perfs);
+struct set_container *set_container_construct(int perfs);
 int set_construct(struct set_proto **sets_r, int perfs);
 int newset_create(struct set_container *sets);
 int set_cldestroy(struct set_proto **setcurr_r, int perfnum);

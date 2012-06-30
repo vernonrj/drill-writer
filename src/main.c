@@ -62,26 +62,17 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	// Make the setlist
 	// Make the first set
 	setcurr = 0;
-	dshow->sets = 0;
-	excode = set_container_construct(&dshow->sets, perfs);
-	setcurr = dshow->sets->currset;
-	//excode = set_construct(&setcurr, perfs);
-	if (excode == -1)
+	dshow->sets = set_container_construct(perfs);
+	if (!dshow->sets)
 	{
 		// sets not allocated
 		printf("Set allocation error\n");
 		return -1;
 	}
+	setcurr = dshow->sets->currset;
+	//excode = set_construct(&setcurr, perfs);
 	dshow->sets->firstset = setcurr;
 
-	// Make the index of dots for the first set
-	//printf("coords = %g\n", coords[0]->x);
-	if (excode == -1)
-	{
-		// coordinate allocation error
-		printf("Coordinate allocation error\n");
-		return -1;
-	}
 	// Construct tempo
 	excode = tempo_construct(&dshow->currtempo, 0);
 	if (excode == -1)
@@ -91,16 +82,12 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	}
 	// Construct selection moments
 	coord_construct(&pstate.center, 0, 0);
-	/*
-	pstate.center = (struct coord_proto*)malloc(sizeof(struct coord_proto));
-	pstate.center->x = 0;
-	pstate.center->y = 0;
-	*/
 	// Set the selection to "none"
 	pstate.select = 0;
+	// Initialize toplevel groups to NULL
+	dshow->topgroups = NULL;
 	// Set the current set to opening set
 	dshow->sets->currset = dshow->sets->firstset;
-	//dshow->sets->prevset = 0;
 	// init undo/redo to NULL
 	pstate.undobr = 0;
 	pstate.redobr = 0;

@@ -2,7 +2,7 @@
 #include "drill.h"
 
 
-int set_container_construct(struct set_container **setCont_r, int perfs)
+struct set_container *set_container_construct(int perfs)
 {
 	// construct the set container
 	struct set_proto *sets = 0;
@@ -11,16 +11,15 @@ int set_container_construct(struct set_container **setCont_r, int perfs)
 
 	setCont = (struct set_container*)malloc(sizeof(struct set_container));
 	if (!setCont)
-		return -1;
+		return NULL;
 	excode = set_construct(&sets, perfs);
 	if (excode == -1)
-		return -1;
+		return NULL;
 	setCont->currset = sets;
 
 	//sets->prev = setC->prevset;
 	sets->next = 0;
-	*setCont_r = setCont;
-	return 0;
+	return setCont;
 }
 
 
