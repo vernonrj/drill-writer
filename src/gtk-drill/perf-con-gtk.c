@@ -183,7 +183,6 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	
 	int index;
 	double coordx, coordy;
-	int excode;
 	// Length from click location to nearest dot
 
 
@@ -201,7 +200,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				if (event->state == 4 && index != -1)
 				{
 					// ctrl-click
-					pstate.select = select_add(pstate.select, index);
+					select_dots_add(index);
 				}
 				else if (event->state != 4)
 				{
@@ -213,7 +212,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 						mouse_discarded = 1;
 						if (index != -1)
 						{
-							pstate.select = select_add(pstate.select, index);
+							select_dots_add(index);
 						}
 					}
 				}

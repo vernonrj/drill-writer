@@ -151,7 +151,7 @@ int add_perf(void)
 	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 1;
 	select_dots_discard();
-	pstate.select = select_add(pstate.select, index);
+	select_dots_add(index);
 	pushPerfMk(&pstate.undobr, index, 1);
 	return index;
 }

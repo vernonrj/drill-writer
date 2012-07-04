@@ -144,6 +144,14 @@ select_t *select_discard(select_t *psel)
 	return psel;
 }
 
+void select_dots_add(int index)
+{
+	// wrapper to add a dot to global selection
+	pstate.select = select_add(pstate.select, index);
+	update_sel_center();
+	return;
+}
+
 select_t *select_add(select_t *psel, int index)
 {
 	// add a selection if it's not selected;
@@ -259,7 +267,7 @@ int select_all(void)
 		if (perfs[i]->valid != 0)
 		{
 			// performer is valid. Add
-			pstate.select = select_add(pstate.select, i);
+			select_dots_add(i);
 		}
 	}
 	return 0;
