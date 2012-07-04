@@ -147,15 +147,15 @@ select_t *select_discard(select_t *psel)
 void select_dots_add(int index)
 {
 	// wrapper to add a dot to global selection
-	pstate.select = select_add(pstate.select, index);
+	pstate.select = select_add(pstate.select, index, true);
 	update_sel_center();
 	return;
 }
 
-select_t *select_add(select_t *psel, int index)
+select_t *select_add(select_t *psel, int index, bool toggle)
 {
 	// add a selection if it's not selected;
-	// remove a selection if it is selected
+	// remove a selection if it is selected and toggle is TRUE
 	
 	struct select_proto *selects;
 	struct select_proto *last;
@@ -193,15 +193,15 @@ select_t *select_add(select_t *psel, int index)
 				printf("%i in group\n", last->index);
 			if (last->index == index)
 			{
-				// found a match, toggle off
-				if (selects == NULL)
+				// found a match, remove if toggle enabled
+				if (toggle && selects == NULL)
 				{
 					// match is first node
 					//pstate.select = last->next;
 					psel = last->next;
 					free(last);
 				}
-				else
+				else if (toggle)
 				{
 					// match is not first node, remove
 					selects->next = last->next;
@@ -321,7 +321,7 @@ int group_add_selects(group_t *group, select_t *newsels)
 			smer_head = select_new;
 
 
-*/
+//*/
 
 
 

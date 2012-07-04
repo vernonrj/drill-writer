@@ -334,7 +334,7 @@ void update_sel_center(void);
 void add_sel_center(struct coord_proto *coord);
 void rem_sel_center(struct coord_proto *coord);
 select_t *select_discard(select_t*);
-select_t *select_add(select_t*, int index);
+select_t *select_add(select_t*, int index, bool toggle);
 int select_all(void);
 group_t *group_construct(void);
 int add_group(void);
