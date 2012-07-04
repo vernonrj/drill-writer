@@ -162,7 +162,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				mousex = x - mousex;
 				mousey = y - mousey;
 				//printf("event->state == %i\n", event->state);
-				if (event->state != 260)
+				if (event->state == 256)
 				{
 					if ((mousex != 0 || mousey != 0) && !mouse_discarded)
 					{
@@ -209,7 +209,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					if (pshow->topgroups && is_in_select(index, pshow->topgroups->selects))
 						pstate.select = select_add_group(pstate.select, pshow->topgroups, false);
 				}
-				else if (event->state != 4)
+				else
 				{
 					// regular click
 					if (!isSelected(index))
