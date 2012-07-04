@@ -130,7 +130,8 @@ int select_all_gtk (GtkWidget *widget)
 int add_group_gtk (GtkWidget *widget)
 {
 	// add selection to group
-	int excode = add_group();
+	//int excode = add_group();
+	int excode = group_add_selects(pshow->topgroups, pstate.select);
 	return excode;
 }
 

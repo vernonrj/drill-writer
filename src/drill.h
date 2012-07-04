@@ -337,6 +337,7 @@ select_t *select_discard(select_t*);
 select_t *select_add(select_t*, int index, bool toggle);
 int select_all(void);
 group_t *group_construct(void);
+int group_add_selects(group_t *group, select_t *newsels);
 int add_group(void);
 int select_in_group(int index);
 

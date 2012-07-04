@@ -289,36 +289,55 @@ group_t *group_construct(void)
 }
 
 
-/*
+///*
 int group_add_selects(group_t *group, select_t *newsels)
 {
 	// add selects to group
 	select_t *scurr = newsels;
-	select_t *glast = group->selects;
-	select_t *smerged = NULL;
-	select_t *smer_head = NULL;
-	select_t *select_new;
+	select_t *glast;
+	select_t *select_new = NULL;
+
+	if (!group)
+		group = group_construct();
+	glast = group->selects;
 
 	while (scurr && glast)
 	{
-		if (scurr->index < ghead->index)
+		// merge selection and group selects in order
+		if (scurr->index < glast->index)
 		{
-			// add new selection here
-			select_new = scurr->index;
+			// selection goes next
+			select_new = select_add(select_new, scurr->index, false);
 			scurr = scurr->next;
 		}
-		else if (scurr->index > ghead->index)
+		else if (scurr->index > glast->index)
 		{
-			select_new = ghead->index;
-			ghead = ghead->next;
+			// group goes next
+			select_new = select_add(select_new, glast->index, false);
+			glast = glast->next;
 		}
 		else
 		{
+			// duplicate
 			scurr = scurr->next;
 		}
-		if (select_new && !smer_head)
-		{
-			smer_head = select_new;
+	}
+	// clean up
+	while (scurr)
+	{
+		select_new = select_add(select_new, scurr->index, false);
+		scurr = scurr->next;
+	}
+	while (glast)
+	{
+		select_new = select_add(select_new, glast->index, false);
+		glast = glast->next;
+	}
+	// add new selection to group
+	select_discard(group->selects);
+	group->selects = select_new;
+	return 0;
+}
 
 
 //*/
