@@ -114,15 +114,24 @@ void rem_sel_center(struct coord_proto *coord)
 	return;
 }
 
-void select_discard(void)
+void select_dots_discard(void)
+{
+	// remove all dot selections from state
+	pstate.select = select_discard(pstate.select);
+	pstate.selnum = 0;
+	update_sel_center();
+	return;
+}
+
+select_t *select_discard(select_t *psel)
 {
 	// remove all selections from selection list
 	struct select_proto *selects;
 	struct select_proto *last;
-	if (pstate.select != 0)
+	if (psel != 0)
 	{
-		selects = pstate.select;
-		last = pstate.select;
+		selects = psel;
+		last = psel;
 		while (selects != NULL)
 		{
 			// remove
@@ -130,11 +139,9 @@ void select_discard(void)
 			free(selects);
 			selects = last;
 		}
-		pstate.select = 0;
+		psel = 0;
 	}
-	pstate.selnum = 0;
-	update_sel_center();
-	return;
+	return psel;
 }
 
 select_t *select_add(select_t *psel, int index)
@@ -244,7 +251,7 @@ int select_all(void)
 	int i;
 	int perfnum;
 	struct perf_proto **perfs;
-	select_discard();
+	select_discard(pstate.select);
 	perfnum = pshow->perfnum;
 	perfs = pshow->perfs;
 	for (i=0; i<perfnum; i++)

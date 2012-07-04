@@ -150,7 +150,7 @@ int add_perf(void)
 	}
 	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 1;
-	select_discard();
+	select_dots_discard();
 	pstate.select = select_add(pstate.select, index);
 	pushPerfMk(&pstate.undobr, index, 1);
 	return index;
@@ -253,7 +253,7 @@ void delete_perf_selected(void)
 		// go to next performer
 		last = last->next;
 	}
-	select_discard();
+	select_dots_discard();
 	return;
 }
 

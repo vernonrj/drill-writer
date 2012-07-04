@@ -328,10 +328,11 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 
 // select-con.c
 // Selection control functions
+void select_dots_discard(void);
 void update_sel_center(void);
 void add_sel_center(struct coord_proto *coord);
 void rem_sel_center(struct coord_proto *coord);
-void select_discard(void);
+select_t *select_discard(select_t*);
 select_t *select_add(select_t*, int index);
 int select_all(void);
 group_t *group_construct(void);

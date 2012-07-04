@@ -270,7 +270,7 @@ int tbSelect(void)
 				break;
 			case 4:		// Select none
 				// non-testbench
-				select_discard();
+				select_dots_discard();
 				break;
 			case 5:		// back
 				excode = 1;

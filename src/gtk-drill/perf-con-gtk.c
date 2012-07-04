@@ -209,7 +209,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					if (!isSelected(index))
 					{
 						// dot is not selected
-						select_discard();
+						select_dots_discard();
 						mouse_discarded = 1;
 						if (index != -1)
 						{
