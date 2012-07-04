@@ -335,11 +335,12 @@ void add_sel_center(struct coord_proto *coord);
 void rem_sel_center(struct coord_proto *coord);
 select_t *select_discard(select_t*);
 select_t *select_add(select_t*, int index, bool toggle);
+select_t *select_add_group(select_t*, group_t*, bool);
 int select_all(void);
 group_t *group_construct(void);
-int group_add_selects(group_t *group, select_t *newsels);
+group_t *group_add_selects(group_t *group, select_t *newsels);
+bool is_in_select(int index, select_t *selects);
 int add_group(void);
-int select_in_group(int index);
 
 // set-controls.c
 // create a set with a given amount of performers

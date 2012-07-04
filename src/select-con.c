@@ -174,8 +174,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 		curr->index = index;
 		//pstate.select = curr;
 		psel = curr;
-		if (select_in_group(index))
-			printf("%i in group\n", index);
 		// update selection center
 		add_sel_center(pshow->sets->currset->coords[index]);
 	}
@@ -189,8 +187,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 		while (loop_done == 0)
 		{
 			// check for grouping
-			if (select_in_group(last->index))
-				printf("%i in group\n", last->index);
 			if (last->index == index)
 			{
 				// found a match, remove if toggle enabled
@@ -253,6 +249,21 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 	return psel;
 }
 
+select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
+{
+	// add group to selection
+	select_t *last;
+	if (!group)
+		return selects;
+	last = group->selects;
+	while (last)
+	{
+		selects = select_add(selects, last->index, toggle);
+		last = last->next;
+	}
+	return selects;
+}
+
 int select_all(void)
 {
 	// select all dots
@@ -290,7 +301,7 @@ group_t *group_construct(void)
 
 
 ///*
-int group_add_selects(group_t *group, select_t *newsels)
+group_t *group_add_selects(group_t *group, select_t *newsels)
 {
 	// add selects to group
 	select_t *scurr = newsels;
@@ -336,12 +347,25 @@ int group_add_selects(group_t *group, select_t *newsels)
 	// add new selection to group
 	select_discard(group->selects);
 	group->selects = select_new;
-	return 0;
+	return group;
 }
 
 
 //*/
 
+
+
+bool is_in_select(int index, select_t *selects)
+{
+	select_t *last = selects;
+	while (last)
+	{
+		if (index == last->index)
+			return true;
+		last = last->next;
+	}	
+	return false;
+}
 
 
 

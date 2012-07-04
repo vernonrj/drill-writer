@@ -131,8 +131,8 @@ int add_group_gtk (GtkWidget *widget)
 {
 	// add selection to group
 	//int excode = add_group();
-	int excode = group_add_selects(pshow->topgroups, pstate.select);
-	return excode;
+	pshow->topgroups = group_add_selects(pshow->topgroups, pstate.select);
+	return 0;
 }
 
 
@@ -203,6 +203,12 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					// ctrl-click
 					select_dots_add(index);
 				}
+				else if (event->state == 1 && index != -1)
+				{
+					// shift-click
+					if (pshow->topgroups && is_in_select(index, pshow->topgroups->selects))
+						pstate.select = select_add_group(pstate.select, pshow->topgroups, false);
+				}
 				else if (event->state != 4)
 				{
 					// regular click
@@ -217,6 +223,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 						}
 					}
 				}
+				printf("event = %i\n", event->state);
 				gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 				break;
 			case SELECTDRAG:
