@@ -137,7 +137,7 @@ void select_discard(void)
 	return;
 }
 
-int select_add(int index)
+select_t *select_add(select_t *psel, int index)
 {
 	// add a selection if it's not selected;
 	// remove a selection if it is selected
@@ -149,15 +149,16 @@ int select_add(int index)
 	int matched = 0;
 	int loop_done = 0;
 
-	if (!pstate.select)
+	if (!psel)
 	{
 		// no selection yet
 		curr = (struct select_proto*)malloc(sizeof(struct select_proto));
 		if (!curr)
-			return -1;
+			return NULL;
 		curr->next = 0;
 		curr->index = index;
-		pstate.select = curr;
+		//pstate.select = curr;
+		psel = curr;
 		if (select_in_group(index))
 			printf("%i in group\n", index);
 		// update selection center
@@ -167,7 +168,8 @@ int select_add(int index)
 	{
 		// have some selections; 
 		// add inorder or remove if already selected
-		last = pstate.select;
+		//last = pstate.select;
+		last = psel;
 		selects = 0;
 		while (loop_done == 0)
 		{
@@ -180,7 +182,8 @@ int select_add(int index)
 				if (selects == NULL)
 				{
 					// match is first node
-					pstate.select = last->next;
+					//pstate.select = last->next;
+					psel = last->next;
 					free(last);
 				}
 				else
@@ -191,7 +194,7 @@ int select_add(int index)
 				}
 				loop_done = 1;
 				matched = 1;
-				rem_sel_center(pshow->sets->currset->coords[index]);
+				//rem_sel_center(pshow->sets->currset->coords[index]);
 			}
 			else if (last->index > index)
 			{
@@ -214,13 +217,14 @@ int select_add(int index)
 			// create a new node
 			curr = (struct select_proto*)malloc(sizeof(struct select_proto));
 			if (!curr)
-				return -1;
+				return NULL;
 			curr->index = index;
 			if (selects == NULL)
 			{
 				// insert at beginning
 				curr->next = pstate.select;
-				pstate.select = curr;
+				//pstate.select = curr;
+				psel = curr;
 			}
 			else
 			{
@@ -229,9 +233,9 @@ int select_add(int index)
 				selects->next = curr;
 			}
 		}
-		add_sel_center(pshow->sets->currset->coords[index]);
+		//add_sel_center(pshow->sets->currset->coords[index]);
 	}
-	return 0;
+	return psel;
 }
 
 int select_all(void)
@@ -240,7 +244,6 @@ int select_all(void)
 	int i;
 	int perfnum;
 	struct perf_proto **perfs;
-	int excode;
 	select_discard();
 	perfnum = pshow->perfnum;
 	perfs = pshow->perfs;
@@ -249,13 +252,63 @@ int select_all(void)
 		if (perfs[i]->valid != 0)
 		{
 			// performer is valid. Add
-			excode = select_add(i);
-			if (excode == -1)
-				return -1;
+			pstate.select = select_add(pstate.select, i);
 		}
 	}
 	return 0;
 }
+
+
+group_t *group_construct(void)
+{
+	// make a group node
+	group_t *group;
+	group = (group_t*)malloc(sizeof(group_t));
+	if (!group)
+		return NULL;
+	group->selects = NULL;
+	group->forms = NULL;
+	group->next = NULL;
+
+	return group;
+}
+
+
+/*
+int group_add_selects(group_t *group, select_t *newsels)
+{
+	// add selects to group
+	select_t *scurr = newsels;
+	select_t *glast = group->selects;
+	select_t *smerged = NULL;
+	select_t *smer_head = NULL;
+	select_t *select_new;
+
+	while (scurr && glast)
+	{
+		if (scurr->index < ghead->index)
+		{
+			// add new selection here
+			select_new = scurr->index;
+			scurr = scurr->next;
+		}
+		else if (scurr->index > ghead->index)
+		{
+			select_new = ghead->index;
+			ghead = ghead->next;
+		}
+		else
+		{
+			scurr = scurr->next;
+		}
+		if (select_new && !smer_head)
+		{
+			smer_head = select_new;
+
+
+*/
+
+
 
 
 int add_group(void)

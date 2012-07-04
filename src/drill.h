@@ -106,13 +106,14 @@ struct undo_proto
 
 /* Selection / Groups / Forms */
 // selection LLL node
-struct select_proto
+typedef struct select_proto
 {
 	// node with selection information
 	int index;
 
 	struct select_proto *next;
-};
+	struct select_proto *prev;
+} select_t;
 
 
 
@@ -331,8 +332,9 @@ void update_sel_center(void);
 void add_sel_center(struct coord_proto *coord);
 void rem_sel_center(struct coord_proto *coord);
 void select_discard(void);
-int select_add(int index);
+select_t *select_add(select_t*, int index);
 int select_all(void);
+group_t *group_construct(void);
 int add_group(void);
 int select_in_group(int index);
 

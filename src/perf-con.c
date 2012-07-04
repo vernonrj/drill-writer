@@ -151,9 +151,7 @@ int add_perf(void)
 	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 1;
 	select_discard();
-	excode = select_add(index);
-	if (excode == -1)
-		return -1;
+	pstate.select = select_add(pstate.select, index);
 	pushPerfMk(&pstate.undobr, index, 1);
 	return index;
 }

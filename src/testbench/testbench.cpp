@@ -326,7 +326,7 @@ int tbSelect_add(void)
 	excode = atoi(select);
 	delete [] select;
 	delete fifo;
-	select_add(excode);
+	pstate.select = select_add(pstate.select, excode);
 
 	return 0;
 }

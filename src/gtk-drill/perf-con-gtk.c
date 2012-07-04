@@ -201,9 +201,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				if (event->state == 4 && index != -1)
 				{
 					// ctrl-click
-					excode = select_add(index);
-					if (excode == -1)
-						return -1;
+					pstate.select = select_add(pstate.select, index);
 				}
 				else if (event->state != 4)
 				{
@@ -215,9 +213,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 						mouse_discarded = 1;
 						if (index != -1)
 						{
-							excode = select_add(index);
-							if (excode == -1)
-								return -1;
+							pstate.select = select_add(pstate.select, index);
 						}
 					}
 				}
