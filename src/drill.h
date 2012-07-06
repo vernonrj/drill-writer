@@ -31,6 +31,7 @@ typedef struct coord_proto coord_t;
 typedef struct perf_proto perf_t;
 typedef struct set_proto set_t;
 typedef struct set_container set_container_t;
+typedef struct headset_proto headset_t;
 
 // mouse mode (what executes when user clicks on field)
 enum ENUM_MOUSE_MODE

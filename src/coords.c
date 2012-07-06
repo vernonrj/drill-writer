@@ -59,7 +59,7 @@ int coord_construct(coord_t **coord_r, double x, double y)
 	return 0;
 }
 
-int set_coord(struct headset_proto *dshow, int index, double x, double y)
+int set_coord(headset_t *dshow, int index, double x, double y)
 {
 	// set coordinates from the coord struct
 	coord_t *coord;

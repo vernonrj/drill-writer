@@ -4,21 +4,21 @@
 
 #include "drill.h"		// header file, with most global variables
 
-int show_construct(struct headset_proto **dshow_r, int perfs)
+int show_construct(headset_t **dshow_r, int perfs)
 {
 	// Create a show based on information given
 	int i;
 	int excode;
-	struct headset_proto *dshow;
+	headset_t *dshow;
 	// Performers
-	struct perf_proto *pcurr;
-	//struct perf_proto *plast;
+	perf_t *pcurr;
+	//perf_t *plast;
 	// Sets
-	struct set_proto *setcurr;
-	//struct set_proto *setlast;
+	set_t *setcurr;
+	//set_t *setlast;
 	// coords
 
-	dshow = (struct headset_proto*) malloc(sizeof(struct headset_proto));
+	dshow = (headset_t*) malloc(sizeof(headset_t));
 	// initialize filename to empty
 	pstate.filename = 0;
 	if (dshow == NULL)
@@ -41,7 +41,7 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 	dshow->showinfo[0] = '\0';
 
 	// Make the list of performers
-	dshow->perfs = (struct perf_proto**) malloc(perfs * sizeof(struct perf_proto*));
+	dshow->perfs = (perf_t**) malloc(perfs * sizeof(perf_t*));
 	if (!dshow->perfs)
 		return -1;
 	for (i=0; i<perfs; i++)
@@ -102,31 +102,31 @@ int show_construct(struct headset_proto **dshow_r, int perfs)
 
 
 
-int show_destroy(struct headset_proto **dshow_r)
+int show_destroy(headset_t **dshow_r)
 {
 	int i;
 	int perfnum;
 	//int undop;
 	int snum;
 	// show
-	struct headset_proto *dshow;
+	headset_t *dshow;
 	// performers
-	struct perf_proto **perfs;
-	//struct perf_proto *pcurr;
+	perf_t **perfs;
+	//perf_t *pcurr;
 	// sets
-	struct set_proto *setcurr;
-	struct set_proto *setlast;
+	set_t *setcurr;
+	set_t *setlast;
 	// coords
-	//struct coord_proto **coords;
+	//coord_t **coords;
 	// selects
-	struct select_proto *select;
-	struct select_proto *sellast;
+	select_t *select;
+	select_t *sellast;
 	// undo/redo
-	//struct undo_proto *undcurr;
-	//struct undo_proto *undlast;
+	//undo_t *undcurr;
+	//undo_t *undlast;
 	// tempo
-	struct tempo_proto *tcurr;
-	struct tempo_proto *tlast;
+	tempo_t *tcurr;
+	tempo_t *tlast;
 	
 	// get show
 	dshow = *dshow_r;
@@ -190,13 +190,13 @@ int show_destroy(struct headset_proto **dshow_r)
 int main (int argc, char *argv[])
 {
 	// specific set
-	struct set_proto *currset;
-	struct set_proto *prevset;
+	set_t *currset;
+	set_t *prevset;
 	// specific performer
-	//struct perf_proto *currperf;
+	//perf_t *currperf;
 	// coords
-	//struct coord_proto *coords; 
-	struct coord_proto *prevcr;
+	//coord_t *coords; 
+	coord_t *prevcr;
 	int excode;
 	int i;		// loop vars
 	//double x, y;
