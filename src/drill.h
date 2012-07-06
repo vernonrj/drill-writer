@@ -55,7 +55,7 @@ struct showstate_proto
 	select_t *select;
 	int selnum;
 	// dot moments
-	struct coord_proto *center;
+	coord_t *center;
 	// current count of the current set
 	int curr_step;
 	int playing;		// play flag
@@ -103,13 +103,13 @@ struct undo_proto
 	int operation;
 	union undo_union
 	{
-		struct set_proto *set;		// if set was deleted
+		set_t *set;		// if set was deleted
 		int tempo;			// if tempo was changed
 		int counts;			// if count was changed
-		struct perf_proto *sperf;	// if perf was changed (not coord)
+		perf_t *sperf;	// if perf was changed (not coord)
 		int pindex;			// if perf location changed
 	} ud;
-	struct coord_proto **coords;		// if perf is to be deleted
+	coord_t **coords;		// if perf is to be deleted
 	double x, y;				// relative/absolute coords
 	int done;				// whether or not cascade should stop here
 
@@ -165,7 +165,7 @@ struct  form_proto // form_t
 {
 	int type;
 	formType_t *form;
-	struct form_proto *next;
+	form_t *next;
 };
 
 
@@ -176,7 +176,7 @@ struct group_proto
 	select_t *selects;
 
 	form_t *forms;
-	struct group_proto *next;
+	group_t *next;
 };
 
 
@@ -190,8 +190,8 @@ struct tempo_proto
 	// Set anchor point
 	int anchorpoint;
 
-	struct tempo_proto *prev;
-	struct tempo_proto *next;
+	tempo_t *prev;
+	tempo_t *next;
 };
 
 
@@ -229,12 +229,12 @@ struct set_proto
 	// node with set information
 	char *name;	// set name
 	char *info;	// set info
-	struct coord_proto **coords;
+	coord_t **coords;
 	group_t *groups;
 	int counts;
 	int midset;
-	struct set_proto *next;
-	struct set_proto *prev;
+	set_t *next;
+	set_t *prev;
 };
 
 
@@ -242,9 +242,9 @@ struct set_container
 {
 	// node with info on the sets
 	// in a show
-	struct set_proto *firstset;
-	struct set_proto *currset;
-	//struct set_proto *prevset;
+	set_t *firstset;
+	set_t *currset;
+	//set_t *prevset;
 };
 
 struct headset_proto
@@ -260,11 +260,11 @@ struct headset_proto
 	// number of performers
 	int perfnum;
 	// links to performers
-	struct perf_proto **perfs;
+	perf_t **perfs;
 	// set structure
-	struct set_container *sets;
+	set_container_t *sets;
 	// Tempo control
-	struct tempo_proto *currtempo;
+	tempo_t *currtempo;
 	// Toplevel groups
 	group_t *topgroups;
 };
@@ -282,20 +282,20 @@ int menuIface(void);
 
 // coords.c
 // create container for dots
-int coords_construct(struct coord_proto *** coords_r, int perfs);
-int coord_construct(struct coord_proto **coord_r, double x, double y);
+int coords_construct(coord_t *** coords_r, int perfs);
+int coord_construct(coord_t **coord_r, double x, double y);
 // set/retrieve coordinates from coord struct
 int set_coord(struct headset_proto *dshow, int index, double x, double y);
-int set_coord_valid(struct coord_proto **curr, int index, double x, double y);
-int retr_coord(struct coord_proto *curr, double *x, double *y);
-int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r);
-//int retr_midset(struct set_container *sets, int index, double *x_r, double *y_r);
+int set_coord_valid(coord_t **curr, int index, double x, double y);
+int retr_coord(coord_t *curr, double *x, double *y);
+int retr_midset(set_t *currset, int index, double *x_r, double *y_r);
+//int retr_midset(set_container_t *sets, int index, double *x_r, double *y_r);
 int movexy(double xoff, double yoff);
-//int movexy(struct set_container *sets, struct select_proto *selects, double xoff, double yoff);
+//int movexy(set_container_t *sets, struct select_proto *selects, double xoff, double yoff);
 int align_dots(void);
-//int align_dots(struct set_container *sets, struct select_proto *select);
+//int align_dots(set_container_t *sets, struct select_proto *select);
 int movexy_grid(double xoff, double yoff);
-//int movexy_grid(struct set_container *sets, struct select_proto *selects, double xoff, double yoff);
+//int movexy_grid(set_container_t *sets, struct select_proto *selects, double xoff, double yoff);
 void box_scale_form(double s_step);
 void scale_form(double s_step);
 void rot_form(double s_step);
@@ -319,13 +319,13 @@ int main (int argc, char *argv[]);
 
 // perf-con.c
 // create container for performers
-int perf_construct(struct perf_proto **perf_ref);
-int perf_destroy(struct perf_proto **perf_r);
+int perf_construct(perf_t **perf_ref);
+int perf_destroy(perf_t **perf_r);
 int add_perf(void);
 void revert_perf_selected(struct headset_proto *dshow);
 void revert_perf(struct headset_proto *dshow, int index);
 void delete_perf_selected(void);
-void delete_perf(struct perf_proto *perf);
+void delete_perf(perf_t *perf);
 double check_stepsize_selected(struct headset_proto *dshow);
 int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 
@@ -334,8 +334,8 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 void select_dots_discard(void);
 void select_dots_add(int index);
 void update_sel_center(void);
-void add_sel_center(struct coord_proto *coord);
-void rem_sel_center(struct coord_proto *coord);
+void add_sel_center(coord_t *coord);
+void rem_sel_center(coord_t *coord);
 select_t *select_discard(select_t*);
 select_t *select_add(select_t*, int index, bool toggle);
 select_t *select_add_group(select_t*, group_t*, bool);
@@ -347,10 +347,10 @@ int add_group(void);
 
 // set-controls.c
 // create a set with a given amount of performers
-struct set_container *set_container_construct(int perfs);
-int set_construct(struct set_proto **sets_r, int perfs);
-int newset_create(struct set_container *sets);
-int set_cldestroy(struct set_proto **setcurr_r, int perfnum);
+set_container_t *set_container_construct(int perfs);
+int set_construct(set_t **sets_r, int perfs);
+int newset_create(set_container_t *sets);
+int set_cldestroy(set_t **setcurr_r, int perfnum);
 int set_destroy(void);
 void goto_set(int set_buffer);
 int isLastSet(void);
@@ -365,18 +365,18 @@ void set_prev_count(void);
 void set_prev(void);
 
 // tempo.c
-int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint);
-void change_tempo(int tempo, struct tempo_proto **currtempo_r);
+int tempo_construct(tempo_t **tempo_r, int anchorpoint);
+void change_tempo(int tempo, tempo_t **currtempo_r);
 void update_tempo(void);
 
 // undo.c
 int undo_destroy(undo_t **undlast_r, struct headset_proto *dshow);
 int pushToStack(undo_t *unredo, undo_t **stack_r);
 int pushSetMk(undo_t **stack_r);
-int pushSetDel(undo_t **stack_r, struct set_proto *oldset);
+int pushSetDel(undo_t **stack_r, set_t *oldset);
 int pushPerfMk(undo_t **stack_r, int index, int done);
-int pushPerfDel(undo_t **stack_r, struct perf_proto **oldperf, 
-		struct set_proto *firstset, int done);
+int pushPerfDel(undo_t **stack_r, perf_t **oldperf, 
+		set_t *firstset, int done);
 int pushPerfmv(undo_t **stack_r, int index, double x, double y, int done);
 int pushTempo(undo_t **stack_r, int tempo);
 int pushCounts(undo_t **stack_r, int set_num, int counts, int done);
