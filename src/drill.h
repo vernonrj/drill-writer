@@ -67,18 +67,6 @@ struct showstate_proto
 	undo_t *redobr;
 } pstate;
 
-/*
-int setnum;			// current set
-int playing;
-int first_time;
-double xoff, yoff;		// x offset
-double xo2, yo2;		// y offset
-double width, height;		// window width, height
-double step;			// size of 8:5 step in window
-double zoom_x;
-double zoom_y;
-time_t undo_timer;
-*/
 
 int do_field;			// whether or not to redraw field
 int do_dots;
@@ -114,7 +102,6 @@ struct undo_proto
 	double x, y;				// relative/absolute coords
 	int done;				// whether or not cascade should stop here
 
-	//struct undo_proto *next;
 	undo_t *next;
 };
 
@@ -213,14 +200,10 @@ struct coord_proto
 struct perf_proto
 {
 	// node with performer information
-	//char *name;	// performer name
 	int index;	// index number for dots
 	char *symbol;	// symbol on field
 	int valid;	// should be used by program
 	// last valid coordinate
-	//struct coord_proto *vdot;
-
-	//struct perf_proto *next;
 };
 
 
@@ -245,7 +228,6 @@ struct set_container
 	// in a show
 	set_t *firstset;
 	set_t *currset;
-	//set_t *prevset;
 };
 
 struct headset_proto
@@ -287,19 +269,14 @@ coord_t **coords_construct(int perfs);
 coord_t *coord_construct(void);
 coord_t *coord_construct_with_data(double x, double y);
 coord_t **coords_destruct(coord_t **coords, int perfs);
-//int coord_construct(coord_t **coord_r, double x, double y);
 // set/retrieve coordinates from coord struct
 int set_coord(struct headset_proto *dshow, int index, double x, double y);
 int set_coord_valid(coord_t **curr, int index, double x, double y);
 int retr_coord(coord_t *curr, double *x, double *y);
 int retr_midset(set_t *currset, int index, double *x_r, double *y_r);
-//int retr_midset(set_container_t *sets, int index, double *x_r, double *y_r);
 int movexy(double xoff, double yoff);
-//int movexy(set_container_t *sets, struct select_proto *selects, double xoff, double yoff);
 int align_dots(void);
-//int align_dots(set_container_t *sets, struct select_proto *select);
 int movexy_grid(double xoff, double yoff);
-//int movexy_grid(set_container_t *sets, struct select_proto *selects, double xoff, double yoff);
 void box_scale_form(double s_step);
 void scale_form(double s_step);
 void rot_form(double s_step);
