@@ -19,6 +19,18 @@
 #include <stdio.h>
 #include <math.h>
 
+typedef struct undo_proto undo_t;
+typedef struct select_proto select_t;
+// typedef struct [] fblock_t
+// typedef struct [] farc_t
+// typedef union [] formType_t
+typedef struct form_proto form_t;
+typedef struct group_proto group_t;
+typedef struct tempo_proto tempo_t;
+typedef struct coord_proto coord_t;
+typedef struct perf_proto perf_t;
+typedef struct set_proto set_t;
+typedef struct set_container set_container_t;
 
 // mouse mode (what executes when user clicks on field)
 enum ENUM_MOUSE_MODE
@@ -40,7 +52,7 @@ struct showstate_proto
 	// show variables
 	int setnum;		// current set
 	// selection list
-	struct select_proto *select;
+	select_t *select;
 	int selnum;
 	// dot moments
 	struct coord_proto *center;
@@ -50,8 +62,8 @@ struct showstate_proto
 	int first_time;		// dealloc flag
 	// undo state
 	time_t undo_timer;	// time since last undo
-	struct undo_proto *undobr;
-	struct undo_proto *redobr;
+	undo_t *undobr;
+	undo_t *redobr;
 } pstate;
 
 /*
@@ -101,19 +113,20 @@ struct undo_proto
 	double x, y;				// relative/absolute coords
 	int done;				// whether or not cascade should stop here
 
-	struct undo_proto *next;
+	//struct undo_proto *next;
+	undo_t *next;
 };
 
 /* Selection / Groups / Forms */
 // selection LLL node
-typedef struct select_proto
+struct select_proto
 {
 	// node with selection information
 	int index;
 
-	struct select_proto *next;
-	struct select_proto *prev;
-} select_t;
+	select_t *next;
+	select_t *prev;
+};
 
 
 
@@ -148,33 +161,23 @@ typedef union // formType_t
 	farc_t *arc;
 } formType_t;
 
-typedef struct  form_proto // form_t
+struct  form_proto // form_t
 {
 	int type;
 	formType_t *form;
 	struct form_proto *next;
-} form_t;
+};
 
 
 // Groups
-typedef struct group_proto
+struct group_proto
 {
 	// node with grouping information
-	struct select_proto *selects;
+	select_t *selects;
 
 	form_t *forms;
 	struct group_proto *next;
-} group_t;
-
-/*
-struct group_container
-{
-	// node that contains groups for a set
-	struct group_proto *head;
-	struct select_proto *include;
-	struct select_proto *automanaged;
 };
-*/
 
 
 
@@ -367,19 +370,19 @@ void change_tempo(int tempo, struct tempo_proto **currtempo_r);
 void update_tempo(void);
 
 // undo.c
-int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow);
-int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r);
-int pushSetMk(struct undo_proto **stack_r);
-int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset);
-int pushPerfMk(struct undo_proto **stack_r, int index, int done);
-int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf, 
+int undo_destroy(undo_t **undlast_r, struct headset_proto *dshow);
+int pushToStack(undo_t *unredo, undo_t **stack_r);
+int pushSetMk(undo_t **stack_r);
+int pushSetDel(undo_t **stack_r, struct set_proto *oldset);
+int pushPerfMk(undo_t **stack_r, int index, int done);
+int pushPerfDel(undo_t **stack_r, struct perf_proto **oldperf, 
 		struct set_proto *firstset, int done);
-int pushPerfmv(struct undo_proto **stack_r, int index, double x, double y, int done);
-int pushTempo(struct undo_proto **stack_r, int tempo);
-int pushCounts(struct undo_proto **stack_r, int set_num, int counts, int done);
-int sourcePop(struct undo_proto **sourcebr_r);
-int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
-		struct undo_proto **destbr_r);
+int pushPerfmv(undo_t **stack_r, int index, double x, double y, int done);
+int pushTempo(undo_t **stack_r, int tempo);
+int pushCounts(undo_t **stack_r, int set_num, int counts, int done);
+int sourcePop(undo_t **sourcebr_r);
+int popFromStack(struct headset_proto *dshow, undo_t **sourcebr_r,
+		undo_t **destbr_r);
 void undo_tclose(void);
 
 
