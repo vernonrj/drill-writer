@@ -257,7 +257,7 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 
 	widget->allocation = *allocation;
 
-	if (GTK_WIDGET_REALIZED(widget))
+	if (gtk_widget_get_realized(widget))
 	{
 		gdk_window_move_resize(
 				widget->window,
@@ -266,6 +266,7 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 				);
 	}
 }
+
 static void gtk_drill_realize(GtkWidget *widget)
 {
 	printf("ping realize\n");
