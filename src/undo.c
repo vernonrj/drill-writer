@@ -56,7 +56,6 @@ int pushToStack(undo_t *unredo, undo_t **stack_r)
 	if (!unredo)
 		return -1;
 	time(&new_undo_timer);
- 	//tdiff = difftime(new_undo_timer, undo_timer);
  	tdiff = difftime(new_undo_timer, pstate.undo_timer);
 	pstate.undo_timer = new_undo_timer;
 	stack = *stack_r;
@@ -78,7 +77,6 @@ int pushSetMk(undo_t **stack_r)
 	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
-		//unredo->set_num = setnum;
 		unredo->set_num = pstate.setnum;
 		//printf("setnum = %i\n", setnum);
 		unredo->operation = 0;	// set to be created
@@ -91,6 +89,8 @@ int pushSetMk(undo_t **stack_r)
 		return -1;
 }
 
+
+
 int pushSetDel(undo_t **stack_r, set_t *oldset)
 {
 	// Set to be deleted, push current set onto stack
@@ -100,7 +100,6 @@ int pushSetDel(undo_t **stack_r, set_t *oldset)
 	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
-		//unredo->set_num = setnum;
 		unredo->set_num = pstate.setnum;
 		unredo->operation = 1;		// set to be deleted
 		unredo->ud.set = oldset;	// store set
@@ -113,6 +112,8 @@ int pushSetDel(undo_t **stack_r, set_t *oldset)
 		return -1;
 }
 
+
+
 int pushPerfMk(undo_t **stack_r, int index, int done)
 {
 	// Perf to be added, push index onto stack
@@ -122,7 +123,6 @@ int pushPerfMk(undo_t **stack_r, int index, int done)
 	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
-		//unredo->set_num = setnum;
 		unredo->set_num = pstate.setnum;
 		unredo->operation = 2;		// Performer adding
 		unredo->ud.pindex = index;	// store perf index
@@ -137,19 +137,19 @@ int pushPerfMk(undo_t **stack_r, int index, int done)
 	return 0;
 }
 
+
+
 int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r, 
 		set_t *firstset, int done)
 {
 	// Perf to be deleted, push node onto stack
 	undo_t *unredo;
 	set_t *last;
-	//perf_t *perf = 0;
 	perf_t *oldperf;
 	perf_t *newperf;
 	volatile int i;
 	int index;
 	int excode;
-	//int set_tot;
 
 
 	unredo = (undo_t*)malloc(sizeof(undo_t));
@@ -159,7 +159,6 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 	}
 	oldperf = *oldperf_r;
 	index = oldperf->index;
-	//unredo->set_num = setnum;
 	unredo->set_num = pstate.setnum;
 	unredo->operation = 3;		// Performer removed
 	unredo->ud.sperf = *oldperf_r;	// store performer data 
@@ -172,8 +171,6 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 	// store coordinates for performer
 	// get total number of sets
 	set_last();
-	//unredo->coords = (coord_t**)malloc(
-	//		(setnum+1)*sizeof(coord_t*));
 	unredo->coords = (coord_t**)malloc(
 			(pstate.setnum+1)*sizeof(coord_t*));
 	if (!unredo->coords)
@@ -181,7 +178,6 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 	goto_set(unredo->set_num);
 	last = firstset;
 	i = 0;
-	//while (last != NULL)
 	for (i=0; last != NULL; i++, last = last->next)
 	{
 		unredo->coords[i] = last->coords[index];
@@ -190,8 +186,6 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 			return -1;
 		last->coords[index]->x = 0;
 		last->coords[index]->y = 0;
-		//i++;
-		//last = last->next;
 	}
 
 	*oldperf_r = newperf;
@@ -200,6 +194,8 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 
 	return excode;
 }
+
+
 
 int pushPerfmv(undo_t **stack_r, int index, double x, double y, int done)
 {
@@ -210,7 +206,6 @@ int pushPerfmv(undo_t **stack_r, int index, double x, double y, int done)
 	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
-		//unredo->set_num = setnum;
 		unredo->set_num = pstate.setnum;
 		unredo->operation = 4;		// Performer moved
 		unredo->ud.pindex = index;	// store perf index
@@ -227,6 +222,7 @@ int pushPerfmv(undo_t **stack_r, int index, double x, double y, int done)
 }
 
 
+
 int pushTempo(undo_t **stack_r, int tempo)
 {
 	// push tempo change onto stack
@@ -236,7 +232,6 @@ int pushTempo(undo_t **stack_r, int tempo)
 	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
-		//unredo->set_num = setnum;
 		unredo->set_num = pstate.setnum;
 		unredo->operation = 5;		// tempo changed
 		unredo->ud.tempo = tempo;	// store tempo
@@ -249,6 +244,8 @@ int pushTempo(undo_t **stack_r, int tempo)
 		return -1;
 	return 0;
 }
+
+
 
 int pushCounts(undo_t **stack_r, int set_num, int counts, int done)
 {
@@ -273,13 +270,12 @@ int pushCounts(undo_t **stack_r, int set_num, int counts, int done)
 	return 0;
 }
 
+
+
 int sourcePop(undo_t **sourcebr_r)
 {
 	undo_t *sourcebr;
 	undo_t *dscard;
-	//set_t *oldset;
-	//coord_t **coords;
-	//int i;
 	int done;
 	sourcebr = *sourcebr_r;
 	if (!sourcebr)
@@ -299,18 +295,17 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 {
 	// pop values from source stack, reverse operation,
 	// and push it onto destination stack. Can be used for undo and redo
-	int i;				// loop var
+	int i;			// loop var
 	undo_t *sourcebr;	// source branch
-	undo_t *destbr;	// destination branch
-	set_t *currset;	// current set
+	undo_t *destbr;		// destination branch
+	set_t *currset;		// current set
 	perf_t *perfcurr;	// current performer
 	coord_t **coords;	// coordinates
-	//tempo_t *tempo;
-	int operation;			// specified operation
+	int operation;		// specified operation
 	int excode;
 	int done = 1;
 	int index;
-	double x, y;			// coords for moving dot
+	double x, y;		// coords for moving dot
 	double xold, yold;
 
 
@@ -353,7 +348,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 				done = 1;
 			break;
 		case 1:		// set was destroyed
-			// link up old set
+				// link up old set
 			if (sourcebr->set_num == 0)
 			{
 				// first set
@@ -363,7 +358,6 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 				dshow->sets->currset->prev = sourcebr->ud.set;
 				set_first();
 			}
-			//else if (sourcebr->set_num > setnum)
 			else if (sourcebr->set_num > pstate.setnum)
 			{
 				// last set needs to be added
@@ -396,7 +390,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			excode = pushPerfDel(&destbr, &perfcurr, dshow->sets->firstset, done);
 			break;
 		case 3:		// perf was deleted
-			// re-add performer
+				// re-add performer
 			index = add_perf();
 			if (index == -1)
 				return -1;
@@ -417,10 +411,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			{
 				free(coords[index]);
 				coords[index] = sourcebr->coords[i];
-				//coords[index]->x = sourcebr->coords[i]->x;
-				//coords[index]->y = sourcebr->coords[i]->y;
 				printf("(x,y) @ %i = %.2f, %.2f\n", i, coords[index]->x, coords[index]->y);
-				//free(sourcebr->coords[i]);
 				i++;
 				currset = currset->next;
 				if (currset)
@@ -432,7 +423,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			excode = pushPerfMk(&destbr, index, done);
 			break;
 		case 4:		// performer moved
-			// move performer back
+				// move performer back
 			currset = dshow->sets->currset;
 			index = sourcebr->ud.pindex;
 			perfcurr = dshow->perfs[index];
@@ -446,16 +437,16 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			currset->coords[index]->y = y;
 			break;
 		case 5:		// tempo changed
-			// changed tempo back
+				// changed tempo back
 			excode = pushTempo(&destbr, dshow->currtempo->tempo);
 			if (excode != -1)
 				change_tempo(sourcebr->ud.tempo, &dshow->currtempo);
 			done = sourcePop(&sourcebr);
 			break;
 		case 6:		// count structure was changed
-			// change counts back
-			//excode = pushCounts(&destbr, setnum, 
-					//dshow->sets->currset->counts, 1);
+				// change counts back
+				//excode = pushCounts(&destbr, setnum, 
+				//dshow->sets->currset->counts, 1);
 			excode = pushCounts(&destbr, pstate.setnum, 
 					dshow->sets->currset->counts, 1);
 			if (excode != -1)
@@ -468,6 +459,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 	*destbr_r = destbr;
 	return done;
 }
+
 
 
 void undo_tclose(void)

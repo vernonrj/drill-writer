@@ -23,6 +23,7 @@ int tempo_construct(tempo_t **tempo_r, int anchorpoint)
 }
 
 
+
 void change_tempo(int tempo, tempo_t **currtempo_r)
 {
 	tempo_t *prevtempo;
@@ -35,7 +36,6 @@ void change_tempo(int tempo, tempo_t **currtempo_r)
 	{
 		// Tempo is valid. Make changes thusly
 		pushTempo(&pstate.undobr, currtempo->tempo);
-		//if (currtempo->anchorpoint == setnum)
 		if (currtempo->anchorpoint == pstate.setnum)
 		{
 			// changing an existing tempo
@@ -47,7 +47,6 @@ void change_tempo(int tempo, tempo_t **currtempo_r)
 			stempo = (tempo_t*) malloc(sizeof(tempo_t));
 			// store data to new node
 			stempo->tempo = tempo;
-			//stempo->anchorpoint = setnum;
 			stempo->anchorpoint = pstate.setnum;
 			// link new node
 			stempo->next = currtempo->next;
@@ -70,7 +69,6 @@ void change_tempo(int tempo, tempo_t **currtempo_r)
 					// link previously
 					nexttempo->prev = prevtempo;
 				}
-				//pshow->currtempo = prevtempo;
 				free(currtempo);
 				currtempo = prevtempo;
 			}
@@ -96,6 +94,8 @@ void change_tempo(int tempo, tempo_t **currtempo_r)
 	return;
 }
 
+
+
 void update_tempo(void)
 {
 	// if the tempo is out of date, change it
@@ -107,12 +107,9 @@ void update_tempo(void)
 
 	currtempo = pshow->currtempo;
 	// Go back to general location
-	//if (currtempo->anchorpoint > setnum)
 	if (currtempo->anchorpoint > pstate.setnum)
 	{
 		// Go backward to tempo
-		//while (currtempo->anchorpoint > setnum 
-				//&& currtempo->prev != NULL)
 		while (currtempo->anchorpoint > pstate.setnum 
 				&& currtempo->prev != NULL)
 			currtempo = currtempo->prev;
@@ -123,10 +120,8 @@ void update_tempo(void)
 		othertempo = currtempo->next;
 		while (othertempo)
 		{
-			//cset = currtempo->anchorpoint;
 			nset = othertempo->anchorpoint;
 			// find correct tempo forward
-			//if (nset <= setnum)
 			if (nset <= pstate.setnum)
 			{
 				// go to next tempo
@@ -138,7 +133,6 @@ void update_tempo(void)
 		}
 	}
 	// interface with deprecated tempo system
-	//tempo = currtempo->tempo;
 	pshow->currtempo = currtempo;
 	return;
 }
