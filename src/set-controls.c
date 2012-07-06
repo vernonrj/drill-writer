@@ -2,14 +2,14 @@
 #include "drill.h"
 
 
-struct set_container *set_container_construct(int perfs)
+set_container_t *set_container_construct(int perfs)
 {
 	// construct the set container
-	struct set_proto *sets = 0;
-	struct set_container *setCont;
+	set_t *sets = 0;
+	set_container_t *setCont;
 	int excode;
 
-	setCont = (struct set_container*)malloc(sizeof(struct set_container));
+	setCont = (set_container_t*)malloc(sizeof(set_container_t));
 	if (!setCont)
 		return NULL;
 	excode = set_construct(&sets, perfs);
@@ -23,16 +23,16 @@ struct set_container *set_container_construct(int perfs)
 }
 
 
-int set_construct(struct set_proto **sets_r, int perfs)
+int set_construct(set_t **sets_r, int perfs)
 {
 	// Build storage for set
 	//int i;
 	int excode;
 	
-	struct set_proto *newset;
-	struct set_proto *last;
+	set_t *newset;
+	set_t *last;
 
-	newset = (struct set_proto*) malloc(sizeof(struct set_proto));
+	newset = (set_t*) malloc(sizeof(set_t));
 	if (newset == NULL)
 	{
 		// allocation error
@@ -80,7 +80,7 @@ int set_construct(struct set_proto **sets_r, int perfs)
 }
 
 
-int newset_create(struct set_container *sets)
+int newset_create(set_container_t *sets)
 {
 	// make a new set at a point right after index
 	int i;
@@ -90,16 +90,16 @@ int newset_create(struct set_container *sets)
 	//int newcounts;
 
 	// set structures
-	struct set_proto *curr = sets->currset;
-	//struct set_proto *sets;
-	struct set_proto *last;
-	//struct set_proto *fset;
-	struct set_proto *nextset;
+	set_t *curr = sets->currset;
+	//set_t *sets;
+	set_t *last;
+	//set_t *fset;
+	set_t *nextset;
 
 	// coordinates
-	struct coord_proto **coords;
-	struct coord_proto **pcoords;
-	struct coord_proto **ncoords;
+	coord_t **coords;
+	coord_t **pcoords;
+	coord_t **ncoords;
 
 	//sets = 0;
 	last = 0;
@@ -181,11 +181,11 @@ int newset_create(struct set_container *sets)
 }
 
 
-int set_cldestroy(struct set_proto **setcurr_r, int perfnum)
+int set_cldestroy(set_t **setcurr_r, int perfnum)
 {
 	int i;
-	struct set_proto *setcurr;
-	struct coord_proto **coords;
+	set_t *setcurr;
+	coord_t **coords;
 
 	setcurr = *setcurr_r;
 	// delete sets
@@ -209,9 +209,9 @@ int set_destroy(void)
 	// destroy current set
 	//int i;
 	//int perfnum;
-	struct set_proto *last;
-	struct set_proto *prevset;
-	//struct set_proto *before;
+	set_t *last;
+	set_t *prevset;
+	//set_t *before;
 	int excode;
 
 	last = pshow->sets->currset;
@@ -274,8 +274,8 @@ int set_destroy(void)
 void goto_set(int set_buffer)
 {
 	int i = 0;
-	struct set_proto *last = pshow->sets->firstset;
-	//struct set_proto *curr = 0;
+	set_t *last = pshow->sets->firstset;
+	//set_t *curr = 0;
 	for (i=0; i<set_buffer && last != NULL; i++)
 	{
 		// go to current set
@@ -335,8 +335,8 @@ int isFirstSet(void)
 int add_set(void)
 {
 	// Add a set after the current one
-	struct headset_proto *dshow = pshow;
-	struct set_proto *nextset;
+	headset_t *dshow = pshow;
+	set_t *nextset;
 	int newcounts = 0;
 	int excode;
 
@@ -383,7 +383,7 @@ void set_first(void)
 void set_last(void)
 {
 	// Goto the last set
-	struct set_proto *last = pshow->sets->currset;
+	set_t *last = pshow->sets->currset;
 	if (!last)
 		return;
 	while (last->next != NULL)
@@ -425,7 +425,7 @@ void set_next(void)
 
 void set_next_count(void)
 {
-	struct set_proto *nextset;
+	set_t *nextset;
 	//if (!playing)
 	{	// shouldn't use this when playing
 		//printf("set_next setnum=%i\nset_tot=%i\nset_step=%i\n", setnum, set_tot, set_step);
@@ -463,7 +463,7 @@ void set_next_count(void)
 void set_prev_count(void)
 {
 	// go to the previous count
-	//struct set_proto *nextset;
+	//set_t *nextset;
 	if (!isFirstSet() || pstate.curr_step)
 	{
 		pstate.curr_step--;
@@ -481,7 +481,7 @@ void set_prev_count(void)
 
 void set_prev(void)
 {
-	struct set_proto *last;
+	set_t *last;
 
 	//if (!playing)	// shouldn't use this when playing
 	{
