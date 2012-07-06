@@ -286,6 +286,7 @@ int menuIface(void);
 coord_t **coords_construct(int perfs);
 coord_t *coord_construct(void);
 coord_t *coord_construct_with_data(double x, double y);
+coord_t **coords_destruct(coord_t **coords, int perfs);
 //int coord_construct(coord_t **coord_r, double x, double y);
 // set/retrieve coordinates from coord struct
 int set_coord(struct headset_proto *dshow, int index, double x, double y);

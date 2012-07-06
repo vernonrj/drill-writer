@@ -187,7 +187,7 @@ int newset_create(set_container_t *sets)
 
 int set_cldestroy(set_t **setcurr_r, int perfnum)
 {
-	int i;
+	// Just destruct set, don't do any cleanup
 	set_t *setcurr;
 	coord_t **coords;
 
@@ -196,12 +196,7 @@ int set_cldestroy(set_t **setcurr_r, int perfnum)
 	free(setcurr->name);
 	free(setcurr->info);
 	coords = setcurr->coords;
-	for (i=0; i<perfnum; i++)
-	{
-		// delete coords
-		free(coords[i]);
-	}
-	free(coords);
+	coords = coords_destruct(coords, perfnum);
 	free(setcurr);
 	*setcurr_r = 0;
 	return 0;

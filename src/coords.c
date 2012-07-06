@@ -61,6 +61,17 @@ coord_t *coord_construct(void)
 	return coord_construct_with_data(0,0);
 }
 
+
+coord_t **coords_destruct(coord_t **coords, int perfs)
+{
+	// free up coord array
+	int i;
+	for (i=0; i<perfs; i++)
+		free(coords[i]);
+	free(coords);
+	return coords;
+}
+
 int set_coord(headset_t *dshow, int index, double x, double y)
 {
 	// set coordinates from the coord struct
