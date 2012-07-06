@@ -14,7 +14,7 @@ select_t *select_discard(select_t *psel)
 	// remove all selections from selection list
 	select_t *selects;
 	select_t *last;
-	if (psel != 0)
+	if (psel != NULL)
 	{
 		selects = psel;
 		last = psel;
@@ -165,7 +165,7 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 		curr->index = index;
 		psel = curr;
 		// update selection center
-		add_sel_center(pshow->sets->currset->coords[index]);
+		//add_sel_center(pshow->sets->currset->coords[index]);
 	}
 	else
 	{
@@ -253,24 +253,34 @@ select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 
 
 
-int select_all(void)
+int wrap_select_all(void)
+{
+	pstate.select = select_all(pstate.select, pshow->perfs, pshow->perfnum);
+	return 0;
+}
+
+
+
+select_t *select_all(select_t *selects, perf_t **perfs, int perfnum)
 {
 	// select all dots
 	int i;
-	int perfnum;
-	perf_t **perfs;
-	select_discard(pstate.select);
-	perfnum = pshow->perfnum;
-	perfs = pshow->perfs;
+	//int perfnum;
+	//perf_t **perfs;
+	//select_discard(pstate.select);
+	selects = select_discard(selects);
+	//perfnum = pshow->perfnum;
+	//perfs = pshow->perfs;
 	for (i=0; i<perfnum; i++)
 	{
 		if (perfs[i]->valid != 0)
 		{
 			// performer is valid. Add
-			select_dots_add(i);
+			selects = select_add(selects, i, true);
 		}
 	}
-	return 0;
+	update_sel_center();
+	return selects;
 }
 
 

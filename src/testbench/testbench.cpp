@@ -266,7 +266,7 @@ int tbSelect(void)
 				break;
 			case 3:		// Select all
 				// non-testbench
-				select_all();
+				wrap_select_all();
 				break;
 			case 4:		// Select none
 				// non-testbench

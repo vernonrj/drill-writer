@@ -121,7 +121,7 @@ void prev_perf(GtkWidget *widget)
 
 int select_all_gtk (GtkWidget *widget)
 {
-	select_all();
+	wrap_select_all();
 	gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
 	return 0;
 }
