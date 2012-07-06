@@ -34,7 +34,7 @@ static void dr_sidebar_init(DrSidebar *lsidebar)
 	//g_return_if_fail(IS_SIDEBAR(lsidebar));
 	GtkWidget *combo_box;
 	GtkWidget *notebook;
-	GtkWidget *sidebarsets;
+	//GtkWidget *sidebarsets;
 	static const char *sidebar_opts[] = {
 		"Set", "Performer", "Groups"
 	};

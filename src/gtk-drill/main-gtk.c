@@ -184,7 +184,7 @@ int buildIfacegtk(void)
 	// statusbar
 	gchar *sbinfo;
 
-	GtkWidget *mediabar;
+	//GtkWidget *mediabar;
 
 	pstate.first_time = 1;
 
