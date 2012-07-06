@@ -26,7 +26,6 @@ set_container_t *set_container_construct(int perfs)
 int set_construct(set_t **sets_r, int perfs)
 {
 	// Build storage for set
-	//int i;
 	
 	set_t *newset;
 	set_t *last;
@@ -57,11 +56,6 @@ int set_construct(set_t **sets_r, int perfs)
 	newset->coords = coords_construct(perfs);
 	if (!newset->coords)
 		return -1;
-	/*
-	excode = coords_construct(&newset->coords, perfs);
-	if (excode == -1)
-		return -1;
-		*/
 
 	// link
 	last = *sets_r;
@@ -107,26 +101,14 @@ int set_cldestroy(set_t **setcurr_r, int perfnum)
 int set_destroy(void)
 {
 	// destroy current set
-	//int i;
-	//int perfnum;
 	set_t *last;
 	set_t *prevset;
-	//set_t *before;
 	int excode;
 
 	last = pshow->sets->currset;
 	prevset = last->prev;
-	//perfnum = pshow->perfnum;
 
 	pushSetDel(&pstate.undobr, pshow->sets->currset);
-	// free memory in nodes
-	/*
-	free(last->name);
-	free(last->info);
-	for (i=0; i<perfnum; i++)
-		free(last->coords[i]);
-	free(last->coords);
-	*/
 
 	// unlink node
 	if (prevset != NULL)
@@ -134,8 +116,6 @@ int set_destroy(void)
 		// Not at first set
 		prevset->next = last->next;
 		pshow->sets->currset = prevset->next;
-		// delete node
-		//free(last);
 		// put current set on next set if it exists
 		if (prevset->next == NULL)
 		{
@@ -155,7 +135,6 @@ int set_destroy(void)
 	{
 		// At first set
 		pshow->sets->firstset = last->next;
-		//free(last);
 		last = pshow->sets->firstset;
 		if (last == NULL)
 		{
@@ -178,13 +157,10 @@ int newset_create(set_container_t *sets)
 	int excode;
 	int mid = 0;
 	double x, y;
-	//int newcounts;
 
 	// set structures
 	set_t *curr = sets->currset;
-	//set_t *sets;
 	set_t *last;
-	//set_t *fset;
 	set_t *nextset;
 
 	// coordinates
@@ -192,7 +168,6 @@ int newset_create(set_container_t *sets)
 	coord_t **pcoords;
 	coord_t **ncoords;
 
-	//sets = 0;
 	last = 0;
 	excode = set_construct(&last, pshow->perfnum);
 	if (excode == -1)
@@ -248,7 +223,6 @@ int newset_create(set_container_t *sets)
 		if (mid)
 		{
 			// change counts to reflect a midset creation
-			//newcounts = nextset->counts;
 			nextset->counts = nextset->counts - pstate.curr_step;
 			last->counts = pstate.curr_step;
 			pstate.curr_step = 0;
@@ -278,23 +252,16 @@ void goto_set(int set_buffer)
 {
 	int i = 0;
 	set_t *last = pshow->sets->firstset;
-	//set_t *curr = 0;
+
 	for (i=0; i<set_buffer && last != NULL; i++)
 	{
 		// go to current set
-		//curr = last;
 		last = last->next;
 		i++;
 	}
-	/*
-	if (set_buffer<set_tot)
-		setnum=set_buffer;
-	*/
 	if (last != NULL)
 	{
 		pshow->sets->currset = last;
-		//pshow->sets->prevset = curr;
-		//setnum = i;
 		pstate.setnum = i;
 	}
 	return;
@@ -318,10 +285,11 @@ int isLastSet(void)
 	return 0;
 }
 
+
+
 int isFirstSet(void)
 {
 	// check to see if we're at the first set
-	//if (pshow->sets->currset == pshow->sets->firstset)
 	if (pshow->sets->currset->prev == NULL)
 	{
 		// at the first set
@@ -334,6 +302,8 @@ int isFirstSet(void)
 	}
 	return 0;
 }
+
+
 
 int add_set(void)
 {
@@ -352,13 +322,13 @@ int add_set(void)
 	set_next();
 	if (newcounts)
 	{
-		//pushCounts(&pstate.undobr, setnum, newcounts, 0);
 		pushCounts(&pstate.undobr, pstate.setnum, newcounts, 0);
 	}
 	pushSetMk(&pstate.undobr);
 
 	return 0;
 }
+
 
 
 void delete_set(void)
@@ -371,16 +341,11 @@ void delete_set(void)
 
 void set_first(void)
 {	// Move to first set
-	//if (!playing)
-	{
-		pshow->sets->currset = pshow->sets->firstset;
-		//pshow->sets->prevset = 0;
-		pstate.curr_step = 0;
-		//setnum=0;
-		pstate.setnum=0;
-		//set_step=0;
-	}
+	pshow->sets->currset = pshow->sets->firstset;
+	pstate.curr_step = 0;
+	pstate.setnum=0;
 }
+
 
 
 void set_last(void)
@@ -391,82 +356,51 @@ void set_last(void)
 		return;
 	while (last->next != NULL)
 	{
-		/*
-		if (pshow->sets->prevset == NULL)
-			pshow->sets->prevset = pshow->sets->currset;
-		else
-			pshow->sets->prevset = pshow->sets->prevset->next;
-		*/
-		//pshow->sets->currset = pshow->sets->currset->next;
 		last = last->next;
-		//setnum++;
 		pstate.setnum++;
 	}
 	pshow->sets->currset = last;
 	pstate.curr_step = 0;
 
-	//setnum=set_tot-1;
-	//set_step=0;
 	return;
 }
 
+
+
 void set_next(void)
 {	// Move to the next set
-	//if (!playing)
+	if (pshow->sets->currset->next != NULL)
 	{
-		if (pshow->sets->currset->next != NULL)
-		{
-			//pshow->sets->prevset = pshow->sets->currset;
-			pshow->sets->currset = pshow->sets->currset->next;
-			//setnum++;
-			pstate.setnum++;
-			pstate.curr_step = 0;
-		}
+		pshow->sets->currset = pshow->sets->currset->next;
+		pstate.setnum++;
+		pstate.curr_step = 0;
 	}
 }
+
 
 
 void set_next_count(void)
 {
+	// Go to the next count in the set
 	set_t *nextset;
-	//if (!playing)
-	{	// shouldn't use this when playing
-		//printf("set_next setnum=%i\nset_tot=%i\nset_step=%i\n", setnum, set_tot, set_step);
-		if (!isLastSet())
+	if (!isLastSet())
+	{
+		pstate.curr_step++;
+		nextset = pshow->sets->currset;
+		nextset = nextset->next;
+		if (pstate.curr_step >= nextset->counts)
 		{
-			pstate.curr_step++;
-			nextset = pshow->sets->currset;
-			nextset = nextset->next;
-			if (pstate.curr_step >= nextset->counts)
-			{
-				// to the next set
-				set_next();
-				/*
-				pstate.curr_step = 0;
-				pshow->sets->prevset = pshow->sets->currset;
-				pshow->sets->currset = nextset;
-				setnum++;
-				*/
-			}
+			// to the next set
+			set_next();
 		}
-		/*
-		if (setnum+1<set_tot)
-			set_step++;
-		else
-			setnum=set_tot-1;
-		if (set_step >= counts[setnum+1] && setnum+1<set_tot)
-		{
-			set_step=0;
-			setnum++;
-		}
-		*/
 	}
 }
+
+
 
 void set_prev_count(void)
 {
 	// go to the previous count
-	//set_t *nextset;
 	if (!isFirstSet() || pstate.curr_step)
 	{
 		pstate.curr_step--;
@@ -482,61 +416,27 @@ void set_prev_count(void)
 }
 
 
+
 void set_prev(void)
 {
 	set_t *last;
 
-	//if (!playing)	// shouldn't use this when playing
+	// if in the middle of set,
+	// go to beginning of set
+	last = pshow->sets->currset;
+	if (pstate.curr_step)
+		pstate.curr_step = 0;
+	else if (last->prev != NULL)
 	{
-		// if in the middle of set,
-		// go to beginning of set
-		last = pshow->sets->currset;
-		if (pstate.curr_step)
-			pstate.curr_step = 0;
-		//else if (pshow->sets->prevset != NULL)
-		else if (last->prev != NULL)
+		// not already at first set, move backwards
+		last = last->prev;
+		pstate.setnum--;
+		if (!last->prev)
 		{
-			// not already at first set, move backwards
-			//pshow->sets->currset = pshow->sets->currset->prev;
-			last = last->prev;
-			pstate.setnum--;
-			if (!last->prev)
-			{
-				// first set
-				pstate.setnum = 0;
-			}
-			pshow->sets->currset = last;
-			/*
-			last = pshow->sets->firstset;
-			if (pshow->sets->currset == last)
-			{
-				// first set
-				//pshow->sets->prevset = 0;
-				//setnum = 0;
-				pstate.setnum = 0;
-			}
-			else
-			{
-				// find previous set
-				while (last->next != pshow->sets->currset && last != NULL)
-				{
-					last = last->next;
-				}
-				if (last != NULL)
-				{
-					pshow->sets->prevset = last;
-					//setnum--;
-					pstate.setnum--;
-				}
-				else
-				{
-					pshow->sets->prevset = 0;
-					//setnum = 0;
-					pstate.setnum = 0;
-				}
-			}
-			*/
+			// first set
+			pstate.setnum = 0;
 		}
+		pshow->sets->currset = last;
 	}
 }
 

@@ -37,19 +37,12 @@ void update_sel_center(void)
 	int index;
 	int selnum = 0;
 	double cx, cy;
-	//double minx, miny, maxx, maxy;
 	select_t *last;
 	coord_t **coords;
 	coord_t *coord;
 
 	cx = 0;
 	cy = 0;
-	/*
-	minx = -1;
-	miny = -1;
-	maxx = 0;
-	maxy = 0;
-	*/
 	last = pstate.select;
 	coords = pshow->sets->currset->coords;
 	while (last)
@@ -86,7 +79,6 @@ void update_sel_center(void)
 void add_sel_center(coord_t *coord)
 {
 	// add a selection to center weight
-	//int index;
 	int selnum;
 	double x, y;
 	
@@ -113,7 +105,6 @@ void add_sel_center(coord_t *coord)
 void rem_sel_center(coord_t *coord)
 {
 	// remove a selection from center weight
-	//int index;
 	int selnum;
 	double x, y;
 
@@ -161,7 +152,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 	select_t *selects;
 	select_t *last;
 	select_t *curr;
-	//coord_t *coord;
 	int matched = 0;
 	int loop_done = 0;
 
@@ -173,7 +163,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 			return NULL;
 		curr->next = 0;
 		curr->index = index;
-		//pstate.select = curr;
 		psel = curr;
 		// update selection center
 		add_sel_center(pshow->sets->currset->coords[index]);
@@ -182,7 +171,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 	{
 		// have some selections; 
 		// add inorder or remove if already selected
-		//last = pstate.select;
 		last = psel;
 		selects = 0;
 		while (loop_done == 0)
@@ -194,7 +182,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 				if (toggle && selects == NULL)
 				{
 					// match is first node
-					//pstate.select = last->next;
 					psel = last->next;
 					free(last);
 				}
@@ -206,7 +193,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 				}
 				loop_done = 1;
 				matched = 1;
-				//rem_sel_center(pshow->sets->currset->coords[index]);
 			}
 			else if (last->index > index)
 			{
@@ -235,7 +221,6 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 			{
 				// insert at beginning
 				curr->next = pstate.select;
-				//pstate.select = curr;
 				psel = curr;
 			}
 			else
@@ -245,10 +230,11 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 				selects->next = curr;
 			}
 		}
-		//add_sel_center(pshow->sets->currset->coords[index]);
 	}
 	return psel;
 }
+
+
 
 select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 {
@@ -264,6 +250,8 @@ select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 	}
 	return selects;
 }
+
+
 
 int select_all(void)
 {
@@ -286,6 +274,7 @@ int select_all(void)
 }
 
 
+
 group_t *group_construct(void)
 {
 	// make a group node
@@ -301,7 +290,7 @@ group_t *group_construct(void)
 }
 
 
-///*
+
 group_t *group_add_selects(group_t *group, select_t *newsels)
 {
 	// add selects to group
@@ -352,9 +341,6 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 }
 
 
-//*/
-
-
 
 bool is_in_select(int index, select_t *selects)
 {
@@ -372,148 +358,6 @@ bool is_in_select(int index, select_t *selects)
 
 int add_group(void)
 {
-	/*
-	// make a group from selected dots
-	select_t *select;
-	select_t *gselect;
-	select_t *glast;
-	select_t *clast;
-	select_t *ccurr;
-	select_t *cdum;
-	// grouping
-	group_t *group;
-
-	groups = pshow->sets->currset->groups;
-	ccurr = groups->include;
-	if (ccurr)
-		clast = ccurr->next;
-	else
-		clast = 0;
-	group = (group_t*)malloc(sizeof(group_t));
-	if (!group)
-		return -1;
-	if (!groups->head)
-	{
-		groups->head = group;
-		group->next = 0;
-	}
-	else
-	{
-		group->next = groups->head;
-		groups->head = group;
-	}
-	select = pstate.select;
-	gselect = 0;
-	while (select != NULL)
-	{
-		// copy selects
-		glast = (select_t*)malloc(sizeof(select_t));
-		if (!glast)
-			return -1;
-		if (gselect)
-		{
-			// has head for group
-			gselect->next = glast;
-		}
-		else
-		{
-			// no head for group yet
-			group->selects = glast;
-		}
-		gselect = glast;
-		gselect->next = 0;
-		gselect->index = select->index;
-		if (clast)
-		{
-			// not at the end of current data
-			while (select->index > clast->index)
-			{
-				ccurr = clast;
-				clast = clast->next;
-				if (!clast)
-					break;
-			}
-		}
-		if (clast)
-		{
-			if (select->index < ccurr->index)
-			{
-				// make a new node at the beginning
-				cdum = (select_t*)malloc(
-						sizeof(select_t));
-				if (!cdum)
-					return -1;
-				cdum->index = select->index;
-				cdum->next = ccurr;
-				groups->include = cdum;
-				clast = ccurr;
-				ccurr = cdum;
-			}
-			else if (select->index < clast->index)
-			{
-				// make a new node for this one
-				cdum = (select_t*)malloc(
-						sizeof(select_t));
-				if (!cdum)
-					return -1;
-				cdum->index = select->index;
-				cdum->next = clast;
-				ccurr->next = cdum;
-				ccurr = cdum;
-			}
-		}
-		else if (ccurr)
-		{
-			// have data indexed, but these
-			// dots are definitely new
-			cdum = (select_t*)malloc(
-					sizeof(select_t));
-			if (!cdum)
-				return -1;
-			cdum->index = select->index;
-			ccurr->next = cdum;
-			ccurr = cdum;
-			ccurr->next = 0;
-		}
-		else
-		{
-			// build list
-			groups->include = (select_t*)malloc(
-					sizeof(select_t));
-			if (!groups->include)
-				return -1;
-			ccurr = groups->include;
-			ccurr->next = 0;
-			ccurr->index = select->index;
-			clast = 0;
-		}
-		select = select->next;
-	}
-	*/
+	// Make a new group
 	return 0;
 }
-
-
-int select_in_group(int index)
-{
-	/*
-	// return if the dot is in a group or not
-	int ingroup = 0;
-	select_t *select;
-
-	select = pshow->sets->currset->groups->include;
-	while (select != NULL)
-	{
-		if (select->index == index)
-		{
-			ingroup = 1;
-			break;
-		}
-		select = select->next;
-	}
-	return ingroup;
-	*/
-	return 0;
-}
-
-

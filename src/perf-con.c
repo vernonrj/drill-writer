@@ -47,9 +47,6 @@ int perf_destroy(perf_t **perf_r)
 int add_perf(void)
 {
 	// Add a performer
-	// TODO: have an "add mode"
-	// 	where dots are placed by clicking on the field
-	// TODO: Keep track of valid dots and allocated dots
 	
 	int i;
 	int index;
@@ -60,7 +57,6 @@ int add_perf(void)
 	coord_t **newcoords;
 	// nodes used for checking
 	perf_t *perf;
-	//coord_t *coord;
 	set_t *last;
 
 	// find an open node
@@ -95,11 +91,6 @@ int add_perf(void)
 			newperfs[i] = perf_construct();
 			if (newperfs[i] == NULL)
 				return -1;
-			/*
-			excode = perf_construct(&newperfs[i]);
-			if (excode == -1)
-				return -1;
-			*/
 		}
 		// set new performers
 		free(pshow->perfs);
@@ -184,15 +175,10 @@ void revert_perf_selected(headset_t *dshow)
 void revert_perf(headset_t *dshow, int index)
 {
 	// revert a performer's dot to the dot at the previous set
-	//set_t *currset;
 	set_t *prevset;
-	//coord_t *coord;
 	coord_t *prevcoord;
 
-	//currset = dshow->sets->currset;
 	prevset = dshow->sets->currset->prev;
-
-	//coord = currset->coords[index];
 
 	if (prevset == NULL)
 	{
@@ -208,13 +194,17 @@ void revert_perf(headset_t *dshow, int index)
 	return;
 }
 
+
+
 void delete_perf_selected(void)
 {
+	// delete selected performers
 	int index;
 	select_t *last;
 	perf_t *perf;
 	perf_t **perfs;
 	int done;
+
 	last = pstate.select;
 	perfs = pshow->perfs;
 	while (last)
@@ -244,10 +234,11 @@ void delete_perf_selected(void)
 	return;
 }
 
+
+
 void delete_perf(perf_t *perf)
 {
 	// render performer invalid
-	//perf_t *perf;
 	perf->valid = 0;
 	return;
 }
@@ -274,7 +265,6 @@ double check_stepsize_selected(headset_t *dshow)
 	coord_t **coords = currset->coords;
 	coord_t **pcoords;
 
-	//if (setnum == 0)
 	if (pstate.setnum == 0)
 		return 0;
 	pcoords = prevset->coords;
@@ -302,6 +292,7 @@ double check_stepsize_selected(headset_t *dshow)
 }
 
 
+
 int max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 {
 	// get the max stepsize of a group
@@ -324,7 +315,7 @@ int max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 	coord_t **pcoords;
 	// stepsize
 	double stepsize = 0;
-	//if (setnum == 0)
+
 	if (pstate.setnum == 0)
 		return 0;
 	pcoords = prevset->coords;
