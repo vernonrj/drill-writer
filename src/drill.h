@@ -283,7 +283,7 @@ int menuIface(void);
 
 // coords.c
 // create container for dots
-int coords_construct(coord_t *** coords_r, int perfs);
+coord_t **coords_construct(int perfs);
 coord_t *coord_construct(void);
 coord_t *coord_construct_with_data(double x, double y);
 //int coord_construct(coord_t **coord_r, double x, double y);

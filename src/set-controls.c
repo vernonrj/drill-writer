@@ -27,7 +27,6 @@ int set_construct(set_t **sets_r, int perfs)
 {
 	// Build storage for set
 	//int i;
-	int excode;
 	
 	set_t *newset;
 	set_t *last;
@@ -55,9 +54,14 @@ int set_construct(set_t **sets_r, int perfs)
 	// make sure not classified as midset
 	newset->midset = 0;
 	// make coordinate system
+	newset->coords = coords_construct(perfs);
+	if (!newset->coords)
+		return -1;
+	/*
 	excode = coords_construct(&newset->coords, perfs);
 	if (excode == -1)
 		return -1;
+		*/
 
 	// link
 	last = *sets_r;

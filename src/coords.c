@@ -1,7 +1,7 @@
 #include "drill.h"
 
 
-int coords_construct(coord_t *** coords_r, int perfs)
+coord_t **coords_construct(int perfs)
 {
 	// Build the coordinates for the set
 	
@@ -10,32 +10,32 @@ int coords_construct(coord_t *** coords_r, int perfs)
 	// 2d coordinate array
 	coord_t **coords;
 	// Piece of coordinate array
-	coord_t *ccurr;
 
 	// Make the root pointer
 	coords = (coord_t**) malloc(perfs*sizeof(coord_t*));
 	if (!coords)
 	{
 		// coordinate allocation error
-		printf("Error: coords mapped to 0x%x\n", (unsigned int)coords);
-		return -1;
+		return NULL;
 	}
 
 	for (i=0; i<perfs; i++)
 	{
 		// Make the first set of dots
+		coords[i] = coord_construct();
+		if (!coords[i])
+			return NULL;
+		/*
 		ccurr = (coord_t*) malloc(sizeof(coord_t));
 		if (!ccurr)
 			return -1;
 		coords[i] = ccurr;
 		ccurr->x = 0;
 		ccurr->y = 0;
+		*/
 	}
 
-	// link to reference
-	*coords_r = coords;
-
-	return 0;
+	return coords;
 }
 
 
