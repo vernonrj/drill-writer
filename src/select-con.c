@@ -8,9 +8,9 @@ void update_sel_center(void)
 	int selnum = 0;
 	double cx, cy;
 	//double minx, miny, maxx, maxy;
-	struct select_proto *last;
-	struct coord_proto **coords;
-	struct coord_proto *coord;
+	select_t *last;
+	coord_t **coords;
+	coord_t *coord;
 
 	cx = 0;
 	cy = 0;
@@ -53,7 +53,7 @@ void update_sel_center(void)
 }
 
 
-void add_sel_center(struct coord_proto *coord)
+void add_sel_center(coord_t *coord)
 {
 	// add a selection to center weight
 	//int index;
@@ -80,7 +80,7 @@ void add_sel_center(struct coord_proto *coord)
 
 
 
-void rem_sel_center(struct coord_proto *coord)
+void rem_sel_center(coord_t *coord)
 {
 	// remove a selection from center weight
 	//int index;
@@ -126,8 +126,8 @@ void select_dots_discard(void)
 select_t *select_discard(select_t *psel)
 {
 	// remove all selections from selection list
-	struct select_proto *selects;
-	struct select_proto *last;
+	select_t *selects;
+	select_t *last;
 	if (psel != 0)
 	{
 		selects = psel;
@@ -157,17 +157,17 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 	// add a selection if it's not selected;
 	// remove a selection if it is selected and toggle is TRUE
 	
-	struct select_proto *selects;
-	struct select_proto *last;
-	struct select_proto *curr;
-	//struct coord_proto *coord;
+	select_t *selects;
+	select_t *last;
+	select_t *curr;
+	//coord_t *coord;
 	int matched = 0;
 	int loop_done = 0;
 
 	if (!psel)
 	{
 		// no selection yet
-		curr = (struct select_proto*)malloc(sizeof(struct select_proto));
+		curr = (select_t*)malloc(sizeof(select_t));
 		if (!curr)
 			return NULL;
 		curr->next = 0;
@@ -226,7 +226,7 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 		if (matched == 0)
 		{
 			// create a new node
-			curr = (struct select_proto*)malloc(sizeof(struct select_proto));
+			curr = (select_t*)malloc(sizeof(select_t));
 			if (!curr)
 				return NULL;
 			curr->index = index;
@@ -269,7 +269,7 @@ int select_all(void)
 	// select all dots
 	int i;
 	int perfnum;
-	struct perf_proto **perfs;
+	perf_t **perfs;
 	select_discard(pstate.select);
 	perfnum = pshow->perfnum;
 	perfs = pshow->perfs;
@@ -373,15 +373,14 @@ int add_group(void)
 {
 	/*
 	// make a group from selected dots
-	struct select_proto *select;
-	struct select_proto *gselect;
-	struct select_proto *glast;
-	struct select_proto *clast;
-	struct select_proto *ccurr;
-	struct select_proto *cdum;
+	select_t *select;
+	select_t *gselect;
+	select_t *glast;
+	select_t *clast;
+	select_t *ccurr;
+	select_t *cdum;
 	// grouping
-	struct group_container *groups;
-	struct group_proto *group;
+	group_t *group;
 
 	groups = pshow->sets->currset->groups;
 	ccurr = groups->include;
@@ -389,7 +388,7 @@ int add_group(void)
 		clast = ccurr->next;
 	else
 		clast = 0;
-	group = (struct group_proto*)malloc(sizeof(struct group_proto));
+	group = (group_t*)malloc(sizeof(group_t));
 	if (!group)
 		return -1;
 	if (!groups->head)
@@ -407,7 +406,7 @@ int add_group(void)
 	while (select != NULL)
 	{
 		// copy selects
-		glast = (struct select_proto*)malloc(sizeof(struct select_proto));
+		glast = (select_t*)malloc(sizeof(select_t));
 		if (!glast)
 			return -1;
 		if (gselect)
@@ -439,8 +438,8 @@ int add_group(void)
 			if (select->index < ccurr->index)
 			{
 				// make a new node at the beginning
-				cdum = (struct select_proto*)malloc(
-						sizeof(struct select_proto));
+				cdum = (select_t*)malloc(
+						sizeof(select_t));
 				if (!cdum)
 					return -1;
 				cdum->index = select->index;
@@ -452,8 +451,8 @@ int add_group(void)
 			else if (select->index < clast->index)
 			{
 				// make a new node for this one
-				cdum = (struct select_proto*)malloc(
-						sizeof(struct select_proto));
+				cdum = (select_t*)malloc(
+						sizeof(select_t));
 				if (!cdum)
 					return -1;
 				cdum->index = select->index;
@@ -466,8 +465,8 @@ int add_group(void)
 		{
 			// have data indexed, but these
 			// dots are definitely new
-			cdum = (struct select_proto*)malloc(
-					sizeof(struct select_proto));
+			cdum = (select_t*)malloc(
+					sizeof(select_t));
 			if (!cdum)
 				return -1;
 			cdum->index = select->index;
@@ -478,8 +477,8 @@ int add_group(void)
 		else
 		{
 			// build list
-			groups->include = (struct select_proto*)malloc(
-					sizeof(struct select_proto));
+			groups->include = (select_t*)malloc(
+					sizeof(select_t));
 			if (!groups->include)
 				return -1;
 			ccurr = groups->include;
@@ -499,7 +498,7 @@ int select_in_group(int index)
 	/*
 	// return if the dot is in a group or not
 	int ingroup = 0;
-	struct select_proto *select;
+	select_t *select;
 
 	select = pshow->sets->currset->groups->include;
 	while (select != NULL)
