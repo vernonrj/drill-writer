@@ -1,13 +1,13 @@
 #include "drill.h"
 
-int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow)
+int undo_destroy(undo_t **undlast_r, headset_t *dshow)
 {
-	struct undo_proto *undlast;
-	struct undo_proto *undcurr;
+	undo_t *undlast;
+	undo_t *undcurr;
 	int i;
 	int undop;
 	int snum;
-	struct perf_proto *pcurr;
+	perf_t *pcurr;
 	int perfnum = dshow->perfnum;
 	undlast = *undlast_r;
 	while (undlast != NULL)
@@ -47,10 +47,10 @@ int undo_destroy(struct undo_proto **undlast_r, struct headset_proto *dshow)
 	return 0;
 }
 
-int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
+int pushToStack(undo_t *unredo, undo_t **stack_r)
 {
 	// Push node to stack
-	struct undo_proto *stack;
+	undo_t *stack;
 	time_t new_undo_timer;
 	double tdiff;
 	if (!unredo)
@@ -69,13 +69,13 @@ int pushToStack(struct undo_proto *unredo, struct undo_proto **stack_r)
 	return 0;
 }
 
-int pushSetMk(struct undo_proto **stack_r)
+int pushSetMk(undo_t **stack_r)
 {
 	// New set created, push set num onto undo stack
-	struct undo_proto *unredo;
+	undo_t *unredo;
 	int excode;
 
-	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
+	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
 		//unredo->set_num = setnum;
@@ -91,13 +91,13 @@ int pushSetMk(struct undo_proto **stack_r)
 		return -1;
 }
 
-int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset)
+int pushSetDel(undo_t **stack_r, set_t *oldset)
 {
 	// Set to be deleted, push current set onto stack
-	struct undo_proto *unredo;
+	undo_t *unredo;
 	int excode;
 
-	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
+	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
 		//unredo->set_num = setnum;
@@ -113,13 +113,13 @@ int pushSetDel(struct undo_proto **stack_r, struct set_proto *oldset)
 		return -1;
 }
 
-int pushPerfMk(struct undo_proto **stack_r, int index, int done)
+int pushPerfMk(undo_t **stack_r, int index, int done)
 {
 	// Perf to be added, push index onto stack
-	struct undo_proto *unredo;
+	undo_t *unredo;
 	int excode;
 
-	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
+	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
 		//unredo->set_num = setnum;
@@ -137,22 +137,22 @@ int pushPerfMk(struct undo_proto **stack_r, int index, int done)
 	return 0;
 }
 
-int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r, 
-		struct set_proto *firstset, int done)
+int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r, 
+		set_t *firstset, int done)
 {
 	// Perf to be deleted, push node onto stack
-	struct undo_proto *unredo;
-	struct set_proto *last;
-	//struct perf_proto *perf = 0;
-	struct perf_proto *oldperf;
-	struct perf_proto *newperf;
+	undo_t *unredo;
+	set_t *last;
+	//perf_t *perf = 0;
+	perf_t *oldperf;
+	perf_t *newperf;
 	volatile int i;
 	int index;
 	int excode;
 	//int set_tot;
 
 
-	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
+	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (!unredo)
 	{
 		return -1;
@@ -175,10 +175,10 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	// store coordinates for performer
 	// get total number of sets
 	set_last();
-	//unredo->coords = (struct coord_proto**)malloc(
-	//		(setnum+1)*sizeof(struct coord_proto*));
-	unredo->coords = (struct coord_proto**)malloc(
-			(pstate.setnum+1)*sizeof(struct coord_proto*));
+	//unredo->coords = (coord_t**)malloc(
+	//		(setnum+1)*sizeof(coord_t*));
+	unredo->coords = (coord_t**)malloc(
+			(pstate.setnum+1)*sizeof(coord_t*));
 	if (!unredo->coords)
 		return -1;
 	goto_set(unredo->set_num);
@@ -188,7 +188,7 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	for (i=0; last != NULL; i++, last = last->next)
 	{
 		unredo->coords[i] = last->coords[index];
-		last->coords[index] = (struct coord_proto*)malloc(sizeof(struct coord_proto));
+		last->coords[index] = (coord_t*)malloc(sizeof(coord_t));
 		if (!last->coords[index])
 			return -1;
 		last->coords[index]->x = 0;
@@ -204,13 +204,13 @@ int pushPerfDel(struct undo_proto **stack_r, struct perf_proto **oldperf_r,
 	return excode;
 }
 
-int pushPerfmv(struct undo_proto **stack_r, int index, double x, double y, int done)
+int pushPerfmv(undo_t **stack_r, int index, double x, double y, int done)
 {
 	// push the relative movement of perf onto stack
-	struct undo_proto *unredo;
+	undo_t *unredo;
 	int excode;
 
-	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
+	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
 		//unredo->set_num = setnum;
@@ -230,13 +230,13 @@ int pushPerfmv(struct undo_proto **stack_r, int index, double x, double y, int d
 }
 
 
-int pushTempo(struct undo_proto **stack_r, int tempo)
+int pushTempo(undo_t **stack_r, int tempo)
 {
 	// push tempo change onto stack
-	struct undo_proto *unredo;
+	undo_t *unredo;
 	int excode;
 
-	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
+	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
 		//unredo->set_num = setnum;
@@ -253,13 +253,13 @@ int pushTempo(struct undo_proto **stack_r, int tempo)
 	return 0;
 }
 
-int pushCounts(struct undo_proto **stack_r, int set_num, int counts, int done)
+int pushCounts(undo_t **stack_r, int set_num, int counts, int done)
 {
 	// push counts change onto stack
-	struct undo_proto *unredo;
+	undo_t *unredo;
 	int excode;
 
-	unredo = (struct undo_proto*)malloc(sizeof(struct undo_proto));
+	unredo = (undo_t*)malloc(sizeof(undo_t));
 	if (unredo)
 	{
 		unredo->set_num = set_num;
@@ -276,12 +276,12 @@ int pushCounts(struct undo_proto **stack_r, int set_num, int counts, int done)
 	return 0;
 }
 
-int sourcePop(struct undo_proto **sourcebr_r)
+int sourcePop(undo_t **sourcebr_r)
 {
-	struct undo_proto *sourcebr;
-	struct undo_proto *dscard;
-	//struct set_proto *oldset;
-	//struct coord_proto **coords;
+	undo_t *sourcebr;
+	undo_t *dscard;
+	//set_t *oldset;
+	//coord_t **coords;
 	//int i;
 	int done;
 	sourcebr = *sourcebr_r;
@@ -297,18 +297,18 @@ int sourcePop(struct undo_proto **sourcebr_r)
 
 
 
-int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
-		struct undo_proto **destbr_r)
+int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
+		undo_t **destbr_r)
 {
 	// pop values from source stack, reverse operation,
 	// and push it onto destination stack. Can be used for undo and redo
 	int i;				// loop var
-	struct undo_proto *sourcebr;	// source branch
-	struct undo_proto *destbr;	// destination branch
-	struct set_proto *currset;	// current set
-	struct perf_proto *perfcurr;	// current performer
-	struct coord_proto **coords;	// coordinates
-	//struct tempo_proto *tempo;
+	undo_t *sourcebr;	// source branch
+	undo_t *destbr;	// destination branch
+	set_t *currset;	// current set
+	perf_t *perfcurr;	// current performer
+	coord_t **coords;	// coordinates
+	//tempo_t *tempo;
 	int operation;			// specified operation
 	int excode;
 	int done = 1;
@@ -475,7 +475,7 @@ int popFromStack(struct headset_proto *dshow, struct undo_proto **sourcebr_r,
 
 void undo_tclose(void)
 {
-	struct undo_proto *undobr;
+	undo_t *undobr;
 	undobr = pstate.undobr;
 	if (undobr != NULL)
 	{
