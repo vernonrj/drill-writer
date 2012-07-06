@@ -1,19 +1,19 @@
 #include "drill.h"
 
 
-int coords_construct(struct coord_proto *** coords_r, int perfs)
+int coords_construct(coord_t *** coords_r, int perfs)
 {
 	// Build the coordinates for the set
 	
 	// loop var
 	int i;
 	// 2d coordinate array
-	struct coord_proto **coords;
+	coord_t **coords;
 	// Piece of coordinate array
-	struct coord_proto *ccurr;
+	coord_t *ccurr;
 
 	// Make the root pointer
-	coords = (struct coord_proto**) malloc(perfs*sizeof(struct coord_proto*));
+	coords = (coord_t**) malloc(perfs*sizeof(coord_t*));
 	if (!coords)
 	{
 		// coordinate allocation error
@@ -24,7 +24,7 @@ int coords_construct(struct coord_proto *** coords_r, int perfs)
 	for (i=0; i<perfs; i++)
 	{
 		// Make the first set of dots
-		ccurr = (struct coord_proto*) malloc(sizeof(struct coord_proto));
+		ccurr = (coord_t*) malloc(sizeof(coord_t));
 		if (!ccurr)
 			return -1;
 		coords[i] = ccurr;
@@ -39,11 +39,11 @@ int coords_construct(struct coord_proto *** coords_r, int perfs)
 }
 
 
-int coord_construct(struct coord_proto **coord_r, double x, double y)
+int coord_construct(coord_t **coord_r, double x, double y)
 {
 	// build coord for just 1 dot
-	struct coord_proto *coord;
-	coord = (struct coord_proto*)malloc(sizeof(struct coord_proto));
+	coord_t *coord;
+	coord = (coord_t*)malloc(sizeof(coord_t));
 	if (coord != NULL)
 	{
 		coord->type = 0;
@@ -62,8 +62,8 @@ int coord_construct(struct coord_proto **coord_r, double x, double y)
 int set_coord(struct headset_proto *dshow, int index, double x, double y)
 {
 	// set coordinates from the coord struct
-	struct coord_proto *coord;
-	struct perf_proto *perf;
+	coord_t *coord;
+	perf_t *perf;
 	//coord = dshow->currset->coords[index];
 	coord = dshow->sets->currset->coords[index];
 	perf = dshow->perfs[index];
@@ -83,7 +83,7 @@ int set_coord(struct headset_proto *dshow, int index, double x, double y)
 }
 
 
-int set_coord_valid(struct coord_proto **curr, int index, double x, double y)
+int set_coord_valid(coord_t **curr, int index, double x, double y)
 {
 	// set coordinates and set performer valid
 	set_coord(pshow, index, x, y);
@@ -96,7 +96,7 @@ int set_coord_valid(struct coord_proto **curr, int index, double x, double y)
 	*/
 }
 
-int retr_coord(struct coord_proto *curr, double *x, double *y)
+int retr_coord(coord_t *curr, double *x, double *y)
 {
 	// retrieve coordinates from the coord struct
 	*x = curr->x;
@@ -108,18 +108,18 @@ int retr_coord(struct coord_proto *curr, double *x, double *y)
 
 
 //int retr_midset(struct set_container *sets, int index, double *x_r, double *y_r)
-int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r)
+int retr_midset(set_t *currset, int index, double *x_r, double *y_r)
 {
 	// retrieve midset coordinates from set struct
-	//struct set_proto *last;
-	//struct set_proto *currset = sets->currset;
+	//set_t *last;
+	//set_t *currset = sets->currset;
 	double xcurr, ycurr;
 	double xnext, ynext;
 	double xbias, ybias;
 	int cstep;
 	int countnum;
 
-	struct set_proto *nextset;
+	set_t *nextset;
 
 	retr_coord(currset->coords[index], &xcurr, &ycurr);
 	if (currset->next != NULL)
@@ -150,14 +150,14 @@ int retr_midset(struct set_proto *currset, int index, double *x_r, double *y_r)
 	return 0;
 }
 
-//int movexy(struct set_container *sets, struct select_proto *selects, double xoff, double yoff)
+//int movexy(struct set_container *sets, select_t *selects, double xoff, double yoff)
 int movexy(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff
 	double x, y;
-	struct coord_proto **coords = pshow->sets->currset->coords;
-	//struct coord_proto **coords = sets->currset->coords;
-	struct select_proto *selects = pstate.select;
+	coord_t **coords = pshow->sets->currset->coords;
+	//coord_t **coords = sets->currset->coords;
+	select_t *selects = pstate.select;
 	int done = 0;
 	while(selects != NULL)
 	{
@@ -180,13 +180,13 @@ int movexy(double xoff, double yoff)
 
 
 
-//int align_dots(struct set_container *sets, struct select_proto *select)
+//int align_dots(struct set_container *sets, select_t *select)
 int align_dots(void)
 {
 	// align selected dots to 8:5 grid
-	//struct coord_proto **coords = pshow->currset->coords;
-	struct coord_proto **coords = pshow->sets->currset->coords;
-	struct select_proto *select = pstate.select;
+	//coord_t **coords = pshow->currset->coords;
+	coord_t **coords = pshow->sets->currset->coords;
+	select_t *select = pstate.select;
 	double x, y;
 	int done = 0;
 	while (select != NULL)
@@ -206,14 +206,14 @@ int align_dots(void)
 
 
 
-//int movexy_grid(struct set_container *sets, struct select_proto *selects, double xoff, double yoff)
+//int movexy_grid(struct set_container *sets, select_t *selects, double xoff, double yoff)
 int movexy_grid(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff on 1-step intervals
 	double x, y;
-	struct coord_proto **coords = pshow->sets->currset->coords;
-	//struct coord_proto **coords = sets->currset->coords;
-	struct select_proto *selects = pstate.select;
+	coord_t **coords = pshow->sets->currset->coords;
+	//coord_t **coords = sets->currset->coords;
+	select_t *selects = pstate.select;
 	while(selects != NULL)
 	{
 		retr_coord(coords[selects->index], &x, &y);
@@ -251,10 +251,10 @@ void scale_form(double s_step)
 	// angle
 	double angle;
 	// selection
-	struct select_proto *last;
+	select_t *last;
 	// coordinates
-	struct coord_proto **coords;
-	struct coord_proto *coord;
+	coord_t **coords;
+	coord_t *coord;
 	// index
 	int index;
 
@@ -313,10 +313,10 @@ void box_scale_form(double s_step)
 	double distx, disty;
 	double maxdx, maxdy;
 	// selection
-	struct select_proto *last;
+	select_t *last;
 	// coords
-	struct coord_proto **coords;
-	struct coord_proto *coord;
+	coord_t **coords;
+	coord_t *coord;
 	// index
 	int index;
 
@@ -396,10 +396,10 @@ void rot_form(double s_step)
 	// angle
 	double angle;
 	// selection
-	struct select_proto *last;
+	select_t *last;
 	// coordinates
-	struct coord_proto **coords;
-	struct coord_proto *coord;
+	coord_t **coords;
+	coord_t *coord;
 	// index
 	int index;
 	last = pstate.select;
