@@ -39,7 +39,8 @@ int coords_construct(coord_t *** coords_r, int perfs)
 }
 
 
-int coord_construct(coord_t **coord_r, double x, double y)
+//int coord_construct(coord_t **coord_r, double x, double y)
+coord_t *coord_construct_with_data(double x, double y)
 {
 	// build coord for just 1 dot
 	coord_t *coord;
@@ -50,13 +51,14 @@ int coord_construct(coord_t **coord_r, double x, double y)
 		coord->x = x;
 		coord->y = y;
 
-		// link to reference
-		*coord_r = coord;
-		return 0;
 	}
-	else
-		return -1;
-	return 0;
+	return coord;
+}
+
+
+coord_t *coord_construct(void)
+{
+	return coord_construct_with_data(0,0);
 }
 
 int set_coord(headset_t *dshow, int index, double x, double y)

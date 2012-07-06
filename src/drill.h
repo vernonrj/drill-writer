@@ -284,7 +284,9 @@ int menuIface(void);
 // coords.c
 // create container for dots
 int coords_construct(coord_t *** coords_r, int perfs);
-int coord_construct(coord_t **coord_r, double x, double y);
+coord_t *coord_construct(void);
+coord_t *coord_construct_with_data(double x, double y);
+//int coord_construct(coord_t **coord_r, double x, double y);
 // set/retrieve coordinates from coord struct
 int set_coord(struct headset_proto *dshow, int index, double x, double y);
 int set_coord_valid(coord_t **curr, int index, double x, double y);

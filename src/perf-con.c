@@ -24,7 +24,6 @@ int perf_construct(perf_t **perf_r)
 		return -1;
 	}
 	perf->symbol[0] = '\0';
-	//coord_construct(&perf->vdot, 0, 0);
 	perf->valid = 0;
 
 	// pass by reference
