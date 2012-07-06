@@ -2,15 +2,15 @@
 #include "drill.h"
 
 // performer storage
-int perf_construct(struct perf_proto **perf_r)
+int perf_construct(perf_t **perf_r)
 {
 	// Build storage for performer
 	// give argument:
 	// excode = perf_construct(&dots);
 	// piece of performer array
-	struct perf_proto *perf;
+	perf_t *perf;
 
-	perf = (struct perf_proto*) malloc(sizeof(struct perf_proto));
+	perf = (perf_t*) malloc(sizeof(perf_t));
 	if (perf == NULL)
 	{
 		// allocation error
@@ -35,10 +35,10 @@ int perf_construct(struct perf_proto **perf_r)
 
 
 
-int perf_destroy(struct perf_proto **perf_r)
+int perf_destroy(perf_t **perf_r)
 {
 	// destroy storage for performer
-	struct perf_proto *perf;
+	perf_t *perf;
 
 	perf = *perf_r;
 
@@ -63,12 +63,12 @@ int add_perf(void)
 	int perfnum = pshow->perfnum;
 	int found_dot = 0;
 	// nodes used for reallocation
-	struct perf_proto **newperfs;
-	struct coord_proto **newcoords;
+	perf_t **newperfs;
+	coord_t **newcoords;
 	// nodes used for checking
-	struct perf_proto *perf;
-	//struct coord_proto *coord;
-	struct set_proto *last;
+	perf_t *perf;
+	//coord_t *coord;
+	set_t *last;
 	int excode;
 
 	// find an open node
@@ -88,7 +88,7 @@ int add_perf(void)
 		// have to make more nodes
 		// in every set
 		last = pshow->sets->firstset;
-		newperfs = (struct perf_proto**)malloc((perfnum+5)*sizeof(struct perf_proto*));
+		newperfs = (perf_t**)malloc((perfnum+5)*sizeof(perf_t*));
 		if (!newperfs)
 			return -1;
 		for (i=0; i<perfnum; i++)
@@ -104,7 +104,7 @@ int add_perf(void)
 			if (excode == -1)
 				return -1;
 			/*
-			newperfs[i] = (struct perf_proto*)malloc(sizeof(struct perf_proto));
+			newperfs[i] = (perf_t*)malloc(sizeof(perf_t));
 			if (newperfs[i] == NULL)
 				return -1;
 			newperfs[i]->symbol = (char*)malloc(1*sizeof(char));
@@ -120,8 +120,8 @@ int add_perf(void)
 		// allocate coords for every set
 		while (last != NULL)
 		{
-			newcoords = (struct coord_proto**)
-				malloc((perfnum+5)*sizeof(struct coord_proto*));
+			newcoords = (coord_t**)
+				malloc((perfnum+5)*sizeof(coord_t*));
 			if (newcoords == NULL)
 				return -1;
 			for (i=0; i<perfnum; i++)
@@ -132,8 +132,8 @@ int add_perf(void)
 			for (i=perfnum; i<perfnum+5; i++)
 			{
 				// copy the rest
-				newcoords[i] = (struct coord_proto*)
-					malloc(sizeof(struct coord_proto));
+				newcoords[i] = (coord_t*)
+					malloc(sizeof(coord_t));
 				if (newcoords[i] == NULL)
 					return -1;
 				newcoords[i]->x = 0;
@@ -158,14 +158,14 @@ int add_perf(void)
 
 
 
-void revert_perf_selected(struct headset_proto *dshow)
+void revert_perf_selected(headset_t *dshow)
 {
 	// revert selected performers to dot at the previous set
 	int index;
 	// selections
-	struct select_proto *last;
+	select_t *last;
 	// coords
-	struct coord_proto *coord;
+	coord_t *coord;
 	// finished
 	int done;
 	last = pstate.select;
@@ -194,13 +194,13 @@ void revert_perf_selected(struct headset_proto *dshow)
 }
 	
 
-void revert_perf(struct headset_proto *dshow, int index)
+void revert_perf(headset_t *dshow, int index)
 {
 	// revert a performer's dot to the dot at the previous set
-	//struct set_proto *currset;
-	struct set_proto *prevset;
-	//struct coord_proto *coord;
-	struct coord_proto *prevcoord;
+	//set_t *currset;
+	set_t *prevset;
+	//coord_t *coord;
+	coord_t *prevcoord;
 
 	//currset = dshow->sets->currset;
 	prevset = dshow->sets->currset->prev;
@@ -224,9 +224,9 @@ void revert_perf(struct headset_proto *dshow, int index)
 void delete_perf_selected(void)
 {
 	int index;
-	struct select_proto *last;
-	struct perf_proto *perf;
-	struct perf_proto **perfs;
+	select_t *last;
+	perf_t *perf;
+	perf_t **perfs;
 	int done;
 	last = pstate.select;
 	perfs = pshow->perfs;
@@ -257,17 +257,17 @@ void delete_perf_selected(void)
 	return;
 }
 
-void delete_perf(struct perf_proto *perf)
+void delete_perf(perf_t *perf)
 {
 	// render performer invalid
-	//struct perf_proto *perf;
+	//perf_t *perf;
 	perf->valid = 0;
 	return;
 }
 
 
 
-double check_stepsize_selected(struct headset_proto *dshow)
+double check_stepsize_selected(headset_t *dshow)
 {
 	// get average stepsize of selected dots
 	int count = 0;
@@ -279,13 +279,13 @@ double check_stepsize_selected(struct headset_proto *dshow)
 	double dx, dy;
 	double dxy;
 	// sets
-	struct set_proto *currset = dshow->sets->currset;
-	struct set_proto *prevset = dshow->sets->currset->prev;
+	set_t *currset = dshow->sets->currset;
+	set_t *prevset = dshow->sets->currset->prev;
 	// selection
-	struct select_proto *last = pstate.select;
+	select_t *last = pstate.select;
 	// coords
-	struct coord_proto **coords = currset->coords;
-	struct coord_proto **pcoords;
+	coord_t **coords = currset->coords;
+	coord_t **pcoords;
 
 	//if (setnum == 0)
 	if (pstate.setnum == 0)
@@ -315,7 +315,7 @@ double check_stepsize_selected(struct headset_proto *dshow)
 }
 
 
-int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
+int max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 {
 	// get the max stepsize of a group
 	// largest dot
@@ -328,13 +328,13 @@ int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r)
 	double dx, dy;
 	double dxy;
 	// sets
-	struct set_proto *currset = dshow->sets->currset;
-	struct set_proto *prevset = dshow->sets->currset->prev;
+	set_t *currset = dshow->sets->currset;
+	set_t *prevset = dshow->sets->currset->prev;
 	// selection
-	struct select_proto *last = pstate.select;
+	select_t *last = pstate.select;
 	// coords
-	struct coord_proto **coords = currset->coords;
-	struct coord_proto **pcoords;
+	coord_t **coords = currset->coords;
+	coord_t **pcoords;
 	// stepsize
 	double stepsize = 0;
 	//if (setnum == 0)
