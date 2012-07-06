@@ -221,13 +221,13 @@ int open_file(char *filename)
 
 	// Structures
 	// performer structures
-	struct perf_proto **perfs;
-	struct perf_proto *perf;
+	perf_t **perfs;
+	perf_t *perf;
 	// Set structure
-	struct set_proto *currset;
+	set_t *currset;
 	//struct set_container *sets;
 	// Coord structure
-	//struct coord_proto **coords;
+	//coord_t **coords;
 
 	// open file for reading
 	if (!filename)
@@ -493,13 +493,13 @@ int save_file(char *filename)
 {
 	// save a file
 	// sets
-	struct set_proto *currset;
+	set_t *currset;
 	// performers
-	struct perf_proto **perfs;
+	perf_t **perfs;
 	// coordinates
-	struct coord_proto **coords;
+	coord_t **coords;
 	// tempo
-	//struct tempo_proto *tempo;
+	//tempo_t *tempo;
 	// file pointer
 	FILE *fp;
 	// loop var
