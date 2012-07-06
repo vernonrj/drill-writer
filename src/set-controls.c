@@ -84,6 +84,93 @@ int set_construct(set_t **sets_r, int perfs)
 }
 
 
+
+
+int set_cldestroy(set_t **setcurr_r, int perfnum)
+{
+	// Just destruct set, don't do any cleanup
+	set_t *setcurr;
+	coord_t **coords;
+
+	setcurr = *setcurr_r;
+	// delete sets
+	free(setcurr->name);
+	free(setcurr->info);
+	coords = setcurr->coords;
+	coords = coords_destruct(coords, perfnum);
+	free(setcurr);
+	*setcurr_r = 0;
+	return 0;
+}
+
+
+int set_destroy(void)
+{
+	// destroy current set
+	//int i;
+	//int perfnum;
+	set_t *last;
+	set_t *prevset;
+	//set_t *before;
+	int excode;
+
+	last = pshow->sets->currset;
+	prevset = last->prev;
+	//perfnum = pshow->perfnum;
+
+	pushSetDel(&pstate.undobr, pshow->sets->currset);
+	// free memory in nodes
+	/*
+	free(last->name);
+	free(last->info);
+	for (i=0; i<perfnum; i++)
+		free(last->coords[i]);
+	free(last->coords);
+	*/
+
+	// unlink node
+	if (prevset != NULL)
+	{
+		// Not at first set
+		prevset->next = last->next;
+		pshow->sets->currset = prevset->next;
+		// delete node
+		//free(last);
+		// put current set on next set if it exists
+		if (prevset->next == NULL)
+		{
+			// next set does not exist. Put current set
+			// at new last set
+			// TODO: Make more efficient
+			set_first();
+			set_last();
+		}
+		else
+		{
+			// next set does exist. Put current set there
+			pshow->sets->currset = prevset->next;
+		}
+	}
+	else
+	{
+		// At first set
+		pshow->sets->firstset = last->next;
+		//free(last);
+		last = pshow->sets->firstset;
+		if (last == NULL)
+		{
+			// No sets now, make a new first set
+			excode = set_construct(&pshow->sets->firstset, pshow->perfnum);
+			if (excode == -1)
+				return -1;
+		}
+		pshow->sets->currset = pshow->sets->firstset;
+	}
+	return 0;
+}
+
+
+
 int newset_create(set_container_t *sets)
 {
 	// make a new set at a point right after index
@@ -184,89 +271,6 @@ int newset_create(set_container_t *sets)
 	return 0;
 }
 
-
-int set_cldestroy(set_t **setcurr_r, int perfnum)
-{
-	// Just destruct set, don't do any cleanup
-	set_t *setcurr;
-	coord_t **coords;
-
-	setcurr = *setcurr_r;
-	// delete sets
-	free(setcurr->name);
-	free(setcurr->info);
-	coords = setcurr->coords;
-	coords = coords_destruct(coords, perfnum);
-	free(setcurr);
-	*setcurr_r = 0;
-	return 0;
-}
-
-
-int set_destroy(void)
-{
-	// destroy current set
-	//int i;
-	//int perfnum;
-	set_t *last;
-	set_t *prevset;
-	//set_t *before;
-	int excode;
-
-	last = pshow->sets->currset;
-	prevset = last->prev;
-	//perfnum = pshow->perfnum;
-
-	pushSetDel(&pstate.undobr, pshow->sets->currset);
-	// free memory in nodes
-	/*
-	free(last->name);
-	free(last->info);
-	for (i=0; i<perfnum; i++)
-		free(last->coords[i]);
-	free(last->coords);
-	*/
-
-	// unlink node
-	if (prevset != NULL)
-	{
-		// Not at first set
-		prevset->next = last->next;
-		pshow->sets->currset = prevset->next;
-		// delete node
-		//free(last);
-		// put current set on next set if it exists
-		if (prevset->next == NULL)
-		{
-			// next set does not exist. Put current set
-			// at new last set
-			// TODO: Make more efficient
-			set_first();
-			set_last();
-		}
-		else
-		{
-			// next set does exist. Put current set there
-			pshow->sets->currset = prevset->next;
-		}
-	}
-	else
-	{
-		// At first set
-		pshow->sets->firstset = last->next;
-		//free(last);
-		last = pshow->sets->firstset;
-		if (last == NULL)
-		{
-			// No sets now, make a new first set
-			excode = set_construct(&pshow->sets->firstset, pshow->perfnum);
-			if (excode == -1)
-				return -1;
-		}
-		pshow->sets->currset = pshow->sets->firstset;
-	}
-	return 0;
-}
 
 
 

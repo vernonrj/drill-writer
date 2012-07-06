@@ -1,5 +1,35 @@
 #include "drill.h"
 
+void select_dots_discard(void)
+{
+	// remove all dot selections from state
+	pstate.select = select_discard(pstate.select);
+	pstate.selnum = 0;
+	update_sel_center();
+	return;
+}
+
+select_t *select_discard(select_t *psel)
+{
+	// remove all selections from selection list
+	select_t *selects;
+	select_t *last;
+	if (psel != 0)
+	{
+		selects = psel;
+		last = psel;
+		while (selects != NULL)
+		{
+			// remove
+			last = selects->next;
+			free(selects);
+			selects = last;
+		}
+		psel = 0;
+	}
+	return psel;
+}
+
 void update_sel_center(void)
 {
 	// update the center of the form based on dot selection
@@ -114,35 +144,6 @@ void rem_sel_center(coord_t *coord)
 	return;
 }
 
-void select_dots_discard(void)
-{
-	// remove all dot selections from state
-	pstate.select = select_discard(pstate.select);
-	pstate.selnum = 0;
-	update_sel_center();
-	return;
-}
-
-select_t *select_discard(select_t *psel)
-{
-	// remove all selections from selection list
-	select_t *selects;
-	select_t *last;
-	if (psel != 0)
-	{
-		selects = psel;
-		last = psel;
-		while (selects != NULL)
-		{
-			// remove
-			last = selects->next;
-			free(selects);
-			selects = last;
-		}
-		psel = 0;
-	}
-	return psel;
-}
 
 void select_dots_add(int index)
 {
