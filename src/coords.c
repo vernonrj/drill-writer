@@ -25,21 +25,12 @@ coord_t **coords_construct(int perfs)
 		coords[i] = coord_construct();
 		if (!coords[i])
 			return NULL;
-		/*
-		ccurr = (coord_t*) malloc(sizeof(coord_t));
-		if (!ccurr)
-			return -1;
-		coords[i] = ccurr;
-		ccurr->x = 0;
-		ccurr->y = 0;
-		*/
 	}
 
 	return coords;
 }
 
 
-//int coord_construct(coord_t **coord_r, double x, double y)
 coord_t *coord_construct_with_data(double x, double y)
 {
 	// build coord for just 1 dot
@@ -58,6 +49,7 @@ coord_t *coord_construct_with_data(double x, double y)
 
 coord_t *coord_construct(void)
 {
+	// wrapper coordinate constructor
 	return coord_construct_with_data(0,0);
 }
 
@@ -77,19 +69,10 @@ int set_coord(headset_t *dshow, int index, double x, double y)
 	// set coordinates from the coord struct
 	coord_t *coord;
 	perf_t *perf;
-	//coord = dshow->currset->coords[index];
 	coord = dshow->sets->currset->coords[index];
 	perf = dshow->perfs[index];
 	if (perf->valid == 0 || perf->valid == -1)
 		perf->valid = 1;
-	/*
-	perf = dshow->perfs[index];
-	if (perf->valid <= setnum)
-	{
-		// update valid coord
-		perf->valid = setnum;
-	}
-	*/
 	coord->x = x;
 	coord->y = y;
 	return 0;
@@ -101,12 +84,6 @@ int set_coord_valid(coord_t **curr, int index, double x, double y)
 	// set coordinates and set performer valid
 	set_coord(pshow, index, x, y);
 	return 0;
-	/*
-	curr[index]->x = x;
-	curr[index]->y = y;
-	pshow->perfs[index]->valid = 1;
-	return 0;
-	*/
 }
 
 int retr_coord(coord_t *curr, double *x, double *y)
@@ -120,18 +97,14 @@ int retr_coord(coord_t *curr, double *x, double *y)
 
 
 
-//int retr_midset(struct set_container *sets, int index, double *x_r, double *y_r)
 int retr_midset(set_t *currset, int index, double *x_r, double *y_r)
 {
 	// retrieve midset coordinates from set struct
-	//set_t *last;
-	//set_t *currset = sets->currset;
 	double xcurr, ycurr;
 	double xnext, ynext;
 	double xbias, ybias;
 	int cstep;
 	int countnum;
-
 	set_t *nextset;
 
 	retr_coord(currset->coords[index], &xcurr, &ycurr);
@@ -163,13 +136,13 @@ int retr_midset(set_t *currset, int index, double *x_r, double *y_r)
 	return 0;
 }
 
-//int movexy(struct set_container *sets, select_t *selects, double xoff, double yoff)
+
+
 int movexy(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff
 	double x, y;
 	coord_t **coords = pshow->sets->currset->coords;
-	//coord_t **coords = sets->currset->coords;
 	select_t *selects = pstate.select;
 	int done = 0;
 	while(selects != NULL)
@@ -193,11 +166,9 @@ int movexy(double xoff, double yoff)
 
 
 
-//int align_dots(struct set_container *sets, select_t *select)
 int align_dots(void)
 {
 	// align selected dots to 8:5 grid
-	//coord_t **coords = pshow->currset->coords;
 	coord_t **coords = pshow->sets->currset->coords;
 	select_t *select = pstate.select;
 	double x, y;
@@ -218,14 +189,11 @@ int align_dots(void)
 
 
 
-
-//int movexy_grid(struct set_container *sets, select_t *selects, double xoff, double yoff)
 int movexy_grid(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff on 1-step intervals
 	double x, y;
 	coord_t **coords = pshow->sets->currset->coords;
-	//coord_t **coords = sets->currset->coords;
 	select_t *selects = pstate.select;
 	while(selects != NULL)
 	{
@@ -244,7 +212,6 @@ int movexy_grid(double xoff, double yoff)
 	pstate.center->y = y;
 	return 0;
 }
-
 
 
 
@@ -272,7 +239,6 @@ void scale_form(double s_step)
 	int index;
 
 	last = pstate.select;
-	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
@@ -313,6 +279,7 @@ void scale_form(double s_step)
 }
 
 
+
 void box_scale_form(double s_step)
 {
 	// move furthest dot (s_step, s_step) toward/away from center
@@ -334,7 +301,6 @@ void box_scale_form(double s_step)
 	int index;
 
 	last = pstate.select;
-	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
@@ -393,8 +359,6 @@ void box_scale_form(double s_step)
 
 
 
-
-
 void rot_form(double s_step)
 {
 	// basic rotation around center
@@ -403,7 +367,6 @@ void rot_form(double s_step)
 	// distance
 	double distx, disty;
 	// sign
-	//int signx, signy;
 	// hypotenuse
 	double hypo;
 	// angle
@@ -416,7 +379,6 @@ void rot_form(double s_step)
 	// index
 	int index;
 	last = pstate.select;
-	//coords = pshow->currset->coords;
 	coords = pshow->sets->currset->coords;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
@@ -431,8 +393,6 @@ void rot_form(double s_step)
 		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
 		if (distx != 0 || disty != 0)
 		{
-			//signx = distx < 0;
-			//signy = disty < 0;
 			angle = atanf(disty / distx);
 			hypo = powf(distx, 2) + powf(disty, 2);
 			hypo = sqrtf(hypo);
@@ -448,5 +408,3 @@ void rot_form(double s_step)
 	}
 	return;
 }
-
-
