@@ -164,12 +164,9 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 	unredo->operation = 3;		// Performer removed
 	unredo->ud.sperf = *oldperf_r;	// store performer data 
 	*oldperf_r = 0;
-	excode = perf_construct(&newperf);
-	if (excode == -1)
-	{
-		printf("performer allocation error\n");
+	newperf = perf_construct();
+	if (newperf == NULL)
 		exit(255);
-	}
 	//printf("newperf = 0x%x\n", newperf);
 	newperf->valid = 0;
 	// store coordinates for performer

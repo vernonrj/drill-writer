@@ -47,7 +47,11 @@ int show_construct(headset_t **dshow_r, int perfs)
 	for (i=0; i<perfs; i++)
 	{
 		// Build a linked list of performers
-		pcurr = dshow->perfs[i];
+		//pcurr = dshow->perfs[i];
+		pcurr = perf_construct();
+		if (pcurr == NULL)
+			return -1;
+		/*
 		excode = perf_construct(&pcurr);
 		if (excode == -1)
 		{
@@ -55,6 +59,7 @@ int show_construct(headset_t **dshow_r, int perfs)
 			printf("performers allocation error\n");
 			return -1;
 		}
+		*/
 		pcurr->index = i;
 		dshow->perfs[i] = pcurr;
 	}

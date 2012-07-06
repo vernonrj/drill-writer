@@ -2,34 +2,28 @@
 #include "drill.h"
 
 // performer storage
-int perf_construct(perf_t **perf_r)
+perf_t *perf_construct(void)
 {
 	// Build storage for performer
-	// give argument:
-	// excode = perf_construct(&dots);
-	// piece of performer array
 	perf_t *perf;
 
 	perf = (perf_t*) malloc(sizeof(perf_t));
 	if (perf == NULL)
 	{
 		// allocation error
-		return -1;
+		return NULL;
 	}
 	// allocate values inside struct
 	perf->symbol = (char*) malloc(2 * sizeof(char));
 	if (perf->symbol == NULL)
 	{
 		// allocation error
-		return -1;
+		return NULL;
 	}
 	perf->symbol[0] = '\0';
 	perf->valid = 0;
 
-	// pass by reference
-	*perf_r = perf;
-
-	return 0;
+	return perf;
 }
 
 
@@ -68,7 +62,6 @@ int add_perf(void)
 	perf_t *perf;
 	//coord_t *coord;
 	set_t *last;
-	int excode;
 
 	// find an open node
 	for (i=0; i<perfnum && found_dot == 0; i++)
@@ -99,18 +92,13 @@ int add_perf(void)
 		for (i=perfnum; i<perfnum+5; i++)
 		{
 			// make new performers
+			newperfs[i] = perf_construct();
+			if (newperfs[i] == NULL)
+				return -1;
+			/*
 			excode = perf_construct(&newperfs[i]);
 			if (excode == -1)
 				return -1;
-			/*
-			newperfs[i] = (perf_t*)malloc(sizeof(perf_t));
-			if (newperfs[i] == NULL)
-				return -1;
-			newperfs[i]->symbol = (char*)malloc(1*sizeof(char));
-			if (newperfs[i]->symbol == NULL)
-				return -1;
-			newperfs[i]->symbol[0] = '\0';
-			newperfs[i]->valid = -1;
 			*/
 		}
 		// set new performers

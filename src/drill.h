@@ -323,7 +323,7 @@ int main (int argc, char *argv[]);
 
 // perf-con.c
 // create container for performers
-int perf_construct(perf_t **perf_ref);
+perf_t *perf_construct(void);
 int perf_destroy(perf_t **perf_r);
 int add_perf(void);
 void revert_perf_selected(struct headset_proto *dshow);
