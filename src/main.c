@@ -12,11 +12,8 @@ int show_construct(headset_t **dshow_r, int perfs)
 	headset_t *dshow;
 	// Performers
 	perf_t *pcurr;
-	//perf_t *plast;
 	// Sets
 	set_t *setcurr;
-	//set_t *setlast;
-	// coords
 
 	dshow = (headset_t*) malloc(sizeof(headset_t));
 	// initialize filename to empty
@@ -47,24 +44,13 @@ int show_construct(headset_t **dshow_r, int perfs)
 	for (i=0; i<perfs; i++)
 	{
 		// Build a linked list of performers
-		//pcurr = dshow->perfs[i];
 		pcurr = perf_construct();
 		if (pcurr == NULL)
 			return -1;
-		/*
-		excode = perf_construct(&pcurr);
-		if (excode == -1)
-		{
-			// performers not allocated
-			printf("performers allocation error\n");
-			return -1;
-		}
-		*/
 		pcurr->index = i;
 		dshow->perfs[i] = pcurr;
 	}
 
-	// Make the setlist
 	// Make the first set
 	setcurr = 0;
 	dshow->sets = set_container_construct(perfs);
@@ -75,7 +61,6 @@ int show_construct(headset_t **dshow_r, int perfs)
 		return -1;
 	}
 	setcurr = dshow->sets->currset;
-	//excode = set_construct(&setcurr, perfs);
 	dshow->sets->firstset = setcurr;
 
 	// Construct tempo
@@ -111,24 +96,17 @@ int show_destroy(headset_t **dshow_r)
 {
 	int i;
 	int perfnum;
-	//int undop;
 	int snum;
 	// show
 	headset_t *dshow;
 	// performers
 	perf_t **perfs;
-	//perf_t *pcurr;
 	// sets
 	set_t *setcurr;
 	set_t *setlast;
-	// coords
-	//coord_t **coords;
 	// selects
 	select_t *select;
 	select_t *sellast;
-	// undo/redo
-	//undo_t *undcurr;
-	//undo_t *undlast;
 	// tempo
 	tempo_t *tcurr;
 	tempo_t *tlast;
@@ -197,23 +175,16 @@ int main (int argc, char *argv[])
 	// specific set
 	set_t *currset;
 	set_t *prevset;
-	// specific performer
-	//perf_t *currperf;
 	// coords
-	//coord_t *coords; 
 	coord_t *prevcr;
 	int excode;
 	int i;		// loop vars
-	//double x, y;
 
 	mouse_currentMode = SELECTONE;
-	// Hardcode tempo in
-	//int tempo = 120;
 	// set show as uninitialized
 	pshow = 0;
-	//dot_construct(&pshow);
 
-	// Make a show with 5 performers
+	// Make a show with 21 performers
 	pshow = 0;
 	excode = show_construct(&pshow, 21);
 	if (excode == -1)
@@ -222,7 +193,6 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 	currset = pshow->sets->firstset;
-	//pshow->perfnum = 15;
 	currset->counts = 0;
 	set_coord(pshow, 0, 32, 53);
 	set_coord(pshow, 1, 36, 53);
@@ -239,14 +209,8 @@ int main (int argc, char *argv[])
 	set_coord(pshow, 11, 36, 62);
 	// add new set
 	add_set();
-	/*
-	newset_create(currset);
-	prevset = currset;
-	currset = currset->next;
-	*/
 	currset = pshow->sets->currset;
 	prevset = currset->prev;
-	//prevset = pshow->sets->prevset;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
@@ -255,13 +219,7 @@ int main (int argc, char *argv[])
 	}
 	// add new set
 	add_set();
-	/*
-	newset_create(currset);
-	prevset = currset;
-	currset = currset->next;
-	*/
 	currset = pshow->sets->currset;
-	//prevset = pshow->sets->prevset;
 	prevset = currset->prev;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
@@ -271,10 +229,8 @@ int main (int argc, char *argv[])
 	}
 
 	// Start at first set
-	//setnum = 0;
 	pstate.setnum = 0;
 	pshow->sets->currset = pshow->sets->firstset;
-	//pshow->sets->prevset = 0;
 
 	perf_cur = 0;
 	undo_destroy(&pstate.undobr, pshow);

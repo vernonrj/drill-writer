@@ -7,7 +7,6 @@ int isInsideYard(double *x, double *y, int *field_side)
 	// a yardline
 	double ssrel;
 	double coordx;
-	//int relation;
 	coordx = *x;
 	// get side-to-side
 	ssrel = coordx / 8;
@@ -223,8 +222,6 @@ int xy_to_relation(double *x, double *y, char **buffer_r)
 	char *fbbuffer;
 	char *xbuff, *ybuff;
 	char *sideside_relation;
-	//char *side;
-	//char *hash;
 	char *frontback_relation;
 	double coordx, coordy;
 	char *inorout;
@@ -272,7 +269,6 @@ int xy_to_relation(double *x, double *y, char **buffer_r)
 		exit(255);
 	}
 
-	//ssrel = labs(8 - ssrel);
 	// Get yardline relation
 	yardline = getYardline(x, y);
 

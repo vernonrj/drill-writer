@@ -1,5 +1,4 @@
 // Functions that manipulate files go here
-//#include "drill.h"
 #include "drill.h"
 
 int file_getline(FILE *fp, char **buffer_r);
@@ -119,7 +118,6 @@ int file_getValidLine(FILE *fp, char **buffer_r)
 int file_linetoOps(char *buffer, char **op_r, char stop)
 {
 	// convert a line to an operation using the stopchar
-	//char *buffer;
 
 	// loop var
 	int i;
@@ -168,7 +166,6 @@ int file_linetoOps(char *buffer, char **op_r, char stop)
 	buffer[i-index] = '\0';
 	//printf("operat = %s\n", op);
 	//printf("buffer = %s\n", buffer);
-	//*buffer_r = buffer;
 	*op_r = op;
 	return 0;
 }
@@ -182,12 +179,8 @@ int open_file(char *filename)
 	int i, j;
 	// file pointer
 	FILE *fp;
-	// stream char
-	//char c;
 	// stream string
 	char *buffer;
-	// older buffer
-	//char *oldbuff;
 	// data storage
 	char *data;
 	// operation storage
@@ -212,10 +205,6 @@ int open_file(char *filename)
 	int cnum;
 	// coordinates
 	double x, y;
-	// validity array
-	//int *valid;
-	// new data
-	//char *nwdata;
 	// new operation
 	char *op;
 
@@ -225,20 +214,12 @@ int open_file(char *filename)
 	perf_t *perf;
 	// Set structure
 	set_t *currset;
-	//struct set_container *sets;
-	// Coord structure
-	//coord_t **coords;
 
 	// open file for reading
 	if (!filename)
 		return -1;
 	if (!(fp = fopen(filename,"r")))
 		return -1;
-	/*
-	fp = fopen("save_file","r");
-	if (!fp)
-		return -1;
-		*/
 	// check for valid file
 	excode = file_getValidLine(fp, &buffer);
 	if (strcmp(buffer, "#drillwriter"))
@@ -300,7 +281,6 @@ int open_file(char *filename)
 	show_destroy(&pshow);
 	excode = show_construct(&pshow, perfnum);
 	//printf("perfnum = %i\n", perfnum);
-	//valid = (int*)malloc(perfnum*sizeof(int));
 	
 	// build performers
 	buffer = (char*)malloc(sizeof(char));
@@ -351,7 +331,6 @@ int open_file(char *filename)
 		{
 			// validity flag
 			perf->valid = atoi(data);
-			//valid[i] = atoi(data);
 		}
 		else if (!strcmp(operation, "sets:"))
 		{
@@ -388,11 +367,6 @@ int open_file(char *filename)
 			{
 				// need a new set
 				add_set();
-				/*
-				newset_create(pshow->sets->currset);
-				set_next();
-				currset = pshow->sets->currset;
-				*/
 				currset = pshow->sets->currset;
 			}
 		}
@@ -414,9 +388,7 @@ int open_file(char *filename)
 		else if (!strcmp(operation, "coords:"))
 		{
 			// store coords
-			//coords = currset->coords;
 			i = 0;
-			//for (i=0; i<perfnum; i++)
 			do
 			{
 				free(buffer);
@@ -477,10 +449,6 @@ int open_file(char *filename)
 
 	// update valid flags
 	//printf("perfnum = %i\n", perfnum);
-	/*
-	for (i=0; i<perfnum; i++)
-		perfs[i]->valid = valid[i];
-		*/
 
 	undo_destroy(&pstate.undobr, pshow);
 		
@@ -498,13 +466,10 @@ int save_file(char *filename)
 	perf_t **perfs;
 	// coordinates
 	coord_t **coords;
-	// tempo
-	//tempo_t *tempo;
 	// file pointer
 	FILE *fp;
 	// loop var
 	int i;
-	//int set_num = setnum;
 	int done;
 
 	// open file
