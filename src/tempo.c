@@ -1,11 +1,11 @@
 #include "drill.h"
 
 // Tempo storage
-int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint)
+int tempo_construct(tempo_t **tempo_r, int anchorpoint)
 {
 	// Add a new tempo at anchorpoint
-	struct tempo_proto *stempo;
-	stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
+	tempo_t *stempo;
+	stempo = (tempo_t*) malloc(sizeof(tempo_t));
 	if (stempo == NULL)
 	{
 		// allocation error
@@ -23,13 +23,13 @@ int tempo_construct(struct tempo_proto **tempo_r, int anchorpoint)
 }
 
 
-void change_tempo(int tempo, struct tempo_proto **currtempo_r)
+void change_tempo(int tempo, tempo_t **currtempo_r)
 {
-	struct tempo_proto *prevtempo;
-	struct tempo_proto *currtempo;
-	struct tempo_proto *nexttempo;
-	struct tempo_proto *stempo;
-	struct tempo_proto *othertempo;
+	tempo_t *prevtempo;
+	tempo_t *currtempo;
+	tempo_t *nexttempo;
+	tempo_t *stempo;
+	tempo_t *othertempo;
 	currtempo = *currtempo_r;
 	if (tempo >= 30 && tempo <= 250)
 	{
@@ -44,7 +44,7 @@ void change_tempo(int tempo, struct tempo_proto **currtempo_r)
 		else
 		{
 			// making a new node
-			stempo = (struct tempo_proto*) malloc(sizeof(struct tempo_proto));
+			stempo = (tempo_t*) malloc(sizeof(tempo_t));
 			// store data to new node
 			stempo->tempo = tempo;
 			//stempo->anchorpoint = setnum;
@@ -100,8 +100,8 @@ void update_tempo(void)
 {
 	// if the tempo is out of date, change it
 	// to the correct tempo
-	struct tempo_proto *currtempo;
-	struct tempo_proto *othertempo;
+	tempo_t *currtempo;
+	tempo_t *othertempo;
 	//int cset;
 	int nset;
 
