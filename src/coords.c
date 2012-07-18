@@ -6,14 +6,14 @@ coord_t **coords_construct(int perfs)
 	// Build the coordinates for the set
 	
 	// loop var
-	int i;
+	int i, j;
 	// 2d coordinate array
 	coord_t **coords;
 	// Piece of coordinate array
 
 	// Make the root pointer
 	coords = (coord_t**) malloc(perfs*sizeof(coord_t*));
-	if (!coords)
+	if (coords == NULL)
 	{
 		// coordinate allocation error
 		return NULL;
@@ -23,8 +23,13 @@ coord_t **coords_construct(int perfs)
 	{
 		// Make the first set of dots
 		coords[i] = coord_construct();
-		if (!coords[i])
+		if (coords[i] == NULL)
+		{
+			for(j=0; j<i; j++)
+				free(coords[j]);
+			free(coords);
 			return NULL;
+		}
 	}
 
 	return coords;
@@ -177,8 +182,8 @@ int align_dots(void)
 	{
 		retr_coord(coords[select->index], &x, &y);
 		pushPerfmv(&pstate.undobr, select->index, x, y, done);
-		x = roundf(x);
-		y = roundf(y);
+		x = round(x);
+		y = round(y);
 		set_coord(pshow, select->index, x, y);
 		select = select->next;
 	}
@@ -253,7 +258,7 @@ void scale_form(double s_step)
 		disty = cy - coord->y;
 		signx = distx < 0;
 		signy = disty < 0;
-		angle = atanf(disty / distx);
+		angle = atan(disty / distx);
 		if (angle < 0)
 			angle = -1 * angle;
 		hypo = powf(distx, 2) + powf(disty, 2);
@@ -262,8 +267,8 @@ void scale_form(double s_step)
 		if (s_step > 0 || hypo > -1 * s_step)
 		{
 			// expand or contract
-			distx = (hypo+s_step)*cosf(angle);
-			disty = (hypo+s_step)*sinf(angle);
+			distx = (hypo+s_step)*cos(angle);
+			disty = (hypo+s_step)*sin(angle);
 			if (signx)
 				distx = -1 * distx;
 			if (signy)
@@ -315,8 +320,8 @@ void box_scale_form(double s_step)
 		index = last->index;
 		coord = coords[index];
 		retr_coord(coord, &x, &y);
-		distx = abs(x - cx);
-		disty = abs(y - cy);
+		distx = fabs(x - cx);
+		disty = fabs(y - cy);
 		if (distx > maxdx)
 		{
 			maxdx = distx;
@@ -393,14 +398,14 @@ void rot_form(double s_step)
 		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
 		if (distx != 0 || disty != 0)
 		{
-			angle = atanf(disty / distx);
-			hypo = powf(distx, 2) + powf(disty, 2);
-			hypo = sqrtf(hypo);
+			angle = atan(disty / distx);
+			hypo = pow(distx, 2) + pow(disty, 2);
+			hypo = sqrt(hypo);
 			if (distx < 0)
 				angle = angle + M_PI;
 			angle = angle + s_step;
-			distx = hypo*cosf(angle);
-			disty = hypo*sinf(angle);
+			distx = hypo*cos(angle);
+			disty = hypo*sin(angle);
 			coord->x = cx - distx;
 			coord->y = cy - disty;
 		}
