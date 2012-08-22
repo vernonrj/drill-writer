@@ -27,6 +27,8 @@ GtkWidget *entry_perf_y;
 GtkWidget *statusbar;
 GtkWidget *menuButton;
 
+GtkAdjustment *hscroll, *vscroll;
+
 double mousex, mousey;
 struct fieldstate_proto
 {
@@ -34,7 +36,8 @@ struct fieldstate_proto
 	double xo2, yo2;	// field centering
 	double width, height;	// allocated size
 	double canv_step;	// 8:5 step in pixels
-	double zoom_x, zoom_y;	// zoom size
+	//double zoom_x, zoom_y;	// zoom size
+	double zoom_amnt;
 } fldstate;
 
 /*

@@ -21,30 +21,25 @@ extern int expose_flag;
 
 void zoom_amnt(double x, double y)
 {
-	if (x == 0 && y == 0)
-	{
-		// zoom to 100%
-		//fldstate.zoom_x = width;
-		//fldstate.zoom_y = height;
-		fldstate.zoom_x = 921;
-		fldstate.zoom_y = 550;
-	}
+	// for now, just zoom relative
+	if (x > 0)
+		fldstate.zoom_amnt *= 1.1;
+	else if (x < 0)
+		fldstate.zoom_amnt *= 0.9;
 	else
-	{
-		fldstate.zoom_x = fldstate.zoom_x + x;
-		fldstate.zoom_y = fldstate.zoom_y + y;
-		do_field = 1;
-	}
-	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
+		fldstate.zoom_amnt = 1;
+	do_field = 1;
+	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
 void zoom_fit(GtkWidget *widget)
 {
-	double s_width, s_height;
-	s_width = (double)scrolled_window->allocation.width;
-	s_height = (double)scrolled_window->allocation.height;
+	//double s_width, s_height;
+	//s_width = (double)scrolled_window->allocation.width;
+	//s_height = (double)scrolled_window->allocation.height;
 	//printf("scrolled = (%.2f, %.2f)\n", s_width, s_height);
 	//printf("window = (%.2f, %.2f)\n", width, height);
+	/*
 	if (fldstate.width > s_width || fldstate.height > s_height)
 	{
 		fldstate.zoom_x = s_width;
@@ -55,8 +50,11 @@ void zoom_fit(GtkWidget *widget)
 		fldstate.zoom_x = fldstate.width;
 		fldstate.zoom_y = fldstate.height+20;
 	}
+	*/
+	fldstate.zoom_amnt = 1;
 	do_field = 1;
-	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
+	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
+	//gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
 	return;
 }
 
@@ -65,13 +63,6 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
 	// propagate everything except control modifier
-	//double oldwidth, oldheight;
-	//double newwidth, newheight;
-	//double width, height;
-	//double xoff, yoff;
-	//GtkAdjustment *xadj, *yadj;
-	//oldwidth = widget->allocation.width;
-	//oldheight = widget->allocation.height;
 	if (event->state == 0)
 		return FALSE;
 	else if (event->state != 4)
@@ -79,38 +70,24 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 	if (event->direction == GDK_SCROLL_UP)
 	{
 		// zoom in
-		zoom_amnt(10, 10);
-		gtk_widget_set_size_request(widget, fldstate.zoom_x, fldstate.zoom_y);
-
-		// I think this stuff needs to go into the realize member
-		/*
-		newwidth = widget->allocation.width;
-		newheight = widget->allocation.height;
-		newwidth = fldstate.zoom_x;
-		newheight = fldstate.zoom_y;
-		width = fabs((oldwidth - newwidth) / 2);
-		height = fabs((oldheight - newheight) / 2);
-		width = 5;
-		height = 5;
-		//fldstate.zoom_x = fldstate.zoom_x + 10;
-		//fldstate.zoom_y = fldstate.zoom_y + 10;
-		xadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
-		yadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
-		xoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(xadj)) + width;
-		yoff = gtk_adjustment_get_value(GTK_ADJUSTMENT(yadj)) + height;
-		gtk_adjustment_set_value(GTK_ADJUSTMENT(xadj), xoff);
-		gtk_adjustment_set_value(GTK_ADJUSTMENT(yadj), yoff);
-		gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), GTK_ADJUSTMENT(xadj));
-		gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), GTK_ADJUSTMENT(yadj));
-		*/
+		fldstate.zoom_amnt *= 1.1;
+		hscroll->upper *= 1.1;
+		vscroll->upper *= 1.1;
+		gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
+		gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
+		do_field = 1;
+		gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
 	{
 		// zoom out
-		zoom_amnt(-10, -10);
-		//fldstate.zoom_x = fldstate.zoom_x - 10;
-		//fldstate.zoom_y = fldstate.zoom_y - 10;
-		gtk_widget_set_size_request(widget, fldstate.zoom_x, fldstate.zoom_y);
+		hscroll->upper *= 0.9;
+		vscroll->upper *= 0.9;
+		gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
+		gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
+		fldstate.zoom_amnt *= 0.9;
+		do_field = 1;
+		gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 	}
 	return TRUE;
 }
@@ -118,22 +95,26 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 void zoom_in(GtkWidget *widget)
 {
 	// zoom in
-	zoom_amnt(20, 20);
-	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
+	fldstate.zoom_amnt *= 1.1;
+	hscroll->upper *= 1.1;
+	do_field = 1;
+	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
+	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 }
 
 void zoom_out(GtkWidget *widget)
 {
 	// zoom out
-	zoom_amnt(-20, -20);
-	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
+	fldstate.zoom_amnt *= 0.9;
+	do_field = 1;
+	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 }
 
 void zoom_standard(GtkWidget *widget)
 {
 	// zoom to 100%
-	zoom_amnt(0, 0);
-	gtk_widget_set_size_request(drill, fldstate.zoom_x, fldstate.zoom_y);
+	fldstate.zoom_amnt = 1;
+	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 }
 
 
@@ -227,8 +208,8 @@ static void gtk_drill_init (GtkDrill *drill)
 {
 	printf("ping drill init\n");
 	drill->sel = 0;
-	fldstate.zoom_x = 800;
-	fldstate.zoom_y = 480;
+	//fldstate.zoom_x = 800;
+	//fldstate.zoom_y = 480;
 }
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
@@ -404,33 +385,8 @@ void def_canvas (GtkWidget *widget)
 	//fldstate.height = scrolled_window->allocation.height;	// Get the height
 	//z_x = 100 * width / (double)scrolled_window->allocation.width;
 	//z_y = 100 * height / (double)scrolled_window->allocation.height;
-	if (fldstate.width != fldstate.zoom_x || fldstate.height != fldstate.zoom_y)
-	{
-		// Catch zoom < 100% and handle
-		// TODO: narrow scope of conditional to only catch
-		// zoom < 100%
-		// Warning: this could cause performance issues:
-		// watch closely
-		//printf("ping\n");
-		//do_field = 1;
-		if (fldstate.zoom_x < fldstate.width)
-		{
-			c_width = fldstate.zoom_x;
-		}
-		else
-			c_width = fldstate.width;
-		if (fldstate.zoom_y < fldstate.height)
-		{
-			c_height = fldstate.zoom_y;
-		}
-		else
-			c_height = fldstate.height;
-	}	
-	else
-	{
-		c_width = fldstate.width;
-		c_height = fldstate.height;
-	}
+	c_width = fldstate.width;
+	c_height = fldstate.height;
 	//c_width = 801;
 	//c_height = 426;
 	//printf("width=%g\theight=%g\tstep=%g\n", width, height, fldstate.canv_step);
@@ -523,6 +479,7 @@ int draw_selected(GtkWidget *widget)
 
 	cairo_destroy(selected);
 	selected = gdk_cairo_create(widget->window);
+	cairo_scale(selected, fldstate.zoom_amnt, fldstate.zoom_amnt);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 	// get set information
@@ -598,6 +555,7 @@ int draw_dots (GtkWidget *widget)
 		// Define canvases
 		cairo_destroy(dots);
 		dots = gdk_cairo_create(widget->window);
+		cairo_scale(dots, fldstate.zoom_amnt, fldstate.zoom_amnt);
 
 		cairo_set_line_width(dots, 1.5);
 
@@ -712,11 +670,17 @@ void draw_field (GtkWidget *widget)
 			cairo_surface_destroy(surface);
 		}
 		else
+		{
 			pstate.first_time = 0;
+			fldstate.zoom_amnt = 1;
+		}
 		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 		field = cairo_create (surface);
+		cairo_scale(field, fldstate.zoom_amnt, fldstate.zoom_amnt);
 		gaks = cairo_create (surface);
+		cairo_scale(gaks, fldstate.zoom_amnt, fldstate.zoom_amnt);
 		fnums = cairo_create (surface);
+		cairo_scale(fnums, fldstate.zoom_amnt, fldstate.zoom_amnt);
 		cairo_set_source_rgb(fnums, .7, .7, .7);
 		cairo_set_font_size(fnums, 20);
 

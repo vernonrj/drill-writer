@@ -516,6 +516,8 @@ int buildIfacegtk(void)
 
 	// create field canvas scroll container
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	hscroll = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+	vscroll = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
 	//gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
