@@ -19,19 +19,31 @@ static void gtk_drill_destroy(GtkObject *object);
 extern double width, height;
 extern int expose_flag;
 
-void zoom_amnt(double x, double y)
+void zoom_amnt(double invalue)
 {
 	// for now, just zoom relative
-	if (x > 0)
-		fldstate.zoom_amnt *= 1.1;
-	else if (x < 0)
-		fldstate.zoom_amnt *= 0.9;
-	else
+	double value;
+	if (!invalue)
+	{
+		value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
+		hscroll->upper /= value;
+		vscroll->upper /= value;
+	}
+	else
+	{
+		value = invalue;
+		fldstate.zoom_amnt *= value;
+		hscroll->upper *= value;
+		vscroll->upper *= value;
+	}
+	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
+	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
 	do_field = 1;
 	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 	return;
 }
+
 void zoom_fit(GtkWidget *widget)
 {
 	//double s_width, s_height;
@@ -59,35 +71,55 @@ void zoom_fit(GtkWidget *widget)
 }
 
 
+void canvas_apply(cairo_t *cr)
+{
+	cairo_scale(cr, fldstate.zoom_amnt, fldstate.zoom_amnt);
+	cairo_translate(cr, fldstate.fieldx, fldstate.fieldy);
+	return;
+}
+
+void canvas_move(GtkWidget *widget, int value)
+{
+	// move the canvas up or down
+	fldstate.fieldy = fldstate.fieldy + (double)value;
+	if(fldstate.fieldy < -1*widget->allocation.height)
+		fldstate.fieldy = -1*widget->allocation.height;
+	if(fldstate.fieldy > vscroll->upper)
+		fldstate.fieldy = vscroll->upper;
+	do_field = 1;
+	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
+	return;
+}
+
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
 	// propagate everything except control modifier
-	if (event->state == 0)
-		return FALSE;
-	else if (event->state != 4)
-		return FALSE;
 	if (event->direction == GDK_SCROLL_UP)
 	{
-		// zoom in
-		fldstate.zoom_amnt *= 1.1;
-		hscroll->upper *= 1.1;
-		vscroll->upper *= 1.1;
-		gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
-		gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
-		do_field = 1;
-		gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
+		if (event->state == 0)
+		{
+			// move up
+			canvas_move(widget, vscroll->step_increment);
+		}
+		else
+		{
+			// zoom in
+			zoom_in(widget);
+		}
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
 	{
-		// zoom out
-		hscroll->upper *= 0.9;
-		vscroll->upper *= 0.9;
-		gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
-		gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
-		fldstate.zoom_amnt *= 0.9;
-		do_field = 1;
-		gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
+		if (event->state == 0)
+		{
+			// move down
+			canvas_move(widget, -1*vscroll->step_increment);
+		}
+		else
+		{
+			// zoom out
+			zoom_out(widget);
+		}
 	}
 	return TRUE;
 }
@@ -95,19 +127,31 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 void zoom_in(GtkWidget *widget)
 {
 	// zoom in
+	zoom_amnt(1.1);
+	/*
 	fldstate.zoom_amnt *= 1.1;
 	hscroll->upper *= 1.1;
-	do_field = 1;
+	vscroll->upper *= 1.1;
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
+	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
+	do_field = 1;
 	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
+	*/
 }
 
 void zoom_out(GtkWidget *widget)
 {
 	// zoom out
+	zoom_amnt(0.9);
+	/*
 	fldstate.zoom_amnt *= 0.9;
+	hscroll->upper *= 0.9;
+	vscroll->upper *= 0.9;
+	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
+	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
 	do_field = 1;
 	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
+	*/
 }
 
 void zoom_standard(GtkWidget *widget)
@@ -479,7 +523,7 @@ int draw_selected(GtkWidget *widget)
 
 	cairo_destroy(selected);
 	selected = gdk_cairo_create(widget->window);
-	cairo_scale(selected, fldstate.zoom_amnt, fldstate.zoom_amnt);
+	canvas_apply(selected);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 	// get set information
@@ -555,7 +599,7 @@ int draw_dots (GtkWidget *widget)
 		// Define canvases
 		cairo_destroy(dots);
 		dots = gdk_cairo_create(widget->window);
-		cairo_scale(dots, fldstate.zoom_amnt, fldstate.zoom_amnt);
+		canvas_apply(dots);
 
 		cairo_set_line_width(dots, 1.5);
 
@@ -673,14 +717,16 @@ void draw_field (GtkWidget *widget)
 		{
 			pstate.first_time = 0;
 			fldstate.zoom_amnt = 1;
+			fldstate.fieldx = 0;
+			fldstate.fieldy = 0;
 		}
 		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 		field = cairo_create (surface);
-		cairo_scale(field, fldstate.zoom_amnt, fldstate.zoom_amnt);
+		canvas_apply(field);
 		gaks = cairo_create (surface);
-		cairo_scale(gaks, fldstate.zoom_amnt, fldstate.zoom_amnt);
+		canvas_apply(gaks);
 		fnums = cairo_create (surface);
-		cairo_scale(fnums, fldstate.zoom_amnt, fldstate.zoom_amnt);
+		canvas_apply(fnums);
 		cairo_set_source_rgb(fnums, .7, .7, .7);
 		cairo_set_font_size(fnums, 20);
 

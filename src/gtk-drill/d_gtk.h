@@ -36,6 +36,7 @@ struct fieldstate_proto
 	double xo2, yo2;	// field centering
 	double width, height;	// allocated size
 	double canv_step;	// 8:5 step in pixels
+	double fieldx, fieldy;
 	//double zoom_x, zoom_y;	// zoom size
 	double zoom_amnt;
 } fldstate;

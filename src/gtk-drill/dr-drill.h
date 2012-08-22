@@ -57,7 +57,7 @@ int draw_dots (GtkWidget *widget);
 void draw_field (GtkWidget *widget);
 
 // drill.c
-void zoom_amnt(double x, double y);
+void zoom_amnt(double invalue);
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
 void zoom_in(GtkWidget *widget);
 void zoom_out(GtkWidget *widget);
