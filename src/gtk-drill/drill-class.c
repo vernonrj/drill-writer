@@ -80,6 +80,8 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	return;
 }
 
+
+
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
@@ -117,6 +119,8 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 	return TRUE;
 }
 
+
+
 void zoom_in(GtkWidget *widget)
 {
 	// zoom in
@@ -131,6 +135,8 @@ void zoom_in(GtkWidget *widget)
 	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
 	*/
 }
+
+
 
 void zoom_out(GtkWidget *widget)
 {
@@ -147,12 +153,15 @@ void zoom_out(GtkWidget *widget)
 	*/
 }
 
+
+
 void zoom_standard(GtkWidget *widget)
 {
 	// zoom to 100%
 	fldstate.zoom_amnt = 1;
 	gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
 }
+
 
 
 GType gtk_drill_get_type(void)
@@ -181,17 +190,22 @@ GType gtk_drill_get_type(void)
 }
 
 
+
 void gtk_drill_set_state(GtkDrill *drill, gint num)
 {
 	drill->sel = num;
 	gtk_drill_paint(GTK_WIDGET(drill));
 }
 
+
+
 GtkWidget * gtk_drill_new(void)
 {
 	//return GTK_WIDGET(g_object_new(gtk_drill_get_type()));
 	return GTK_WIDGET(g_object_new(GTK_DRILL_TYPE, NULL));
 }
+
+
 
 //G_DEFINE_TYPE (GtkDrill, gtk_drill, G_TYPE_NONE);
 enum {
@@ -203,6 +217,8 @@ enum {
 };
 
 //static guint drill_signals[LAST_SIGNAL] = {0};
+
+
 
 static void gtk_drill_class_init(GtkDrillClass *class)
 {
@@ -241,6 +257,8 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	*/
 }
 
+
+
 static void gtk_drill_init (GtkDrill *drill)
 {
 	printf("ping drill init\n");
@@ -248,6 +266,8 @@ static void gtk_drill_init (GtkDrill *drill)
 	//fldstate.zoom_x = 800;
 	//fldstate.zoom_y = 480;
 }
+
+
 
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition)
 {
@@ -264,6 +284,8 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 	//requisition->width = 850;
 	//requisition->height = 450;
 }
+
+
 
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 {
@@ -284,6 +306,8 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 				);
 	}
 }
+
+
 
 static void gtk_drill_realize(GtkWidget *widget)
 {
@@ -323,6 +347,8 @@ static void gtk_drill_realize(GtkWidget *widget)
 	//g_signal_connect(widget, "dotright", G_CALLBACK (gtk_main_quit), NULL);
 }
 
+
+
 static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
 {
 	//printf("ping expose\n");
@@ -344,6 +370,8 @@ static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
 	return FALSE;
 }
 
+
+
 static void gtk_drill_paint(GtkWidget *widget)
 {
 	printf("ping paint\n");
@@ -354,6 +382,8 @@ static void gtk_drill_paint(GtkWidget *widget)
 	//cairo_paint(cr);
 	//cairo_destroy(cr);
 }
+
+
 
 static void gtk_drill_destroy(GtkObject *object)
 {
@@ -381,6 +411,8 @@ extern int playing;
 extern int set_step;
 extern GTimer * timer;
 
+
+
 void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
@@ -388,6 +420,8 @@ void force_redraw(GtkWidget *widget)
 	gtk_widget_set_size_request(drill, widget->allocation.width, widget->allocation.height);
 	gtk_widget_queue_draw_area(drill, 0, 0, widget->allocation.width, widget->allocation.height);
 }
+
+
 
 int field_init(void)
 {
@@ -401,6 +435,8 @@ int field_init(void)
 	//do_field = 1;
 	return 0;
 }
+
+
 
 void def_canvas (GtkWidget *widget)
 {
@@ -457,6 +493,8 @@ void def_canvas (GtkWidget *widget)
 	return;
 }
 
+
+
 void drawing_method(cairo_t *cdots, double x, double y)
 {
 	// dot drawing
@@ -470,6 +508,7 @@ void drawing_method(cairo_t *cdots, double x, double y)
 	//cairo_arc(cdots, x, y, 2*(double)fldstate.canv_step/3, 0, 360);
 	return;
 }
+
 
 
 int pixel_to_field(double *x_r, double *y_r)
@@ -488,6 +527,8 @@ int pixel_to_field(double *x_r, double *y_r)
 	return 0;
 }
 
+
+
 int field_to_pixel(double *x_r, double *y_r)
 {
 	// convert field coordinates to 
@@ -503,6 +544,7 @@ int field_to_pixel(double *x_r, double *y_r)
 	*y_r = y;
 	return 0;
 }
+
 
 
 int draw_selected(GtkWidget *widget)
@@ -549,7 +591,6 @@ int draw_selected(GtkWidget *widget)
 }
 
 
-	
 
 int draw_dots (GtkWidget *widget)
 {
@@ -673,6 +714,8 @@ int draw_dots (GtkWidget *widget)
 	//cairo_surface_destroy(field_surface);
 	return 0;
 }
+
+
 
 void draw_field (GtkWidget *widget)
 {	// This function will draw the actual football field
@@ -827,6 +870,3 @@ void draw_field (GtkWidget *widget)
 
 
 }
-
-
-
