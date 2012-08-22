@@ -147,8 +147,8 @@ gboolean play_show (GtkWidget *widget)
 		}
 		//g_print("width=%i\theight=%i\n", width, height);
 		expose_flag =1;
-		gtk_widget_queue_draw_area(window, 0, 0, 
-				fldstate.width, fldstate.height);
+		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, 
+				drill->allocation.width, drill->allocation.height);
 		//g_print("Play_show %i %i %i\n", setnum, set_step, playing);
 		if (pstate.playing)
 		{
@@ -177,8 +177,8 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 	{
 		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 		do_field=0;	// don't need to redraw field
-		gtk_widget_queue_draw_area(window, 0, 0, 
-				fldstate.width, fldstate.height);
+		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, 
+				drill->allocation.width, drill->allocation.height);
 		if (pshow->sets->currset->next != NULL)
 			pstate.playing = 1;
 		else
