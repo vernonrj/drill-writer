@@ -287,10 +287,13 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 
 	coordx = event->x;
 	coordy = event->y;
+	pixel_to_field(&coordx, &coordy);
+	/*
 	// Adjust for various canvas offsets
 	coordx = (coordx-fldstate.xo2)/fldstate.canv_step;
 	//coordy = (coordy-yo2-25)/step;
 	coordy = (coordy-fldstate.yo2)/fldstate.canv_step;
+	*/
 
 	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 	perfnum = pshow->perfnum;

@@ -68,14 +68,16 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	// move the canvas up, down, left, or right
 	fldstate.fieldx = fldstate.fieldx + valuex;
 	fldstate.fieldy = fldstate.fieldy + valuey;
+	/*
 	if (fldstate.fieldx < 0)
 		fldstate.fieldx = 0;
 	if (fldstate.fieldx + hscroll->page_size > hscroll->upper)
 		fldstate.fieldx = hscroll->upper - hscroll->page_size;
-	if(fldstate.fieldy < 0)
+	if (fldstate.fieldy < 0)
 		fldstate.fieldy = 0;
-	if(fldstate.fieldy + vscroll->page_size > vscroll->upper)
+	if (fldstate.fieldy + vscroll->page_size > vscroll->upper)
 		fldstate.fieldy = vscroll->upper - vscroll->page_size;
+	*/
 	hscroll->value = fldstate.fieldx;
 	vscroll->value = fldstate.fieldy;
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
@@ -504,9 +506,17 @@ int pixel_to_field(double *x_r, double *y_r)
 	double x, y;
 	x = *x_r;
 	y = *y_r;
+	
+	x = x / fldstate.zoom_amnt;
+	y = y / fldstate.zoom_amnt;
+
+	x = x + fldstate.fieldx;
+	y = y + fldstate.fieldy;
+
 
 	x = (x-fldstate.xo2) / fldstate.canv_step;
 	y = (y-fldstate.yo2) / fldstate.canv_step;
+
 
 	*x_r = x;
 	*y_r = y;
@@ -523,8 +533,15 @@ int field_to_pixel(double *x_r, double *y_r)
 	x = *x_r;
 	y = *y_r;
 
+	//x = x / fldstate.zoom_amnt;
+	//y = y / fldstate.zoom_amnt;
+
 	x = fldstate.xo2 + fldstate.canv_step * x;
 	y = fldstate.yo2 + fldstate.canv_step * y;
+
+	//x = x - fldstate.fieldx;
+	//y = y - fldstate.fieldy;
+
 
 	*x_r = x;
 	*y_r = y;
