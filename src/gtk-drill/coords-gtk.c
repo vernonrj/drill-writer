@@ -455,8 +455,9 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 
 	coordx = event->x;
 	coordy = event->y;
-	coordx = (coordx-xo2)/step;
-	coordy = (coordy-yo2)/step;
+	pixel_to_field(&coordx, &coordy);
+	//coordx = (coordx-xo2)/step;
+	//coordy = (coordy-yo2)/step;
 	excode = xy_to_relation(&coordx, &coordy, &buffer);
 	if (excode == -1)
 		return FALSE;
