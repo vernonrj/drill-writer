@@ -53,24 +53,29 @@ void zoom_fit(GtkWidget *widget)
 
 void canvas_apply(cairo_t *cr)
 {
+	// Scale and move canvas to correct amounts
+	
+	// scale canvas to correct zoom amount
 	cairo_scale(cr, fldstate.zoom_amnt, fldstate.zoom_amnt);
-	cairo_translate(cr, fldstate.fieldx, fldstate.fieldy);
+	// move canvas to highlight section of field
+	// note: for some reason, (x,y) must be negated to translate correctly
+	cairo_translate(cr, -1*fldstate.fieldx, -1*fldstate.fieldy);
 	return;
 }
 
 void canvas_move(GtkWidget *widget, double valuex, double valuey)
 {
-	// move the canvas up or down
+	// move the canvas up, down, left, or right
 	fldstate.fieldx = fldstate.fieldx + valuex;
 	fldstate.fieldy = fldstate.fieldy + valuey;
-	if (fldstate.fieldx < -1*widget->allocation.width)
-		fldstate.fieldx = -1*widget->allocation.width;
-	if (fldstate.fieldx > hscroll->upper)
-		fldstate.fieldx = hscroll->upper;
-	if(fldstate.fieldy < -1*widget->allocation.height)
-		fldstate.fieldy = -1*widget->allocation.height;
-	if(fldstate.fieldy > vscroll->upper)
-		fldstate.fieldy = vscroll->upper;
+	if (fldstate.fieldx < 0)
+		fldstate.fieldx = 0;
+	if (fldstate.fieldx + hscroll->page_size > hscroll->upper)
+		fldstate.fieldx = hscroll->upper - hscroll->page_size;
+	if(fldstate.fieldy < 0)
+		fldstate.fieldy = 0;
+	if(fldstate.fieldy + vscroll->page_size > vscroll->upper)
+		fldstate.fieldy = vscroll->upper - vscroll->page_size;
 	hscroll->value = fldstate.fieldx;
 	vscroll->value = fldstate.fieldy;
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
@@ -81,7 +86,7 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 }
 
 
-
+// TODO: Change function name
 gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 {
 	// handle zoom events
@@ -91,7 +96,7 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 		if (event->state == 0)
 		{
 			// move up
-			canvas_move(widget, 0.0, vscroll->step_increment);
+			canvas_move(widget, 0.0, -1*vscroll->step_increment);
 		}
 		else
 		{
@@ -104,7 +109,7 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 		if (event->state == 0)
 		{
 			// move down
-			canvas_move(widget, 0.0, -1*vscroll->step_increment);
+			canvas_move(widget, 0.0, vscroll->step_increment);
 		}
 		else
 		{
@@ -113,9 +118,9 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 		}
 	}
 	else if (event->direction == GDK_SCROLL_LEFT)
-		canvas_move(widget, hscroll->step_increment, 0.0);
-	else if (event->direction == GDK_SCROLL_RIGHT)
 		canvas_move(widget, -1*hscroll->step_increment, 0.0);
+	else if (event->direction == GDK_SCROLL_RIGHT)
+		canvas_move(widget, hscroll->step_increment, 0.0);
 	return TRUE;
 }
 
@@ -125,15 +130,6 @@ void zoom_in(GtkWidget *widget)
 {
 	// zoom in
 	zoom_amnt(1.1);
-	/*
-	fldstate.zoom_amnt *= 1.1;
-	hscroll->upper *= 1.1;
-	vscroll->upper *= 1.1;
-	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
-	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
-	do_field = 1;
-	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
-	*/
 }
 
 
@@ -142,15 +138,6 @@ void zoom_out(GtkWidget *widget)
 {
 	// zoom out
 	zoom_amnt(0.9);
-	/*
-	fldstate.zoom_amnt *= 0.9;
-	hscroll->upper *= 0.9;
-	vscroll->upper *= 0.9;
-	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
-	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
-	do_field = 1;
-	gtk_widget_queue_draw_area(drill, 0, 0, fldstate.width, fldstate.height);
-	*/
 }
 
 
@@ -416,8 +403,7 @@ extern GTimer * timer;
 void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
-	//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
-	gtk_widget_set_size_request(drill, widget->allocation.width, widget->allocation.height);
+	//gtk_widget_set_size_request(drill, widget->allocation.width, widget->allocation.height);
 	gtk_widget_queue_draw_area(drill, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
