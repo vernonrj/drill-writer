@@ -66,8 +66,12 @@ void canvas_apply(cairo_t *cr)
 void canvas_move(GtkWidget *widget, double valuex, double valuey)
 {
 	// move the canvas up, down, left, or right
+	// Move horizontally if specified
 	fldstate.fieldx = fldstate.fieldx + valuex;
+	// move vertically if specified
 	fldstate.fieldy = fldstate.fieldy + valuey;
+
+	// Bounds checking
 	if (fldstate.fieldx < 0)
 		fldstate.fieldx = 0;
 	if (fldstate.fieldx + hscroll->page_size > hscroll->upper)
@@ -76,12 +80,16 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 		fldstate.fieldy = 0;
 	if (fldstate.fieldy + vscroll->page_size > vscroll->upper)
 		fldstate.fieldy = vscroll->upper - vscroll->page_size;
+
+	// apply new position
 	hscroll->value = fldstate.fieldx;
 	vscroll->value = fldstate.fieldy;
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
 	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
+	// redraw canvas
 	do_field = 1;
 	gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
+
 	return;
 }
 
