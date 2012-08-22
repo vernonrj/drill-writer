@@ -68,7 +68,6 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	// move the canvas up, down, left, or right
 	fldstate.fieldx = fldstate.fieldx + valuex;
 	fldstate.fieldy = fldstate.fieldy + valuey;
-	/*
 	if (fldstate.fieldx < 0)
 		fldstate.fieldx = 0;
 	if (fldstate.fieldx + hscroll->page_size > hscroll->upper)
@@ -77,7 +76,6 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 		fldstate.fieldy = 0;
 	if (fldstate.fieldy + vscroll->page_size > vscroll->upper)
 		fldstate.fieldy = vscroll->upper - vscroll->page_size;
-	*/
 	hscroll->value = fldstate.fieldx;
 	vscroll->value = fldstate.fieldy;
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
@@ -567,16 +565,6 @@ int draw_selected(GtkWidget *widget)
 	// get set information
 	sets = pshow->sets;
 	currset = sets->currset;
-	/*
-	prevset = sets->prevset;
-	nextset = currset->next;
-	// get coord information
-	coords = currset->coords;
-	if (nextset != NULL)
-		ncoords = nextset->coords;
-	else
-		ncoords = 0;
-	*/
 	// get select information
 	select = pstate.select;
 	while (select != NULL)
