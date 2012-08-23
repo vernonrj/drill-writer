@@ -583,6 +583,7 @@ int buildIfacegtk(void)
 	//gtk_widget_show(media_box);
 	gtk_widget_show_all (window);
 	//gtk_widget_grab_focus(scrolled_window);
+	gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
 	gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
 
 	return 0;
