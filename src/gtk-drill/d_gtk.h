@@ -11,7 +11,7 @@
 #include <cairo.h>
 #include <glib-object.h>
 #include <gdk/gdkkeysyms.h>
-GtkWidget *mybox;
+GtkWidget *mybox;		// container for drill and scrollbars
 
 GtkWidget *window;		// container for a show
 GtkWidget *drill;		// custom cairo widget
@@ -31,7 +31,7 @@ GtkWidget *menuButton;
 
 GtkAdjustment *hscroll, *vscroll;
 
-double mousex, mousey;
+double mouse_clickx, mouse_clicky;
 struct fieldstate_proto
 {
 	double xoff, yoff;	// field offset
@@ -41,6 +41,8 @@ struct fieldstate_proto
 	double fieldx, fieldy;
 	//double zoom_x, zoom_y;	// zoom size
 	double zoom_amnt;
+	bool mouse_clicked;
+	double mousex, mousey;
 } fldstate;
 
 /*

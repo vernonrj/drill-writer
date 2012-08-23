@@ -41,8 +41,8 @@ void zoom_amnt(double invalue)
 		fldstate.zoom_amnt *= value;
 		hscroll->upper *= value;
 		vscroll->upper *= value;
-		canvas_move(drill, offsetx, offsety);
-		return;
+		//canvas_move(drill, offsetx, offsety);
+		//return;
 	}
 	do_field = 1;
 	gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
@@ -601,6 +601,7 @@ int draw_selected(GtkWidget *widget)
 	struct set_proto *currset;
 	int index;
 	double x, y;
+	double offsetx, offsety;
 
 	cairo_destroy(selected);
 	selected = gdk_cairo_create(widget->window);
@@ -619,6 +620,9 @@ int draw_selected(GtkWidget *widget)
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
 		select = select->next;
+		//if (fldstate.mouse_clicked)
+		//{
+
 	}
 	cairo_stroke(selected);
 	cairo_fill (selected);
@@ -791,6 +795,7 @@ void draw_field (GtkWidget *widget)
 			fldstate.zoom_amnt = 1;
 			fldstate.fieldx = 0;
 			fldstate.fieldy = 0;
+			fldstate.mouse_clicked = false;
 		}
 		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 		field = cairo_create (surface);

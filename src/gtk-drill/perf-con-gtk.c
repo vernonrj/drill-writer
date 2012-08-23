@@ -165,14 +165,14 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				x = event->x;
 				y = event->y;
 				pixel_to_field(&x, &y);
-				mousex = x - mousex;
-				mousey = y - mousey;
+				mouse_clickx = x - mouse_clickx;
+				mouse_clicky = y - mouse_clicky;
 				//printf("event->state == %i\n", event->state);
 				if (event->state == 256)
 				{
-					if ((mousex != 0 || mousey != 0) && !mouse_discarded)
+					if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
-						movexy(mousex, mousey);
+						movexy(mouse_clickx, mouse_clicky);
 						mouse_discarded = 0;
 						//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 						gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
@@ -197,9 +197,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	mouse_discarded = 0;
 	if (event->button == 1)
 	{
-		mousex = event->x;
-		mousey = event->y;
-		pixel_to_field(&mousex, &mousey);
+		mouse_clickx = event->x;
+		mouse_clicky = event->y;
+		pixel_to_field(&mouse_clickx, &mouse_clicky);
 		switch(mouse_currentMode)
 		{
 			case SELECTONE:
@@ -229,8 +229,13 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 							select_dots_add(index);
 						}
 					}
+					else
+					{
+						// hold click
+						fldstate.mouse_clicked = true;
+					}
 				}
-				printf("event = %i\n", event->state);
+				//printf("event = %i\n", event->state);
 				//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
 				gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 				break;
@@ -243,10 +248,13 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				// Add performers by clicking on canvas
 				coordx = event->x;
 				coordy = event->y;
+				pixel_to_field(&coordx, &coordy);
+				/*
 				// Adjust for various canvas offsets
 				coordx = round((coordx-fldstate.xo2)/fldstate.canv_step);
 				//coordy = (coordy-yo2-25)/step;
 				coordy = round((coordy-fldstate.yo2)/fldstate.canv_step);
+				*/
 				index = add_perf();
 				set_coord(pshow, index, coordx, coordy);
 				//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
