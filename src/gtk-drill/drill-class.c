@@ -246,7 +246,7 @@ enum {
 
 static void gtk_drill_class_init(GtkDrillClass *class)
 {
-	printf("ping drill_class_init\n");
+	//printf("ping drill_class_init\n");
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
 	//GtkBindingSet *binding_set;
