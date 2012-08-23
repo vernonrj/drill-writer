@@ -11,6 +11,7 @@
 #include <cairo.h>
 #include <glib-object.h>
 #include <gdk/gdkkeysyms.h>
+GtkWidget *mybox;
 
 GtkWidget *window;		// container for a show
 GtkWidget *drill;		// custom cairo widget
