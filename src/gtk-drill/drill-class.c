@@ -21,19 +21,28 @@ void zoom_amnt(double invalue)
 {
 	// for now, just zoom relative
 	double value;
+	double offsetx, offsety;
 	if (!invalue)
 	{
 		value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
 		hscroll->upper /= value;
 		vscroll->upper /= value;
+		canvas_move(drill, 0, 0);
+		return;
 	}
 	else
 	{
 		value = invalue;
+		offsetx = hscroll->upper;
+		offsety = vscroll->upper;
+		offsetx = (offsetx * (value - 1)) / 2;
+		offsety = (offsety * (value - 1)) / 2;
 		fldstate.zoom_amnt *= value;
 		hscroll->upper *= value;
 		vscroll->upper *= value;
+		canvas_move(drill, offsetx, offsety);
+		return;
 	}
 	do_field = 1;
 	gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
