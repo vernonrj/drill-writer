@@ -54,7 +54,7 @@ void zoom_fit(GtkWidget *widget)
 void canvas_apply(cairo_t *cr)
 {
 	// Scale and move canvas to correct amounts
-	
+
 	// scale canvas to correct zoom amount
 	cairo_scale(cr, fldstate.zoom_amnt, fldstate.zoom_amnt);
 	// move canvas to highlight section of field
@@ -89,6 +89,7 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	// redraw canvas
 	do_field = 1;
 	gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
+	//gtk_widget_queue_draw_area(widget, widget->allocation.x, widget->allocation.y, widget->allocation.width, widget->allocation.height);
 
 	return;
 }
@@ -154,6 +155,7 @@ void zoom_standard(GtkWidget *widget)
 {
 	// zoom to 100%
 	fldstate.zoom_amnt = 1;
+	//gtk_widget_queue_draw_area(widget, widget->allocation.x, widget->allocation.y, widget->allocation.width, widget->allocation.height);
 	gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
 }
 
@@ -211,6 +213,14 @@ enum {
 	LAST_SIGNAL
 };
 
+
+enum {
+	PROP_0,
+	PROP_HADJUSTMENT,
+	PROP_VADJUSTMENT,
+	PROP_SHADOW_TYPE
+};
+
 //static guint drill_signals[LAST_SIGNAL] = {0};
 
 
@@ -220,11 +230,13 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	printf("ping drill_class_init\n");
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
+	GObjectClass *gobject_class;
 	//GtkBindingSet *binding_set;
 	//gchar *binder;
 
 	widget_class = (GtkWidgetClass *) class;
 	object_class = (GtkObjectClass *) class;
+	gobject_class = G_OBJECT_CLASS(class);
 	//binding_set = gtk_binding_set_new(binder);
 
 	widget_class->realize = gtk_drill_realize;
@@ -235,27 +247,62 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	widget_class->button_press_event = clicked;
 	widget_class->button_release_event = unclicked;
 	widget_class->scroll_event = zoom_scroll;
-	
+
+
 	object_class->destroy = gtk_drill_destroy;
 	/*
-	drill_signals[DOT_RIGHT] =
-		g_signal_new ("dotright",
-				G_OBJECT_CLASS_TYPE (object_class),
-				G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
-				G_STRUCT_OFFSET (GtkDrillClass, dotright),
+	   drill_signals[DOT_RIGHT] =
+	   g_signal_new ("dotright",
+	   G_OBJECT_CLASS_TYPE (object_class),
+	   G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+	   G_STRUCT_OFFSET (GtkDrillClass, dotright),
+	   NULL, NULL,
+	   g_cclosure_marshal_VOID__VOID,
+	   G_TYPE_NONE, 0);
+	   gtk_binding_entry_add_signal(binding_set, GDK_KEY_D, 0, "dotright", 0);
+
+	   binding_set = gtk_binding_set_by_class(class);
+	   */
+	/*
+	g_object_class_install_property (gobject_class, PROP_HADJUSTMENT, g_param_spec_object ("hadjustment", 
+				//P_("Horizontal adjustment"),
+				NULL,
+				//P_("The GtkAdjustment that determines the values of the horizontal position for this viewport"),
+				NULL,
+				GTK_TYPE_ADJUSTMENT,
+				G_PARAM_CONSTRUCT));
+	//GTK_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+	g_object_class_install_property (gobject_class,
+			PROP_VADJUSTMENT,
+			g_param_spec_object ("vadjustment",
+				//P_("Vertical adjustment"),
+				NULL,
+				//P_("The GtkAdjustment that determines the values of the vertical position for this viewport"),
+				NULL,
+				GTK_TYPE_ADJUSTMENT,
+				G_PARAM_CONSTRUCT));
+
+	widget_class->set_scroll_adjustments_signal =
+		g_signal_new (("set-scroll-adjustments"),
+				G_OBJECT_CLASS_TYPE (gobject_class),
+				G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+				G_STRUCT_OFFSET (GtkViewportClass, set_scroll_adjustments),
 				NULL, NULL,
-				g_cclosure_marshal_VOID__VOID,
-				G_TYPE_NONE, 0);
-	gtk_binding_entry_add_signal(binding_set, GDK_KEY_D, 0, "dotright", 0);
-	
-	binding_set = gtk_binding_set_by_class(class);
-	*/
+				NULL,
+				G_TYPE_NONE, 2,
+				GTK_TYPE_ADJUSTMENT,
+				GTK_TYPE_ADJUSTMENT);
+		// */
+
 }
 
 
 
 static void gtk_drill_init (GtkDrill *drill)
 {
+
+
 	printf("ping drill init\n");
 	drill->sel = 0;
 	//fldstate.zoom_x = 800;
@@ -353,9 +400,9 @@ static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
 
 	//gtk_drill_paint(widget);
 	/*
-	if (pstate.first_time)
-		field_init();
-		*/
+	   if (pstate.first_time)
+	   field_init();
+	   */
 	draw_field(widget);
 	expose_flag=0;
 	// Never EVER explicitly redraw the field from here.
@@ -370,7 +417,7 @@ static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
 static void gtk_drill_paint(GtkWidget *widget)
 {
 	printf("ping paint\n");
-	
+
 	//cairo_t *cr;
 	//cr = gdk_cairo_create(widget->window);
 	//cairo_set_source_rgb(cr, 0, 0, 0);
@@ -384,7 +431,7 @@ static void gtk_drill_destroy(GtkObject *object)
 {
 	//GtkDrill *drill;
 	GtkDrillClass *klass;
-	
+
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_DRILL(object));
 
@@ -412,7 +459,9 @@ void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
 	//gtk_widget_set_size_request(drill, widget->allocation.width, widget->allocation.height);
-	gtk_widget_queue_draw_area(drill, 0, 0, widget->allocation.width, widget->allocation.height);
+	gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
+	//gtk_widget_queue_draw_area(widget, widget->allocation.x, widget->allocation.y, widget->allocation.width, widget->allocation.height);
+	//gtk_widget_queue_draw_area(drill, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
 
@@ -435,7 +484,7 @@ int field_init(void)
 void def_canvas (GtkWidget *widget)
 {
 	// define the canvas
-	
+
 	double c_width;
 	double c_height;
 	//double z_x;
@@ -483,7 +532,7 @@ void def_canvas (GtkWidget *widget)
 	fldstate.yoff = fldstate.yoff + (fldstate.height - c_height);
 	fldstate.xo2 = fldstate.xoff / 2;
 	fldstate.yo2 = fldstate.yoff / 2;
-	
+
 	return;
 }
 
@@ -512,7 +561,7 @@ int pixel_to_field(double *x_r, double *y_r)
 	double x, y;
 	x = *x_r;
 	y = *y_r;
-	
+
 	x = x / fldstate.zoom_amnt;
 	y = y / fldstate.zoom_amnt;
 
@@ -805,7 +854,7 @@ void draw_field (GtkWidget *widget)
 			cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
 			cairo_stroke (field);
 
-			
+
 			// Split Yardlines
 			if (i<((int)fldstate.xo2+(int)fldstate.canv_step*160))
 			{
@@ -820,7 +869,7 @@ void draw_field (GtkWidget *widget)
 					{	// 1-step yardlines
 						cairo_move_to (gaks, j, fldstate.height-yheight-fldstate.yo2);
 						cairo_line_to (gaks, j, yheight+fldstate.yo2);
-						
+
 						cairo_move_to (gaks, j+fldstate.canv_step*5, fldstate.height-yheight-fldstate.yo2);
 						cairo_line_to (gaks, j+fldstate.canv_step*5, yheight+fldstate.yo2);
 					}
@@ -844,7 +893,7 @@ void draw_field (GtkWidget *widget)
 					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
 					cairo_move_to (gaks, i+(int)fldstate.canv_step*4, fldstate.height-yheight-fldstate.yo2);
 					cairo_line_to (gaks, i+(int)fldstate.canv_step*4, yheight+fldstate.yo2);
-					
+
 					for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=4*(int)fldstate.canv_step)
 					{	// 4-Step Gaks
 						cairo_move_to (gaks, i, j);
@@ -861,7 +910,7 @@ void draw_field (GtkWidget *widget)
 	// Cleanup
 	// Show the dots
 	draw_dots(widget);
-	
+
 	// Make sure field won't be redrawn by default
 	do_field = 0;
 	update_entries();

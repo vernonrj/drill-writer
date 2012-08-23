@@ -161,10 +161,20 @@ static gboolean msel_buttonsel(GtkWidget *widget, GdkEvent *event)
 */
 
 
+void scrollbar_scroll(GtkWidget *widget)
+{
+	hscroll = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+	vscroll = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+	canvas_move(widget, (hscroll->value-fldstate.fieldx), (vscroll->value-fldstate.fieldy));
+
+
+	return;
+}
 
 
 int buildIfacegtk(void)
 {
+	GtkWidget *hscrollbar, *vscrollbar;
 	// Build the Gtk Interface
 	GtkActionGroup *action_group;	// menus
 	GtkUIManager *menu_manager;	// menus
@@ -183,6 +193,8 @@ int buildIfacegtk(void)
 	//GtkWidget *item;
 	// statusbar
 	gchar *sbinfo;
+
+	GtkWidget *mybox;
 
 	//GtkWidget *mediabar;
 
@@ -518,6 +530,11 @@ int buildIfacegtk(void)
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	hscroll = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
 	vscroll = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+	//vscroll = gtk_adjustment_new(0.0, 0.0, 100.0, 1.0, 1.0, 1.0);
+	//vscrollbar = gtk_vscrollbar_new(vscroll);
+	//vscroll->value = 10.0;
+	g_signal_connect(vscroll, "value_changed",
+			G_CALLBACK(scrollbar_scroll), NULL);
 	//gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
@@ -531,15 +548,28 @@ int buildIfacegtk(void)
 
 	// get and pack canvas
 	drill = gtk_drill_new();
-	gtk_widget_set_size_request(drill, 801, 486);
-	gtk_scrolled_window_add_with_viewport(
-			GTK_SCROLLED_WINDOW(scrolled_window), drill);
+	//gtk_widget_set_size_request(drill, 801, 486);
+	/*
+	mybox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mybox), (GtkWidget*)drill, FALSE, FALSE, 0);
+	gtk_widget_show(mybox);
+	*/
+
+	gtk_widget_set_size_request(drill, 800, 400);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), drill);
+	//gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), mybox);
+	//gtk_container_add(GTK_CONTAINER(scrolled_window), drill);
 	//g_signal_connect(window, "button-press-event", G_CALLBACK(clicked), NULL);
 	// draw the field the first time
 	do_field = 1;
 	do_dots = 1;
 	do_selected = 1;
 	gtk_widget_show(drill);
+	/*
+	vscrollbar = gtk_vscrollbar_new(vscroll);
+	gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
+	gtk_widget_show(vscrollbar);
+	*/
 	
 	perfbar = dr_perfbar_new();
 
