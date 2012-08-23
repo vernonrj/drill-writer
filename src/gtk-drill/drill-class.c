@@ -32,6 +32,8 @@ void zoom_amnt(double invalue)
 		//vscroll->upper /= value;
 		fldstate.fieldx = 0;
 		fldstate.fieldy = 0;
+		gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
+		gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
 		canvas_move(drill, 0, 0);
 		return;
 	}
@@ -49,8 +51,10 @@ void zoom_amnt(double invalue)
 		offsety = (offsety * (value - 1)) / 2;
 		hscroll->page_size /= value;
 		vscroll->page_size /= value;
-		//canvas_move(drill, offsetx, offsety);
-		//return;
+		canvas_move(drill, offsetx, offsety);
+		gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
+		gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
+		return;
 	}
 	do_field = 1;
 	gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
@@ -362,8 +366,8 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 				allocation->width, allocation->height
 				);
 	}
-	gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, allocation->width / 10, allocation->width / 10 * 9, hscroll->page_size);
-	gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, allocation->height / 10, allocation->height / 10 * 9, vscroll->page_size);
+	gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, hscroll->page_size / 10, allocation->width / 10 * 9, hscroll->page_size);
+	gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, vscroll->page_size / 10, allocation->height / 10 * 9, vscroll->page_size);
 }
 
 
