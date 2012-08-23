@@ -553,6 +553,8 @@ int buildIfacegtk(void)
 	//vscroll->value = 10.0;
 	g_signal_connect(vscroll, "value_changed",
 			G_CALLBACK(scrollbar_scroll), NULL);
+	g_signal_connect(vscroll, "changed",
+			G_CALLBACK(scrollbar_scroll), NULL);
 
 	
 	perfbar = dr_perfbar_new();
