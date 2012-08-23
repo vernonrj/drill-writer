@@ -450,16 +450,17 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 
 	coordx = event->x;
 	coordy = event->y;
-	pixel_to_field(&coordx, &coordy);
-	// store mouse event
 	fldstate.mousex = coordx;
 	fldstate.mousey = coordy;
+	pixel_to_field(&coordx, &coordy);
+	// store mouse event
 	excode = xy_to_relation(&coordx, &coordy, &buffer);
 	if (excode == -1)
 		return FALSE;
 	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id));
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buffer);
 	g_free(buffer);
+	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 
 	return TRUE;
 }

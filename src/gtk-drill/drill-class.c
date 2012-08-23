@@ -620,8 +620,14 @@ int draw_selected(GtkWidget *widget)
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
 		select = select->next;
-		//if (fldstate.mouse_clicked)
-		//{
+		if (fldstate.mouse_clicked)
+		{
+			offsetx = fldstate.mouse_clickx - fldstate.mousex;
+			offsety = fldstate.mouse_clicky - fldstate.mousey;
+			x -= offsetx;
+			y -= offsety;
+			drawing_method(selected, x, y);
+		}
 
 	}
 	cairo_stroke(selected);

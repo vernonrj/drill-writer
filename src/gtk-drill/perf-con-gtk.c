@@ -181,6 +181,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				break;
 		}
 	}
+	fldstate.mouse_clicked = false;
 	return TRUE;
 }
 
@@ -199,6 +200,8 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	{
 		mouse_clickx = event->x;
 		mouse_clicky = event->y;
+		fldstate.mouse_clickx = mouse_clickx;
+		fldstate.mouse_clicky = mouse_clicky;
 		pixel_to_field(&mouse_clickx, &mouse_clicky);
 		switch(mouse_currentMode)
 		{
