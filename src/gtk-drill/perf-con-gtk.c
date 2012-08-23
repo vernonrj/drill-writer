@@ -200,9 +200,9 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	{
 		mouse_clickx = event->x;
 		mouse_clicky = event->y;
+		pixel_to_field(&mouse_clickx, &mouse_clicky);
 		fldstate.mouse_clickx = mouse_clickx;
 		fldstate.mouse_clicky = mouse_clicky;
-		pixel_to_field(&mouse_clickx, &mouse_clicky);
 		switch(mouse_currentMode)
 		{
 			case SELECTONE:

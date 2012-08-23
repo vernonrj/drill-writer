@@ -601,6 +601,7 @@ int draw_selected(GtkWidget *widget)
 	struct set_proto *currset;
 	int index;
 	double x, y;
+	double xfield, yfield;
 	double offsetx, offsety;
 
 	cairo_destroy(selected);
@@ -617,6 +618,8 @@ int draw_selected(GtkWidget *widget)
 	{
 		index = select->index;
 		retr_midset(currset, index, &x, &y);
+		xfield = x;
+		yfield = y;
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
 		select = select->next;
@@ -624,9 +627,10 @@ int draw_selected(GtkWidget *widget)
 		{
 			offsetx = fldstate.mouse_clickx - fldstate.mousex;
 			offsety = fldstate.mouse_clicky - fldstate.mousey;
-			x -= offsetx;
-			y -= offsety;
-			drawing_method(selected, x, y);
+			xfield -= offsetx;
+			yfield -= offsety;
+			field_to_pixel(&xfield, &yfield);
+			drawing_method(selected, xfield, yfield);
 		}
 
 	}
