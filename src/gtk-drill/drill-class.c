@@ -40,8 +40,8 @@ void zoom_amnt(double invalue)
 	//gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window), hscroll);
 	//gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
 	do_field = 1;
-	//gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
-	gtk_widget_queue_draw_area(drill, 0, 0, drill->allocation.width, drill->allocation.height);
+	//gtk_widget_queue_draw_area(drill, 0, 0, drill->allocation.width, drill->allocation.height);
+	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	return;
 }
 
@@ -89,8 +89,8 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	//gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window), vscroll);
 	// redraw canvas
 	do_field = 1;
-	//gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
-	gtk_widget_queue_draw_area(drill, 0, 0, mybox->allocation.width, mybox->allocation.height);
+	//gtk_widget_queue_draw_area(drill, 0, 0, mybox->allocation.width, mybox->allocation.height);
+	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 
 	return;
 }
@@ -156,8 +156,8 @@ void zoom_standard(GtkWidget *widget)
 {
 	// zoom to 100%
 	fldstate.zoom_amnt = 1;
-	gtk_widget_queue_draw_area(drill, 0, 0, drill->allocation.width, drill->allocation.height);
-	//gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
+	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+	//gtk_widget_queue_draw_area(drill, 0, 0, drill->allocation.width, drill->allocation.height);
 }
 
 
@@ -459,10 +459,8 @@ extern GTimer * timer;
 void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
-	//gtk_widget_set_size_request(drill, widget->allocation.width, widget->allocation.height);
-	//gtk_widget_queue_draw_area(scrolled_window, scrolled_window->allocation.x, scrolled_window->allocation.y, scrolled_window->allocation.width, scrolled_window->allocation.height);
-	//gtk_widget_queue_draw_area(widget, widget->allocation.x, widget->allocation.y, widget->allocation.width, widget->allocation.height);
-	gtk_widget_queue_draw_area(drill, 0, 0, drill->allocation.width, drill->allocation.height);
+	//gtk_widget_queue_draw_area(drill, 0, 0, drill->allocation.width, drill->allocation.height);
+	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 }
 
 
