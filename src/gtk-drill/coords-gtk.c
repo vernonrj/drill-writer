@@ -446,18 +446,11 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	// caught a mouse movement event
 	double coordx, coordy;
 	gchar *buffer;
-	double xo2, yo2;
-	double step;
 	int excode;
-	xo2 = fldstate.xo2;
-	yo2 = fldstate.yo2;
-	step = fldstate.canv_step;
 
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
-	//coordx = (coordx-xo2)/step;
-	//coordy = (coordy-yo2)/step;
 	excode = xy_to_relation(&coordx, &coordy, &buffer);
 	if (excode == -1)
 		return FALSE;

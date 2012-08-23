@@ -72,7 +72,7 @@ int do_field;			// whether or not to redraw field
 int do_dots;
 int do_selected;
 int set_step;
-int expose_flag;
+//int expose_flag;
 int perf_cur;	// current selected performer
 // check to make sure void surface isn't destroyed
 

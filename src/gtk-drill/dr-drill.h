@@ -60,7 +60,7 @@ void draw_field (GtkWidget *widget);
 void zoom_amnt(double invalue);
 void canvas_apply(cairo_t *cr);
 void canvas_move(GtkWidget *widget, double valuex, double valuey);
-gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event);
+gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event);
 void zoom_in(GtkWidget *widget);
 void zoom_out(GtkWidget *widget);
 void zoom_standard(GtkWidget *widget);

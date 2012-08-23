@@ -129,7 +129,7 @@ gboolean play_show (GtkWidget *widget)
 	struct set_proto *nextset;
 	int local_tempo = pshow->currtempo->tempo;
 	time_elapsed = g_timer_elapsed(timer, &dumb_API);
-	if (pstate.playing == 1 && time_elapsed >= (double)60/(double)local_tempo && !expose_flag)
+	if (pstate.playing == 1 && time_elapsed >= (double)60/(double)local_tempo)// && !expose_flag)
 	{	
 		//set_step++;
 		pstate.curr_step++;
@@ -146,7 +146,7 @@ gboolean play_show (GtkWidget *widget)
 			}
 		}
 		//g_print("width=%i\theight=%i\n", width, height);
-		expose_flag =1;
+		//expose_flag =1;
 		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, 
 				drill->allocation.width, drill->allocation.height);
 		//g_print("Play_show %i %i %i\n", setnum, set_step, playing);
