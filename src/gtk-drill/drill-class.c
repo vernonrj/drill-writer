@@ -107,11 +107,19 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 	{
 		if (event->state == 0)
 		{
+			// no modifiers
 			// move up
 			canvas_move(widget, 0.0, -1*vscroll->step_increment);
 		}
-		else
+		else if (event->state == 1)
 		{
+			// shift modifier
+			// move left
+			canvas_move(widget, -1*hscroll->step_increment, 0.0);
+		}
+		else if (event->state == 4)
+		{
+			// ctrl modifier
 			// zoom in
 			zoom_in(widget);
 		}
@@ -123,8 +131,15 @@ gboolean zoom_scroll(GtkWidget *widget, GdkEventScroll *event)
 			// move down
 			canvas_move(widget, 0.0, vscroll->step_increment);
 		}
-		else
+		else if (event->state == 1)
 		{
+			// shift modifier
+			// move right
+			canvas_move(widget, hscroll->step_increment, 0.0);
+		}
+		else if (event->state == 4)
+		{
+			// ctrl modifier
 			// zoom out
 			zoom_out(widget);
 		}
