@@ -26,21 +26,29 @@ void zoom_amnt(double invalue)
 	{
 		value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
-		hscroll->upper /= value;
-		vscroll->upper /= value;
+		hscroll->page_size = hscroll->upper;
+		vscroll->page_size = vscroll->upper;
+		//hscroll->upper /= value;
+		//vscroll->upper /= value;
+		fldstate.fieldx = 0;
+		fldstate.fieldy = 0;
 		canvas_move(drill, 0, 0);
 		return;
 	}
 	else
 	{
 		value = invalue;
-		offsetx = hscroll->upper;
-		offsety = vscroll->upper;
+		fldstate.zoom_amnt *= value;
+		//offsetx = hscroll->upper;
+		//offsety = vscroll->upper;
+		//hscroll->upper *= value;
+		//vscroll->upper *= value;
+		offsetx = hscroll->page_size;
+		offsety = vscroll->page_size;
 		offsetx = (offsetx * (value - 1)) / 2;
 		offsety = (offsety * (value - 1)) / 2;
-		fldstate.zoom_amnt *= value;
-		hscroll->upper *= value;
-		vscroll->upper *= value;
+		hscroll->page_size /= value;
+		vscroll->page_size /= value;
 		//canvas_move(drill, offsetx, offsety);
 		//return;
 	}
@@ -67,7 +75,8 @@ void canvas_apply(cairo_t *cr)
 	cairo_scale(cr, fldstate.zoom_amnt, fldstate.zoom_amnt);
 	// move canvas to highlight section of field
 	// note: for some reason, (x,y) must be negated to translate correctly
-	cairo_translate(cr, -1*fldstate.fieldx, -1*fldstate.fieldy);
+	//cairo_translate(cr, -1*fldstate.fieldx, -1*fldstate.fieldy);
+	cairo_translate(cr, -1*hscroll->value, -1*vscroll->value);
 	return;
 }
 
@@ -75,13 +84,23 @@ void canvas_apply(cairo_t *cr)
 
 void canvas_move(GtkWidget *widget, double valuex, double valuey)
 {
+	double fieldx, fieldy;
 	// move the canvas up, down, left, or right
 	// Move horizontally if specified
-	fldstate.fieldx = fldstate.fieldx + valuex;
+	fieldx = hscroll->value + valuex;
 	// move vertically if specified
-	fldstate.fieldy = fldstate.fieldy + valuey;
+	fieldy = vscroll->value + valuey;
 
 	// Bounds checking
+	if (fieldx < 0)
+		fieldx = 0;
+	if (fieldx + hscroll->page_size > hscroll->upper)
+		fieldx = hscroll->upper - hscroll->page_size;
+	if (fieldy < 0)
+		fieldy = 0;
+	if (fieldy + vscroll->page_size > vscroll->upper)
+		fieldy = vscroll->upper - vscroll->page_size;
+	/*
 	if (fldstate.fieldx < 0)
 		fldstate.fieldx = 0;
 	if (fldstate.fieldx + hscroll->page_size > hscroll->upper)
@@ -90,10 +109,13 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 		fldstate.fieldy = 0;
 	if (fldstate.fieldy + vscroll->page_size > vscroll->upper)
 		fldstate.fieldy = vscroll->upper - vscroll->page_size;
+		*/
 
 	// apply new position
-	hscroll->value = fldstate.fieldx;
-	vscroll->value = fldstate.fieldy;
+	hscroll->value = fieldx;
+	vscroll->value = fieldy;
+	fldstate.fieldx = fieldx;
+	fldstate.fieldy = fieldy;
 	// redraw canvas
 	do_field = 1;
 	gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
@@ -340,6 +362,8 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 				allocation->width, allocation->height
 				);
 	}
+	gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, allocation->width / 10, allocation->width / 10 * 9, hscroll->page_size);
+	gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, allocation->height / 10, allocation->height / 10 * 9, vscroll->page_size);
 }
 
 
