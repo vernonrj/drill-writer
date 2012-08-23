@@ -525,14 +525,6 @@ int buildIfacegtk(void)
 	hpaned = gtk_hpaned_new();
 	gtk_box_pack_start(GTK_BOX(box0), hpaned, TRUE, TRUE, 0);
 
-	// create field canvas scroll container
-	hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, 100.0, 1.0, 1.0, 1.0);
-	vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, 100.0, 1.0, 1.0, 1.0);
-	vscrollbar = gtk_vscrollbar_new(vscroll);
-	gtk_widget_show(vscrollbar);
-	//vscroll->value = 10.0;
-	g_signal_connect(vscroll, "value_changed",
-			G_CALLBACK(scrollbar_scroll), NULL);
 
 	sidebar = dr_sidebar_new();
 	gtk_paned_add1(GTK_PANED(hpaned), sidebar);
@@ -541,18 +533,27 @@ int buildIfacegtk(void)
 
 	// get and pack canvas
 	drill = gtk_drill_new();
+	gtk_widget_set_size_request(drill, 800, 400);
 	mybox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mybox), (GtkWidget*)drill, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
 	gtk_paned_add2(GTK_PANED(hpaned), mybox);
-	gtk_widget_show(mybox);
-
-	gtk_widget_set_size_request(drill, 800, 400);
 	// draw the field the first time
 	do_field = 1;
 	do_dots = 1;
 	do_selected = 1;
 	gtk_widget_show(drill);
+	gtk_widget_show(mybox);
+
+	// create field canvas scroll container
+	hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
+	vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
+	vscrollbar = gtk_vscrollbar_new(vscroll);
+	gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
+	gtk_widget_show(vscrollbar);
+	//vscroll->value = 10.0;
+	g_signal_connect(vscroll, "value_changed",
+			G_CALLBACK(scrollbar_scroll), NULL);
+
 	
 	perfbar = dr_perfbar_new();
 
@@ -563,49 +564,6 @@ int buildIfacegtk(void)
 	gtk_box_pack_start(GTK_BOX (box0), alignment, FALSE, FALSE, 0);
 
 
-
-	// Media Controls (First, prev, next, last)
-	//box1 = gtk_hbox_new (FALSE, 0);	
-	//gtk_box_pack_start(GTK_BOX (media_box), box1, FALSE, FALSE, 0);
-
-
-
-
-
-	/*
-	label = gtk_label_new ("Performer:");
-	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
-	*/
-
-	/*
-
-
-	label = gtk_label_new ("X:");
-	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
-
-	//sprintf(perf_buf_x, "%g", pshow->sets->currset->coords[perf_cur]->x);
-	sprintf(perf_buf_x, "%g", pstate.center->x);
-	entry_perf_x = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_x), 5);
-	g_signal_connect (entry_perf_x, "activate", G_CALLBACK (xperf_change), entry_perf_x);
-	gtk_entry_set_text (GTK_ENTRY (entry_perf_x), perf_buf_x);
-	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_x), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_x), 4);
-	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf_x, FALSE, TRUE, 0);
-
-	label = gtk_label_new ("Y:");
-	gtk_box_pack_start (GTK_BOX (perfbox), label, FALSE, TRUE, 0);
-
-	//sprintf(perf_buf_y, "%g", pshow->sets->currset->coords[perf_cur]->y);
-	sprintf(perf_buf_y, "%g", pstate.center->y);
-	entry_perf_y = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry_perf_y), 5);
-	g_signal_connect (entry_perf_y, "activate", G_CALLBACK (yperf_change), entry_perf_y);
-	gtk_entry_set_text (GTK_ENTRY (entry_perf_y), perf_buf_y);
-	gtk_entry_set_alignment(GTK_ENTRY (entry_perf_y), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY (entry_perf_y), 4);
-	gtk_box_pack_start (GTK_BOX (perfbox), entry_perf_y, FALSE, TRUE, 0);
-	*/
 
 
 	// status bar
@@ -625,6 +583,7 @@ int buildIfacegtk(void)
 	//gtk_widget_show(media_box);
 	gtk_widget_show_all (window);
 	//gtk_widget_grab_focus(scrolled_window);
+	gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
 
 	return 0;
 }
