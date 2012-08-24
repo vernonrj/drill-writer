@@ -51,9 +51,9 @@ void zoom_amnt(double invalue)
 		offsety = (offsety * (value - 1)) / 2;
 		hscroll->page_size /= value;
 		vscroll->page_size /= value;
-		canvas_move(drill, offsetx, offsety);
 		gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
 		gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
+		canvas_move(drill, offsetx, offsety);
 		return;
 	}
 	do_field = 1;
@@ -91,9 +91,9 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	double fieldx, fieldy;
 	// move the canvas up, down, left, or right
 	// Move horizontally if specified
-	fieldx = hscroll->value + valuex;
+	fieldx = fldstate.fieldx + valuex;
 	// move vertically if specified
-	fieldy = vscroll->value + valuey;
+	fieldy = fldstate.fieldy + valuey;
 
 	// Bounds checking
 	if (fieldx < 0)
@@ -118,11 +118,11 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	// apply new position
 	hscroll->value = fieldx;
 	vscroll->value = fieldy;
-	fldstate.fieldx = fieldx;
-	fldstate.fieldy = fieldy;
 	// redraw canvas
 	do_field = 1;
 	gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
+	fldstate.fieldx = hscroll->value;
+	fldstate.fieldy = vscroll->value;
 
 	return;
 }
