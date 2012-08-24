@@ -366,8 +366,8 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 				allocation->width, allocation->height
 				);
 	}
-	gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, hscroll->page_size / 10, allocation->width / 10 * 9, hscroll->page_size);
-	gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, vscroll->page_size / 10, allocation->height / 10 * 9, vscroll->page_size);
+	gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, allocation->width / 10, allocation->width / 10 * 9, allocation->width);
+	gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, allocation->height / 10, allocation->height / 10 * 9, allocation->height);
 }
 
 

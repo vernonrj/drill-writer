@@ -533,7 +533,8 @@ int buildIfacegtk(void)
 
 	// get and pack canvas
 	drill = gtk_drill_new();
-	gtk_widget_set_size_request(drill, 800, 400);
+	//gtk_widget_set_size_request(drill, 800, 400);
+	gtk_widget_set_size_request(drill, 660, 360);
 	//mybox = gtk_hbox_new(FALSE, 0);
 	mybox = gtk_table_new(2, 2, FALSE);
 	//gtk_box_pack_start(GTK_BOX(mybox), (GtkWidget*)drill, TRUE, TRUE, 0);
