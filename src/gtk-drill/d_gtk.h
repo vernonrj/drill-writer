@@ -30,6 +30,7 @@ GtkWidget *statusbar;
 GtkWidget *menuButton;
 
 GtkAdjustment *hscroll, *vscroll;
+gulong hscroll_id, vscroll_id;
 
 double mouse_clickx, mouse_clicky;
 struct fieldstate_proto

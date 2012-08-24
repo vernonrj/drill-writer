@@ -21,6 +21,9 @@ void zoom_amnt(double invalue)
 	// for now, just zoom relative
 	double value;
 	double offsetx, offsety;
+	double pagex, pagey;
+	g_signal_handler_block(hscroll, hscroll_id);
+	g_signal_handler_block(vscroll, vscroll_id);
 	if (!invalue)
 	{
 		value = fldstate.zoom_amnt;
@@ -32,6 +35,8 @@ void zoom_amnt(double invalue)
 		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
 		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
 		canvas_move(drill, 0, 0);
+		g_signal_handler_unblock(hscroll, hscroll_id);
+		g_signal_handler_unblock(vscroll, vscroll_id);
 		return;
 	}
 	else
@@ -40,15 +45,17 @@ void zoom_amnt(double invalue)
 		fldstate.zoom_amnt *= value;
 		offsetx = hscroll->page_size;
 		offsety = vscroll->page_size;
-		offsetx = (offsetx * (value - 1)) / 2;
-		offsety = (offsety * (value - 1)) / 2;
-		//hscroll->page_size /= value;
-		//vscroll->page_size /= value;
-		hscroll->page_size = hscroll->upper / fldstate.zoom_amnt;
-		vscroll->page_size = vscroll->upper / fldstate.zoom_amnt;
-		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
-		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
+		//hscroll->page_size = hscroll->upper / fldstate.zoom_amnt;
+		//vscroll->page_size = vscroll->upper / fldstate.zoom_amnt;
+		pagex = hscroll->upper / fldstate.zoom_amnt;
+		pagey = vscroll->upper / fldstate.zoom_amnt;
+		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, pagex / 10, pagex / 10 * 9, pagex);
+		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, pagey / 10, pagey / 10 * 9, pagey);
+		offsetx = (offsetx - pagex) / 2;
+		offsety = (offsety - pagey) / 2;
 		canvas_move(drill, offsetx, offsety);
+		g_signal_handler_unblock(hscroll, hscroll_id);
+		g_signal_handler_unblock(vscroll, vscroll_id);
 		return;
 	}
 	do_field = 1;

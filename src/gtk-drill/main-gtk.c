@@ -172,6 +172,13 @@ void scrollbar_scroll(GtkWidget *widget)
 }
 
 
+void scrollbar_unblock(GtkWidget *widget)
+{
+	g_signal_handler_unblock(hscroll, hscroll_id);
+	g_signal_handler_unblock(vscroll, vscroll_id);
+}
+
+
 int buildIfacegtk(void)
 {
 	GtkWidget *hscrollbar, *vscrollbar;
@@ -558,14 +565,12 @@ int buildIfacegtk(void)
 	gtk_widget_show(vscrollbar);
 	gtk_widget_show(hscrollbar);
 	//vscroll->value = 10.0;
-	g_signal_connect(hscroll, "value_changed",
+	hscroll_id = g_signal_connect(hscroll, "value_changed",
 			G_CALLBACK(scrollbar_scroll), NULL);
-	//g_signal_connect(hscroll, "changed",
-	//		G_CALLBACK(scrollbar_scroll), NULL);
-	g_signal_connect(vscroll, "value_changed",
+	vscroll_id = g_signal_connect(vscroll, "value_changed",
 			G_CALLBACK(scrollbar_scroll), NULL);
-	//g_signal_connect(vscroll, "changed",
-	//		G_CALLBACK(scrollbar_scroll), NULL);
+
+
 
 	
 	perfbar = dr_perfbar_new();
