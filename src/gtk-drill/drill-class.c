@@ -25,10 +25,8 @@ void zoom_amnt(double invalue)
 	{
 		value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
-		hscroll->page_size = hscroll->upper;
-		vscroll->page_size = vscroll->upper;
-		//hscroll->upper /= value;
-		//vscroll->upper /= value;
+		hscroll->page_size = fldstate.width;
+		vscroll->page_size = fldstate.height;
 		fldstate.fieldx = 0;
 		fldstate.fieldy = 0;
 		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
@@ -40,16 +38,14 @@ void zoom_amnt(double invalue)
 	{
 		value = invalue;
 		fldstate.zoom_amnt *= value;
-		//offsetx = hscroll->upper;
-		//offsety = vscroll->upper;
-		//hscroll->upper *= value;
-		//vscroll->upper *= value;
 		offsetx = hscroll->page_size;
 		offsety = vscroll->page_size;
 		offsetx = (offsetx * (value - 1)) / 2;
 		offsety = (offsety * (value - 1)) / 2;
-		hscroll->page_size /= value;
-		vscroll->page_size /= value;
+		//hscroll->page_size /= value;
+		//vscroll->page_size /= value;
+		hscroll->page_size = hscroll->upper / fldstate.zoom_amnt;
+		vscroll->page_size = vscroll->upper / fldstate.zoom_amnt;
 		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
 		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
 		canvas_move(drill, offsetx, offsety);
@@ -355,8 +351,10 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 				allocation->width, allocation->height
 				);
 	}
-	gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, allocation->width / 10, allocation->width / 10 * 9, allocation->width);
-	gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, allocation->height / 10, allocation->height / 10 * 9, allocation->height);
+	//gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, allocation->width / 10, allocation->width / 10 * 9, allocation->width);
+	//gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, allocation->height / 10, allocation->height / 10 * 9, allocation->height);
+	//hscroll->upper = allocation->width;
+	//vscroll->upper = allocation->height;
 }
 
 
