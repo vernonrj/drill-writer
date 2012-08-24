@@ -57,12 +57,12 @@ int draw_dots (GtkWidget *widget);
 void draw_field (GtkWidget *widget);
 
 // drill.c
-void zoom_amnt(double invalue);
+void zoom_amnt(double invalue, bool from_mouse);
 void canvas_apply(cairo_t *cr);
 void canvas_move(GtkWidget *widget, double valuex, double valuey);
 gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event);
-void zoom_in(GtkWidget *widget);
-void zoom_out(GtkWidget *widget);
+void zoom_in(GtkWidget *widget, bool from_mouse);
+void zoom_out(GtkWidget *widget, bool from_mouse);
 void zoom_standard(GtkWidget *widget);
 void zoom_fit(GtkWidget *widget);
 GType gtk_drill_get_type(void);

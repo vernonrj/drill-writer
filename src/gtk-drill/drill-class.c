@@ -16,7 +16,7 @@ static void gtk_drill_destroy(GtkObject *object);
 
 
 
-void zoom_amnt(double invalue)
+void zoom_amnt(double invalue, bool from_mouse)
 {
 	// for now, just zoom relative
 	double value;
@@ -47,24 +47,41 @@ void zoom_amnt(double invalue)
 		// where on left side, mouse_x - value = 0
 		// 	on right side, mouse_x - value = page_size
 		value = invalue;
+		// get the old page size
 		offsetx1 = hscroll->upper / fldstate.zoom_amnt;
 		offsety1 = vscroll->upper / fldstate.zoom_amnt;
+		// new zoom factor
 		fldstate.zoom_amnt *= value;
-		//hscroll->page_size = hscroll->upper / fldstate.zoom_amnt;
-		//vscroll->page_size = vscroll->upper / fldstate.zoom_amnt;
+		// new page size
 		page_sizex = hscroll->upper / fldstate.zoom_amnt;
 		page_sizey = vscroll->upper / fldstate.zoom_amnt;
+		// change scrollbars
 		gtk_adjustment_configure(hscroll, fldstate.fieldx, 0.0, fldstate.width, page_sizex / 10, page_sizex / 10 * 9, page_sizex);
 		gtk_adjustment_configure(vscroll, fldstate.fieldy, 0.0, fldstate.height, page_sizey / 10, page_sizey / 10 * 9, page_sizey);
+		// calculate base offset after zoom
 		offsetx2 = (offsetx1 - page_sizex) / 2;
 		offsety2 = (offsety1 - page_sizey) / 2;
-		mousex = fldstate.mousex;
-		mousey = fldstate.mousey;
-		field_to_pixel(&mousex, &mousey);
-		mousex = 2*(mousex - fldstate.fieldx) / offsetx1;
-		mousey = 2*(mousey - fldstate.fieldy) / offsety1;
-		//printf("%g %g\n", mousex, mousey);
+		if (from_mouse)
+		{
+			// get mouse position
+			// use it in canvas offset
+			mousex = fldstate.mousex;
+			mousey = fldstate.mousey;
+			// translate mouse position to pixel values
+			field_to_pixel(&mousex, &mousey);
+			// calculate a mouse offset factor
+			mousex = 2*(mousex - fldstate.fieldx) / offsetx1;
+			mousey = 2*(mousey - fldstate.fieldy) / offsety1;
+		}
+		else
+		{
+			// don't use mouse for zoom offset
+			mousex = 1;
+			mousey = 1;
+		}
+		// offset the canvas after zooming based on mouse position
 		canvas_move(drill, offsetx2*mousex, offsety2*mousey);
+		// release scrollbars
 		g_signal_handler_unblock(hscroll, hscroll_id);
 		g_signal_handler_unblock(vscroll, vscroll_id);
 		return;
@@ -78,7 +95,7 @@ void zoom_amnt(double invalue)
 
 void zoom_fit(GtkWidget *widget)
 {
-	zoom_amnt(0.0);
+	zoom_amnt(0.0, false);
 	return;
 }
 
@@ -154,7 +171,7 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		{
 			// ctrl modifier
 			// zoom in
-			zoom_in(widget);
+			zoom_in(widget, true);
 		}
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
@@ -174,7 +191,7 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		{
 			// ctrl modifier
 			// zoom out
-			zoom_out(widget);
+			zoom_out(widget, true);
 		}
 	}
 	else if (event->direction == GDK_SCROLL_LEFT)
@@ -186,18 +203,18 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 
 
 
-void zoom_in(GtkWidget *widget)
+void zoom_in(GtkWidget *widget, bool from_mouse)
 {
 	// zoom canvas in
-	zoom_amnt(1.1);
+	zoom_amnt(1.1, from_mouse);
 }
 
 
 
-void zoom_out(GtkWidget *widget)
+void zoom_out(GtkWidget *widget, bool from_mouse)
 {
 	// zoom canvas out
-	zoom_amnt(0.9);
+	zoom_amnt(0.9, from_mouse);
 }
 
 
@@ -205,7 +222,7 @@ void zoom_out(GtkWidget *widget)
 void zoom_standard(GtkWidget *widget)
 {
 	// zoom canvas to 100%
-	zoom_amnt(0);
+	zoom_amnt(0, false);
 }
 
 
