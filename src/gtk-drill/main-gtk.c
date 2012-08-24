@@ -534,8 +534,10 @@ int buildIfacegtk(void)
 	// get and pack canvas
 	drill = gtk_drill_new();
 	gtk_widget_set_size_request(drill, 800, 400);
-	mybox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mybox), (GtkWidget*)drill, TRUE, TRUE, 0);
+	//mybox = gtk_hbox_new(FALSE, 0);
+	mybox = gtk_table_new(2, 2, FALSE);
+	//gtk_box_pack_start(GTK_BOX(mybox), (GtkWidget*)drill, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(mybox), (GtkWidget*)drill, 0, 1, 0, 1, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 	gtk_paned_add2(GTK_PANED(hpaned), mybox);
 	// draw the field the first time
 	do_field = 1;
@@ -547,14 +549,22 @@ int buildIfacegtk(void)
 	// create field canvas scroll container
 	hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
 	vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
+	hscrollbar = gtk_hscrollbar_new(hscroll);
 	vscrollbar = gtk_vscrollbar_new(vscroll);
-	gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
+	//gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(mybox), vscrollbar, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK|GTK_FILL, 0, 0);
+	gtk_table_attach(GTK_TABLE(mybox), hscrollbar, 0, 1, 1, 2, GTK_SHRINK|GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_widget_show(vscrollbar);
+	gtk_widget_show(hscrollbar);
 	//vscroll->value = 10.0;
+	g_signal_connect(hscroll, "value_changed",
+			G_CALLBACK(scrollbar_scroll), NULL);
+	//g_signal_connect(hscroll, "changed",
+	//		G_CALLBACK(scrollbar_scroll), NULL);
 	g_signal_connect(vscroll, "value_changed",
 			G_CALLBACK(scrollbar_scroll), NULL);
-	g_signal_connect(vscroll, "changed",
-			G_CALLBACK(scrollbar_scroll), NULL);
+	//g_signal_connect(vscroll, "changed",
+	//		G_CALLBACK(scrollbar_scroll), NULL);
 
 	
 	perfbar = dr_perfbar_new();
