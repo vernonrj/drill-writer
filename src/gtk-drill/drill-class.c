@@ -11,7 +11,6 @@ static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisitio
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation);
 static void gtk_drill_realize(GtkWidget *widget);
 static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
-//static gboolean timer_exec(GtkWidget *window, GtkWidget *widget);
 static void gtk_drill_paint(GtkWidget *widget);
 static void gtk_drill_destroy(GtkObject *object);
 
@@ -104,16 +103,6 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 		fieldy = 0;
 	if (fieldy + vscroll->page_size > vscroll->upper)
 		fieldy = vscroll->upper - vscroll->page_size;
-	/*
-	if (fldstate.fieldx < 0)
-		fldstate.fieldx = 0;
-	if (fldstate.fieldx + hscroll->page_size > hscroll->upper)
-		fldstate.fieldx = hscroll->upper - hscroll->page_size;
-	if (fldstate.fieldy < 0)
-		fldstate.fieldy = 0;
-	if (fldstate.fieldy + vscroll->page_size > vscroll->upper)
-		fldstate.fieldy = vscroll->upper - vscroll->page_size;
-		*/
 
 	// apply new position
 	hscroll->value = fieldx;
@@ -503,8 +492,6 @@ void def_canvas (GtkWidget *widget)
 
 	double c_width;
 	double c_height;
-	//double z_x;
-	//double z_y;
 	// use default values for width and height
 	if (fldstate.width != widget->allocation.width || fldstate.height != widget->allocation.height)
 	{
@@ -513,22 +500,14 @@ void def_canvas (GtkWidget *widget)
 	// update width and height
 	fldstate.width = widget->allocation.width;	// Get the width
 	fldstate.height = widget->allocation.height;	// Get the height
-	//fldstate.width = scrolled_window->allocation.width;	// Get the width
-	//fldstate.height = scrolled_window->allocation.height;	// Get the height
-	//z_x = 100 * width / (double)scrolled_window->allocation.width;
-	//z_y = 100 * height / (double)scrolled_window->allocation.height;
 	c_width = fldstate.width;
 	c_height = fldstate.height;
-	//c_width = 801;
-	//c_height = 426;
-	//printf("width=%g\theight=%g\tstep=%g\n", width, height, fldstate.canv_step);
 	fldstate.xoff = (int)c_width % 160; 		// extra margin for the width
 	if (!fldstate.xoff)	// need some margin
 		fldstate.xoff = (int)(c_width-1) % 160;
 	fldstate.xo2 = fldstate.xoff / 2;			// half of the offset
 	fldstate.canv_step = (c_width-fldstate.xoff) / 160;	// length of one 8:5 step
 	yheight = fldstate.canv_step * 85;		// height of the field
-	//printf("yheight = %g height = %g\n", yheight, height);
 	if (yheight > c_height)
 	{	// limiting factor is height, adjust
 		fldstate.yoff = (int)c_height % 85;
@@ -676,26 +655,13 @@ int draw_dots (GtkWidget *widget)
 	// set containers
 	struct set_proto *currset;	
 	struct set_proto *lastset;
-	//struct set_proto *prevset;
-	//struct set_proto *nextset;
 	// performer container
 	struct perf_proto **perf;
-	// coordinate containers
-	//struct coord_proto *coords;
 	// coordinates
 	double x, y;	// x and y location
-	//double xcalc, ycalc;
-	//double xprev, yprev;
 	// canvases
-	//cairo_t *dots;	// context for all dots
-	//cairo_t *selected; // this will eventually have a struct to get dots
-	//cairo_surface_t *field_surface;
-	//cairo_surface_t *bak_surface;
 	struct select_proto *selects;
 	int was_selected;
-
-	// Generate field
-	//def_canvas(widget);
 
 	if (do_dots)
 	{
@@ -703,7 +669,6 @@ int draw_dots (GtkWidget *widget)
 		cairo_destroy(surface_write);
 		surface_write = gdk_cairo_create(widget->window);
 
-		//cairo_set_source_surface(surface_write, field_surface, 1, 1);
 		cairo_set_source_surface(surface_write, surface, 1, 1);
 		cairo_paint (surface_write);
 
@@ -718,7 +683,6 @@ int draw_dots (GtkWidget *widget)
 		// grab sets from data structure
 		currset = pshow->sets->currset;
 		lastset = currset->next;
-		//prevset = pshow->sets->prevset;
 		perf = pshow->perfs;
 
 
@@ -730,8 +694,6 @@ int draw_dots (GtkWidget *widget)
 		}
 		else
 			cairo_set_source_rgb(dots, 0, 0, 0);
-		// get previous set
-		//prevset = pshow->sets->prevset;
 		// get first selected dot
 		selects = pstate.select;
 		// draw performers at certain point
@@ -789,7 +751,6 @@ int draw_dots (GtkWidget *widget)
 			draw_selected(widget);
 		do_dots = 0;
 	}
-	//cairo_surface_destroy(field_surface);
 	return 0;
 }
 
@@ -806,7 +767,6 @@ void draw_field (GtkWidget *widget)
 	double x_bear;		// text centering
 	//double y_bear;		// text centering
 	cairo_text_extents_t te;
-	//cairo_font_options_t *fopts;
 
 
 	def_canvas(widget);	// Refresh dimensions and such
@@ -920,7 +880,6 @@ void draw_field (GtkWidget *widget)
 				if (fldstate.width-fldstate.xo2 > 600)
 				{
 					// 4-step X
-					//cairo_set_source_rgb(gaks, 0.5, 0.5, 0.5);
 					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
 					cairo_move_to (gaks, i+(int)fldstate.canv_step*4, fldstate.height-yheight-fldstate.yo2);
 					cairo_line_to (gaks, i+(int)fldstate.canv_step*4, yheight+fldstate.yo2);
@@ -935,8 +894,6 @@ void draw_field (GtkWidget *widget)
 				}
 			}
 		}
-		// Maybe I can write this to a pixmap instead...
-		//cairo_surface_write_to_png(surface, "field.png");
 	}
 	// Cleanup
 	// Show the dots
