@@ -20,8 +20,10 @@ void zoom_amnt(double invalue)
 {
 	// for now, just zoom relative
 	double value;
-	double offsetx, offsety;
-	double pagex, pagey;
+	double offsetx1, offsety1;
+	double offsetx2, offsety2;
+	double page_sizex, page_sizey;
+	double mousex, mousey;
 	g_signal_handler_block(hscroll, hscroll_id);
 	g_signal_handler_block(vscroll, vscroll_id);
 	if (!invalue)
@@ -41,19 +43,28 @@ void zoom_amnt(double invalue)
 	}
 	else
 	{
+		// ((mouse_x - value) / page_size) * offset
+		// where on left side, mouse_x - value = 0
+		// 	on right side, mouse_x - value = page_size
 		value = invalue;
+		offsetx1 = hscroll->upper / fldstate.zoom_amnt;
+		offsety1 = vscroll->upper / fldstate.zoom_amnt;
 		fldstate.zoom_amnt *= value;
-		offsetx = hscroll->page_size;
-		offsety = vscroll->page_size;
 		//hscroll->page_size = hscroll->upper / fldstate.zoom_amnt;
 		//vscroll->page_size = vscroll->upper / fldstate.zoom_amnt;
-		pagex = hscroll->upper / fldstate.zoom_amnt;
-		pagey = vscroll->upper / fldstate.zoom_amnt;
-		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, pagex / 10, pagex / 10 * 9, pagex);
-		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, pagey / 10, pagey / 10 * 9, pagey);
-		offsetx = (offsetx - pagex) / 2;
-		offsety = (offsety - pagey) / 2;
-		canvas_move(drill, offsetx, offsety);
+		page_sizex = hscroll->upper / fldstate.zoom_amnt;
+		page_sizey = vscroll->upper / fldstate.zoom_amnt;
+		gtk_adjustment_configure(hscroll, fldstate.fieldx, 0.0, fldstate.width, page_sizex / 10, page_sizex / 10 * 9, page_sizex);
+		gtk_adjustment_configure(vscroll, fldstate.fieldy, 0.0, fldstate.height, page_sizey / 10, page_sizey / 10 * 9, page_sizey);
+		offsetx2 = (offsetx1 - page_sizex) / 2;
+		offsety2 = (offsety1 - page_sizey) / 2;
+		mousex = fldstate.mousex;
+		mousey = fldstate.mousey;
+		field_to_pixel(&mousex, &mousey);
+		mousex = 2*(mousex - fldstate.fieldx) / offsetx1;
+		mousey = 2*(mousey - fldstate.fieldy) / offsety1;
+		//printf("%g %g\n", mousex, mousey);
+		canvas_move(drill, offsetx2*mousex, offsety2*mousey);
 		g_signal_handler_unblock(hscroll, hscroll_id);
 		g_signal_handler_unblock(vscroll, vscroll_id);
 		return;
