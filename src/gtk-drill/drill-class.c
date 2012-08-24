@@ -32,8 +32,8 @@ void zoom_amnt(double invalue)
 		//vscroll->upper /= value;
 		fldstate.fieldx = 0;
 		fldstate.fieldy = 0;
-		gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
-		gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
+		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
+		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
 		canvas_move(drill, 0, 0);
 		return;
 	}
@@ -51,8 +51,8 @@ void zoom_amnt(double invalue)
 		offsety = (offsety * (value - 1)) / 2;
 		hscroll->page_size /= value;
 		vscroll->page_size /= value;
-		gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
-		gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
+		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
+		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
 		canvas_move(drill, offsetx, offsety);
 		return;
 	}
