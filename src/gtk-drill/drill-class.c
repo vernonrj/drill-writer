@@ -643,7 +643,14 @@ int draw_selected(GtkWidget *widget)
 	select_drag = gdk_cairo_create(widget->window);
 	canvas_apply(select_drag);
 	cairo_set_line_width(select_drag, 1.5);
-	cairo_set_source_rgb(select_drag, 1, 0.5, 0.5);
+	cairo_set_source_rgba(select_drag, 1, 0, 0, 0.5);
+
+
+	cairo_destroy(selected_area);
+	selected_area = gdk_cairo_create(widget->window);
+	canvas_apply(selected_area);
+	cairo_set_line_width(selected_area, 1.0);
+	cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);
 
 
 	// get set information
@@ -685,12 +692,16 @@ int draw_selected(GtkWidget *widget)
 	if (xmin != xmax || ymin != ymax)
 	{
 		stepoff = 0.75*fldstate.canv_step;
-		cairo_rectangle(select_drag, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
+		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
+		cairo_fill(selected_area);
+		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.5);
+		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
+		cairo_stroke(selected_area);
 	}
 	cairo_stroke(selected);
-	cairo_fill (selected);
+	//cairo_fill (selected);
 	cairo_stroke(select_drag);
-	cairo_fill (select_drag);
+	//cairo_fill (select_drag);
 	do_selected = 0;
 	return 0;
 }
