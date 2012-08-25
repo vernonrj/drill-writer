@@ -5,7 +5,7 @@ void select_dots_discard(void)
 	// remove all dot selections from state
 	pstate.select = select_discard(pstate.select);
 	pstate.selnum = 0;
-	update_sel_center();
+	update_sel_center(pstate.select);
 	return;
 }
 
@@ -30,20 +30,20 @@ select_t *select_discard(select_t *psel)
 	return psel;
 }
 
-void update_sel_center(void)
+void update_sel_center(select_t *last)
 {
 	// update the center of the form based on dot selection
 	// TODO: Use heaps to keep track of max, min values?
 	int index;
 	int selnum = 0;
 	double cx, cy;
-	select_t *last;
+	//select_t *last;
 	coord_t **coords;
 	coord_t *coord;
 
 	cx = 0;
 	cy = 0;
-	last = pstate.select;
+	//last = pstate.select;
 	coords = pshow->sets->currset->coords;
 	while (last)
 	{
@@ -140,7 +140,7 @@ void select_dots_add(int index)
 {
 	// wrapper to add a dot to global selection
 	pstate.select = select_add(pstate.select, index, true);
-	update_sel_center();
+	update_sel_center(pstate.select);
 	return;
 }
 
@@ -279,7 +279,7 @@ select_t *select_all(select_t *selects, perf_t **perfs, int perfnum)
 			selects = select_add(selects, i, true);
 		}
 	}
-	update_sel_center();
+	update_sel_center(selects);
 	return selects;
 }
 
