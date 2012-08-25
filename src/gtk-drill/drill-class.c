@@ -626,8 +626,11 @@ int draw_selected(GtkWidget *widget)
 	struct set_proto *currset;
 	int index;
 	double x, y;
+	double xmin = -1, xmax = -1;
+	double ymin = -1, ymax = -1;
 	double xfield, yfield;
 	double offsetx, offsety;
+	double stepoff;
 
 	cairo_destroy(selected);
 	selected = gdk_cairo_create(widget->window);
@@ -666,8 +669,23 @@ int draw_selected(GtkWidget *widget)
 			yfield -= offsety;
 			field_to_pixel(&xfield, &yfield);
 			drawing_method(select_drag, xfield, yfield);
+			x = xfield;
+			y = yfield;
 		}
+		if (xmin == -1 || x < xmin)
+			xmin = x;
+		if (xmax == -1 || x > xmax)
+			xmax = x;
+		if (ymin == -1 || y < ymin)
+			ymin = y;
+		if (ymax == -1 || y > ymax)
+			ymax = y;
 
+	}
+	if (xmin != xmax || ymin != ymax)
+	{
+		stepoff = 0.75*fldstate.canv_step;
+		cairo_rectangle(select_drag, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
 	}
 	cairo_stroke(selected);
 	cairo_fill (selected);
