@@ -181,7 +181,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				break;
 		}
 	}
-	fldstate.mouse_clicked = false;
+	fldstate.mouse_clicked = 0;
 	return TRUE;
 }
 
@@ -196,6 +196,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 
 
 	mouse_discarded = 0;
+	fldstate.mouse_clicked = 1;
 	if (event->button == 1)
 	{
 		mouse_clickx = event->x;
@@ -235,7 +236,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					else
 					{
 						// hold click
-						fldstate.mouse_clicked = true;
+						fldstate.mouse_clicked = 2;
 					}
 				}
 				//printf("event = %i\n", event->state);

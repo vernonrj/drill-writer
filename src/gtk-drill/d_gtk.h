@@ -42,7 +42,7 @@ struct fieldstate_proto
 	double fieldx, fieldy;
 	//double zoom_x, zoom_y;	// zoom size
 	double zoom_amnt;
-	bool mouse_clicked;
+	int mouse_clicked;
 	double mousex, mousey;
 	double mouse_clickx, mouse_clicky;
 } fldstate;

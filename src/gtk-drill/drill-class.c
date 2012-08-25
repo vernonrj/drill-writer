@@ -667,7 +667,7 @@ int draw_selected(GtkWidget *widget)
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
 		select = select->next;
-		if (fldstate.mouse_clicked)
+		if (fldstate.mouse_clicked == 2)
 		{
 			// show dots being moved
 			offsetx = fldstate.mouse_clickx - fldstate.mousex;
@@ -852,7 +852,7 @@ void draw_field (GtkWidget *widget)
 			fldstate.zoom_amnt = 1;
 			fldstate.fieldx = 0;
 			fldstate.fieldy = 0;
-			fldstate.mouse_clicked = false;
+			fldstate.mouse_clicked = 0;
 		}
 		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 		field = cairo_create (surface);
