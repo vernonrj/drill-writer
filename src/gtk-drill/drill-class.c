@@ -25,7 +25,7 @@ void zoom_amnt(double invalue, bool from_mouse)
 	double mousex, mousey;
 	g_signal_handler_block(hscroll, hscroll_id);
 	g_signal_handler_block(vscroll, vscroll_id);
-	if (!invalue)
+	if (!invalue || (fldstate.zoom_amnt * invalue) < 1)
 	{
 		value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
