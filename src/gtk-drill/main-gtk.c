@@ -1,13 +1,11 @@
 #include "d_gtk.h"
 /* TODO:	Make scrollbar its own class
  * 		Scrolling and zooming are handled in a class
- * TODO:	Check Gtk source (scrollbar?) to see how (x,y) alloc passed
  * TODO:	When in a form, endpoints are black, dynamic dots are grayed out
  * TODO:	Groups and forms will be separate entities.
  * TODO:	Groups can be nested (subgroups, subforms). Accessed on group sidebar
  * 		Forms can be linked (endpt to endpt).
  * TODO:	Handle arc forms like javascript spline example seen.
- * TODO:	Research drag&drop to see if it can be used for moving dots
  * TODO:	Develop pango prototype for integration into program
  * TODO:	Work on open dialog to show only relevent files
  * TODO:	Gray out undo & redo when no undo/redo paths

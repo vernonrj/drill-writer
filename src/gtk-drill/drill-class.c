@@ -1,5 +1,4 @@
 // drill.c
-// TODO: Resizing doesn't change zoom yet
 
 //#include "drill.h"
 #include "d_gtk.h"
