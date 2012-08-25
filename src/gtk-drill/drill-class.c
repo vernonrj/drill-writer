@@ -691,11 +691,27 @@ int draw_selected(GtkWidget *widget)
 	}
 	if (xmin != xmax || ymin != ymax)
 	{
+		// show border for selected dots
 		stepoff = 0.75*fldstate.canv_step;
 		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
 		cairo_fill(selected_area);
 		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.5);
 		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
+		cairo_stroke(selected_area);
+	}
+	else if (fldstate.mouse_clicked == 1)
+	{
+		// show mouse drag select
+		offsetx = fldstate.mouse_clickx;
+		offsety = fldstate.mouse_clicky;
+		xfield = fldstate.mousex;
+		yfield = fldstate.mousey;
+		field_to_pixel(&offsetx, &offsety);
+		field_to_pixel(&xfield, &yfield);
+		cairo_rectangle(selected_area, offsetx, offsety, (xfield-offsetx), (yfield-offsety));
+		cairo_fill(selected_area);
+		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.5);
+		cairo_rectangle(selected_area, offsetx, offsety, (xfield-offsetx), (yfield-offsety));
 		cairo_stroke(selected_area);
 	}
 	cairo_stroke(selected);
