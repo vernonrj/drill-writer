@@ -23,11 +23,14 @@ void zoom_amnt(double invalue, bool from_mouse)
 	double offsetx2, offsety2;
 	double page_sizex, page_sizey;
 	double mousex, mousey;
+	// block scroll signals for scrollbars
+	// while adjusting canvas scaling, scroll amount
 	g_signal_handler_block(hscroll, hscroll_id);
 	g_signal_handler_block(vscroll, vscroll_id);
 	if (!invalue || (fldstate.zoom_amnt * invalue) < 1)
 	{
-		value = fldstate.zoom_amnt;
+		// set zoom to 100%
+		//value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
 		hscroll->page_size = fldstate.width;
 		vscroll->page_size = fldstate.height;
@@ -42,9 +45,7 @@ void zoom_amnt(double invalue, bool from_mouse)
 	}
 	else
 	{
-		// ((mouse_x - value) / page_size) * offset
-		// where on left side, mouse_x - value = 0
-		// 	on right side, mouse_x - value = page_size
+		// zoom and scale the canvas
 		value = invalue;
 		// get the old page size
 		offsetx1 = hscroll->upper / fldstate.zoom_amnt;
@@ -85,8 +86,6 @@ void zoom_amnt(double invalue, bool from_mouse)
 		g_signal_handler_unblock(vscroll, vscroll_id);
 		return;
 	}
-	do_field = 1;
-	gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
 	return;
 }
 
@@ -385,10 +384,6 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 				allocation->width, allocation->height
 				);
 	}
-	//gtk_adjustment_configure(hscroll, 0.0, 0.0, allocation->width, allocation->width / 10, allocation->width / 10 * 9, allocation->width);
-	//gtk_adjustment_configure(vscroll, 0.0, 0.0, allocation->height, allocation->height / 10, allocation->height / 10 * 9, allocation->height);
-	//hscroll->upper = allocation->width;
-	//vscroll->upper = allocation->height;
 }
 
 
@@ -497,7 +492,6 @@ double xstep, yheight;
 void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
-	//gtk_widget_queue_draw_area(drill, 0, 0, drill->allocation.width, drill->allocation.height);
 	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 }
 
@@ -505,6 +499,8 @@ void force_redraw(GtkWidget *widget)
 
 int field_init(void)
 {
+	// initialize the field
+	// currently not used
 	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 	field = cairo_create (surface);
 	gaks = cairo_create (surface);
@@ -520,7 +516,7 @@ int field_init(void)
 
 void def_canvas (GtkWidget *widget)
 {
-	// define the canvas
+	// define the canvas sizing
 
 	double c_width;
 	double c_height;
@@ -554,9 +550,6 @@ void def_canvas (GtkWidget *widget)
 		fldstate.yoff = c_height - yheight;	// y offset
 		fldstate.yo2 = fldstate.yoff / 2;			// half of the offset
 	}
-	// account for zooming
-	fldstate.xoff = fldstate.xoff + (fldstate.width - c_width);
-	fldstate.yoff = fldstate.yoff + (fldstate.height - c_height);
 	fldstate.xo2 = fldstate.xoff / 2;
 	fldstate.yo2 = fldstate.yoff / 2;
 
@@ -615,15 +608,8 @@ int field_to_pixel(double *x_r, double *y_r)
 	x = *x_r;
 	y = *y_r;
 
-	//x = x / fldstate.zoom_amnt;
-	//y = y / fldstate.zoom_amnt;
-
 	x = fldstate.xo2 + fldstate.canv_step * x;
 	y = fldstate.yo2 + fldstate.canv_step * y;
-
-	//x = x - fldstate.fieldx;
-	//y = y - fldstate.fieldy;
-
 
 	*x_r = x;
 	*y_r = y;
@@ -648,6 +634,15 @@ int draw_selected(GtkWidget *widget)
 	canvas_apply(selected);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
+
+
+	cairo_destroy(select_drag);
+	select_drag = gdk_cairo_create(widget->window);
+	canvas_apply(select_drag);
+	cairo_set_line_width(select_drag, 1.5);
+	cairo_set_source_rgb(select_drag, 1, 0.5, 0.5);
+
+
 	// get set information
 	sets = pshow->sets;
 	currset = sets->currset;
@@ -664,17 +659,20 @@ int draw_selected(GtkWidget *widget)
 		select = select->next;
 		if (fldstate.mouse_clicked)
 		{
+			// show dots being moved
 			offsetx = fldstate.mouse_clickx - fldstate.mousex;
 			offsety = fldstate.mouse_clicky - fldstate.mousey;
 			xfield -= offsetx;
 			yfield -= offsety;
 			field_to_pixel(&xfield, &yfield);
-			drawing_method(selected, xfield, yfield);
+			drawing_method(select_drag, xfield, yfield);
 		}
 
 	}
 	cairo_stroke(selected);
 	cairo_fill (selected);
+	cairo_stroke(select_drag);
+	cairo_fill (select_drag);
 	do_selected = 0;
 	return 0;
 }

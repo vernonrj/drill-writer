@@ -44,6 +44,7 @@ cairo_t *gaks;
 cairo_t *fnums;
 cairo_t *dots;		// regular dots
 cairo_t *selected; 	// selected dots
+cairo_t *select_drag;	// dots being dragged by mouse
 cairo_t *surface_write; // field to draw to
 
 // drawfield.c
