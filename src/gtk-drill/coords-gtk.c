@@ -447,16 +447,58 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	double coordx, coordy;
 	gchar *buffer;
 	int excode;
+	select_t *new_select = NULL;
+	select_t *select_added;
+	select_t *select_omitted;
+	select_t *last;
 
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
+	if (fldstate.mouse_clicked == 0x1)
+	{
+		// click drag
+		// get what's currently in selection rectangle
+		new_select = select_add_in_rectangle(new_select, fldstate.mouse_clickx, fldstate.mouse_clicky,
+				coordx, coordy, false);
+		// then find what's been added, what's gone
+		select_added = select_lhs_drop_dups(new_select, fldstate.mouse_selection);
+		select_omitted = select_lhs_drop_dups(fldstate.mouse_selection, new_select);
+		last = new_select;
+		fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
+		while (last)
+		{
+			fldstate.mouse_selection = select_add(fldstate.mouse_selection, last->index, false);
+			last = last->next;
+		}
+		last = select_added;
+		while (last)
+		{
+			pstate.select = select_add(pstate.select, last->index, false);
+			last = last->next;
+			free(select_added);
+			select_added = last;
+		}
+		//last = select_omitted;
+		while (last)
+		{
+			pstate.select = select_add(pstate.select, last->index, true);
+			last = last->next;
+			free(select_omitted);
+			select_omitted = last;
+		}
+		//fldstate.mouse_selection = new_select;
+	}
+	else
+		fldstate.mouse_selection = NULL;
 	fldstate.mousex = coordx;
 	fldstate.mousey = coordy;
 	// store mouse event
 	excode = xy_to_relation(&coordx, &coordy, &buffer);
 	if (excode == -1)
 		return FALSE;
+
+
 	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id));
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buffer);
 	g_free(buffer);

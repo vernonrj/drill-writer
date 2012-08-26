@@ -45,6 +45,7 @@ struct fieldstate_proto
 	int mouse_clicked;
 	double mousex, mousey;
 	double mouse_clickx, mouse_clicky;
+	select_t *mouse_selection;
 } fldstate;
 
 /*

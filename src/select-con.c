@@ -161,7 +161,7 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 		curr = (select_t*)malloc(sizeof(select_t));
 		if (!curr)
 			return NULL;
-		curr->next = 0;
+		curr->next = NULL;
 		curr->index = index;
 		psel = curr;
 		// update selection center
@@ -235,7 +235,99 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 }
 
 
+//select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double xpiv, double ypiv, double x2, double y2, bool toggle)
+select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double x2, double y2, bool toggle)
+{
+	int i;
+	int perfnum = pshow->perfnum;
+	double x, y;
 
+	for (i=0; i<perfnum; i++)
+	{
+		retr_midset(pshow->sets->currset, i, &x, &y);
+		if (dot_in_rectangle(x, y, x1, y1, x2, y2))
+		{
+			if (!is_in_select(i, select))
+				select = select_add(select, i, true);
+		}
+	}
+	return select;
+}
+
+
+select_t *select_lhs_drop_dups(select_t *mainlist, select_t *modifier)
+{
+	// return mainlist's original entries.
+	// Drop everything else
+	select_t *last = mainlist;
+	select_t *inc = modifier;
+
+	select_t *newlist = NULL;
+
+	if (!mainlist)
+		return NULL;
+	if (!modifier)
+		return mainlist;
+
+	while (last && inc)
+	{
+		while (inc->next && inc->index > last->index)
+			inc = inc->next;
+		if (last->index != inc->index)
+			newlist = select_add(newlist, last->index, false);
+		last = last->next;
+	}
+	return newlist;
+}
+
+
+
+
+bool dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2)
+{
+	double xmin, xmax, ymin, ymax;
+	bool chkx, chky;
+	if (x1 < x2)
+	{
+		if (x < x2 && x1 <= x)
+			chkx = true;
+		else
+			chkx = false;
+	}
+	else if (x2 < x1)
+	{
+		if (x <= x1 && x2 < x)
+			chkx = true;
+		else
+			chkx = false;
+	}
+	else
+		chkx = false;
+
+	if (y1 < y2)
+	{
+		if (y < y2 && y1 <= y)
+			chky = true;
+		else
+			chky = false;
+	}
+	else if (y2 < y1)
+	{
+		if (y <= y1 && y2 < y)
+			chky = true;
+		else
+			chky = false;
+	}
+	else
+		chky = false;
+	return (chkx && chky);
+}
+
+
+
+
+
+	
 select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 {
 	// add group to selection

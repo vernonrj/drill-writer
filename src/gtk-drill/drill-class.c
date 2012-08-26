@@ -715,7 +715,7 @@ int draw_selected(GtkWidget *widget)
 		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
 		cairo_stroke(selected_area);
 	}
-	if ((fldstate.mouse_clicked & 0x1) == 0x1)
+	if (fldstate.mouse_clicked == 0x1)
 	{
 		// show selection box
 		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);
@@ -882,6 +882,7 @@ void draw_field (GtkWidget *widget)
 			fldstate.fieldx = 0;
 			fldstate.fieldy = 0;
 			fldstate.mouse_clicked = 0;
+			fldstate.mouse_selection = NULL;
 		}
 		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
 		field = cairo_create (surface);
