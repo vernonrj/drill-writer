@@ -632,6 +632,9 @@ int draw_selected(GtkWidget *widget)
 	double offsetx, offsety;
 	double stepoff;
 
+	double sel_xmin, sel_xmax;
+	double sel_ymin, sel_ymax;
+
 	cairo_destroy(selected);
 	selected = gdk_cairo_create(widget->window);
 	canvas_apply(selected);
@@ -658,6 +661,19 @@ int draw_selected(GtkWidget *widget)
 	currset = sets->currset;
 	// get select information
 	select = pstate.select;
+	if ((fldstate.mouse_clicked & 0x1) == 0x1)
+	{
+		// show mouse drag select
+		sel_xmin = fldstate.mouse_clickx;
+		sel_ymin = fldstate.mouse_clicky;
+		sel_xmax = fldstate.mousex;
+		sel_ymax = fldstate.mousey;
+	}
+	else
+	{
+		sel_xmin = sel_xmax = 0;
+		sel_ymin = sel_ymax = 0;
+	}
 	while (select != NULL)
 	{
 		index = select->index;
@@ -667,7 +683,7 @@ int draw_selected(GtkWidget *widget)
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
 		select = select->next;
-		if (fldstate.mouse_clicked == 2)
+		if ((fldstate.mouse_clicked & 0x2) == 0x2)
 		{
 			// show dots being moved
 			offsetx = fldstate.mouse_clickx - fldstate.mousex;
@@ -699,19 +715,16 @@ int draw_selected(GtkWidget *widget)
 		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
 		cairo_stroke(selected_area);
 	}
-	else if (fldstate.mouse_clicked == 1)
+	if ((fldstate.mouse_clicked & 0x1) == 0x1)
 	{
-		// show mouse drag select
-		offsetx = fldstate.mouse_clickx;
-		offsety = fldstate.mouse_clicky;
-		xfield = fldstate.mousex;
-		yfield = fldstate.mousey;
-		field_to_pixel(&offsetx, &offsety);
-		field_to_pixel(&xfield, &yfield);
-		cairo_rectangle(selected_area, offsetx, offsety, (xfield-offsetx), (yfield-offsety));
+		// show selection box
+		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);
+		field_to_pixel(&sel_xmin, &sel_ymin);
+		field_to_pixel(&sel_xmax, &sel_ymax);
+		cairo_rectangle(selected_area, sel_xmin, sel_ymin, (sel_xmax-sel_xmin), (sel_ymax-sel_ymin));
 		cairo_fill(selected_area);
 		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.5);
-		cairo_rectangle(selected_area, offsetx, offsety, (xfield-offsetx), (yfield-offsety));
+		cairo_rectangle(selected_area, sel_xmin, sel_ymin, (sel_xmax-sel_xmin), (sel_ymax-sel_ymin));
 		cairo_stroke(selected_area);
 	}
 	cairo_stroke(selected);

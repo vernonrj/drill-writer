@@ -156,6 +156,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// handle un-click events on canvas
 	double x, y;
+	int index;
 	if (event->button == 1)
 	{
 		switch(mouse_currentMode)
@@ -170,6 +171,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				//printf("event->state == %i\n", event->state);
 				if (event->state == 256)
 				{
+					// regular click
 					if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
 						movexy(mouse_clickx, mouse_clicky);
@@ -178,10 +180,20 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 						gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 					}
 				}
+				else if (event->state == 260)
+				{
+					// ctrl-click
+					index = checkSelected(widget, event);
+					if (index != -1)
+						select_dots_add(index);
+				}
+
+
 				break;
 		}
 	}
 	fldstate.mouse_clicked = 0;
+	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	return TRUE;
 }
 
@@ -196,7 +208,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 
 
 	mouse_discarded = 0;
-	fldstate.mouse_clicked = 1;
+	fldstate.mouse_clicked = 0x1;
 	if (event->button == 1)
 	{
 		mouse_clickx = event->x;
@@ -209,10 +221,10 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 			case SELECTONE:
 				// select 1 performer
 				index = checkSelected(widget, event);
-				if (event->state == 4 && index != -1)
+				if (event->state == 4)// && index != -1)
 				{
 					// ctrl-click
-					select_dots_add(index);
+					//select_dots_add(index);
 				}
 				else if (event->state == 1 && index != -1)
 				{
@@ -235,8 +247,8 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					}
 					else
 					{
-						// hold click
-						fldstate.mouse_clicked = 2;
+						// hold click; dots being moved
+						fldstate.mouse_clicked |= 0x2;
 					}
 				}
 				//printf("event = %i\n", event->state);

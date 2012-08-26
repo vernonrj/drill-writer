@@ -6,6 +6,8 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebar_sets);
 
 struct _DrSidebarSetsPrivate {
 	GtkWidget *entry_setname;
+	GtkWidget *button_addSet;
+	GtkWidget *button_delSet;
 	GtkWidget *mediabar;
 };
 
@@ -51,6 +53,22 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 	gtk_box_pack_end (GTK_BOX (namebox), entry_setname, FALSE, FALSE, 5);
 	gtk_widget_show(entry_setname);
 	sidebarsets->priv->entry_setname = entry_setname;
+
+	// add set button
+	sidebarsets->priv->button_addSet = gtk_button_new_with_label("Add Set");
+	gtk_box_pack_start(GTK_BOX(sidebarsets), sidebarsets->priv->button_addSet, FALSE, FALSE, 0);
+	g_signal_connect(sidebarsets->priv->button_addSet, "clicked",
+			G_CALLBACK(add_set_gtk), NULL);
+	gtk_widget_show(sidebarsets->priv->button_addSet);
+
+	// delete set button
+	sidebarsets->priv->button_delSet = gtk_button_new_with_label("Delete Set");
+	gtk_box_pack_start(GTK_BOX(sidebarsets), sidebarsets->priv->button_delSet, FALSE, FALSE, 0);
+	g_signal_connect(sidebarsets->priv->button_delSet, "clicked",
+			G_CALLBACK(delete_set_gtk), NULL);
+	gtk_widget_show(sidebarsets->priv->button_delSet);
+
+
 
 	mediabar = dr_mediabar_new();
 	gtk_box_pack_start(GTK_BOX(sidebarsets), mediabar, FALSE, FALSE, 5);

@@ -33,17 +33,6 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	GtkWidget *button;
 	GtkWidget *image;
 
-	playbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mediabar), playbox, FALSE, FALSE, 0);
-
-	// Play
-	button = gtk_button_new_with_label ("Play");
-	g_signal_connect(button, "clicked", G_CALLBACK(queue_show), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image (GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (playbox), button, TRUE, TRUE, 0);
-	gtk_widget_show(button);
-	gtk_widget_show(image);
 
 	/*
 	// Stop
@@ -56,12 +45,24 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	gtk_widget_show(image);
 	*/
 
-	// Play from Start
-	button = gtk_button_new_with_label ("Start");
-	g_signal_connect(button, "clicked", G_CALLBACK(play_show_from_start), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PREVIOUS, GTK_ICON_SIZE_MENU);
+	nextprevbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mediabar), nextprevbox, FALSE, FALSE, 0);
+
+	// Previous Set
+	button = gtk_button_new_with_label ("Prev"); 
+	g_signal_connect(button, "clicked", G_CALLBACK(set_prev_gtk), NULL);
+	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_REWIND, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_end(GTK_BOX (playbox), button, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX (nextprevbox), button, TRUE, TRUE, 0);
+	gtk_widget_show(button);
+	gtk_widget_show(image);
+
+	// Next Set
+	button = gtk_button_new_with_label ("Next");
+	g_signal_connect(button, "clicked", G_CALLBACK(set_next_gtk), NULL);//, window);
+	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_MENU);
+	gtk_button_set_image(GTK_BUTTON (button), image);
+	gtk_box_pack_start(GTK_BOX (nextprevbox), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
 
@@ -87,26 +88,30 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	gtk_widget_show(button);
 	gtk_widget_show(image);
 
-	nextprevbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mediabar), nextprevbox, FALSE, FALSE, 0);
 
-	// Previous Set
-	button = gtk_button_new_with_label ("Prev"); 
-	g_signal_connect(button, "clicked", G_CALLBACK(set_prev_gtk), NULL);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_REWIND, GTK_ICON_SIZE_MENU);
-	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (nextprevbox), button, TRUE, TRUE, 0);
+	playbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mediabar), playbox, FALSE, FALSE, 0);
+
+	// Play
+	button = gtk_button_new_with_label ("Play");
+	g_signal_connect(button, "clicked", G_CALLBACK(queue_show), NULL);
+	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_MENU);
+	gtk_button_set_image (GTK_BUTTON (button), image);
+	gtk_box_pack_start(GTK_BOX (playbox), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
 
-	// Next Set
-	button = gtk_button_new_with_label ("Next");
-	g_signal_connect(button, "clicked", G_CALLBACK(set_next_gtk), NULL);//, window);
-	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_FORWARD, GTK_ICON_SIZE_MENU);
+
+	// Play from Start
+	button = gtk_button_new_with_label ("Start");
+	g_signal_connect(button, "clicked", G_CALLBACK(play_show_from_start), NULL);
+	image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PREVIOUS, GTK_ICON_SIZE_MENU);
 	gtk_button_set_image(GTK_BUTTON (button), image);
-	gtk_box_pack_start(GTK_BOX (nextprevbox), button, TRUE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX (playbox), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	gtk_widget_show(image);
+
+
 
 	// Step
 	button = gtk_button_new_with_label ("Step");
