@@ -136,6 +136,8 @@ int add_group_gtk (GtkWidget *widget)
 {
 	// add selection to group
 	//int excode = add_group();
+	//group_t *last = NULL;
+	//last = group_add_selects(last, pstate.select);
 	pshow->topgroups = group_add_selects(pshow->topgroups, pstate.select);
 	return 0;
 }

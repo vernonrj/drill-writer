@@ -2,7 +2,7 @@
 #include "dr-sidebar.h"
 #include "dr-sidebar-perfs.h"
 #include "dr-sidebar-sets.h"
-#include "dr-sidebar-groups.h"
+//#include "dr-sidebar-groups.h"
 
 static void dr_sidebar_class_init(DrSidebarClass *class);
 static void dr_sidebar_init(DrSidebar *sidebar);

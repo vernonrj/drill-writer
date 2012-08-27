@@ -1,10 +1,11 @@
 #include "drill.h"		// field class
-#include "dr-setbar.h"		// setbar class
 #include "dr-media.h"		// mediabar class
 #include "dr-drill.h"
+#include "dr-setbar.h"		// setbar class
 #include "dr-perfbar.h"
 #include "dr-sidebar.h"
 #include "dr-sidebar-sets.h"
+#include "dr-sidebar-groups.h"
 
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -47,6 +48,10 @@ struct fieldstate_proto
 	double mouse_clickx, mouse_clicky;
 	select_t *mouse_selection;
 } fldstate;
+
+
+
+
 
 gint context_id;
 

@@ -1,11 +1,12 @@
 #include "d_gtk.h"
-#include "dr-sidebar-groups.h"
+//#include "dr-sidebar-groups.h"
 
 static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *klass);
 static void dr_sidebar_groups_init(DrSidebarGroups *sidebar_groups);
 
 struct _DrSidebarGroupsPrivate {
 	GtkWidget *entry_groupname;
+	group_box_t *group_box;
 };
 
 G_DEFINE_TYPE (DrSidebarGroups, dr_sidebar_groups, GTK_TYPE_VBOX)
@@ -28,6 +29,7 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	char groupname_buf[20];
 
 	sidebargroups->priv = DR_SIDEBAR_GROUPS_GET_PRIVATE(sidebargroups);
+	sidebargroups->priv->group_box = NULL;
 
 	button_add_group = gtk_button_new_with_label("Add group");
 	gtk_widget_show(button_add_group);
@@ -60,10 +62,52 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
 	char groupname_buf[20];
 	DrSidebarGroups *lsidebargroups;
+
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
+	group_box_t *gbox = lsidebargroups->priv->group_box;
+	group_box_t *last = gbox;
+	group_t *group = pshow->topgroups;
 
 	snprintf(groupname_buf, 19, "Empty");
 	gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
+
+	while (last && last->next)
+	{
+		if (group != last->group)
+		{
+			// add group
+		}
+		last = last->next;
+		group = group->next;
+	}
+
+
+}
+
+
+group_box_t *dr_create_group_box(void)
+{
+	group_box_t *gbox;
+	gbox = (group_box_t*)malloc(sizeof(group_box_t));
+	gbox->group = NULL;
+	gbox->next = NULL;
+	return gbox;
+}
+
+group_box_t *dr_add_group_box_from_select(group_box_t *gbox, select_t *select)
+{
+	group_box_t *last;
+	group_box_t *curr;
+
+	last = dr_create_group_box();
+	last->group = group_add_selects(last->group, select);
+	if (!gbox)
+		return last;
+	curr = gbox;
+	while (curr->next)
+		curr = curr->next;
+	curr->next = last;
+	return gbox;
 }
 
 
