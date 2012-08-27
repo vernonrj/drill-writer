@@ -48,32 +48,6 @@ struct fieldstate_proto
 	select_t *mouse_selection;
 } fldstate;
 
-/*
-// Side-to-Side relation buttons
-struct gtk_ssRel
-{
-	// steps from yardline entry
-	GtkWidget *ssStepEntry;		
-	// inside or outside yardline toggle button
-	GtkWidget *ssYdRelButton;	
-	// side 1 or side 2 toggle button
-	GtkWidget *ssSide;		
-	// Yardline button
-	GtkWidget *ssYdLine;		
-} sidesideBtns;
-// Front-to-Back relations buttons
-struct gtk_fbRel
-{
-	// Steps from hash/sideline entry
-	GtkWidget *fbStepEntry;
-	// inside or outside hash/sideline toggle button
-	GtkWidget *fbHashRelButton;
-	// Front/Back toggle button
-	GtkWidget *fbToggleButton;
-	// Hash/Sideline
-	GtkWidget *HashSideButton;
-} frbkBtns;
-*/
 gint context_id;
 
 

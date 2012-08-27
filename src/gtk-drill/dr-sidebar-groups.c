@@ -23,10 +23,16 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 {
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
 	GtkWidget *entry_groupname;
+	GtkWidget *button_add_group;
 
 	char groupname_buf[20];
 
 	sidebargroups->priv = DR_SIDEBAR_GROUPS_GET_PRIVATE(sidebargroups);
+
+	button_add_group = gtk_button_new_with_label("Add group");
+	gtk_widget_show(button_add_group);
+	gtk_box_pack_start(GTK_BOX(sidebargroups), button_add_group, FALSE, FALSE, 5);
+
 
 	sprintf(groupname_buf, "Empty");
 	entry_groupname = gtk_entry_new ();
@@ -39,6 +45,7 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	//gtk_box_pack_start (GTK_BOX (perfbar), entry_groupname, FALSE, TRUE, 5);
 	gtk_box_pack_start (GTK_BOX (sidebargroups), entry_groupname, FALSE, TRUE, 5);
 	gtk_widget_show(entry_groupname);
+
 	sidebargroups->priv->entry_groupname = entry_groupname;
 	return;
 }
