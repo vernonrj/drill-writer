@@ -477,8 +477,9 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 			select_push_all(&pstate.select, &select_added, true);
 			select_add_multiple(&pstate.select, &select_omitted, true);
 		}
-		else
+		else if (event->state == 256 || event->state == (256 + GDK_SHIFT_MASK))
 		{
+			// normal or shift-clicked
 			select_push_all(&pstate.select, &select_added, false);
 			// drop ommitted dots
 			pstate.select = select_drop_multiple(pstate.select, select_omitted);

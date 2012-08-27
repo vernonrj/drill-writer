@@ -226,11 +226,11 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					// ctrl-click
 					//select_dots_add(index);
 				}
-				else if (event->state == 1 && index != -1)
+				else if (event->state == GDK_SHIFT_MASK)// && index != -1)
 				{
 					// shift-click
-					if (pshow->topgroups && is_in_select(index, pshow->topgroups->selects))
-						pstate.select = select_add_group(pstate.select, pshow->topgroups, false);
+					//if (pshow->topgroups && is_in_select(index, pshow->topgroups->selects))
+						//pstate.select = select_add_group(pstate.select, pshow->topgroups, false);
 				}
 				else
 				{
