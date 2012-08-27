@@ -532,22 +532,31 @@ void def_canvas (GtkWidget *widget)
 	fldstate.width = widget->allocation.width;	// Get the width
 	fldstate.height = widget->allocation.height;	// Get the height
 	///*
+	
+	// set initial canvas step
 	c_step = (int)(fldstate.width / (160 + x_off));
+	// check to see if canvas step will work
 	if (c_step * (85+y_off) > fldstate.height)
 	{
-		//c_height = fldstate.height;
+		// vertical size is a constraint.
+		// limit size accordingly
 		c_step = (int)(fldstate.height / (85+y_off));
 		fldstate.xoff = fldstate.width - (c_step * 160);
 		fldstate.yoff = fldstate.height - (c_step * 85);
 	}
 	else
 	{
+		// vertical limit is not a problem.
+		// Get offset sizes
 		fldstate.xoff = (int)(fldstate.width - (c_step * 160));
 		fldstate.yoff = (int)(fldstate.height - (c_step * 85));
 	}
+	// store canvas step
 	fldstate.canv_step = c_step;
+	// get convenience variables: offsets on either side
 	fldstate.xo2 = (int)(fldstate.xoff / 2);
 	fldstate.yo2 = (int)(fldstate.yoff / 2);
+	// use deprecated variable (still needed)
 	yheight = c_step * 85;
 	//*/
 	/*
