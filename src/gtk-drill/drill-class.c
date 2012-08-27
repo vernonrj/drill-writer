@@ -518,8 +518,11 @@ void def_canvas (GtkWidget *widget)
 {
 	// define the canvas sizing
 
-	double c_width;
-	double c_height;
+	//double c_width;
+	//double c_height;
+	double c_step;
+	const int x_off = 16;
+	const int y_off = 16;
 	// use default values for width and height
 	if (fldstate.width != widget->allocation.width || fldstate.height != widget->allocation.height)
 	{
@@ -528,6 +531,26 @@ void def_canvas (GtkWidget *widget)
 	// update width and height
 	fldstate.width = widget->allocation.width;	// Get the width
 	fldstate.height = widget->allocation.height;	// Get the height
+	///*
+	c_step = (int)(fldstate.width / (160 + x_off));
+	if (c_step * (85+y_off) > fldstate.height)
+	{
+		//c_height = fldstate.height;
+		c_step = (int)(fldstate.height / (85+y_off));
+		fldstate.xoff = fldstate.width - (c_step * 160);
+		fldstate.yoff = c_step*y_off;
+	}
+	else
+	{
+		fldstate.xoff = fldstate.width - (c_step * 160);
+		fldstate.yoff = fldstate.height - (c_step * 85);
+	}
+	fldstate.canv_step = c_step;
+	fldstate.xo2 = (int)(fldstate.xoff / 2);
+	fldstate.yo2 = (int)(fldstate.yoff / 2);
+	yheight = c_step * 85;
+	//*/
+	/*
 	c_width = fldstate.width;
 	c_height = fldstate.height;
 	fldstate.xoff = (int)c_width % 160; 		// extra margin for the width
@@ -552,6 +575,7 @@ void def_canvas (GtkWidget *widget)
 	}
 	fldstate.xo2 = fldstate.xoff / 2;
 	fldstate.yo2 = fldstate.yoff / 2;
+	//*/
 
 	return;
 }
@@ -897,12 +921,15 @@ void draw_field (GtkWidget *widget)
 		cairo_set_source_rgb(field, 1, 1, 1);	
 		cairo_paint (field);
 
-		for (i=fldstate.xo2; i<=fldstate.width-(int)fldstate.xo2; i+=(fldstate.width-(int)fldstate.xoff)/20)
+		//for (i=fldstate.xo2; i<=fldstate.width-(int)fldstate.xo2; i+=(fldstate.width-(int)fldstate.xoff)/20)
+		for (i=fldstate.xo2; i<=fldstate.xo2+fldstate.canv_step*160; i+=fldstate.canv_step*8)
 		{	// Yardlines
 			cairo_set_line_width(field, 1);
 			cairo_set_source_rgb(field, 0, 0, 0);
-			cairo_move_to (field, i, fldstate.height-yheight-fldstate.yo2);
-			cairo_line_to (field, i, yheight+fldstate.yo2);
+			//cairo_move_to (field, i, fldstate.height-yheight-fldstate.yo2);
+			//cairo_line_to (field, i, yheight+fldstate.yo2);
+			cairo_move_to (field, i, fldstate.yo2);
+			cairo_line_to (field, i, fldstate.height-fldstate.yo2);
 			// Yardline Numbers
 			sprintf(text, "%i", ynum);
 			cairo_text_extents (fnums, text, &te);
@@ -937,15 +964,17 @@ void draw_field (GtkWidget *widget)
 
 			// Split Yardlines
 			if (i<((int)fldstate.xo2+(int)fldstate.canv_step*160))
+			//if (i<(fldstate.xo2+fldstate.canv_step*160))
 			{
 				// Light Stroke
 				// only draw if window is large enough
 				cairo_set_line_width (gaks, 0.5);
 				//cairo_set_source_rgb(gaks, 0.9, 0.9, 0.9);
 				cairo_set_source_rgb(gaks, 0.9, 0.9, 1);
-				if (fldstate.width-fldstate.xo2 > 800)
+				//if (fldstate.width-fldstate.xo2 > 800)
 				{
-					for (j=i; j<i+(int)fldstate.canv_step*4; j+=(int)fldstate.canv_step)
+					//for (j=i; j<i+(int)fldstate.canv_step*4; j+=(int)fldstate.canv_step)
+					for(j=(int)i; j<i+fldstate.canv_step*4; j+=(int)fldstate.canv_step)
 					{	// 1-step yardlines
 						cairo_move_to (gaks, j, fldstate.height-yheight-fldstate.yo2);
 						cairo_line_to (gaks, j, yheight+fldstate.yo2);
@@ -955,8 +984,8 @@ void draw_field (GtkWidget *widget)
 					}
 					for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=(int)fldstate.canv_step)
 					{	// 1-step y-grid
-						if (((int)(j-fldstate.yo2-fldstate.canv_step)%(int)(fldstate.canv_step*4)) == 0)
-							continue;
+						//if (((int)(j-fldstate.yo2-fldstate.canv_step)%(int)(fldstate.canv_step*4)) == 0)
+							//continue;
 						cairo_move_to (gaks, i, j);
 						cairo_line_to (gaks, i+fldstate.canv_step*8, j);
 					}
@@ -966,7 +995,7 @@ void draw_field (GtkWidget *widget)
 
 				// Med Stroke
 				// only draw if window is large enough
-				if (fldstate.width-fldstate.xo2 > 600)
+				//if (fldstate.width-fldstate.xo2 > 600)
 				{
 					// 4-step X
 					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
