@@ -131,6 +131,7 @@ void delete_perf_gtk(GtkWidget *widget);
 void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
+int select_group_gtk(GtkWidget *widget, gpointer *callback_data);
 int add_group_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
 gboolean unclicked(GtkWidget *widget, GdkEventButton *event);

@@ -93,16 +93,16 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		}
 		else if (!last)
 		{
+			// added first group
+			// add first sidebar ref
 			curr = dr_create_group_box();
 			curr->group = group;
 			lsidebargroups->priv->group_box = curr;
 			curr->button = gtk_button_new_with_label("hello");
-			//g_signal_connect()
+			g_signal_connect(curr->button, "clicked", G_CALLBACK(select_group_gtk), curr->group);
 			gtk_box_pack_start(GTK_BOX(lsidebargroups), curr->button, 
 					FALSE, FALSE, 0);
 			gtk_widget_show(curr->button);
-			// added first group
-			// add first sidebar ref
 		}
 	}
 	else if (!last->next && !group->next)
@@ -113,8 +113,16 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	{
 		if (!last->next && group->next)
 		{
+			group = group->next;
 			// added a new group
 			// add another sidebar ref
+			curr = dr_create_group_box();
+			curr->group = group;
+			last->next = curr;
+			curr->button = gtk_button_new_with_label("blargh");
+			gtk_box_pack_start(GTK_BOX(lsidebargroups), curr->button,
+					FALSE, FALSE, 0);
+			gtk_widget_show(curr->button);
 		}
 		else if (!group->next && last->next)
 		{

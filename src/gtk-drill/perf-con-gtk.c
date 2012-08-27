@@ -132,6 +132,24 @@ int select_all_gtk (GtkWidget *widget)
 }
 
 
+int select_group_gtk(GtkWidget *widget, gpointer *callback_data)
+{
+	group_t *group;
+	group = (group_t*)callback_data;
+	select_t *select = group->selects;
+	while(select)
+	{
+		pstate.select = select_add(pstate.select, select->index, false);
+		select = select->next;
+	}
+	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+	return 0;
+}
+
+
+
+
+
 int add_group_gtk (GtkWidget *widget)
 {
 	// add selection to group
