@@ -66,22 +66,53 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
 	group_box_t *gbox = lsidebargroups->priv->group_box;
 	group_box_t *last = gbox;
+	group_box_t *curr;
 	group_t *group = pshow->topgroups;
 
 	snprintf(groupname_buf, 19, "Empty");
 	gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
 
-	while (last && last->next)
+	while (last && last->next && group && group->next)
 	{
 		if (group != last->group)
 		{
 			// add group
+			// or delete group
 		}
 		last = last->next;
 		group = group->next;
 	}
-
-
+	if (!group || !last)
+	{
+		if (!group)
+		{
+			// no groups anymore
+			// delete sidebar refs
+		}
+		else if (!last)
+		{
+			// added first group
+			// add first sidebar ref
+		}
+	}
+	else if (!last->next && !group->next)
+	{
+		// both lined up
+	}
+	else if (!last->next || !group->next)
+	{
+		if (!last->next && group->next)
+		{
+			// added a new group
+			// add another sidebar ref
+		}
+		else if (!group->next && last->next)
+		{
+			// deleted a group
+			// remove sidebar ref
+		}
+	}
+	return;
 }
 
 
