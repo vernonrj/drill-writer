@@ -122,6 +122,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 			curr->button = gtk_button_new_with_label("blargh");
 			gtk_box_pack_start(GTK_BOX(lsidebargroups), curr->button,
 					FALSE, FALSE, 0);
+			g_signal_connect(curr->button, "clicked", G_CALLBACK(select_group_gtk), curr->group);
 			gtk_widget_show(curr->button);
 		}
 		else if (!group->next && last->next)

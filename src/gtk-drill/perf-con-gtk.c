@@ -154,9 +154,17 @@ int add_group_gtk (GtkWidget *widget)
 {
 	// add selection to group
 	//int excode = add_group();
-	//group_t *last = NULL;
-	//last = group_add_selects(last, pstate.select);
-	pshow->topgroups = group_add_selects(pshow->topgroups, pstate.select);
+	group_t *last = NULL;
+	group_t *curr;
+	last = group_add_selects(last, pstate.select);
+	//pshow->topgroups = group_add_selects(pshow->topgroups, pstate.select);
+	curr = pshow->topgroups;
+	while (curr && curr->next)
+		curr = curr->next;
+	if (!curr)
+		pshow->topgroups = last;
+	else
+		curr->next = last;
 	dr_sidebar_update((DrSidebar*)sidebar);
 	return 0;
 }
