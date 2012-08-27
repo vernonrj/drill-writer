@@ -180,7 +180,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 						gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 					}
 				}
-				else if (event->state == 260)
+				else if (event->state == 256 + GDK_CONTROL_MASK)
 				{
 					// ctrl-click
 					index = checkSelected(widget, event);
