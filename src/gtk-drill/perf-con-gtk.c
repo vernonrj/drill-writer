@@ -139,6 +139,7 @@ int add_group_gtk (GtkWidget *widget)
 	//group_t *last = NULL;
 	//last = group_add_selects(last, pstate.select);
 	pshow->topgroups = group_add_selects(pshow->topgroups, pstate.select);
+	dr_sidebar_update((DrSidebar*)sidebar);
 	return 0;
 }
 

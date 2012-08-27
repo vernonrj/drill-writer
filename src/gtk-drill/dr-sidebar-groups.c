@@ -34,6 +34,7 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	button_add_group = gtk_button_new_with_label("Add group");
 	gtk_widget_show(button_add_group);
 	gtk_box_pack_start(GTK_BOX(sidebargroups), button_add_group, FALSE, FALSE, 5);
+	g_signal_connect(button_add_group, "clicked", G_CALLBACK(add_group_gtk), NULL);
 
 
 	sprintf(groupname_buf, "Empty");
@@ -62,6 +63,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
 	char groupname_buf[20];
 	DrSidebarGroups *lsidebargroups;
+	int i = 0;
 
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
 	group_box_t *gbox = lsidebargroups->priv->group_box;
@@ -91,6 +93,14 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		}
 		else if (!last)
 		{
+			curr = dr_create_group_box();
+			curr->group = group;
+			lsidebargroups->priv->group_box = curr;
+			curr->button = gtk_button_new_with_label("hello");
+			//g_signal_connect()
+			gtk_box_pack_start(GTK_BOX(lsidebargroups), curr->button, 
+					FALSE, FALSE, 0);
+			gtk_widget_show(curr->button);
 			// added first group
 			// add first sidebar ref
 		}

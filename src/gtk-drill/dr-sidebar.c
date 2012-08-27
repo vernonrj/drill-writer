@@ -101,6 +101,7 @@ void dr_sidebar_update(DrSidebar *lsidebar)
 	g_return_if_fail(IS_SIDEBAR(lsidebar));
 	dr_sidebar_sets_update(lsidebar->priv->sidebarsets);
 	dr_sidebar_perfs_update(lsidebar->priv->sidebarperfs);
+	dr_sidebar_groups_update(lsidebar->priv->sidebargroups);
 	return;
 }
 

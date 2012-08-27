@@ -39,6 +39,7 @@ struct group_box_proto
 	// used on group sidebar tab
 	// to show group information
 	group_t *group;
+	GtkWidget *button;
 
 	struct group_box_proto *next;
 };
