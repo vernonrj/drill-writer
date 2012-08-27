@@ -1,7 +1,3 @@
-# NAME:		Vernon Jones
-# CLASS:	CS163 Winter 2012
-# ASSIGNMENT:	5
-
 # Configure with program name, version number, and email
 AC_INIT([drillwriter], [7], [vernonrjones@gmail.com])
 # Autoconf prereq
