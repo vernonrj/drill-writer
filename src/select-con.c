@@ -235,6 +235,44 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 }
 
 
+select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle)
+{
+	// push an item from the modifier to the mainlist
+	select_t *modifier;
+	select_t *last;
+
+	modifier = *modifier_r;
+
+	if (modifier)
+	{
+		last = select_add(mainlist, modifier->index, toggle);
+		*modifier_r = modifier->next;
+		free(modifier);
+		return last;
+	}
+	else
+		return mainlist;
+}
+
+
+void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle)
+{
+	select_t *mainlist, *modifier;
+	mainlist = *mainlist_r;
+	modifier = *modifier_r;
+
+	while (modifier)
+		mainlist = select_push(mainlist, &modifier, toggle);
+	*modifier_r = modifier;
+	*mainlist_r = mainlist;
+	return;
+}
+
+
+
+	
+
+
 //select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double xpiv, double ypiv, double x2, double y2, bool toggle)
 select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double x2, double y2, bool toggle)
 {
@@ -255,7 +293,28 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 }
 
 
-select_t *select_lhs_drop_dups(select_t *mainlist, select_t *modifier)
+void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle)
+{
+	// add multiple nodes
+	select_t *mainlist, *modifier;
+	mainlist = *mainlist_r;
+	modifier = *modifier_r;
+	select_t *last = modifier;
+
+	while (last)
+	{
+		mainlist = select_add(mainlist, last->index, toggle);
+		last = last->next;
+		free(modifier);
+		modifier = last;
+	}
+	*mainlist_r = mainlist;
+	*modifier_r = modifier;
+	return;
+}
+
+
+select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 {
 	// return mainlist's original entries.
 	// Drop everything else
@@ -267,11 +326,19 @@ select_t *select_lhs_drop_dups(select_t *mainlist, select_t *modifier)
 	if (!mainlist)
 		return NULL;
 	if (!modifier)
-		return mainlist;
+	{
+		while (last)
+		{
+			newlist = select_add(newlist, last->index, false);
+			last = last->next;
+		}
+	}
+
+
 
 	while (last && inc)
 	{
-		while (inc->next && inc->index > last->index)
+		while (inc->next && inc->index < last->index)
 			inc = inc->next;
 		if (last->index != inc->index)
 			newlist = select_add(newlist, last->index, false);

@@ -447,9 +447,11 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	double coordx, coordy;
 	gchar *buffer;
 	int excode;
-	select_t *new_select = NULL;
+	select_t *new_select;
+	new_select = NULL;
 	select_t *select_added;
-	select_t *select_omitted;
+	select_added = NULL;
+	select_t *select_omitted = NULL;
 	select_t *last;
 
 	coordx = event->x;
@@ -462,32 +464,35 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 		new_select = select_add_in_rectangle(new_select, fldstate.mouse_clickx, fldstate.mouse_clicky,
 				coordx, coordy, false);
 		// then find what's been added, what's gone
-		select_added = select_lhs_drop_dups(new_select, fldstate.mouse_selection);
-		select_omitted = select_lhs_drop_dups(fldstate.mouse_selection, new_select);
-		last = new_select;
+		select_added = select_drop_multiple(new_select, fldstate.mouse_selection);
+		select_omitted = select_drop_multiple(fldstate.mouse_selection, new_select);
+
+		// Store new set
 		fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
-		while (last)
+		/*
+		if (select_added)
 		{
-			fldstate.mouse_selection = select_add(fldstate.mouse_selection, last->index, false);
-			last = last->next;
+			last = new_select;
+			printf("ping %x %i\n", select_added, select_added->index);
+			while (last)
+			{
+				printf("last = %x\n", last);
+				last = last->next;
+			}
 		}
-		last = select_added;
-		while (last)
+		*/
+		select_push_all(&fldstate.mouse_selection, &new_select, false);
+		/*
+		if (select_added)
 		{
-			pstate.select = select_add(pstate.select, last->index, false);
-			last = last->next;
-			free(select_added);
-			select_added = last;
+			printf("ping %x %i\n", select_added, select_added->index);
 		}
-		//last = select_omitted;
-		while (last)
-		{
-			pstate.select = select_add(pstate.select, last->index, true);
-			last = last->next;
-			free(select_omitted);
-			select_omitted = last;
-		}
-		//fldstate.mouse_selection = new_select;
+		*/
+
+		// add new dots
+		select_push_all(&pstate.select, &select_added, false);
+		// drop ommitted dots
+		pstate.select = select_drop_multiple(pstate.select, select_omitted);
 	}
 	else
 		fldstate.mouse_selection = NULL;

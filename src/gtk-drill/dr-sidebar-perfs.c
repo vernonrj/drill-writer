@@ -42,7 +42,7 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	char perf_max_buf[20];
 	double stepsize;
 	int index;
-	double stepsize_max;
+	double stepsize_max = 0.0;
 
 	sidebarperfs->priv = DR_SIDEBAR_PERFS_GET_PRIVATE(sidebarperfs);
 
