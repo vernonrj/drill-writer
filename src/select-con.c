@@ -352,7 +352,7 @@ select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 
 bool dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2)
 {
-	double xmin, xmax, ymin, ymax;
+	//double xmin, xmax, ymin, ymax;
 	bool chkx, chky;
 	if (x1 < x2)
 	{

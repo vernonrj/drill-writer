@@ -221,7 +221,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 			case SELECTONE:
 				// select 1 performer
 				index = checkSelected(widget, event);
-				if (event->state == 4)// && index != -1)
+				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
 					// ctrl-click
 					//select_dots_add(index);

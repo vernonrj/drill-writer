@@ -452,7 +452,7 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	select_t *select_added;
 	select_added = NULL;
 	select_t *select_omitted = NULL;
-	select_t *last;
+	//select_t *last;
 
 	coordx = event->x;
 	coordy = event->y;
@@ -469,30 +469,20 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 
 		// Store new set
 		fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
-		/*
-		if (select_added)
-		{
-			last = new_select;
-			printf("ping %x %i\n", select_added, select_added->index);
-			while (last)
-			{
-				printf("last = %x\n", last);
-				last = last->next;
-			}
-		}
-		*/
 		select_push_all(&fldstate.mouse_selection, &new_select, false);
-		/*
-		if (select_added)
-		{
-			printf("ping %x %i\n", select_added, select_added->index);
-		}
-		*/
 
 		// add new dots
-		select_push_all(&pstate.select, &select_added, false);
-		// drop ommitted dots
-		pstate.select = select_drop_multiple(pstate.select, select_omitted);
+		if (event->state == 256 + GDK_CONTROL_MASK)
+		{
+			select_push_all(&pstate.select, &select_added, true);
+			select_add_multiple(&pstate.select, &select_omitted, true);
+		}
+		else
+		{
+			select_push_all(&pstate.select, &select_added, false);
+			// drop ommitted dots
+			pstate.select = select_drop_multiple(pstate.select, select_omitted);
+		}
 	}
 	else
 		fldstate.mouse_selection = NULL;
