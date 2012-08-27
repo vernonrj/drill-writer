@@ -538,12 +538,12 @@ void def_canvas (GtkWidget *widget)
 		//c_height = fldstate.height;
 		c_step = (int)(fldstate.height / (85+y_off));
 		fldstate.xoff = fldstate.width - (c_step * 160);
-		fldstate.yoff = c_step*y_off;
+		fldstate.yoff = fldstate.height - (c_step * 85);
 	}
 	else
 	{
-		fldstate.xoff = fldstate.width - (c_step * 160);
-		fldstate.yoff = fldstate.height - (c_step * 85);
+		fldstate.xoff = (int)(fldstate.width - (c_step * 160));
+		fldstate.yoff = (int)(fldstate.height - (c_step * 85));
 	}
 	fldstate.canv_step = c_step;
 	fldstate.xo2 = (int)(fldstate.xoff / 2);
@@ -999,7 +999,7 @@ void draw_field (GtkWidget *widget)
 				{
 					// 4-step X
 					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
-					cairo_move_to (gaks, i+(int)fldstate.canv_step*4, fldstate.height-yheight-fldstate.yo2);
+					cairo_move_to (gaks, i+(int)fldstate.canv_step*4, fldstate.yo2);
 					cairo_line_to (gaks, i+(int)fldstate.canv_step*4, yheight+fldstate.yo2);
 
 					for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=4*(int)fldstate.canv_step)
