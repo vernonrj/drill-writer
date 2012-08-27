@@ -229,9 +229,31 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 
 
 	mouse_discarded = 0;
-	fldstate.mouse_clicked = 0x1;
-	if (event->button == 1)
+	if (event->button == 8)
 	{
+		// back button
+		if (event->state == GDK_SHIFT_MASK)
+			set_prev_count();
+		else if (event->state == GDK_CONTROL_MASK)
+			set_first();
+		else
+			set_prev();
+		fldstate.mouse_clicked = 0x0;
+	}
+	else if (event->button == 9)
+	{
+		// forward button
+		if (event->state == GDK_SHIFT_MASK)
+			set_next_count();
+		else if (event->state == GDK_CONTROL_MASK)
+			set_last();
+		else
+			set_next();
+		fldstate.mouse_clicked = 0x0;
+	}
+	else if (event->button == 1)
+	{
+		fldstate.mouse_clicked = 0x1;
 		mouse_clickx = event->x;
 		mouse_clicky = event->y;
 		pixel_to_field(&mouse_clickx, &mouse_clicky);
@@ -305,6 +327,8 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				break;
 		}
 	}
+	else
+		fldstate.mouse_clicked = 0;
 	return TRUE;
 }
 
