@@ -188,14 +188,24 @@ GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group)
 	return curr;
 }
 
-GtkWidget *dr_group_cell_delete(GtkWidget *widget)
+GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	DrGroupCell *curr = (DrGroupCell*)container;
 	//gtk_widget_hide(widget);
-	if (!groupcell)
+	if (!groupcell || !container)
 		return NULL;
 	if (!IS_GROUP_CELL(groupcell))
 		return NULL;
+	if (!IS_GROUP_CELL(curr))
+		return NULL;
+	if (container != widget)
+	{
+		while (curr->priv->next != groupcell)
+			curr = curr->priv->next;
+	}
+	else
+		curr = NULL;
 	gtk_widget_hide(groupcell->priv->button_add);
 	//g_free(groupcell->priv->button_add);
 
@@ -207,6 +217,8 @@ GtkWidget *dr_group_cell_delete(GtkWidget *widget)
 
 
 	gtk_widget_hide((GtkWidget*)groupcell);
+	if (curr != NULL)
+		curr->priv->next = groupcell->priv->next;
 	return (GtkWidget*)groupcell->priv->next;
 }
 

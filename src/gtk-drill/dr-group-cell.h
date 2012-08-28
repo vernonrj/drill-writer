@@ -40,5 +40,5 @@ GtkWidget *dr_group_cell_get_next(GtkWidget *groupcell);
 bool dr_group_cell_has_next(GtkWidget *groupcell);
 GtkWidget *dr_group_cell_add(GtkWidget *groupcell, group_t *group);
 GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group);
-GtkWidget *dr_group_cell_delete(GtkWidget *widget);
+GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container);
 

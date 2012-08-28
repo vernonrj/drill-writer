@@ -70,97 +70,62 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
 	GtkWidget *last = lsidebargroups->priv->group_cell;
-	GtkWidget *lastcurr;
+	GtkWidget *lastcurr = last;
 	group_box_t *curr;
 	group_t *group = pshow->topgroups;
+	group_t *lastgroup = group;
 
 	snprintf(groupname_buf, 19, "Empty");
 	gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
 
-	while (last && dr_group_cell_has_next(last) && group && group->next)
+
+	while (last && group)
 	{
 		if (!dr_group_cell_get_group(last))
 		{
-			//gtk_widget_hide(last);
-			lastcurr = dr_group_cell_delete(last);
-			//g_free(last);
-			last = lastcurr;
+			last = dr_group_cell_delete_from(last, lastcurr);
 		}
-		if (group != dr_group_cell_get_group(last))
+		else
 		{
-			// add group
-			// or delete group
-			lastcurr = dr_group_cell_delete(last);
-			//gtk_widget_hide(last);
-			//g_free(last);
-			last = lastcurr;
-		}
-		//last = last->next;
-		last = dr_group_cell_get_next(last);
-		group = group->next;
-	}
-	if (!group || !last)
-	{
-		if (!group)
-		{
-			// no groups anymore
-			// delete sidebar refs
-			//gtk_widget_hide(last);
-			lastcurr = dr_group_cell_delete(last);
-			//g_free(last);
-			last = lastcurr;
-			lsidebargroups->priv->group_cell = NULL;
-		}
-		else if (!last)
-		{
-			// added first group
-			// add first sidebar ref
-			//curr = dr_create_group_box();
-			last = dr_group_cell_new();
-			dr_group_cell_set_group(last, group);
-			lsidebargroups->priv->group_cell = last;
-			//lsidebargroups->priv->group_cell = dr_group_cell_add(last, group);
-			gtk_box_pack_start(GTK_BOX(lsidebargroups), last, FALSE, FALSE, 0);
-			gtk_widget_show(last);
-			//last->button = gtk_button_new_with_label("hello");
-			//g_signal_connect(last->button, "clicked", G_CALLBACK(select_group_gtk), last->group);
-			//gtk_box_pack_start(GTK_BOX(lsidebargroups), last->button, 
-			//		FALSE, FALSE, 0);
-			//gtk_widget_show(last->button);
-		}
-	}
-	else if (!dr_group_cell_has_next(last) && !group->next)
-	{
-		// both lined up
-	}
-	else if (!dr_group_cell_has_next(last) || !group->next)
-	{
-		if (!dr_group_cell_has_next(last) && group->next)
-		{
+			lastcurr = last;
+			last = dr_group_cell_get_next(lastcurr);
+			lastgroup = group;
 			group = group->next;
-			// added a new group
-			// add another sidebar ref
-			//curr = dr_create_group_box();
-			//curr->group = group;
+		}
+	}
+	while (last)
+	{
+		if (!dr_group_cell_get_group(last))
+		{
+			last = dr_group_cell_delete_from(last, lastcurr);
+		}
+		else
+		{
+			lastcurr = last;
+			last = dr_group_cell_get_next(last);
+		}
+	}
+	last = lastcurr;
+	while (group)
+	{
+		// added a new group
+		// add another sidebar ref
+		if (!last)
+		{
+			last = dr_group_cell_new();
+			lsidebargroups->priv->group_cell = last;
+			dr_group_cell_set_group(last, group);
+		}
+		else
+		{
 			last = dr_group_cell_append(last, group);
 			last = dr_group_cell_get_next(last);
-			//last->next = curr;
-			//curr->button = gtk_button_new_with_label("blargh");
-			//gtk_box_pack_start(GTK_BOX(lsidebargroups), curr->button,
-					//FALSE, FALSE, 0);
-			//g_signal_connect(curr->button, "clicked", G_CALLBACK(select_group_gtk), curr->group);
-			//gtk_widget_show(curr->button);
-			gtk_box_pack_start(GTK_BOX(lsidebargroups), last, FALSE, FALSE, 0);
-			gtk_widget_show(last);
 		}
-		else if (!group->next && dr_group_cell_has_next(last))
-		{
-			// deleted a group
-			// remove sidebar ref
-			lastcurr = dr_group_cell_delete(last);
-			last = lastcurr;
-		}
+		gtk_box_pack_start(GTK_BOX(lsidebargroups), last, FALSE, FALSE, 0);
+		gtk_widget_show(last);
+		group = group->next;
 	}
+
 	return;
 }
 
