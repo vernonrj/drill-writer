@@ -6,6 +6,7 @@
 #include "dr-sidebar.h"
 #include "dr-sidebar-sets.h"
 #include "dr-sidebar-groups.h"
+#include "dr-group-cell.h"
 
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -131,7 +132,7 @@ void delete_perf_gtk(GtkWidget *widget);
 void next_perf(GtkWidget *widget);
 void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
-int select_group_gtk(GtkWidget *widget, gpointer *callback_data);
+int select_group_gtk(GtkWidget *widget, group_t *group);
 int add_group_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
 gboolean unclicked(GtkWidget *widget, GdkEventButton *event);

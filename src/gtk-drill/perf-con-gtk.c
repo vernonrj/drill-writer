@@ -132,10 +132,8 @@ int select_all_gtk (GtkWidget *widget)
 }
 
 
-int select_group_gtk(GtkWidget *widget, gpointer *callback_data)
+int select_group_gtk(GtkWidget *widget, group_t *group)
 {
-	group_t *group;
-	group = (group_t*)callback_data;
 	select_t *select = group->selects;
 	while(select)
 	{
