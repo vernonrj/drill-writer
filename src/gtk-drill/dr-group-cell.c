@@ -33,6 +33,15 @@ static void group_cell_select_group(GtkWidget *widget, gpointer *data)
 }
 
 
+static void select_add_to_group_cell(GtkWidget *widget, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	select_add_multiple(&groupcell->priv->group->selects, &pstate.select, false);
+	return;
+}
+
+
 static void dr_group_cell_init(DrGroupCell *groupcell)
 {
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
@@ -52,7 +61,7 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	gtk_widget_show(image);
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
-	g_signal_connect(button, "clicked", G_CALLBACK(add_group_gtk), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(select_add_to_group_cell), groupcell);
 	groupcell->priv->button_add = button;
 
 	button = gtk_button_new();
@@ -111,6 +120,8 @@ group_t *dr_group_cell_get_group(GtkWidget *grpcell)
 
 void dr_group_cell_set_group(GtkWidget *groupcell_widget, group_t *group)
 {
+	select_t *select;
+	group_t *newgroup;
 	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	groupcell->priv->group = group;
