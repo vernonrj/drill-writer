@@ -125,13 +125,16 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 			// add another sidebar ref
 			//curr = dr_create_group_box();
 			//curr->group = group;
-			last = dr_group_cell_add(last, group);
+			last = dr_group_cell_append(last, group);
+			last = dr_group_cell_get_next(last);
 			//last->next = curr;
 			//curr->button = gtk_button_new_with_label("blargh");
 			//gtk_box_pack_start(GTK_BOX(lsidebargroups), curr->button,
 					//FALSE, FALSE, 0);
 			//g_signal_connect(curr->button, "clicked", G_CALLBACK(select_group_gtk), curr->group);
 			//gtk_widget_show(curr->button);
+			gtk_box_pack_start(GTK_BOX(lsidebargroups), last, FALSE, FALSE, 0);
+			gtk_widget_show(last);
 		}
 		else if (!group->next && dr_group_cell_has_next(last))
 		{

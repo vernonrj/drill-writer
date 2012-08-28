@@ -146,3 +146,22 @@ GtkWidget *dr_group_cell_add(GtkWidget *groupcell_widget, group_t *group)
 	((DrGroupCell*)last)->priv->next = groupcell;
 	return last;
 }
+
+GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	GtkWidget *last;
+	GtkWidget *curr;
+	last = dr_group_cell_new();
+	dr_group_cell_set_group(last, group);
+	if (!groupcell)
+		return last;
+	if (!IS_GROUP_CELL(groupcell))
+		return NULL;
+	curr = widget;
+	while (groupcell->priv->next)
+		groupcell = groupcell->priv->next;
+	groupcell->priv->next = (DrGroupCell*)last;
+	return curr;
+}
+
