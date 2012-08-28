@@ -511,6 +511,36 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 
 
 
+
+group_t *group_remove_from(group_t *group, group_t *curr)
+{
+	group_t *last = curr;
+	if (!group)
+		return NULL;
+	if (!curr)
+		return NULL;
+	if (last != group)
+	{
+		while (last && last->next != group)
+			last = last->next;
+	}
+	else
+	{
+		last = last->next;
+		free(group);
+		return last;
+	}
+
+	if (!last)
+		return NULL;
+
+	last->next = group->next;
+	free(group);
+	return curr;
+}
+
+
+
 bool is_in_select(int index, select_t *selects)
 {
 	select_t *last = selects;

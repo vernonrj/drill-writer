@@ -70,6 +70,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
 	GtkWidget *last = lsidebargroups->priv->group_cell;
+	GtkWidget *lastcurr;
 	group_box_t *curr;
 	group_t *group = pshow->topgroups;
 
@@ -78,10 +79,21 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 
 	while (last && dr_group_cell_has_next(last) && group && group->next)
 	{
+		if (!dr_group_cell_get_group(last))
+		{
+			//gtk_widget_hide(last);
+			lastcurr = dr_group_cell_delete(last);
+			//g_free(last);
+			last = lastcurr;
+		}
 		if (group != dr_group_cell_get_group(last))
 		{
 			// add group
 			// or delete group
+			lastcurr = dr_group_cell_delete(last);
+			//gtk_widget_hide(last);
+			//g_free(last);
+			last = lastcurr;
 		}
 		//last = last->next;
 		last = dr_group_cell_get_next(last);
@@ -93,6 +105,11 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		{
 			// no groups anymore
 			// delete sidebar refs
+			//gtk_widget_hide(last);
+			lastcurr = dr_group_cell_delete(last);
+			//g_free(last);
+			last = lastcurr;
+			lsidebargroups->priv->group_cell = NULL;
 		}
 		else if (!last)
 		{
@@ -140,6 +157,8 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		{
 			// deleted a group
 			// remove sidebar ref
+			lastcurr = dr_group_cell_delete(last);
+			last = lastcurr;
 		}
 	}
 	return;

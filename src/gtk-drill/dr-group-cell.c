@@ -42,6 +42,18 @@ static void select_add_to_group_cell(GtkWidget *widget, gpointer *data)
 }
 
 
+static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	pshow->topgroups = group_remove_from(groupcell->priv->group, pshow->topgroups);
+	groupcell->priv->group = NULL;
+	dr_sidebar_update((DrSidebar*)sidebar);
+}
+
+
+
+
 static void dr_group_cell_init(DrGroupCell *groupcell)
 {
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
@@ -71,7 +83,7 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	gtk_widget_show(image);
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
-	g_signal_connect(button, "clicked", G_CALLBACK(add_group_gtk), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(dr_group_cell_remove_cell), groupcell);
 	groupcell->priv->button_del = button;
 
 
@@ -174,5 +186,27 @@ GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group)
 		groupcell = groupcell->priv->next;
 	groupcell->priv->next = (DrGroupCell*)last;
 	return curr;
+}
+
+GtkWidget *dr_group_cell_delete(GtkWidget *widget)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	//gtk_widget_hide(widget);
+	if (!groupcell)
+		return NULL;
+	if (!IS_GROUP_CELL(groupcell))
+		return NULL;
+	gtk_widget_hide(groupcell->priv->button_add);
+	//g_free(groupcell->priv->button_add);
+
+	gtk_widget_hide(groupcell->priv->button_del);
+	//g_free(groupcell->priv->button_del);
+
+	gtk_widget_hide(groupcell->priv->button_name);
+	//g_free(groupcell->priv->button_name);
+
+
+	gtk_widget_hide((GtkWidget*)groupcell);
+	return (GtkWidget*)groupcell->priv->next;
 }
 

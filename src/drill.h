@@ -331,6 +331,7 @@ int wrap_select_all(void);
 //int select_all(void);
 group_t *group_construct(void);
 group_t *group_add_selects(group_t *group, select_t *newsels);
+group_t *group_remove_from(group_t *group, group_t *curr);
 bool is_in_select(int index, select_t *selects);
 int add_group(void);
 
