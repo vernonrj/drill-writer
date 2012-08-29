@@ -83,6 +83,7 @@ gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data
 		*/
 		return TRUE;
 	}
+	/*
 	else if (event->button == 2)
 	{
 		// middle-click
@@ -93,9 +94,47 @@ gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data
 		dr_sidebar_update((DrSidebar*)sidebar);
 		return TRUE;
 	}
+	*/
 	return FALSE;
 }
 
+gint group_cell_toggle_group_scope(GtkWidget *widget, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
+	if (groupcell->priv->group->local)
+	{
+	}
+	else
+	{
+		pshow->topgroups = group_pop_from(groupcell->priv->group, pshow->topgroups);
+		group_add_to_set(groupcell->priv->group);
+		groupcell->priv->group->local = true;
+	}
+	groupcell->priv->group = NULL;
+	dr_sidebar_update((DrSidebar*)sidebar);
+	return TRUE;
+}
+
+
+gint group_cell_toggle_to_entry(GtkWidget *widget, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
+	gtk_widget_hide(groupcell->priv->button_name);
+	gtk_widget_set_sensitive(groupcell->priv->button_name, FALSE);
+	gtk_widget_show(groupcell->priv->entry_name);
+	//text_length = gtk_entry_get_text_length(GTK_ENTRY(groupcell->priv->entry_name))-1;
+	//if (text_length > 0)
+	{
+		gtk_editable_select_region(GTK_EDITABLE(groupcell->priv->entry_name),
+			0, -1);
+	}
+	gtk_editable_set_position(GTK_EDITABLE(groupcell->priv->entry_name), 0);
+
+	gtk_widget_grab_focus(groupcell->priv->entry_name);
+	return TRUE;
+}
 
 gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 {
@@ -116,6 +155,17 @@ gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 	groupcell->priv->group->name = name;
 	return 0;
 }
+
+GtkWidget *mymenu_append(GtkWidget *menu, char *name)
+{
+	GtkWidget *menuitem;
+	menuitem = gtk_menu_item_new_with_label(name);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+	return menuitem;
+}
+
+
 
 static void dr_group_cell_init(DrGroupCell *groupcell)
 {
@@ -187,9 +237,10 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	groupcell->priv->entry_name = entry;
 
 	menu = gtk_menu_new();
-	menuitem = gtk_menu_item_new_with_label("example");
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-	gtk_widget_show(menuitem);
+	menuitem = mymenu_append(menu, "Edit Name");
+	g_signal_connect(menuitem, "activate", G_CALLBACK(group_cell_toggle_to_entry), groupcell);
+	menuitem = mymenu_append(menu, "Toggle Global");
+	g_signal_connect(menuitem, "activate", G_CALLBACK(group_cell_toggle_group_scope), groupcell);
 	gtk_widget_show(menu);
 	groupcell->priv->context_menu = menu;
 	return;

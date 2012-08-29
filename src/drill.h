@@ -164,6 +164,7 @@ struct group_proto
 	select_t *selects;
 	char *name;
 	form_t *forms;
+	bool local;
 	group_t *next;
 };
 
