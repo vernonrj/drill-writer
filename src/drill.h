@@ -162,7 +162,7 @@ struct group_proto
 {
 	// node with grouping information
 	select_t *selects;
-
+	char *name;
 	form_t *forms;
 	group_t *next;
 };

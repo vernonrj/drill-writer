@@ -454,6 +454,8 @@ group_t *group_construct(void)
 	group->selects = NULL;
 	group->forms = NULL;
 	group->next = NULL;
+	group->name = (char*)malloc(10*sizeof(char));
+	snprintf(group->name, 10, "New Group");
 
 	return group;
 }

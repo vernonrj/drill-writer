@@ -90,6 +90,8 @@ gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data
 gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 {
 	const gchar *new_name;
+	char *name;
+	int size;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
 	new_name = gtk_entry_get_text(GTK_ENTRY(widget));
@@ -97,6 +99,11 @@ gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 	gtk_widget_hide(widget);
 	gtk_widget_show(groupcell->priv->button_name);
 	gtk_widget_set_sensitive(groupcell->priv->button_name, TRUE);
+	free(groupcell->priv->group->name);
+	size = sizeof(char)*(strlen(new_name)+1);
+	name = (char*)malloc(size);
+	strncpy(name, new_name, size);
+	groupcell->priv->group->name = name;
 	return 0;
 }
 
@@ -195,6 +202,7 @@ void dr_group_cell_set_group(GtkWidget *groupcell_widget, group_t *group)
 	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	groupcell->priv->group = group;
+	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), group->name);
 	return;
 }
 
