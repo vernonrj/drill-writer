@@ -5,7 +5,7 @@ static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *klass);
 static void dr_sidebar_groups_init(DrSidebarGroups *sidebar_groups);
 
 struct _DrSidebarGroupsPrivate {
-	GtkWidget *entry_groupname;
+	//GtkWidget *entry_groupname;
 	GtkWidget *group_cell;
 	//group_box_t *group_box;
 };
@@ -39,6 +39,7 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	g_signal_connect(button_add_group, "clicked", G_CALLBACK(add_group_gtk), NULL);
 
 
+	/*
 	sprintf(groupname_buf, "Empty");
 	entry_groupname = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_groupname), 5);
@@ -54,6 +55,7 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	gtk_widget_show(entry_groupname);
 
 	sidebargroups->priv->entry_groupname = entry_groupname;
+	*/
 	return;
 }
 
@@ -77,8 +79,8 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	group_t *group = pshow->topgroups;
 	//group_t *lastgroup = group;
 
-	snprintf(groupname_buf, 19, "Empty");
-	gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
+	//snprintf(groupname_buf, 19, "Empty");
+	//gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
 
 
 	while (last && group)

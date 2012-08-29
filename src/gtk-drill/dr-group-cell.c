@@ -62,6 +62,7 @@ gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data
 		// change button to entry
 		gtk_widget_hide(groupcell->priv->button_name);
 		gtk_widget_show(groupcell->priv->entry_name);
+		//gtk_widget_grab_focus(groupcell->priv->entry_name);
 	}
 	return 0;
 }
@@ -93,6 +94,7 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 
 	groupcell->priv = DR_GROUP_CELL_GET_PRIVATE(groupcell);
 	groupcell->priv->next = NULL;
+	groupcell->priv->entry_name = NULL;
 
 	button = gtk_button_new();
 	image = gtk_image_new_from_stock(GTK_STOCK_ADD, GTK_ICON_SIZE_MENU);
@@ -139,6 +141,7 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	//gtk_box_pack_start (GTK_BOX (perfbar), entry_groupname, FALSE, TRUE, 5);
 	gtk_box_pack_start (GTK_BOX (groupcell), entry, TRUE, TRUE, 5);
 	g_signal_connect(entry, "activate", G_CALLBACK(group_cell_set_name), groupcell);
+	//g_signal_connect(entry, "leave_notify_event", G_CALLBACK(group_cell_set_name), groupcell);
 	//gtk_widget_show(entry);
 	
 	groupcell->priv->entry_name = entry;
