@@ -42,6 +42,8 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	sprintf(groupname_buf, "Empty");
 	entry_groupname = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry_groupname), 5);
+	gtk_entry_set_has_frame(GTK_ENTRY(entry_groupname), FALSE);
+	gtk_widget_set_sensitive(entry_groupname, FALSE);
 	//g_signal_connect (entry_groupname, "activate", G_CALLBACK (goto_perf), entry_groupname);
 	gtk_entry_set_text (GTK_ENTRY (entry_groupname), groupname_buf);
 	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
@@ -65,15 +67,15 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
 	char groupname_buf[20];
 	DrSidebarGroups *lsidebargroups;
-	int i = 0;
-	GtkWidget *groupcell;
+	//int i = 0;
+	//GtkWidget *groupcell;
 
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
 	GtkWidget *last = lsidebargroups->priv->group_cell;
 	GtkWidget *lastcurr = last;
-	group_box_t *curr;
+	//group_box_t *curr;
 	group_t *group = pshow->topgroups;
-	group_t *lastgroup = group;
+	//group_t *lastgroup = group;
 
 	snprintf(groupname_buf, 19, "Empty");
 	gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
@@ -89,7 +91,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		{
 			lastcurr = last;
 			last = dr_group_cell_get_next(lastcurr);
-			lastgroup = group;
+			//lastgroup = group;
 			group = group->next;
 		}
 	}

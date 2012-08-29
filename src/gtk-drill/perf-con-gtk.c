@@ -134,7 +134,7 @@ int select_all_gtk (GtkWidget *widget)
 
 int select_group_gtk(GtkWidget *widget, group_t *group)
 {
-	select_t *select = group->selects;
+	//select_t *select = group->selects;
 	pstate.select = select_add_group(pstate.select, group, false);
 	/*
 	while (select)

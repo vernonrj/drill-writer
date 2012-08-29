@@ -5,7 +5,7 @@ static void dr_group_cell_class_init(DrGroupCellClass *klass);
 static void dr_group_cell_init(DrGroupCell *groupcell);
 
 struct _DrGroupCellPrivate {
-	GtkWidget *name_entry;
+	GtkWidget *entry_name;
 	GtkWidget *button_add;
 	GtkWidget *button_del;
 	GtkWidget *button_name;
@@ -52,14 +52,42 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 }
 
 
+gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
+	if (event->button == 3)
+	{
+		// right-click
+		// change button to entry
+		gtk_widget_hide(groupcell->priv->button_name);
+		gtk_widget_show(groupcell->priv->entry_name);
+	}
+	return 0;
+}
 
+
+gint group_cell_set_name(GtkWidget *widget, gpointer *data)
+{
+	const gchar *new_name;
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
+	new_name = gtk_entry_get_text(GTK_ENTRY(widget));
+	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), new_name);
+	gtk_widget_hide(widget);
+	gtk_widget_show(groupcell->priv->button_name);
+	return 0;
+}
 
 static void dr_group_cell_init(DrGroupCell *groupcell)
 {
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	GtkWidget *entry_groupname;
+	//GtkWidget *entry_groupname;
 	GtkWidget *button;
 	GtkWidget *image;
+	GtkEntryBuffer *entry_buffer;
+	GtkWidget *entry;
+	const gchar *init_chars;
 
 	char groupname_buf[20];
 
@@ -90,25 +118,30 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	button = gtk_button_new_with_label("foo");
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_HALF);
 	g_signal_connect(button, "clicked", G_CALLBACK(group_cell_select_group), groupcell);
-	gtk_box_pack_start(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
+	g_signal_connect(button, "button_press_event", G_CALLBACK(group_cell_clicked), groupcell);
+	gtk_box_pack_start(GTK_BOX(groupcell), button, TRUE, TRUE, 0);
 	gtk_widget_show(button);
 	groupcell->priv->button_name = button;
 
 
+	//sprintf(groupname_buf, "Empty");
+	init_chars = gtk_button_get_label(GTK_BUTTON(button));
+	entry_buffer = gtk_entry_buffer_new(init_chars, strlen(init_chars)+1);
 
-	/*
-	sprintf(groupname_buf, "Empty");
-	groupcell->priv->name_entry = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (groupcell->priv->name_entry), 5);
+	//sprintf(groupname_buf, "Empty");
+	entry = gtk_entry_new_with_buffer (entry_buffer);
+	//gtk_entry_set_max_length (GTK_ENTRY (groupcell->priv->entry_name), 5);
 	//g_signal_connect (entry_groupname, "activate", G_CALLBACK (goto_perf), entry_groupname);
-	gtk_entry_set_text (GTK_ENTRY (groupcell->priv->name_entry), groupname_buf);
+	//gtk_entry_set_text (GTK_ENTRY (entry), groupname_buf);
 	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
-	gtk_entry_set_alignment(GTK_ENTRY (groupcell->priv->name_entry), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY (groupcell->priv->name_entry), 4);
+	gtk_entry_set_alignment(GTK_ENTRY (entry), 1);
+	gtk_entry_set_width_chars(GTK_ENTRY (entry), 4);
 	//gtk_box_pack_start (GTK_BOX (perfbar), entry_groupname, FALSE, TRUE, 5);
-	gtk_box_pack_start (GTK_BOX (groupcell), groupcell->priv->name_entry, FALSE, TRUE, 5);
-	gtk_widget_show(groupcell->priv->name_entry);
-	*/
+	gtk_box_pack_start (GTK_BOX (groupcell), entry, TRUE, TRUE, 5);
+	g_signal_connect(entry, "activate", G_CALLBACK(group_cell_set_name), groupcell);
+	//gtk_widget_show(entry);
+	
+	groupcell->priv->entry_name = entry;
 
 	return;
 }
@@ -132,8 +165,8 @@ group_t *dr_group_cell_get_group(GtkWidget *grpcell)
 
 void dr_group_cell_set_group(GtkWidget *groupcell_widget, group_t *group)
 {
-	select_t *select;
-	group_t *newgroup;
+	//select_t *select;
+	//group_t *newgroup;
 	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	groupcell->priv->group = group;
