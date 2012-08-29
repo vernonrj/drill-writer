@@ -6,7 +6,7 @@ static void dr_group_cell_init(DrGroupCell *groupcell);
 
 struct _DrGroupCellPrivate {
 	GtkWidget *entry_name;
-	GtkWidget *button_add;
+	//GtkWidget *button_add;
 	GtkWidget *button_del;
 	GtkWidget *button_name;
 	group_t *group;
@@ -167,15 +167,6 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	groupcell->priv->next = NULL;
 	groupcell->priv->entry_name = NULL;
 
-	button = gtk_button_new();
-	image = gtk_image_new_from_stock(GTK_STOCK_ADD, GTK_ICON_SIZE_MENU);
-	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-	gtk_button_set_image(GTK_BUTTON(button), image);
-	gtk_widget_show(image);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
-	g_signal_connect(button, "clicked", G_CALLBACK(select_add_to_group_cell), groupcell);
-	groupcell->priv->button_add = button;
 
 	button = gtk_button_new();
 	image = gtk_image_new_from_stock(GTK_STOCK_REMOVE, GTK_ICON_SIZE_MENU);
@@ -183,13 +174,13 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	gtk_button_set_image(GTK_BUTTON(button), image);
 	gtk_widget_show(image);
 	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
 	g_signal_connect(button, "clicked", G_CALLBACK(dr_group_cell_remove_cell), groupcell);
 	groupcell->priv->button_del = button;
 
 
 	button = gtk_button_new_with_label("New Group");
-	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_HALF);
+	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	g_signal_connect(button, "clicked", G_CALLBACK(group_cell_select_group), groupcell);
 	g_signal_connect(button, "button_press_event", G_CALLBACK(group_cell_clicked), groupcell);
 	gtk_box_pack_start(GTK_BOX(groupcell), button, TRUE, TRUE, 0);
@@ -223,6 +214,8 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	g_signal_connect(menuitem, "activate", G_CALLBACK(group_cell_toggle_to_entry), groupcell);
 	menuitem = mymenu_append(menu, "Toggle Global");
 	g_signal_connect(menuitem, "activate", G_CALLBACK(group_cell_toggle_group_scope), groupcell);
+	menuitem = mymenu_append(menu, "Add Dots");
+	g_signal_connect(menuitem, "activate", G_CALLBACK(select_add_to_group_cell), groupcell);
 	gtk_widget_show(menu);
 	groupcell->priv->context_menu = menu;
 	return;
@@ -322,7 +315,7 @@ GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 	}
 	else
 		curr = NULL;
-	gtk_widget_hide(groupcell->priv->button_add);
+	//gtk_widget_hide(groupcell->priv->button_add);
 	//g_free(groupcell->priv->button_add);
 
 	gtk_widget_hide(groupcell->priv->button_del);
