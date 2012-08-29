@@ -10,6 +10,7 @@ struct _DrGroupCellPrivate {
 	GtkWidget *button_del;
 	GtkWidget *button_name;
 	group_t *group;
+	GtkWidget *context_menu;
 	DrGroupCell *next;
 };
 
@@ -54,11 +55,17 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 
 gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data)
 {
+	GtkWidget *menu;
+	GtkWidget *menuitem;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
 	//int text_length;
+
 	if (event->button == 3)
 	{
+		gtk_menu_popup(GTK_MENU(groupcell->priv->context_menu), NULL, NULL, NULL, NULL, event->button, event->time);
+		/*
+
 		// right-click
 		// change button to entry
 		gtk_widget_hide(groupcell->priv->button_name);
@@ -73,6 +80,8 @@ gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data
 		gtk_editable_set_position(GTK_EDITABLE(groupcell->priv->entry_name), 0);
 
 		gtk_widget_grab_focus(groupcell->priv->entry_name);
+		*/
+		return TRUE;
 	}
 	else if (event->button == 2)
 	{
@@ -82,8 +91,9 @@ gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data
 		group_add_to_set(groupcell->priv->group);
 		groupcell->priv->group = NULL;
 		dr_sidebar_update((DrSidebar*)sidebar);
+		return TRUE;
 	}
-	return 0;
+	return FALSE;
 }
 
 
@@ -115,6 +125,8 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	GtkWidget *image;
 	//GtkEntryBuffer *entry_buffer;
 	GtkWidget *entry;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
 	//const gchar *init_chars;
 
 	//char groupname_buf[20];
@@ -172,9 +184,14 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	g_signal_connect(entry, "activate", G_CALLBACK(group_cell_set_name), groupcell);
 	//g_signal_connect(entry, "leave_notify_event", G_CALLBACK(group_cell_set_name), groupcell);
 	//gtk_widget_show(entry);
-	
 	groupcell->priv->entry_name = entry;
 
+	menu = gtk_menu_new();
+	menuitem = gtk_menu_item_new_with_label("example");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+	gtk_widget_show(menu);
+	groupcell->priv->context_menu = menu;
 	return;
 }
 
