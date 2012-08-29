@@ -8,6 +8,8 @@ struct _DrSidebarGroupsPrivate {
 	//GtkWidget *entry_groupname;
 	GtkWidget *group_cell;
 	GtkWidget *group_cell_local;
+	GtkWidget *global_frame, *local_frame;
+	GtkWidget *box_global, *box_local;
 	set_t *currset;
 	//group_box_t *group_box;
 };
@@ -26,13 +28,10 @@ static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *class)
 static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 {
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
-	//GtkWidget *entry_groupname;
 	GtkWidget *button_add_group;
 
-	//char groupname_buf[20];
 
 	sidebargroups->priv = DR_SIDEBAR_GROUPS_GET_PRIVATE(sidebargroups);
-	//sidebargroups->priv->group_box = NULL;
 	sidebargroups->priv->group_cell = NULL;
 	sidebargroups->priv->group_cell_local = NULL;
 	sidebargroups->priv->currset = pshow->sets->currset;
@@ -43,23 +42,17 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	g_signal_connect(button_add_group, "clicked", G_CALLBACK(add_group_gtk), NULL);
 
 
-	/*
-	sprintf(groupname_buf, "Empty");
-	entry_groupname = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry_groupname), 5);
-	gtk_entry_set_has_frame(GTK_ENTRY(entry_groupname), FALSE);
-	gtk_widget_set_sensitive(entry_groupname, FALSE);
-	//g_signal_connect (entry_groupname, "activate", G_CALLBACK (goto_perf), entry_groupname);
-	gtk_entry_set_text (GTK_ENTRY (entry_groupname), groupname_buf);
-	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
-	gtk_entry_set_alignment(GTK_ENTRY (entry_groupname), 1);
-	gtk_entry_set_width_chars(GTK_ENTRY (entry_groupname), 4);
-	//gtk_box_pack_start (GTK_BOX (perfbar), entry_groupname, FALSE, TRUE, 5);
-	gtk_box_pack_start (GTK_BOX (sidebargroups), entry_groupname, FALSE, TRUE, 5);
-	gtk_widget_show(entry_groupname);
+	sidebargroups->priv->global_frame = gtk_frame_new("Global groups");
+	gtk_box_pack_start(GTK_BOX(sidebargroups), sidebargroups->priv->global_frame, FALSE, FALSE, 0);
+	sidebargroups->priv->box_global = gtk_vbox_new(TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(sidebargroups->priv->global_frame), sidebargroups->priv->box_global);
 
-	sidebargroups->priv->entry_groupname = entry_groupname;
-	*/
+	sidebargroups->priv->local_frame = gtk_frame_new("Local groups");
+	gtk_box_pack_start(GTK_BOX(sidebargroups), sidebargroups->priv->local_frame, FALSE, FALSE, 0);
+	sidebargroups->priv->box_local = gtk_vbox_new(TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(sidebargroups->priv->local_frame), sidebargroups->priv->box_local);
+
+
 	return;
 }
 
@@ -75,10 +68,12 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 	last = *last_r;
 	group = *group_r;
 	GtkWidget *lastcurr = last;
+	bool listEmpty = false;
 	while (last && group)
 	{
 		if (!dr_group_cell_get_group(last))
 		{
+			gtk_widget_hide(last);
 			last = dr_group_cell_delete_from(last, lastcurr);
 		}
 		else
@@ -93,15 +88,22 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 	{
 		if (!dr_group_cell_get_group(last))
 		{
+			gtk_widget_hide(last);
+			if (last == lastcurr)
+				listEmpty = true;
 			last = dr_group_cell_delete_from(last, lastcurr);
 		}
 		else
 		{
+			listEmpty = false;
 			lastcurr = last;
 			last = dr_group_cell_get_next(last);
 		}
 	}
-	last = lastcurr;
+	if (!listEmpty)
+		last = lastcurr;
+	else
+		last = NULL;
 	*last_r = last;
 	*group_r = group;
 	return lsidebargroups;
@@ -111,22 +113,17 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 {
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
-	//char groupname_buf[20];
 	DrSidebarGroups *lsidebargroups;
-	//int i = 0;
-	//GtkWidget *groupcell;
 
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
 	GtkWidget *last = lsidebargroups->priv->group_cell;
 	GtkWidget *lastcurr = last;
-	//group_box_t *curr;
 	group_t *group = pshow->topgroups;
-	//group_t *lastgroup = group;
 
-	//snprintf(groupname_buf, 19, "Empty");
-	//gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
 
 	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, &group);
+	if (!last)
+		lsidebargroups->priv->group_cell = NULL;
 	while (group)
 	{
 		// added a new group
@@ -142,7 +139,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 			last = dr_group_cell_append(last, group);
 			last = dr_group_cell_get_next(last);
 		}
-		gtk_box_pack_start(GTK_BOX(lsidebargroups), last, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(lsidebargroups->priv->box_global), last, FALSE, FALSE, 0);
 		gtk_widget_show(last);
 		group = group->next;
 	}
@@ -153,12 +150,17 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		// flush the local groups out
 		lastcurr = last;
 		while (last)
+		{
+			gtk_widget_hide(last);
 			last = dr_group_cell_delete_from(last, lastcurr);
+		}
 		lsidebargroups->priv->group_cell_local = NULL;
 		last = NULL;
 		lsidebargroups->priv->currset = pshow->sets->currset;
 	}
 	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, &group);
+	if (!last)
+		lsidebargroups->priv->group_cell_local = NULL;
 	while (group)
 	{
 		// added a new group
@@ -174,12 +176,32 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 			last = dr_group_cell_append(last, group);
 			last = dr_group_cell_get_next(last);
 		}
-		gtk_box_pack_start(GTK_BOX(lsidebargroups), last, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(lsidebargroups->priv->box_local), last, FALSE, FALSE, 0);
 		gtk_widget_show(last);
 		group = group->next;
 	}
 
 
+	if (!lsidebargroups->priv->group_cell)
+	{
+		gtk_widget_hide(lsidebargroups->priv->box_global);
+		gtk_widget_hide(lsidebargroups->priv->global_frame);
+	}
+	else
+	{
+		gtk_widget_show(lsidebargroups->priv->box_global);
+		gtk_widget_show(lsidebargroups->priv->global_frame);
+	}
+	if (!lsidebargroups->priv->group_cell_local)
+	{
+		gtk_widget_hide(lsidebargroups->priv->local_frame);
+		gtk_widget_hide(lsidebargroups->priv->box_local);
+	}
+	else
+	{
+		gtk_widget_show(lsidebargroups->priv->box_local);
+		gtk_widget_show(lsidebargroups->priv->local_frame);
+	}
 	return;
 }
 
