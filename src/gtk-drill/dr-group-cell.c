@@ -56,13 +56,23 @@ gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
+	int text_length;
 	if (event->button == 3)
 	{
 		// right-click
 		// change button to entry
 		gtk_widget_hide(groupcell->priv->button_name);
+		gtk_widget_set_sensitive(groupcell->priv->button_name, FALSE);
 		gtk_widget_show(groupcell->priv->entry_name);
-		//gtk_widget_grab_focus(groupcell->priv->entry_name);
+		text_length = gtk_entry_get_text_length(GTK_ENTRY(groupcell->priv->entry_name))-1;
+		//if (text_length > 0)
+		{
+			gtk_editable_select_region(GTK_EDITABLE(groupcell->priv->entry_name),
+				0, -1);
+		}
+		gtk_editable_set_position(GTK_EDITABLE(groupcell->priv->entry_name), 0);
+
+		gtk_widget_grab_focus(groupcell->priv->entry_name);
 	}
 	return 0;
 }
@@ -77,6 +87,7 @@ gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), new_name);
 	gtk_widget_hide(widget);
 	gtk_widget_show(groupcell->priv->button_name);
+	gtk_widget_set_sensitive(groupcell->priv->button_name, TRUE);
 	return 0;
 }
 
@@ -131,7 +142,9 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	entry_buffer = gtk_entry_buffer_new(init_chars, strlen(init_chars)+1);
 
 	//sprintf(groupname_buf, "Empty");
-	entry = gtk_entry_new_with_buffer (entry_buffer);
+	//entry = gtk_entry_new_with_buffer (entry_buffer);
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), gtk_button_get_label(GTK_BUTTON(button)));
 	//gtk_entry_set_max_length (GTK_ENTRY (groupcell->priv->entry_name), 5);
 	//g_signal_connect (entry_groupname, "activate", G_CALLBACK (goto_perf), entry_groupname);
 	//gtk_entry_set_text (GTK_ENTRY (entry), groupname_buf);
