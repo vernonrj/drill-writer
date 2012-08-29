@@ -335,6 +335,7 @@ group_t *group_add_selects(group_t *group, select_t *newsels);
 group_t *group_remove_from(group_t *group, group_t *curr);
 group_t *group_pop_from(group_t *group, group_t *curr);
 void group_add_to_set(group_t *group);
+void group_add_global(group_t *group);
 bool is_in_select(int index, select_t *selects);
 int add_group(void);
 

@@ -47,7 +47,16 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	pshow->topgroups = group_remove_from(groupcell->priv->group, pshow->topgroups);
+	if (groupcell->priv->group->local)
+	{
+		// local group
+		pshow->sets->currset->groups = group_remove_from(groupcell->priv->group, pshow->sets->currset->groups);
+	}
+	else
+	{
+		// global group
+		pshow->topgroups = group_remove_from(groupcell->priv->group, pshow->topgroups);
+	}
 	groupcell->priv->group = NULL;
 	dr_sidebar_update((DrSidebar*)sidebar);
 }
@@ -55,46 +64,14 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 
 gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
-	//int text_length;
 
 	if (event->button == 3)
 	{
 		gtk_menu_popup(GTK_MENU(groupcell->priv->context_menu), NULL, NULL, NULL, NULL, event->button, event->time);
-		/*
-
-		// right-click
-		// change button to entry
-		gtk_widget_hide(groupcell->priv->button_name);
-		gtk_widget_set_sensitive(groupcell->priv->button_name, FALSE);
-		gtk_widget_show(groupcell->priv->entry_name);
-		//text_length = gtk_entry_get_text_length(GTK_ENTRY(groupcell->priv->entry_name))-1;
-		//if (text_length > 0)
-		{
-			gtk_editable_select_region(GTK_EDITABLE(groupcell->priv->entry_name),
-				0, -1);
-		}
-		gtk_editable_set_position(GTK_EDITABLE(groupcell->priv->entry_name), 0);
-
-		gtk_widget_grab_focus(groupcell->priv->entry_name);
-		*/
 		return TRUE;
 	}
-	/*
-	else if (event->button == 2)
-	{
-		// middle-click
-		// move group to local scope
-		pshow->topgroups = group_pop_from(groupcell->priv->group, pshow->topgroups);
-		group_add_to_set(groupcell->priv->group);
-		groupcell->priv->group = NULL;
-		dr_sidebar_update((DrSidebar*)sidebar);
-		return TRUE;
-	}
-	*/
 	return FALSE;
 }
 
@@ -104,9 +81,14 @@ gint group_cell_toggle_group_scope(GtkWidget *widget, gpointer *data)
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
 	if (groupcell->priv->group->local)
 	{
+		// switch local group to global
+		pshow->sets->currset->groups = group_pop_from(groupcell->priv->group, pshow->sets->currset->groups);
+		group_add_global(groupcell->priv->group);
+		groupcell->priv->group->local = false;
 	}
 	else
 	{
+		// switch global group to local
 		pshow->topgroups = group_pop_from(groupcell->priv->group, pshow->topgroups);
 		group_add_to_set(groupcell->priv->group);
 		groupcell->priv->group->local = true;

@@ -585,6 +585,21 @@ void group_add_to_set(group_t *group)
 }
 
 
+void group_add_global(group_t *group)
+{
+	// add a group to the global set
+	group_t *last = pshow->topgroups;
+	if (last == NULL)
+	{
+		pshow->topgroups = group;
+		return;
+	}
+	while (last->next)
+		last = last->next;
+	last->next = group;
+	return;
+}
+	
 
 
 bool is_in_select(int index, select_t *selects)
