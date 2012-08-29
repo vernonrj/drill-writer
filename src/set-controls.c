@@ -44,11 +44,14 @@ int set_construct(set_t **sets_r, int perfs)
 	newset->name[0] = '\0';
 	newset->info[0] = '\0';
 	newset->counts = 0;
-	newset->groups = (group_t*)malloc(sizeof(group_t));
+	//newset->groups = (group_t*)malloc(sizeof(group_t));
+	newset->groups = NULL;
 	// FIXME: Allocate group correctly
+	/*
 	newset->groups->selects = NULL;
 	newset->groups->forms = NULL;
 	newset->groups->next = NULL;
+	*/
 
 	// make sure not classified as midset
 	newset->midset = 0;

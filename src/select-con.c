@@ -514,6 +514,15 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 
 group_t *group_remove_from(group_t *group, group_t *curr)
 {
+	group = group_pop_from(group, curr);
+	free(curr);
+	return group;
+}
+
+
+
+group_t *group_pop_from(group_t *group, group_t *curr)
+{
 	group_t *last = curr;
 	if (!group)
 		return NULL;
@@ -527,7 +536,7 @@ group_t *group_remove_from(group_t *group, group_t *curr)
 	else
 	{
 		last = last->next;
-		free(group);
+		//free(group);
 		return last;
 	}
 
@@ -535,9 +544,28 @@ group_t *group_remove_from(group_t *group, group_t *curr)
 		return NULL;
 
 	last->next = group->next;
-	free(group);
+	group->next = NULL;
 	return curr;
+
 }
+
+
+void group_add_to_set(group_t *group)
+{
+	set_t *sets = pshow->sets->currset;
+	group_t *setgroup = sets->groups;
+	group->next = NULL;
+	if (sets->groups == NULL)
+	{
+		sets->groups = group;
+		return;
+	}
+	while (setgroup->next)
+		setgroup = setgroup->next;
+	setgroup->next = group;
+	return;
+}
+
 
 
 

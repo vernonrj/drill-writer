@@ -24,10 +24,10 @@ static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *class)
 static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 {
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
-	GtkWidget *entry_groupname;
+	//GtkWidget *entry_groupname;
 	GtkWidget *button_add_group;
 
-	char groupname_buf[20];
+	//char groupname_buf[20];
 
 	sidebargroups->priv = DR_SIDEBAR_GROUPS_GET_PRIVATE(sidebargroups);
 	//sidebargroups->priv->group_box = NULL;
@@ -67,7 +67,7 @@ GtkWidget *dr_sidebar_groups_new(void)
 void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 {
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
-	char groupname_buf[20];
+	//char groupname_buf[20];
 	DrSidebarGroups *lsidebargroups;
 	//int i = 0;
 	//GtkWidget *groupcell;
