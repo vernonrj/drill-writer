@@ -7,6 +7,8 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebar_groups);
 struct _DrSidebarGroupsPrivate {
 	//GtkWidget *entry_groupname;
 	GtkWidget *group_cell;
+	GtkWidget *group_cell_local;
+	set_t *currset;
 	//group_box_t *group_box;
 };
 
@@ -32,6 +34,8 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	sidebargroups->priv = DR_SIDEBAR_GROUPS_GET_PRIVATE(sidebargroups);
 	//sidebargroups->priv->group_box = NULL;
 	sidebargroups->priv->group_cell = NULL;
+	sidebargroups->priv->group_cell_local = NULL;
+	sidebargroups->priv->currset = pshow->sets->currset;
 
 	button_add_group = gtk_button_new_with_label("Add group");
 	gtk_widget_show(button_add_group);
@@ -64,25 +68,13 @@ GtkWidget *dr_sidebar_groups_new(void)
 	return GTK_WIDGET(g_object_new(dr_sidebar_groups_get_type(), NULL));
 }
 
-void dr_sidebar_groups_update(GtkWidget *sidebargroups)
+DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, GtkWidget **last_r, group_t **group_r)
 {
-	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
-	//char groupname_buf[20];
-	DrSidebarGroups *lsidebargroups;
-	//int i = 0;
-	//GtkWidget *groupcell;
-
-	lsidebargroups = (DrSidebarGroups*)sidebargroups;
-	GtkWidget *last = lsidebargroups->priv->group_cell;
+	GtkWidget *last;
+	group_t *group;
+	last = *last_r;
+	group = *group_r;
 	GtkWidget *lastcurr = last;
-	//group_box_t *curr;
-	group_t *group = pshow->topgroups;
-	//group_t *lastgroup = group;
-
-	//snprintf(groupname_buf, 19, "Empty");
-	//gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
-
-
 	while (last && group)
 	{
 		if (!dr_group_cell_get_group(last))
@@ -110,6 +102,31 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		}
 	}
 	last = lastcurr;
+	*last_r = last;
+	*group_r = group;
+	return lsidebargroups;
+}
+
+
+void dr_sidebar_groups_update(GtkWidget *sidebargroups)
+{
+	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
+	//char groupname_buf[20];
+	DrSidebarGroups *lsidebargroups;
+	//int i = 0;
+	//GtkWidget *groupcell;
+
+	lsidebargroups = (DrSidebarGroups*)sidebargroups;
+	GtkWidget *last = lsidebargroups->priv->group_cell;
+	GtkWidget *lastcurr = last;
+	//group_box_t *curr;
+	group_t *group = pshow->topgroups;
+	//group_t *lastgroup = group;
+
+	//snprintf(groupname_buf, 19, "Empty");
+	//gtk_entry_set_text(GTK_ENTRY(lsidebargroups->priv->entry_groupname), groupname_buf);
+
+	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, &group);
 	while (group)
 	{
 		// added a new group
@@ -129,6 +146,39 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(last);
 		group = group->next;
 	}
+	last = lsidebargroups->priv->group_cell_local;
+	group = pshow->sets->currset->groups;
+	if (pshow->sets->currset != lsidebargroups->priv->currset)
+	{
+		// flush the local groups out
+		lastcurr = last;
+		while (last)
+			last = dr_group_cell_delete_from(last, lastcurr);
+		lsidebargroups->priv->group_cell_local = NULL;
+		last = NULL;
+		lsidebargroups->priv->currset = pshow->sets->currset;
+	}
+	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, &group);
+	while (group)
+	{
+		// added a new group
+		// add another sidebar ref
+		if (!last)
+		{
+			last = dr_group_cell_new();
+			lsidebargroups->priv->group_cell_local = last;
+			dr_group_cell_set_group(last, group);
+		}
+		else
+		{
+			last = dr_group_cell_append(last, group);
+			last = dr_group_cell_get_next(last);
+		}
+		gtk_box_pack_start(GTK_BOX(lsidebargroups), last, FALSE, FALSE, 0);
+		gtk_widget_show(last);
+		group = group->next;
+	}
+
 
 	return;
 }

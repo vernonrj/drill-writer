@@ -514,6 +514,9 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 
 group_t *group_remove_from(group_t *group, group_t *curr)
 {
+	// remove group from the current
+	// return current
+
 	if (group == curr)
 	{
 		curr = group_pop_from(group, curr);
@@ -528,6 +531,11 @@ group_t *group_remove_from(group_t *group, group_t *curr)
 
 group_t *group_pop_from(group_t *group, group_t *curr)
 {
+	// pop group out of current
+	// so group is still allocated,
+	// but is not in the curr list
+	// return current
+
 	group_t *last = curr;
 	if (!group)
 		return NULL;
@@ -557,6 +565,8 @@ group_t *group_pop_from(group_t *group, group_t *curr)
 
 void group_add_to_set(group_t *group)
 {
+	// add a group to the local set of groups
+
 	set_t *sets = pshow->sets->currset;
 	group_t *setgroup = sets->groups;
 	group->next = NULL;
@@ -576,6 +586,7 @@ void group_add_to_set(group_t *group)
 
 bool is_in_select(int index, select_t *selects)
 {
+	// check to see if dot is in list of selects
 	select_t *last = selects;
 	while (last)
 	{
