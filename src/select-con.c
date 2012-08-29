@@ -514,9 +514,14 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 
 group_t *group_remove_from(group_t *group, group_t *curr)
 {
-	group = group_pop_from(group, curr);
-	free(curr);
-	return group;
+	if (group == curr)
+	{
+		curr = group_pop_from(group, curr);
+	}
+	else
+		group_pop_from(group, curr);
+	free(group);
+	return curr;
 }
 
 
