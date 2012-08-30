@@ -68,7 +68,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_drillwriter_OBJECTS = drillwriter-coords.$(OBJEXT) \
 	drillwriter-fieldrel.$(OBJEXT) drillwriter-file-ops.$(OBJEXT) \
 	drillwriter-main.$(OBJEXT) drillwriter-perf-con.$(OBJEXT) \
-	drillwriter-select-con.$(OBJEXT) \
+	drillwriter-forms.$(OBJEXT) drillwriter-select-con.$(OBJEXT) \
 	drillwriter-set-controls.$(OBJEXT) drillwriter-tempo.$(OBJEXT) \
 	drillwriter-undo.$(OBJEXT) drillwriter-file-ops-gtk.$(OBJEXT) \
 	drillwriter-coords-gtk.$(OBJEXT) \
@@ -280,7 +280,7 @@ top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.hpp \
 		      coords.c fieldrel.c file-ops.c \
-		      main.c perf-con.c \
+		      main.c perf-con.c forms.c\
 		      select-con.c set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/perf-con-gtk.c \
@@ -403,6 +403,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-fieldrel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-file-ops-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-file-ops.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-forms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-main-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-perf-con-gtk.Po@am__quote@
@@ -504,6 +505,20 @@ drillwriter-perf-con.obj: perf-con.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='perf-con.c' object='drillwriter-perf-con.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-perf-con.obj `if test -f 'perf-con.c'; then $(CYGPATH_W) 'perf-con.c'; else $(CYGPATH_W) '$(srcdir)/perf-con.c'; fi`
+
+drillwriter-forms.o: forms.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-forms.o -MD -MP -MF $(DEPDIR)/drillwriter-forms.Tpo -c -o drillwriter-forms.o `test -f 'forms.c' || echo '$(srcdir)/'`forms.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-forms.Tpo $(DEPDIR)/drillwriter-forms.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='forms.c' object='drillwriter-forms.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-forms.o `test -f 'forms.c' || echo '$(srcdir)/'`forms.c
+
+drillwriter-forms.obj: forms.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-forms.obj -MD -MP -MF $(DEPDIR)/drillwriter-forms.Tpo -c -o drillwriter-forms.obj `if test -f 'forms.c'; then $(CYGPATH_W) 'forms.c'; else $(CYGPATH_W) '$(srcdir)/forms.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-forms.Tpo $(DEPDIR)/drillwriter-forms.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='forms.c' object='drillwriter-forms.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-forms.obj `if test -f 'forms.c'; then $(CYGPATH_W) 'forms.c'; else $(CYGPATH_W) '$(srcdir)/forms.c'; fi`
 
 drillwriter-select-con.o: select-con.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-select-con.o -MD -MP -MF $(DEPDIR)/drillwriter-select-con.Tpo -c -o drillwriter-select-con.o `test -f 'select-con.c' || echo '$(srcdir)/'`select-con.c
