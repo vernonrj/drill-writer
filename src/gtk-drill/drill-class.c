@@ -524,7 +524,8 @@ static void gtk_drill_destroy(GtkObject *object)
 	g_return_if_fail(GTK_IS_DRILL(object));
 
 	//drill = GTK_DRILL(object);
-	klass = gtk_type_class(gtk_widget_get_type());
+	//klass = gtk_type_class(gtk_widget_get_type());
+	klass = g_type_class_ref(gtk_widget_get_type());
 
 	if (GTK_OBJECT_CLASS(klass)->destroy) {
 		(* GTK_OBJECT_CLASS(klass)->destroy) (object);
