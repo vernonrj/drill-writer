@@ -24,6 +24,14 @@ static void dr_group_cell_class_init(DrGroupCellClass *class)
 	GObjectClass *g_object_class = G_OBJECT_CLASS(class);
 	g_type_class_add_private(g_object_class, sizeof(DrGroupCellPrivate));
 }
+static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	form_build_line(groupcell->priv->group);
+	return;
+}
+
 
 static void group_cell_select_group(GtkWidget *widget, gpointer *data)
 {
@@ -216,6 +224,8 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	g_signal_connect(menuitem, "activate", G_CALLBACK(group_cell_toggle_group_scope), groupcell);
 	menuitem = mymenu_append(menu, "Add Dots");
 	g_signal_connect(menuitem, "activate", G_CALLBACK(select_add_to_group_cell), groupcell);
+	menuitem = mymenu_append(menu, "Add Form");
+	g_signal_connect(menuitem, "activate", G_CALLBACK(dr_group_cell_add_form), groupcell);
 	gtk_widget_show(menu);
 	groupcell->priv->context_menu = menu;
 	return;

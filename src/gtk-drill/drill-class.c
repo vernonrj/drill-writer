@@ -651,6 +651,54 @@ int field_to_pixel(double *x_r, double *y_r)
 
 
 
+int draw_forms(GtkWidget *widget)
+{
+	form_t *form;
+	fline_t *line;
+	//fblock_t *block;
+	//farc_t *arc;
+	group_t *group;
+	select_t *select;
+	double x, y;
+
+	cairo_t *canv_form;
+	cairo_destroy(canv_form);
+	canv_form = gdk_cairo_create(widget->window);
+	canvas_apply(canv_form);
+	cairo_set_line_width(canv_form, 2.0);
+	cairo_set_source_rgb(canv_form, 1, 0.5, 1);
+
+	group = pshow->sets->currset->groups;
+	while (group)
+	{
+		if (!group->forms)
+		{
+			group = group->next;
+			continue;
+		}
+		form = group->forms;
+		switch (form->type)
+		{
+			case 1:		// line
+				line = form->form->line;
+				x = line->coords[0][0];
+				y = line->coords[0][1];
+				field_to_pixel(&x, &y);
+				cairo_move_to(canv_form, x, y);
+				x = line->coords[1][0];
+				y = line->coords[1][1];
+				field_to_pixel(&x, &y);
+				cairo_line_to(canv_form, x, y);
+				break;
+		}
+		group = group->next;
+	}
+	cairo_stroke(canv_form);
+	return 0;
+}
+
+
+	
 int draw_selected(GtkWidget *widget)
 {
 	// draw selected dots, not normal dots
@@ -1025,6 +1073,7 @@ void draw_field (GtkWidget *widget)
 	// Cleanup
 	// Show the dots
 	draw_dots(widget);
+	draw_forms(widget);
 
 	// Make sure field won't be redrawn by default
 	do_field = 0;

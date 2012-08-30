@@ -33,9 +33,9 @@ void form_build_line(group_t *group)
 	for (i=0; i<index; i++)
 	{
 		line->dots[i] = select->index;
-		select = select->next;
 		if (i == index - 1)
 			retr_midset(pshow->sets->currset, select->index, &line->coords[1][0], &line->coords[1][1]);
+		select = select->next;
 
 	}
 }
