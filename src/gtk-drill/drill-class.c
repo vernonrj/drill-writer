@@ -660,15 +660,22 @@ int draw_forms(GtkWidget *widget)
 	group_t *group;
 	select_t *select;
 	double x, y;
+	bool stroke_forms = false;
 
 	cairo_t *canv_form;
-	cairo_destroy(canv_form);
-	canv_form = gdk_cairo_create(widget->window);
-	canvas_apply(canv_form);
-	cairo_set_line_width(canv_form, 2.0);
-	cairo_set_source_rgb(canv_form, 1, 0.5, 1);
 
 	group = pshow->sets->currset->groups;
+	//if (group)
+	{
+		stroke_forms = true;
+		cairo_destroy(canv_form);
+		canv_form = cairo_create(surface);
+		canvas_apply(canv_form);
+		cairo_set_line_width(canv_form, 2.0);
+		cairo_set_source_rgb(canv_form, 1, 0.5, 1);
+	}
+
+
 	while (group)
 	{
 		if (!group->forms)
@@ -693,7 +700,8 @@ int draw_forms(GtkWidget *widget)
 		}
 		group = group->next;
 	}
-	cairo_stroke(canv_form);
+	if (stroke_forms)
+		cairo_stroke(canv_form);
 	return 0;
 }
 
@@ -717,14 +725,16 @@ int draw_selected(GtkWidget *widget)
 	double sel_ymin, sel_ymax;
 
 	cairo_destroy(selected);
-	selected = gdk_cairo_create(widget->window);
+	//selected = gdk_cairo_create(widget->window);
+	selected = cairo_create(surface);
 	canvas_apply(selected);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 
 
 	cairo_destroy(select_drag);
-	select_drag = gdk_cairo_create(widget->window);
+	//select_drag = gdk_cairo_create(widget->window);
+	select_drag = cairo_create(surface);
 	canvas_apply(select_drag);
 	cairo_set_line_width(select_drag, 1.5);
 	cairo_set_source_rgba(select_drag, 1, 0, 0, 0.5);
@@ -837,6 +847,7 @@ int draw_dots (GtkWidget *widget)
 		// Draw the field
 		cairo_destroy(surface_write);
 		surface_write = gdk_cairo_create(widget->window);
+		//surface_write = cairo_create(surface);
 
 		cairo_set_source_surface(surface_write, surface, 1, 1);
 		cairo_paint (surface_write);
@@ -844,7 +855,8 @@ int draw_dots (GtkWidget *widget)
 
 		// Define canvases
 		cairo_destroy(dots);
-		dots = gdk_cairo_create(widget->window);
+		//dots = gdk_cairo_create(widget->window);
+		dots = cairo_create(surface);
 		canvas_apply(dots);
 
 		cairo_set_line_width(dots, 1.5);
@@ -914,7 +926,7 @@ int draw_dots (GtkWidget *widget)
 		}
 		// Show all the dots
 		cairo_stroke(dots);
-		cairo_fill (dots);
+		//cairo_fill (dots);
 		// Cleanup loose ends
 		if (do_selected)
 			draw_selected(widget);
@@ -954,6 +966,7 @@ void draw_field (GtkWidget *widget)
 			cairo_destroy(fnums);
 			cairo_destroy(gaks);
 			cairo_destroy(field);
+			cairo_destroy(canv_form);
 			cairo_surface_destroy(surface);
 		}
 		else

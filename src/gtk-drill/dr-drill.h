@@ -47,6 +47,7 @@ cairo_t *selected; 	// selected dots
 cairo_t *select_drag;	// dots being dragged by mouse
 cairo_t *selected_area;
 cairo_t *surface_write; // field to draw to
+cairo_t *canv_form;
 
 // drawfield.c
 void force_redraw(GtkWidget *widget);
