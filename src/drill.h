@@ -120,11 +120,18 @@ struct select_proto
 
 
 // Forms
+
+typedef struct // fline_t
+{
+	double coords[2][2];
+	int *dots;
+} fline_t;
+
 typedef struct // fblock_t
 {
 	bool points[4];	// 1 0
 			// 2 3
-	double coords[4];
+	double coords[4][2];
 	int hFiles;	// # of horizontal files
 	int vFiles;	// # of vertical files
 	int **dots;	// Grid for the dots (perf nums)
@@ -145,6 +152,7 @@ typedef struct // farc_t
 
 typedef union // formType_t
 {
+	fline_t *line;
 	fblock_t *block;
 	farc_t *arc;
 } formType_t;
@@ -281,6 +289,9 @@ int movexy_grid(double xoff, double yoff);
 void box_scale_form(double s_step);
 void scale_form(double s_step);
 void rot_form(double s_step);
+
+// forms.c
+void form_build_line(group_t *group);
 
 // fieldrel.c
 int isInsideYard(double *x, double *y, int *field_side);
