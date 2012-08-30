@@ -61,6 +61,7 @@ void draw_field (GtkWidget *widget);
 
 // drill.c
 void zoom_amnt(double invalue, bool from_mouse);
+void dr_canvas_refresh(GtkWidget *widget);
 void canvas_apply(cairo_t *cr);
 void canvas_move(GtkWidget *widget, double valuex, double valuey);
 gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event);

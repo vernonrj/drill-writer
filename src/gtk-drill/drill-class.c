@@ -23,6 +23,7 @@ void zoom_amnt(double invalue, bool from_mouse)
 	double offsetx2, offsety2;
 	double page_sizex, page_sizey;
 	double mousex, mousey;
+	double hsc_psize, vsc_psize;
 	// block scroll signals for scrollbars
 	// while adjusting canvas scaling, scroll amount
 	g_signal_handler_block(hscroll, hscroll_id);
@@ -32,12 +33,16 @@ void zoom_amnt(double invalue, bool from_mouse)
 		// set zoom to 100%
 		//value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
-		hscroll->page_size = fldstate.width;
-		vscroll->page_size = fldstate.height;
+		//hscroll->page_size = fldstate.width;
+		//gtk_adjustment_get_page_size(vscroll) = fldstate.height;
+		gtk_adjustment_set_page_size(hscroll, fldstate.width);
+		gtk_adjustment_set_page_size(vscroll, fldstate.height);
 		fldstate.fieldx = 0;
 		fldstate.fieldy = 0;
-		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hscroll->page_size / 10, hscroll->page_size / 10 * 9, hscroll->page_size);
-		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vscroll->page_size / 10, vscroll->page_size / 10 * 9, vscroll->page_size);
+		hsc_psize = gtk_adjustment_get_page_size(hscroll);
+		vsc_psize = gtk_adjustment_get_page_size(vscroll);
+		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hsc_psize / 10, hsc_psize / 10 * 9, hsc_psize);
+		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vsc_psize / 10, vsc_psize / 10 * 9, vsc_psize);
 		canvas_move(drill, 0, 0);
 		g_signal_handler_unblock(hscroll, hscroll_id);
 		g_signal_handler_unblock(vscroll, vscroll_id);
@@ -48,13 +53,17 @@ void zoom_amnt(double invalue, bool from_mouse)
 		// zoom and scale the canvas
 		value = invalue;
 		// get the old page size
-		offsetx1 = hscroll->upper / fldstate.zoom_amnt;
-		offsety1 = vscroll->upper / fldstate.zoom_amnt;
+		//offsetx1 = hscroll->upper / fldstate.zoom_amnt;
+		//offsety1 = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
+		offsetx1 = gtk_adjustment_get_upper(hscroll) / fldstate.zoom_amnt;
+		offsety1 = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
 		// new zoom factor
 		fldstate.zoom_amnt *= value;
 		// new page size
-		page_sizex = hscroll->upper / fldstate.zoom_amnt;
-		page_sizey = vscroll->upper / fldstate.zoom_amnt;
+		//page_sizex = hscroll->upper / fldstate.zoom_amnt;
+		//page_sizey = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
+		page_sizex = gtk_adjustment_get_upper(hscroll) / fldstate.zoom_amnt;
+		page_sizey = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
 		// change scrollbars
 		gtk_adjustment_configure(hscroll, fldstate.fieldx, 0.0, fldstate.width, page_sizex / 10, page_sizex / 10 * 9, page_sizex);
 		gtk_adjustment_configure(vscroll, fldstate.fieldy, 0.0, fldstate.height, page_sizey / 10, page_sizey / 10 * 9, page_sizey);
@@ -98,6 +107,16 @@ void zoom_fit(GtkWidget *widget)
 }
 
 
+void dr_canvas_refresh(GtkWidget *widget)
+{
+	GtkAllocation allc;
+	gtk_widget_get_allocation(widget, &allc);
+	//gtk_widget_queue_draw_area(window, widget->allocation.x, widget->allocation.y, widget->allocation.width, widget->allocation.height);
+	gtk_widget_queue_draw_area(window, allc.x, allc.y, allc.width, allc.height);
+}
+
+
+
 
 void canvas_apply(cairo_t *cr)
 {
@@ -108,7 +127,8 @@ void canvas_apply(cairo_t *cr)
 	// move canvas to highlight section of field
 	// note: for some reason, (x,y) must be negated to translate correctly
 	//cairo_translate(cr, -1*fldstate.fieldx, -1*fldstate.fieldy);
-	cairo_translate(cr, -1*hscroll->value, -1*vscroll->value);
+	//cairo_translate(cr, -1*hscroll->value, -1*vscroll->value);
+	cairo_translate(cr, -1*gtk_adjustment_get_value(hscroll), -1*gtk_adjustment_get_value(vscroll));
 	return;
 }
 
@@ -126,21 +146,28 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	// Bounds checking
 	if (fieldx < 0)
 		fieldx = 0;
-	if (fieldx + hscroll->page_size > hscroll->upper)
-		fieldx = hscroll->upper - hscroll->page_size;
+	//if (fieldx + hscroll->page_size > hscroll->upper)
+		//fieldx = hscroll->upper - hscroll->page_size;
+	if (fieldx + gtk_adjustment_get_page_size(hscroll) > gtk_adjustment_get_upper(hscroll))
+		fieldx = gtk_adjustment_get_upper(hscroll) - gtk_adjustment_get_page_size(hscroll);
 	if (fieldy < 0)
 		fieldy = 0;
-	if (fieldy + vscroll->page_size > vscroll->upper)
-		fieldy = vscroll->upper - vscroll->page_size;
+	if (fieldy + gtk_adjustment_get_page_size(vscroll) > gtk_adjustment_get_upper(vscroll))
+		fieldy = gtk_adjustment_get_upper(vscroll) - gtk_adjustment_get_page_size(vscroll);
 
 	// apply new position
-	hscroll->value = fieldx;
-	vscroll->value = fieldy;
+	gtk_adjustment_set_value(hscroll, fieldx);
+	gtk_adjustment_set_value(vscroll, fieldy);
+	//hscroll->value = fieldx;
+	//vscroll->value = fieldy;
 	// redraw canvas
 	do_field = 1;
-	gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
-	fldstate.fieldx = hscroll->value;
-	fldstate.fieldy = vscroll->value;
+	//gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
+	dr_canvas_refresh(mybox);
+	//fldstate.fieldx = hscroll->value;
+	//fldstate.fieldy = vscroll->value;
+	fldstate.fieldx = gtk_adjustment_get_value(hscroll);
+	fldstate.fieldy = gtk_adjustment_get_value(vscroll);
 
 	return;
 }
@@ -157,13 +184,15 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		{
 			// no modifiers
 			// move up
-			canvas_move(widget, 0.0, -1*vscroll->step_increment);
+			//canvas_move(widget, 0.0, -1*vscroll->step_increment);
+			canvas_move(widget, 0.0, -1*gtk_adjustment_get_step_increment(vscroll));
 		}
 		else if (event->state == 1)
 		{
 			// shift modifier
 			// move left
-			canvas_move(widget, -1*hscroll->step_increment, 0.0);
+			//canvas_move(widget, -1*hscroll->step_increment, 0.0);
+			canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
 		else if (event->state == 4)
 		{
@@ -177,13 +206,15 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		if (event->state == 0)
 		{
 			// move down
-			canvas_move(widget, 0.0, vscroll->step_increment);
+			//canvas_move(widget, 0.0, vscroll->step_increment);
+			canvas_move(widget, 0.0, gtk_adjustment_get_step_increment(vscroll));
 		}
 		else if (event->state == 1)
 		{
 			// shift modifier
 			// move right
-			canvas_move(widget, hscroll->step_increment, 0.0);
+			//canvas_move(widget, hscroll->step_increment, 0.0);
+			canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
 		else if (event->state == 4)
 		{
@@ -193,9 +224,15 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		}
 	}
 	else if (event->direction == GDK_SCROLL_LEFT)
-		canvas_move(widget, -1*hscroll->step_increment, 0.0);
+	{
+		//canvas_move(widget, -1*hscroll->step_increment, 0.0);
+		canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
+	}
 	else if (event->direction == GDK_SCROLL_RIGHT)
-		canvas_move(widget, hscroll->step_increment, 0.0);
+	{
+		//canvas_move(widget, hscroll->step_increment, 0.0);
+		canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
+	}
 	return TRUE;
 }
 
@@ -374,12 +411,14 @@ static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 	g_return_if_fail(GTK_IS_DRILL(widget));
 	g_return_if_fail(allocation != NULL);
 
-	widget->allocation = *allocation;
+	//widget->allocation = *allocation;
+	gtk_widget_set_allocation(widget, allocation);
 
 	if (gtk_widget_get_realized(widget))
 	{
 		gdk_window_move_resize(
-				widget->window,
+				//widget->window,
+				gtk_widget_get_window(widget),
 				allocation->x, allocation->y,
 				allocation->width, allocation->height
 				);
@@ -394,17 +433,27 @@ static void gtk_drill_realize(GtkWidget *widget)
 	//GtkDrill *drill;
 	GdkWindowAttr attributes;
 	guint attributes_mask;
+	GtkAllocation allc;
 
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_DRILL(widget));
 
-	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
+	//GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
+	gtk_widget_set_realized(widget, TRUE);
 	//drill = GTK_DRILL(widget);
 
+	gtk_widget_get_allocation(widget, &allc);
+
+	/*
 	attributes.x = widget->allocation.x;
 	attributes.y = widget->allocation.y;
 	attributes.width = widget->allocation.width;
 	attributes.height = widget->allocation.height;
+	*/
+	attributes.x = allc.x;
+	attributes.y = allc.y;
+	attributes.width = allc.width;
+	attributes.height = allc.height;
 	attributes.window_type = GDK_WINDOW_CHILD;
 
 	attributes.wclass = GDK_INPUT_OUTPUT;
@@ -417,12 +466,16 @@ static void gtk_drill_realize(GtkWidget *widget)
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y;
 
-	widget->window = gdk_window_new(gtk_widget_get_parent_window(widget), &attributes, attributes_mask);
-	widget->style = gtk_style_attach(widget->style, widget->window);
+	//widget->window = gdk_window_new(gtk_widget_get_parent_window(widget), &attributes, attributes_mask);
+	//widget->style = gtk_style_attach(widget->style, widget->window);
+	gtk_widget_set_window(widget, gdk_window_new(gtk_widget_get_parent_window(widget), &attributes, attributes_mask));
+	gtk_widget_set_style(widget, gtk_style_attach(gtk_widget_get_style(widget), gtk_widget_get_window(widget)));
 
-	gdk_window_set_user_data(widget->window, widget);
+	//gdk_window_set_user_data(widget->window, widget);
+	gdk_window_set_user_data(gtk_widget_get_window(widget), widget);
 
-	gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
+	//gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
+	gtk_style_set_background(gtk_widget_get_style(widget), gtk_widget_get_window(widget), GTK_STATE_NORMAL);
 }
 
 
@@ -492,11 +545,13 @@ double xstep, yheight;
 void force_redraw(GtkWidget *widget)
 {	// Refresh the field
 	do_field=1;
-	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+	dr_canvas_refresh(drill);
+	//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 }
 
 
 
+/*
 int field_init(void)
 {
 	// initialize the field
@@ -511,7 +566,7 @@ int field_init(void)
 	//do_field = 1;
 	return 0;
 }
-
+*/
 
 
 void def_canvas (GtkWidget *widget)
@@ -523,14 +578,19 @@ void def_canvas (GtkWidget *widget)
 	double c_step;
 	const int x_off = 16;
 	const int y_off = 16;
+	GtkAllocation allocation;
+	gtk_widget_get_allocation(widget, &allocation);
+
 	// use default values for width and height
-	if (fldstate.width != widget->allocation.width || fldstate.height != widget->allocation.height)
+	if (fldstate.width != allocation.width || fldstate.height != allocation.height)
 	{
 		do_field=1;
 	}
 	// update width and height
-	fldstate.width = widget->allocation.width;	// Get the width
-	fldstate.height = widget->allocation.height;	// Get the height
+	//fldstate.width = widget->allocation.width;	// Get the width
+	//fldstate.height = widget->allocation.height;	// Get the height
+	fldstate.width = allocation.width;	// Get the width
+	fldstate.height = allocation.height;	// Get the height
 	///*
 	
 	// set initial canvas step
@@ -662,13 +722,13 @@ int draw_forms(GtkWidget *widget)
 	double x, y;
 	bool stroke_forms = false;
 
-	cairo_t *canv_form;
+	//cairo_t *canv_form;
 
 	group = pshow->sets->currset->groups;
 	//if (group)
 	{
 		stroke_forms = true;
-		cairo_destroy(canv_form);
+		//cairo_destroy(canv_form);
 		canv_form = cairo_create(surface);
 		canvas_apply(canv_form);
 		cairo_set_line_width(canv_form, 2.0);
@@ -725,23 +785,24 @@ int draw_selected(GtkWidget *widget)
 	double sel_ymin, sel_ymax;
 
 	cairo_destroy(selected);
-	//selected = gdk_cairo_create(widget->window);
-	selected = cairo_create(surface);
+	selected = gdk_cairo_create(gtk_widget_get_window(widget));
+	//selected = cairo_create(surface);
 	canvas_apply(selected);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 
 
 	cairo_destroy(select_drag);
-	//select_drag = gdk_cairo_create(widget->window);
-	select_drag = cairo_create(surface);
+	select_drag = gdk_cairo_create(gtk_widget_get_window(widget));
+	//select_drag = cairo_create(surface);
 	canvas_apply(select_drag);
 	cairo_set_line_width(select_drag, 1.5);
 	cairo_set_source_rgba(select_drag, 1, 0, 0, 0.5);
 
 
 	cairo_destroy(selected_area);
-	selected_area = gdk_cairo_create(widget->window);
+	//selected_area = gdk_cairo_create(widget->window);
+	selected_area = gdk_cairo_create(gtk_widget_get_window(widget));
 	canvas_apply(selected_area);
 	cairo_set_line_width(selected_area, 1.0);
 	cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);
@@ -842,11 +903,12 @@ int draw_dots (GtkWidget *widget)
 	struct select_proto *selects;
 	int was_selected;
 
-	if (do_dots)
+	//if (do_dots)
 	{
 		// Draw the field
 		cairo_destroy(surface_write);
-		surface_write = gdk_cairo_create(widget->window);
+		//surface_write = gdk_cairo_create(widget->window);
+		surface_write = gdk_cairo_create(gtk_widget_get_window(widget));
 		//surface_write = cairo_create(surface);
 
 		cairo_set_source_surface(surface_write, surface, 1, 1);
@@ -855,8 +917,8 @@ int draw_dots (GtkWidget *widget)
 
 		// Define canvases
 		cairo_destroy(dots);
-		//dots = gdk_cairo_create(widget->window);
-		dots = cairo_create(surface);
+		dots = gdk_cairo_create(gtk_widget_get_window(widget));
+		//dots = cairo_create(surface);
 		canvas_apply(dots);
 
 		cairo_set_line_width(dots, 1.5);

@@ -101,8 +101,8 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 		       	G_CALLBACK(change_ss_entry), ssStepEntry);
 	gtk_entry_set_text(GTK_ENTRY(ssStepEntry), ss_buf);
 	//tmp_pos = GTK_ENTRY(ssStepEntry)->text_length;
-	gtk_editable_select_region(GTK_EDITABLE(ssStepEntry),
-			0, GTK_ENTRY(ssStepEntry)->text_length);
+	//gtk_editable_select_region(GTK_EDITABLE(ssStepEntry), 0, GTK_ENTRY(ssStepEntry)->text_length);
+	gtk_editable_select_region(GTK_EDITABLE(ssStepEntry), 0, gtk_entry_get_text_length(GTK_ENTRY(ssStepEntry)));
 	gtk_entry_set_alignment(GTK_ENTRY(ssStepEntry), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY(ssStepEntry), 5);
 	//gtk_box_pack_start(GTK_BOX(perfbar), sidesideBtns.ssStepEntry, FALSE, TRUE, 0);
@@ -154,8 +154,8 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 		       	G_CALLBACK(change_fb_entry), fbStepEntry);
 	gtk_entry_set_text(GTK_ENTRY(fbStepEntry), fb_buf);
 	//tmp_pos = GTK_ENTRY(fbStepEntry)->text_length;
-	gtk_editable_select_region(GTK_EDITABLE(fbStepEntry),
-			0, GTK_ENTRY(fbStepEntry)->text_length);
+	//gtk_editable_select_region(GTK_EDITABLE(fbStepEntry), 0, GTK_ENTRY(fbStepEntry)->text_length);
+	gtk_editable_select_region(GTK_EDITABLE(fbStepEntry), 0, gtk_entry_get_text_length(GTK_ENTRY(fbStepEntry)));
 	gtk_entry_set_alignment(GTK_ENTRY(fbStepEntry), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY(fbStepEntry), 5);
 	//gtk_box_pack_start(GTK_BOX(perfbar), frbkBtns.fbStepEntry, FALSE, TRUE, 0);

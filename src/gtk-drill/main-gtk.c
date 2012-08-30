@@ -163,7 +163,9 @@ void scrollbar_scroll(GtkWidget *widget)
 {
 	//hscroll = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
 	//vscroll = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
-	canvas_move(widget, (hscroll->value-fldstate.fieldx), (vscroll->value-fldstate.fieldy));
+	double hval = gtk_adjustment_get_value(hscroll);
+	double vval = gtk_adjustment_get_value(vscroll);
+	canvas_move(widget, (hval-fldstate.fieldx), (vval-fldstate.fieldy));
 
 
 	return;
@@ -198,6 +200,8 @@ int buildIfacegtk(void)
 	//GtkWidget *item;
 	// statusbar
 	gchar *sbinfo;
+	double hsc_width, hsc_height;
+	GtkAllocation allc;
 
 
 	//GtkWidget *mediabar;
@@ -553,8 +557,13 @@ int buildIfacegtk(void)
 	gtk_widget_show(mybox);
 
 	// create field canvas scroll container
-	hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
-	vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
+	gtk_widget_get_allocation(drill, &allc);
+	hsc_width = allc.width;
+	hsc_height = allc.height;
+	//hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
+	//vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
+	hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, hsc_width, hsc_width / 10, hsc_width / 10 * 9, hsc_width);
+	vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, hsc_height, hsc_height/ 10, hsc_height / 10 * 9, hsc_height);
 	hscrollbar = gtk_hscrollbar_new(hscroll);
 	vscrollbar = gtk_vscrollbar_new(vscroll);
 	//gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
@@ -599,8 +608,10 @@ int buildIfacegtk(void)
 	//gtk_widget_show(media_box);
 	gtk_widget_show_all (window);
 	//gtk_widget_grab_focus(scrolled_window);
-	gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
-	gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
+	gtk_adjustment_configure(hscroll, 0.0, 0.0, hsc_width, hsc_width / 10, hsc_width / 10 * 9, hsc_width);
+	gtk_adjustment_configure(vscroll, 0.0, 0.0, hsc_height, hsc_height/ 10, hsc_height / 10 * 9, hsc_height);
+	//gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
+	//gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
 
 	return 0;
 }

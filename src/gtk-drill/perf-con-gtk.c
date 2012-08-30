@@ -19,7 +19,7 @@ void goto_perf (GtkWidget *widget)
 		perf_buffer = atoi(entry_buffer);
 		if (perf_buffer<pshow->perfnum)
 			perf_cur=perf_buffer;
-		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
+		dr_canvas_refresh(drill);
 	}
 }
 */
@@ -30,7 +30,7 @@ int add_perf_gtk(GtkWidget *widget)
 	mouse_currentMode = ADDPERF;
 	//gtk_button_set_label(GTK_BUTTON(menuButton), "Add");
 	//excode = add_perf();
-	//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
+	//dr_canvas_refresh(drill);
 	if (excode != -1)
 		return 0;
 	return excode;
@@ -43,8 +43,8 @@ void revert_perf_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		revert_perf_selected(pshow);
-		//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		//dr_canvas_refresh(drill);
+		dr_canvas_refresh(drill);
 	}
 	return;
 }
@@ -55,8 +55,8 @@ void delete_perf_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		delete_perf_selected();
-		//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		//dr_canvas_refresh(drill);
+		dr_canvas_refresh(drill);
 	}
 }
 
@@ -77,7 +77,7 @@ void xperf_change (GtkWidget *widget)
 			set_coord(pshow, perf_cur, perf_buffer, coords->y);
 			//perf[setnum][perf_cur][0] = perf_buffer;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
+		dr_canvas_refresh(drill);
 	}
 }
 
@@ -95,7 +95,7 @@ void yperf_change (GtkWidget *widget)
 			set_coord(pshow, perf_cur, coords->x, perf_buffer);
 			//perf[setnum][perf_cur][1] = perf_buffer;
 		}
-		gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
+		dr_canvas_refresh(drill);
 	}
 }
 */
@@ -107,8 +107,8 @@ void next_perf(GtkWidget *widget)
 	if (perf_cur < pshow->perfnum-1)
 	{
 		perf_cur++;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
-		//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
+		dr_canvas_refresh(drill);
+		//dr_canvas_refresh(drill);
 	}
 }
 
@@ -118,16 +118,16 @@ void prev_perf(GtkWidget *widget)
 	if (perf_cur > 0)
 	{
 		perf_cur--;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
-		//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
+		dr_canvas_refresh(drill);
+		//dr_canvas_refresh(drill);
 	}
 }
 
 int select_all_gtk (GtkWidget *widget)
 {
 	wrap_select_all();
-	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
-	//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
+	dr_canvas_refresh(drill);
+	//dr_canvas_refresh(drill);
 	return 0;
 }
 
@@ -143,7 +143,7 @@ int select_group_gtk(GtkWidget *widget, group_t *group)
 		select = select->next;
 	}
 	*/
-	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+	dr_canvas_refresh(drill);
 	return 0;
 }
 
@@ -176,8 +176,8 @@ int select_mode_gtk (GtkWidget *widget)
 	// go back to normal selectmode
 	mouse_currentMode = SELECTONE;
 	//gtk_button_set_label(GTK_BUTTON(menuButton), "Select");
-	//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height+2*fldstate.canv_step);
-	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+	//dr_canvas_refresh(drill);
+	dr_canvas_refresh(drill);
 	return 0;
 }
 
@@ -206,8 +206,8 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 					{
 						movexy(mouse_clickx, mouse_clicky);
 						mouse_discarded = 0;
-						//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
-						gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+						//dr_canvas_refresh(drill);
+						dr_canvas_refresh(drill);
 					}
 				}
 				else if (event->state == 256 + GDK_CONTROL_MASK)
@@ -223,7 +223,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 		}
 	}
 	fldstate.mouse_clicked = 0;
-	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+	dr_canvas_refresh(drill);
 	return TRUE;
 }
 
@@ -304,13 +304,13 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					}
 				}
 				//printf("event = %i\n", event->state);
-				//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
-				gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+				//dr_canvas_refresh(drill);
+				dr_canvas_refresh(drill);
 				break;
 			case SELECTDRAG:
 				// Select (by dragging) performers
-				//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
-				gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+				//dr_canvas_refresh(drill);
+				dr_canvas_refresh(drill);
 				break;
 			case ADDPERF:
 				// Add performers by clicking on canvas
@@ -325,14 +325,14 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				*/
 				index = add_perf();
 				set_coord(pshow, index, coordx, coordy);
-				//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
-				gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+				//dr_canvas_refresh(drill);
+				dr_canvas_refresh(drill);
 				//mouse_currentMode = SELECTONE;
 				break;
 			case MVPERF:
 				// Move performers by clicking on canvas?
-				//gtk_widget_queue_draw_area(window, 0, 0, fldstate.width, fldstate.height);
-				gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+				//dr_canvas_refresh(drill);
+				dr_canvas_refresh(drill);
 				break;
 		}
 	}
@@ -406,11 +406,11 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 			perf_cur = i;
 			dist_threshold = distance;
 			found_dot = 1;
-			if (i == 0)
-				printf("0 valid\n");
+			//if (i == 0)
+				//printf("0 valid\n");
 		}
-		else if (pshow->perfs[i]->valid == 0 && i == 0)
-			printf("invalid at %i\n", i);
+		//else if (pshow->perfs[i]->valid == 0 && i == 0)
+			//printf("invalid at %i\n", i);
 
 	}
 	if (found_dot == 1)

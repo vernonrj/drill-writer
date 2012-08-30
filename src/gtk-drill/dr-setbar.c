@@ -81,8 +81,8 @@ static void dr_setbar_init(DrSetbar *setbar)
 	gtk_entry_set_text (GTK_ENTRY (entry_sets), set_buf);
 	//tmp_pos = GTK_ENTRY (entry_sets)->text_length;
 	gtk_editable_set_editable(GTK_EDITABLE(entry_sets), FALSE);
-	gtk_editable_select_region (GTK_EDITABLE (entry_sets),
-			0, GTK_ENTRY (entry_sets)->text_length);
+	//gtk_editable_select_region (GTK_EDITABLE (entry_sets), 0, GTK_ENTRY (entry_sets)->text_length);
+	gtk_editable_select_region (GTK_EDITABLE (entry_sets), 0, gtk_entry_get_text_length(GTK_ENTRY(entry_sets)));
 	gtk_entry_set_alignment (GTK_ENTRY (entry_sets), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_sets), 4);
 	gtk_box_pack_start (GTK_BOX (setbar), entry_sets, FALSE, TRUE, 0);
@@ -102,8 +102,8 @@ static void dr_setbar_init(DrSetbar *setbar)
 	gtk_entry_set_text (GTK_ENTRY (entry_counts), count_buf);
 	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	//gtk_editable_insert_text (GTK_EDITABLE (entry_counts), " world", -1, &tmp_pos);
-	gtk_editable_select_region (GTK_EDITABLE (entry_counts),
-			0, GTK_ENTRY (entry_counts)->text_length);
+	//gtk_editable_select_region (GTK_EDITABLE (entry_counts), 0, GTK_ENTRY (entry_counts)->text_length);
+	gtk_editable_select_region (GTK_EDITABLE (entry_counts), 0, gtk_entry_get_text_length(GTK_ENTRY(entry_counts)));
 	gtk_entry_set_alignment (GTK_ENTRY (entry_counts), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry_counts), 4);
 	gtk_box_pack_start (GTK_BOX (setbar), entry_counts, FALSE, TRUE, 0);
@@ -121,8 +121,8 @@ static void dr_setbar_init(DrSetbar *setbar)
 	g_signal_connect(entry_tempo, "activate", G_CALLBACK(change_tempo_gtk), setbar);
 	gtk_entry_set_text(GTK_ENTRY(entry_tempo), tempo_buf);
 	//tmp_pos = GTK_ENTRY(entry_tempo)->text_length;
-	gtk_editable_select_region(GTK_EDITABLE(entry_tempo),
-			0, GTK_ENTRY(entry_tempo)->text_length);
+	//gtk_editable_select_region(GTK_EDITABLE(entry_tempo), 0, GTK_ENTRY(entry_tempo)->text_length);
+	gtk_editable_select_region(GTK_EDITABLE(entry_tempo), 0, gtk_entry_get_text_length(GTK_ENTRY(entry_tempo)));
 	gtk_entry_set_alignment(GTK_ENTRY(entry_tempo), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_tempo), 4);
 	gtk_box_pack_start(GTK_BOX(setbar), entry_tempo, FALSE, TRUE, 0);
@@ -145,7 +145,8 @@ void add_set_gtk(GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		add_set();
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -157,7 +158,8 @@ void delete_set_gtk(GtkWidget *widget)
 	{
 		delete_set();
 		do_field = 0;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -171,7 +173,8 @@ void set_first_gtk(GtkWidget *widget)
 	{
 		set_first();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -183,7 +186,8 @@ void set_last_gtk(GtkWidget *widget)
 	{
 		set_last();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 
 	}
 	return;
@@ -197,7 +201,8 @@ void set_next_gtk(GtkWidget *widget)
 		set_next();
 		do_field=0;
 		//gdk_drawable_get_size(widget->window, &width, &height);
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -210,7 +215,8 @@ void set_next_count_gtk(GtkWidget *widget)
 	{
 		set_next_count();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -222,7 +228,8 @@ void set_prev_count_gtk(GtkWidget *widget)
 	{
 		set_prev_count();
 		do_field=0;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -234,7 +241,8 @@ void set_prev_gtk(GtkWidget *widget)
 	{
 		set_prev();
 		do_field=0;	// don't need to draw field
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -263,7 +271,8 @@ void set_set_name_gtk(GtkWidget *widget, DrSetbar *setbar)
 			strcpy(setcurr->name, entry_buffer);
 		}
 		do_field = 0;	// don't need to redraw field yet
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 	return;
 }
@@ -278,7 +287,8 @@ void goto_set_gtk (GtkWidget *widget, DrSetbar *setbar)
 		entry_buffer = gtk_entry_get_text (GTK_ENTRY (setbar->priv->entry_sets));
 		set_buffer = atoi(entry_buffer);
 		goto_set(set_buffer);
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 }
 
@@ -296,7 +306,8 @@ void goto_count (GtkWidget *widget, DrSetbar *setbar)
 			pstate.curr_step = count_buffer;
 		//if (setnum+1<set_tot && count_buffer < counts[setnum+1])
 			//set_step=count_buffer;
-		gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+		dr_canvas_refresh(drill);
+		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}
 }
 		
@@ -333,7 +344,8 @@ void change_tempo_gtk (GtkWidget *widget, DrSetbar *setbar)
 	currtempo = pshow->currtempo;
 	change_tempo(tmpo, &currtempo);
 	pshow->currtempo = currtempo;
-	gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
+	dr_canvas_refresh(drill);
+	//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 
 	return;
 }
