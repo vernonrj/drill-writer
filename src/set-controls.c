@@ -131,6 +131,8 @@ int set_destroy(void)
 		else
 		{
 			// next set does exist. Put current set there
+			last = last->next;
+			last->prev = prevset;
 			pshow->sets->currset = prevset->next;
 		}
 	}
@@ -146,6 +148,8 @@ int set_destroy(void)
 			if (excode == -1)
 				return -1;
 		}
+		else 
+			last->prev = NULL;
 		pshow->sets->currset = pshow->sets->firstset;
 	}
 	return 0;
