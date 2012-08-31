@@ -113,8 +113,11 @@ void dr_canvas_refresh(GtkWidget *widget)
 {
 	GtkAllocation allc;
 	gtk_widget_get_allocation(widget, &allc);
+	int x = allc.x, y = allc.y;
+	int newx, newy;
+	gtk_widget_translate_coordinates(widget, window, x, y, &newx, &newy);
 	//gtk_widget_queue_draw_area(window, widget->allocation.x, widget->allocation.y, widget->allocation.width, widget->allocation.height);
-	gtk_widget_queue_draw_area(window, allc.x, allc.y, allc.width, allc.height);
+	gtk_widget_queue_draw_area(window, newx, newy, allc.width, allc.height);
 }
 
 
@@ -489,13 +492,14 @@ static void gtk_drill_realize(GtkWidget *widget)
 	//widget->window = gdk_window_new(gtk_widget_get_parent_window(widget), &attributes, attributes_mask);
 	//widget->style = gtk_style_attach(widget->style, widget->window);
 	gtk_widget_set_window(widget, gdk_window_new(gtk_widget_get_parent_window(widget), &attributes, attributes_mask));
-	gtk_widget_set_style(widget, gtk_style_attach(gtk_widget_get_style(widget), gtk_widget_get_window(widget)));
+	//gtk_widget_set_style(widget, gtk_style_attach(gtk_widget_get_style(widget), gtk_widget_get_window(widget)));
 
 	//gdk_window_set_user_data(widget->window, widget);
 	gdk_window_set_user_data(gtk_widget_get_window(widget), widget);
 
 	//gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
-	gtk_style_set_background(gtk_widget_get_style(widget), gtk_widget_get_window(widget), GTK_STATE_NORMAL);
+	//gtk_style_set_background(gtk_widget_get_style(widget), gtk_widget_get_window(widget), GTK_STATE_NORMAL);
+	gtk_style_context_set_background(gtk_widget_get_style_context(widget), gtk_widget_get_window(widget));
 }
 
 
