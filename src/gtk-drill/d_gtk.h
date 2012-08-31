@@ -37,12 +37,11 @@ gulong hscroll_id, vscroll_id;
 double mouse_clickx, mouse_clicky;
 struct fieldstate_proto
 {
-	double xoff, yoff;	// field offset
-	double xo2, yo2;	// field centering
-	double width, height;	// allocated size
-	double canv_step;	// 8:5 step in pixels
-	double fieldx, fieldy;
-	//double zoom_x, zoom_y;	// zoom size
+	int xoff, yoff;		// field offset
+	int xo2, yo2;		// field centering
+	int width, height;	// allocated size
+	int canv_step;		// 8:5 step in pixels
+	double fieldx, fieldy;	// adjustment location
 	double zoom_amnt;
 	int mouse_clicked;
 	double mousex, mousey;
