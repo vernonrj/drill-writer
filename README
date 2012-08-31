@@ -1,6 +1,6 @@
-Drillwriter 0.0.5 Pre-Alpha
+Drillwriter 0.0.6 Pre-Alpha
 
-marching drill writing program written in C/C++ using the Gtk2 toolkit with Cairo.
+marching drill writing program written in C/C++ using Gtk toolkit.
 Focused on mid - light memory use and performance.
 There are still many core features missing.
 
