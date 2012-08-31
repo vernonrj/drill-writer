@@ -285,7 +285,7 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 		retr_midset(pshow->sets->currset, i, &x, &y);
 		if (dot_in_rectangle(x, y, x1, y1, x2, y2))
 		{
-			if (!is_in_select(i, select))
+			if (!is_in_select(i, select) && pshow->perfs[i]->valid)
 				select = select_add(select, i, true);
 		}
 	}
