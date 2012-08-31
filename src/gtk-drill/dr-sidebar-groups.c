@@ -44,12 +44,14 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 
 	sidebargroups->priv->global_frame = gtk_frame_new("Global groups");
 	gtk_box_pack_start(GTK_BOX(sidebargroups), sidebargroups->priv->global_frame, FALSE, FALSE, 0);
-	sidebargroups->priv->box_global = gtk_vbox_new(TRUE, 0);
+	//sidebargroups->priv->box_global = gtk_vbox_new(TRUE, 0);
+	sidebargroups->priv->box_global = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(sidebargroups->priv->global_frame), sidebargroups->priv->box_global);
 
 	sidebargroups->priv->local_frame = gtk_frame_new("Local groups");
 	gtk_box_pack_start(GTK_BOX(sidebargroups), sidebargroups->priv->local_frame, FALSE, FALSE, 0);
-	sidebargroups->priv->box_local = gtk_vbox_new(TRUE, 0);
+	//sidebargroups->priv->box_local = gtk_vbox_new(TRUE, 0);
+	sidebargroups->priv->box_local = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(sidebargroups->priv->local_frame), sidebargroups->priv->box_local);
 
 

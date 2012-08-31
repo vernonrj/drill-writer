@@ -46,7 +46,8 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 
 	sidebarperfs->priv = DR_SIDEBAR_PERFS_GET_PRIVATE(sidebarperfs);
 
-	pnumbox = gtk_hbox_new(FALSE, 0);
+	//pnumbox = gtk_hbox_new(FALSE, 0);
+	pnumbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (sidebarperfs), pnumbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new("Perf: ");
@@ -68,10 +69,12 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 
 	frame = gtk_frame_new("Stepsize");
 	gtk_box_pack_start(GTK_BOX (sidebarperfs), frame, FALSE, TRUE, 5);
-	framebox = gtk_vbox_new(FALSE, 0);
+	//framebox = gtk_vbox_new(FALSE, 0);
+	framebox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add (GTK_CONTAINER(frame), framebox);
 
-	pstszbox = gtk_hbox_new(FALSE, 0);
+	//pstszbox = gtk_hbox_new(FALSE, 0);
+	pstszbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX (framebox), pstszbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new("Avg: ");
@@ -92,7 +95,8 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	gtk_widget_show(entry_stepsize);
 	sidebarperfs->priv->entry_stepsize = entry_stepsize;
 
-	pstszmaxbox = gtk_hbox_new(FALSE, 0);
+	//pstszmaxbox = gtk_hbox_new(FALSE, 0);
+	pstszmaxbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(framebox), pstszmaxbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new("Max: ");
@@ -113,7 +117,8 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	gtk_widget_show(entry_stepsize_max);
 	sidebarperfs->priv->entry_stepsize_max = entry_stepsize_max;
 
-	perfmaxbox = gtk_hbox_new(FALSE, 0);
+	//perfmaxbox = gtk_hbox_new(FALSE, 0);
+	perfmaxbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(framebox), perfmaxbox, FALSE, TRUE, 5);
 
 	label = gtk_label_new("Max (Dot): ");

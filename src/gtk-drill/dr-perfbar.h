@@ -2,7 +2,7 @@
 #ifndef __PERFBAR_H__
 #define __PERFBAR_H__
 
-#include <gtk/gtk.h>
+#include <gtk-3.0/gtk/gtk.h>
 
 G_BEGIN_DECLS
 

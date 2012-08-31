@@ -2,7 +2,7 @@
 #ifndef __DR_GROUP_CELL_H__
 #define __DR_GROUP_CELL_H__
 
-#include <gtk/gtk.h>
+#include <gtk-3.0/gtk/gtk.h>
 
 G_BEGIN_DECLS
 

@@ -45,7 +45,8 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	gtk_widget_show(image);
 	*/
 
-	nextprevbox = gtk_hbox_new(FALSE, 0);
+	//nextprevbox = gtk_hbox_new(FALSE, 0);
+	nextprevbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(mediabar), nextprevbox, FALSE, FALSE, 0);
 
 	// Previous Set
@@ -67,7 +68,8 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	gtk_widget_show(image);
 
 
-	firstlastbox = gtk_hbox_new(FALSE, 0);
+	//firstlastbox = gtk_hbox_new(FALSE, 0);
+	firstlastbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(mediabar), firstlastbox, FALSE, FALSE, 0);
 
 	// First Set
@@ -89,7 +91,8 @@ static void dr_mediabar_init(DrMediabar *mediabar)
 	gtk_widget_show(image);
 
 
-	playbox = gtk_hbox_new(FALSE, 0);
+	//playbox = gtk_hbox_new(FALSE, 0);
+	playbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(mediabar), playbox, FALSE, FALSE, 0);
 
 	// Play

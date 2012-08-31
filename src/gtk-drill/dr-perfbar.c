@@ -68,7 +68,8 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// Performer entry box
 	// put it in a frame
 	frame = gtk_frame_new("performer");
-	perfEnbox = gtk_hbox_new(FALSE, 5);
+	//perfEnbox = gtk_hbox_new(FALSE, 5);
+	perfEnbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(frame), perfEnbox);
 	gtk_box_pack_start(GTK_BOX(perfbar), frame, FALSE, TRUE, 5);
 
@@ -83,7 +84,8 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	//gtk_box_pack_start (GTK_BOX (perfbar), entry_perf, FALSE, TRUE, 5);
 	gtk_box_pack_start (GTK_BOX (perfEnbox), entry_perf, FALSE, TRUE, 5);
 
-	separator = gtk_vseparator_new();
+	//separator = gtk_vseparator_new();
+	separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
 	gtk_box_pack_start(GTK_BOX(perfbar), separator, FALSE, TRUE, 0);
 	gtk_widget_show(separator);
 
@@ -91,7 +93,8 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// Side-to-Side
 	// Field Step entry
 	frame = gtk_frame_new("side-to-side");
-	perfSSbox = gtk_hbox_new(FALSE, 5);
+	//perfSSbox = gtk_hbox_new(FALSE, 5);
+	perfSSbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(frame), perfSSbox);
 	gtk_box_pack_start(GTK_BOX(perfbar), frame, FALSE, TRUE, 5);
 	sprintf(ss_buf, "%i", 0);
@@ -134,7 +137,8 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 
 
 	// another separator
-	separator = gtk_vseparator_new();
+	//separator = gtk_vseparator_new();
+	separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
 	gtk_box_pack_start(GTK_BOX(perfbar), separator, FALSE, TRUE, 0);
 	gtk_widget_show(separator);
 
@@ -142,7 +146,8 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// Front-To-Back
 	// frame
 	frame = gtk_frame_new("front-to-back");
-	perfFBbox = gtk_hbox_new(FALSE, 5);
+	//perfFBbox = gtk_hbox_new(FALSE, 5);
+	perfFBbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(frame), perfFBbox);
 	gtk_box_pack_start(GTK_BOX(perfbar), frame, FALSE, TRUE, 5);
 

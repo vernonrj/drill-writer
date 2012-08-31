@@ -34,7 +34,8 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 
 	sidebarsets->priv = DR_SIDEBAR_SETS_GET_PRIVATE(sidebarsets);
 
-	namebox = gtk_hbox_new(FALSE, 0);
+	//namebox = gtk_hbox_new(FALSE, 0);
+	namebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (sidebarsets), namebox, FALSE, TRUE, 5);
 
 	label = gtk_label_new("Set: ");

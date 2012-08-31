@@ -2,7 +2,7 @@
 #ifndef __SETBAR_H__
 #define __SETBAR_H__
 
-#include <gtk/gtk.h>
+#include <gtk-3.0/gtk/gtk.h>
 
 G_BEGIN_DECLS
 

@@ -460,7 +460,8 @@ int buildIfacegtk(void)
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
 	// Menu Stuff
-	menu_box = gtk_vbox_new (FALSE, 0);
+	//menu_box = gtk_vbox_new (FALSE, 0);
+	menu_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	action_group = gtk_action_group_new ("TestActions");
 	menu_manager = gtk_ui_manager_new ();
 
@@ -490,7 +491,8 @@ int buildIfacegtk(void)
 			gtk_ui_manager_get_accel_group (menu_manager));
 
 	// Start packing canvas
-	box0 = gtk_vbox_new (FALSE, 0);
+	//box0 = gtk_vbox_new (FALSE, 0);
+	box0 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX (menu_box), box0, TRUE, TRUE, 0);
 	gtk_widget_show(menu_box);
 	gtk_widget_show(box0);
@@ -531,7 +533,8 @@ int buildIfacegtk(void)
 	//gtk_widget_show(setbar);
 
 	// make the sidebar pane
-	hpaned = gtk_hpaned_new();
+	//hpaned = gtk_hpaned_new();
+	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(box0), hpaned, TRUE, TRUE, 0);
 
 
@@ -564,8 +567,10 @@ int buildIfacegtk(void)
 	//vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
 	hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, hsc_width, hsc_width / 10, hsc_width / 10 * 9, hsc_width);
 	vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, hsc_height, hsc_height/ 10, hsc_height / 10 * 9, hsc_height);
-	hscrollbar = gtk_hscrollbar_new(hscroll);
-	vscrollbar = gtk_vscrollbar_new(vscroll);
+	//hscrollbar = gtk_hscrollbar_new(hscroll);
+	//vscrollbar = gtk_vscrollbar_new(vscroll);
+	hscrollbar = gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, hscroll);
+	vscrollbar = gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, vscroll);
 	//gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(mybox), vscrollbar, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK|GTK_FILL, 0, 0);
 	gtk_table_attach(GTK_TABLE(mybox), hscrollbar, 0, 1, 1, 2, GTK_SHRINK|GTK_FILL, GTK_SHRINK, 0, 0);

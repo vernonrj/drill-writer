@@ -2,7 +2,7 @@
 #define __DRILL_H
 
 #include <unistd.h>
-#include <gtk/gtk.h>
+#include <gtk-3.0/gtk/gtk.h>
 
 G_BEGIN_DECLS
 

@@ -8,7 +8,7 @@
 #include "dr-sidebar-groups.h"
 #include "dr-group-cell.h"
 
-#include <gtk/gtk.h>
+#include <gtk-3.0/gtk/gtk.h>
 #include <glib.h>
 #include <cairo.h>
 #include <glib-object.h>

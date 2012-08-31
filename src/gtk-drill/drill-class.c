@@ -4,14 +4,16 @@
 #include "d_gtk.h"
 #include "dr-drill.h"
 
+static void gtk_drill_get_preferred_width(GtkWidget *widget, gint *minimal_width, gint *natural_width);
+static void gtk_drill_get_preferred_height(GtkWidget *widget, gint *minimal_height, gint *natural_height);
 static void gtk_drill_class_init(GtkDrillClass *klass);
 static void gtk_drill_init(GtkDrill *drill);
 static void gtk_drill_size_request(GtkWidget *widget, GtkRequisition *requisition);
 static void gtk_drill_size_allocate(GtkWidget *widget, GtkAllocation *allocation);
 static void gtk_drill_realize(GtkWidget *widget);
-static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event);
+static gboolean gtk_drill_expose(GtkWidget *widget, cairo_t *cr);
 static void gtk_drill_paint(GtkWidget *widget);
-static void gtk_drill_destroy(GtkObject *object);
+static void gtk_drill_destroy(GtkWidget *widget);
 
 
 
@@ -324,30 +326,48 @@ enum {
 */
 
 
+static void gtk_drill_get_preferred_width(GtkWidget *widget, gint *minimal_width, gint *natural_width)
+{
+	GtkRequisition requisition;
+	gtk_drill_size_request(widget, &requisition);
+	*minimal_width = *natural_width = requisition.width;
+}
+
+
+static void gtk_drill_get_preferred_height(GtkWidget *widget, gint *minimal_height, gint *natural_height)
+{
+	GtkRequisition requisition;
+	gtk_drill_size_request(widget, &requisition);
+	*minimal_height = *natural_height = requisition.height;
+}
+
 
 static void gtk_drill_class_init(GtkDrillClass *class)
 {
 	//printf("ping drill_class_init\n");
 	GtkWidgetClass *widget_class;
-	GtkObjectClass *object_class;
+	//GtkObjectClass *object_class;
 	//GtkBindingSet *binding_set;
 	//gchar *binder;
 
 	widget_class = (GtkWidgetClass *) class;
-	object_class = (GtkObjectClass *) class;
+	//object_class = (GtkObjectClass *) class;
 	//binding_set = gtk_binding_set_new(binder);
 
 	widget_class->realize = gtk_drill_realize;
-	widget_class->size_request = gtk_drill_size_request;
+	//widget_class->size_request = gtk_drill_size_request;
+	widget_class->get_preferred_width = gtk_drill_get_preferred_width;
+	widget_class->get_preferred_height = gtk_drill_get_preferred_height;
 	widget_class->size_allocate = gtk_drill_size_allocate;
-	widget_class->expose_event = gtk_drill_expose;
+	widget_class->draw = gtk_drill_expose;
 	widget_class->motion_notify_event = xy_movement;
 	widget_class->button_press_event = clicked;
 	widget_class->button_release_event = unclicked;
 	widget_class->scroll_event = handle_mouse_scroll_event;
+	widget_class->destroy = gtk_drill_destroy;
 
 
-	object_class->destroy = gtk_drill_destroy;
+	//object_class->destroy = gtk_drill_destroy;
 	/*
 	g_object_class_install_property (gobject_class, PROP_HADJUSTMENT, g_param_spec_object ("hadjustment", 
 				//P_("Horizontal adjustment"),
@@ -480,12 +500,12 @@ static void gtk_drill_realize(GtkWidget *widget)
 
 
 
-static gboolean gtk_drill_expose(GtkWidget *widget, GdkEventExpose *event)
+static gboolean gtk_drill_expose(GtkWidget *widget, cairo_t *cr)
 {
 	//printf("ping expose\n");
 	g_return_val_if_fail(widget != NULL, FALSE);
 	g_return_val_if_fail(GTK_IS_DRILL(widget), FALSE);
-	g_return_val_if_fail(event != NULL, FALSE);
+	g_return_val_if_fail(cr != NULL, FALSE);
 
 	//gtk_drill_paint(widget);
 	/*
@@ -515,20 +535,20 @@ static void gtk_drill_paint(GtkWidget *widget)
 
 
 
-static void gtk_drill_destroy(GtkObject *object)
+static void gtk_drill_destroy(GtkWidget *widget)
 {
 	//GtkDrill *drill;
 	GtkDrillClass *klass;
 
-	g_return_if_fail(object != NULL);
-	g_return_if_fail(GTK_IS_DRILL(object));
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(GTK_IS_DRILL(widget));
 
 	//drill = GTK_DRILL(object);
 	//klass = gtk_type_class(gtk_widget_get_type());
 	klass = g_type_class_ref(gtk_widget_get_type());
 
-	if (GTK_OBJECT_CLASS(klass)->destroy) {
-		(* GTK_OBJECT_CLASS(klass)->destroy) (object);
+	if (GTK_WIDGET_CLASS(klass)->destroy) {
+		(* GTK_WIDGET_CLASS(klass)->destroy) (widget);
 	}
 }
 
