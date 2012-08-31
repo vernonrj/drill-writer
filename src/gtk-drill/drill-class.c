@@ -33,10 +33,7 @@ void zoom_amnt(double invalue, bool from_mouse)
 	if (!invalue || (fldstate.zoom_amnt * invalue) < 1)
 	{
 		// set zoom to 100%
-		//value = fldstate.zoom_amnt;
 		fldstate.zoom_amnt = 1;
-		//hscroll->page_size = fldstate.width;
-		//gtk_adjustment_get_page_size(vscroll) = fldstate.height;
 		gtk_adjustment_set_page_size(hscroll, fldstate.width);
 		gtk_adjustment_set_page_size(vscroll, fldstate.height);
 		fldstate.fieldx = 0;
@@ -55,15 +52,11 @@ void zoom_amnt(double invalue, bool from_mouse)
 		// zoom and scale the canvas
 		value = invalue;
 		// get the old page size
-		//offsetx1 = hscroll->upper / fldstate.zoom_amnt;
-		//offsety1 = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
 		offsetx1 = gtk_adjustment_get_upper(hscroll) / fldstate.zoom_amnt;
 		offsety1 = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
 		// new zoom factor
 		fldstate.zoom_amnt *= value;
 		// new page size
-		//page_sizex = hscroll->upper / fldstate.zoom_amnt;
-		//page_sizey = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
 		page_sizex = gtk_adjustment_get_upper(hscroll) / fldstate.zoom_amnt;
 		page_sizey = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
 		// change scrollbars
@@ -111,15 +104,19 @@ void zoom_fit(GtkWidget *widget)
 
 void dr_canvas_refresh(GtkWidget *widget)
 {
+	// Redraw the canvas from the widget
 	GtkAllocation allc;
-	gtk_widget_get_allocation(widget, &allc);
-	int x = allc.x, y = allc.y;
+	int x, y;
 	int newx, newy;
-	gtk_widget_translate_coordinates(widget, window, x, y, &newx, &newy);
-	//gtk_widget_queue_draw_area(window, widget->allocation.x, widget->allocation.y, widget->allocation.width, widget->allocation.height);
-	gtk_widget_queue_draw_area(window, newx, newy, allc.width, allc.height);
-}
 
+	gtk_widget_get_allocation(widget, &allc);
+	x = allc.x;
+	y = allc.y;
+	gtk_widget_translate_coordinates(widget, window, x, y, &newx, &newy);
+	gtk_widget_queue_draw_area(window, newx, newy, allc.width, allc.height);
+
+	return;
+}
 
 
 
@@ -131,8 +128,6 @@ void canvas_apply(cairo_t *cr)
 	cairo_scale(cr, fldstate.zoom_amnt, fldstate.zoom_amnt);
 	// move canvas to highlight section of field
 	// note: for some reason, (x,y) must be negated to translate correctly
-	//cairo_translate(cr, -1*fldstate.fieldx, -1*fldstate.fieldy);
-	//cairo_translate(cr, -1*hscroll->value, -1*vscroll->value);
 	cairo_translate(cr, -1*gtk_adjustment_get_value(hscroll), -1*gtk_adjustment_get_value(vscroll));
 	return;
 }
@@ -149,12 +144,12 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	fieldy = fldstate.fieldy + valuey;
 
 	// Bounds checking
+	// Check horizontal bounds
 	if (fieldx < 0)
 		fieldx = 0;
-	//if (fieldx + hscroll->page_size > hscroll->upper)
-		//fieldx = hscroll->upper - hscroll->page_size;
 	if (fieldx + gtk_adjustment_get_page_size(hscroll) > gtk_adjustment_get_upper(hscroll))
 		fieldx = gtk_adjustment_get_upper(hscroll) - gtk_adjustment_get_page_size(hscroll);
+	// check vertical bounds
 	if (fieldy < 0)
 		fieldy = 0;
 	if (fieldy + gtk_adjustment_get_page_size(vscroll) > gtk_adjustment_get_upper(vscroll))
@@ -163,14 +158,8 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 	// apply new position
 	gtk_adjustment_set_value(hscroll, fieldx);
 	gtk_adjustment_set_value(vscroll, fieldy);
-	//hscroll->value = fieldx;
-	//vscroll->value = fieldy;
 	// redraw canvas
-	do_field = 1;
-	//gtk_widget_queue_draw_area(window, mybox->allocation.x, mybox->allocation.y, mybox->allocation.width, mybox->allocation.height);
 	dr_canvas_refresh(mybox);
-	//fldstate.fieldx = hscroll->value;
-	//fldstate.fieldy = vscroll->value;
 	fldstate.fieldx = gtk_adjustment_get_value(hscroll);
 	fldstate.fieldy = gtk_adjustment_get_value(vscroll);
 
@@ -196,7 +185,6 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		{
 			// shift modifier
 			// move left
-			//canvas_move(widget, -1*hscroll->step_increment, 0.0);
 			canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
 		else if (event->state == 4)
@@ -211,14 +199,12 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		if (event->state == 0)
 		{
 			// move down
-			//canvas_move(widget, 0.0, vscroll->step_increment);
 			canvas_move(widget, 0.0, gtk_adjustment_get_step_increment(vscroll));
 		}
 		else if (event->state == 1)
 		{
 			// shift modifier
 			// move right
-			//canvas_move(widget, hscroll->step_increment, 0.0);
 			canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
 		else if (event->state == 4)
@@ -230,12 +216,10 @@ gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 	}
 	else if (event->direction == GDK_SCROLL_LEFT)
 	{
-		//canvas_move(widget, -1*hscroll->step_increment, 0.0);
 		canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
 	}
 	else if (event->direction == GDK_SCROLL_RIGHT)
 	{
-		//canvas_move(widget, hscroll->step_increment, 0.0);
 		canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
 	}
 	return TRUE;
@@ -1084,44 +1068,11 @@ void draw_field (GtkWidget *widget)
 	cairo_set_font_size(fnums, 20);
 
 
-	for (i=fldstate.xo2; i<=fldstate.xo2+fldstate.canv_step*160; i+=fldstate.canv_step*8)
-	{	// Yardlines
-		cairo_set_line_width(field, 1);
-		cairo_set_source_rgb(field, 0, 0, 0);
-		cairo_move_to (field, i, fldstate.yo2);
-		cairo_line_to (field, i, fldstate.height-fldstate.yo2);
-		// Yardline Numbers
-		sprintf(text, "%i", ynum);
-		cairo_text_extents (fnums, text, &te);
-		x_bear = te.x_bearing + te.width / 2;
-		cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*12);
-		cairo_show_text(fnums, text);
-		cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*73);
-		cairo_show_text(fnums, text);
-		if (ynum == 50)
-			past_fifty = 1;
-		if (past_fifty == 0)
-		{
-			// not past fifty yet; add 5
-			ynum = ynum + 5;
-		}
-		else
-		{
-			// past fifty; sub 5
-			ynum = ynum - 5;
-		}
-		// Front Hash
-		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
-		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
-		// Back Hash
-		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
-		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
-		cairo_stroke (field);
 
-
-		// Split Yardlines
-		if (i<((int)fldstate.xo2+(int)fldstate.canv_step*160))
-		{
+	if (i<((int)fldstate.xo2+(int)fldstate.canv_step*160))
+	{
+		for (i=fldstate.xo2; i<=fldstate.xo2+fldstate.canv_step*160; i+=fldstate.canv_step*8)
+		{	// Split Yardlines
 			// Light Stroke
 			// only draw if window is large enough
 			cairo_set_line_width (gaks, 0.5);
@@ -1161,6 +1112,42 @@ void draw_field (GtkWidget *widget)
 			cairo_stroke(gaks);
 		}
 	}
+
+
+	for (i=fldstate.xo2; i<=fldstate.xo2+fldstate.canv_step*160; i+=fldstate.canv_step*8)
+	{	// Yardlines
+		cairo_set_line_width(field, 1);
+		cairo_set_source_rgb(field, 0, 0, 0);
+		cairo_move_to (field, i, fldstate.yo2);
+		cairo_line_to (field, i, fldstate.height-fldstate.yo2);
+		// Yardline Numbers
+		sprintf(text, "%i", ynum);
+		cairo_text_extents (fnums, text, &te);
+		x_bear = te.x_bearing + te.width / 2;
+		cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*12);
+		cairo_show_text(fnums, text);
+		cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*73);
+		cairo_show_text(fnums, text);
+		if (ynum == 50)
+			past_fifty = 1;
+		if (past_fifty == 0)
+		{
+			// not past fifty yet; add 5
+			ynum = ynum + 5;
+		}
+		else
+		{
+			// past fifty; sub 5
+			ynum = ynum - 5;
+		}
+		// Front Hash
+		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+		// Back Hash
+		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+		cairo_stroke (field);
+	}
 	// Cleanup
 	cairo_destroy(field);
 	cairo_destroy(gaks);
@@ -1179,6 +1166,7 @@ void draw_field (GtkWidget *widget)
 	// draw cairo stuff to window
 	surface_write = gdk_cairo_create(gtk_widget_get_window(widget));
 	cairo_set_source_surface(surface_write, surface, 1, 1);
+	//cairo_set_source_surface(surface_write, surface, 0, 0);
 	cairo_paint (surface_write);
 	cairo_destroy(surface_write);
 

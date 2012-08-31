@@ -377,12 +377,6 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
-	/*
-	// Adjust for various canvas offsets
-	coordx = (coordx-fldstate.xo2)/fldstate.canv_step;
-	//coordy = (coordy-yo2-25)/step;
-	coordy = (coordy-fldstate.yo2)/fldstate.canv_step;
-	*/
 
 	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
 	perfnum = pshow->perfnum;
@@ -406,11 +400,7 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 			perf_cur = i;
 			dist_threshold = distance;
 			found_dot = 1;
-			//if (i == 0)
-				//printf("0 valid\n");
 		}
-		//else if (pshow->perfs[i]->valid == 0 && i == 0)
-			//printf("invalid at %i\n", i);
 
 	}
 	if (found_dot == 1)

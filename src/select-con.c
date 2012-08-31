@@ -270,10 +270,6 @@ void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle)
 
 
 
-	
-
-
-//select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double xpiv, double ypiv, double x2, double y2, bool toggle)
 select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double x2, double y2, bool toggle)
 {
 	int i;
