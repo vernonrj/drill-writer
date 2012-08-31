@@ -745,15 +745,12 @@ int draw_forms(GtkWidget *widget)
 	group_t *group;
 	select_t *select;
 	double x, y;
-	bool stroke_forms = false;
 
 	//cairo_t *canv_form;
 
 	group = pshow->sets->currset->groups;
 	//if (group)
 	{
-		stroke_forms = true;
-		//cairo_destroy(canv_form);
 		canv_form = cairo_create(surface);
 		canvas_apply(canv_form);
 		cairo_set_line_width(canv_form, 2.0);
@@ -785,8 +782,9 @@ int draw_forms(GtkWidget *widget)
 		}
 		group = group->next;
 	}
-	if (stroke_forms)
-		cairo_stroke(canv_form);
+
+	cairo_stroke(canv_form);
+	cairo_destroy(canv_form);
 	return 0;
 }
 
@@ -809,25 +807,25 @@ int draw_selected(GtkWidget *widget)
 	double sel_xmin, sel_xmax;
 	double sel_ymin, sel_ymax;
 
-	cairo_destroy(selected);
-	selected = gdk_cairo_create(gtk_widget_get_window(widget));
-	//selected = cairo_create(surface);
+	//selected = gdk_cairo_create(gtk_widget_get_window(widget));
+	selected = cairo_create(surface);
 	canvas_apply(selected);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 
 
-	cairo_destroy(select_drag);
-	select_drag = gdk_cairo_create(gtk_widget_get_window(widget));
-	//select_drag = cairo_create(surface);
+	//cairo_destroy(select_drag);
+	//select_drag = gdk_cairo_create(gtk_widget_get_window(widget));
+	select_drag = cairo_create(surface);
 	canvas_apply(select_drag);
 	cairo_set_line_width(select_drag, 1.5);
 	cairo_set_source_rgba(select_drag, 1, 0, 0, 0.5);
 
 
-	cairo_destroy(selected_area);
+	//cairo_destroy(selected_area);
 	//selected_area = gdk_cairo_create(widget->window);
-	selected_area = gdk_cairo_create(gtk_widget_get_window(widget));
+	//selected_area = gdk_cairo_create(gtk_widget_get_window(widget));
+	selected_area = cairo_create(surface);
 	canvas_apply(selected_area);
 	cairo_set_line_width(selected_area, 1.0);
 	cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);
@@ -908,6 +906,9 @@ int draw_selected(GtkWidget *widget)
 	//cairo_fill (selected);
 	cairo_stroke(select_drag);
 	//cairo_fill (select_drag);
+	cairo_destroy(selected);
+	cairo_destroy(select_drag);
+	cairo_destroy(selected_area);
 	do_selected = 0;
 	return 0;
 }
@@ -931,19 +932,19 @@ int draw_dots (GtkWidget *widget)
 	//if (do_dots)
 	{
 		// Draw the field
-		cairo_destroy(surface_write);
+		//cairo_destroy(surface_write);
 		//surface_write = gdk_cairo_create(widget->window);
-		surface_write = gdk_cairo_create(gtk_widget_get_window(widget));
+		//surface_write = gdk_cairo_create(gtk_widget_get_window(widget));
 		//surface_write = cairo_create(surface);
 
-		cairo_set_source_surface(surface_write, surface, 1, 1);
-		cairo_paint (surface_write);
+		//cairo_set_source_surface(surface_write, surface, 1, 1);
+		//cairo_paint (surface_write);
 
 
 		// Define canvases
-		cairo_destroy(dots);
-		dots = gdk_cairo_create(gtk_widget_get_window(widget));
-		//dots = cairo_create(surface);
+		//cairo_destroy(dots);
+		//dots = gdk_cairo_create(gtk_widget_get_window(widget));
+		dots = cairo_create(surface);
 		canvas_apply(dots);
 
 		cairo_set_line_width(dots, 1.5);
@@ -1018,6 +1019,7 @@ int draw_dots (GtkWidget *widget)
 		if (do_selected)
 			draw_selected(widget);
 		do_dots = 0;
+		cairo_destroy(dots);
 	}
 	return 0;
 }
@@ -1042,143 +1044,151 @@ void draw_field (GtkWidget *widget)
 	//printf("do_field %i\n", do_field);
 	do_dots = 1;
 	do_selected = 1;
-	if (do_field)
+	//if (do_field)
+	//{
+	// draw dots also
+	do_dots = 1;
+	do_selected = 1;
+	// (Re)allocate field
+	/*
+	if (!pstate.first_time)
 	{
-		// draw dots also
-		do_dots = 1;
-		do_selected = 1;
-		// (Re)allocate field
-		if (!pstate.first_time)
+		//cairo_destroy(fnums);
+		//cairo_destroy(gaks);
+		//cairo_destroy(field);
+		//cairo_destroy(canv_form);
+		//cairo_surface_destroy(surface);
+	}
+	*/
+
+	if (pstate.first_time)
+	{
+		pstate.first_time = 0;
+		fldstate.zoom_amnt = 1;
+		fldstate.fieldx = 0;
+		fldstate.fieldy = 0;
+		fldstate.mouse_clicked = 0;
+		fldstate.mouse_selection = NULL;
+	}
+
+	// create the surface
+	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
+
+
+	field = cairo_create (surface);
+	canvas_apply(field);
+	cairo_set_source_rgb(field, 1, 1, 1);	
+	cairo_paint (field);
+
+	gaks = cairo_create (surface);
+	canvas_apply(gaks);
+
+	fnums = cairo_create (surface);
+	canvas_apply(fnums);
+	cairo_set_source_rgb(fnums, .7, .7, .7);
+	cairo_set_font_size(fnums, 20);
+
+
+	for (i=fldstate.xo2; i<=fldstate.xo2+fldstate.canv_step*160; i+=fldstate.canv_step*8)
+	{	// Yardlines
+		cairo_set_line_width(field, 1);
+		cairo_set_source_rgb(field, 0, 0, 0);
+		cairo_move_to (field, i, fldstate.yo2);
+		cairo_line_to (field, i, fldstate.height-fldstate.yo2);
+		// Yardline Numbers
+		sprintf(text, "%i", ynum);
+		cairo_text_extents (fnums, text, &te);
+		x_bear = te.x_bearing + te.width / 2;
+		cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*12);
+		cairo_show_text(fnums, text);
+		cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*73);
+		cairo_show_text(fnums, text);
+		if (ynum == 50)
+			past_fifty = 1;
+		if (past_fifty == 0)
 		{
-			cairo_destroy(fnums);
-			cairo_destroy(gaks);
-			cairo_destroy(field);
-			cairo_destroy(canv_form);
-			cairo_surface_destroy(surface);
+			// not past fifty yet; add 5
+			ynum = ynum + 5;
 		}
 		else
 		{
-			pstate.first_time = 0;
-			fldstate.zoom_amnt = 1;
-			fldstate.fieldx = 0;
-			fldstate.fieldy = 0;
-			fldstate.mouse_clicked = 0;
-			fldstate.mouse_selection = NULL;
+			// past fifty; sub 5
+			ynum = ynum - 5;
 		}
-		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, fldstate.width, fldstate.height);
-		field = cairo_create (surface);
-		canvas_apply(field);
-		gaks = cairo_create (surface);
-		canvas_apply(gaks);
-		fnums = cairo_create (surface);
-		canvas_apply(fnums);
-		cairo_set_source_rgb(fnums, .7, .7, .7);
-		cairo_set_font_size(fnums, 20);
+		// Front Hash
+		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+		// Back Hash
+		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+		cairo_stroke (field);
 
-		cairo_set_source_rgb(field, 1, 1, 1);	
-		cairo_paint (field);
 
-		//for (i=fldstate.xo2; i<=fldstate.width-(int)fldstate.xo2; i+=(fldstate.width-(int)fldstate.xoff)/20)
-		for (i=fldstate.xo2; i<=fldstate.xo2+fldstate.canv_step*160; i+=fldstate.canv_step*8)
-		{	// Yardlines
-			cairo_set_line_width(field, 1);
-			cairo_set_source_rgb(field, 0, 0, 0);
-			//cairo_move_to (field, i, fldstate.height-yheight-fldstate.yo2);
-			//cairo_line_to (field, i, yheight+fldstate.yo2);
-			cairo_move_to (field, i, fldstate.yo2);
-			cairo_line_to (field, i, fldstate.height-fldstate.yo2);
-			// Yardline Numbers
-			sprintf(text, "%i", ynum);
-			cairo_text_extents (fnums, text, &te);
-			//cairo_get_font_options(fnums, fopts);
-			//cairo_font_options_set_height(fopts, 4*fldstate.canv_step);
-			x_bear = te.x_bearing + te.width / 2;
-			//y_bear = te.y_bearing + te.height / 2;
-			cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*12);
-			cairo_show_text(fnums, text);
-			cairo_move_to (fnums, i - x_bear, fldstate.height-fldstate.yo2-fldstate.canv_step*73);
-			cairo_show_text(fnums, text);
-			if (ynum == 50)
-				past_fifty = 1;
-			if (past_fifty == 0)
-			{
-				// not past fifty yet; add 5
-				ynum = ynum + 5;
+		// Split Yardlines
+		if (i<((int)fldstate.xo2+(int)fldstate.canv_step*160))
+		{
+			// Light Stroke
+			// only draw if window is large enough
+			cairo_set_line_width (gaks, 0.5);
+			//cairo_set_source_rgb(gaks, 0.9, 0.9, 0.9);
+			cairo_set_source_rgb(gaks, 0.9, 0.9, 1);
+			for(j=(int)i; j<i+fldstate.canv_step*4; j+=(int)fldstate.canv_step)
+			{	// 1-step yardlines
+				cairo_move_to (gaks, j, fldstate.height-yheight-fldstate.yo2);
+				cairo_line_to (gaks, j, yheight+fldstate.yo2);
+
+				cairo_move_to (gaks, j+fldstate.canv_step*5, fldstate.height-yheight-fldstate.yo2);
+				cairo_line_to (gaks, j+fldstate.canv_step*5, yheight+fldstate.yo2);
 			}
-			else
-			{
-				// past fifty; sub 5
-				ynum = ynum - 5;
+			for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=(int)fldstate.canv_step)
+			{	// 1-step y-grid
+				//if (((int)(j-fldstate.yo2-fldstate.canv_step)%(int)(fldstate.canv_step*4)) == 0)
+					//continue;
+				cairo_move_to (gaks, i, j);
+				cairo_line_to (gaks, i+fldstate.canv_step*8, j);
 			}
-			// Front Hash
-			cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
-			cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
-			// Back Hash
-			cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
-			cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
-			cairo_stroke (field);
+			// Light Stroke Draw
+			cairo_stroke (gaks);
 
 
-			// Split Yardlines
-			if (i<((int)fldstate.xo2+(int)fldstate.canv_step*160))
-			//if (i<(fldstate.xo2+fldstate.canv_step*160))
-			{
-				// Light Stroke
-				// only draw if window is large enough
-				cairo_set_line_width (gaks, 0.5);
-				//cairo_set_source_rgb(gaks, 0.9, 0.9, 0.9);
-				cairo_set_source_rgb(gaks, 0.9, 0.9, 1);
-				//if (fldstate.width-fldstate.xo2 > 800)
-				{
-					//for (j=i; j<i+(int)fldstate.canv_step*4; j+=(int)fldstate.canv_step)
-					for(j=(int)i; j<i+fldstate.canv_step*4; j+=(int)fldstate.canv_step)
-					{	// 1-step yardlines
-						cairo_move_to (gaks, j, fldstate.height-yheight-fldstate.yo2);
-						cairo_line_to (gaks, j, yheight+fldstate.yo2);
+			// Med Stroke
+			// 4-step X
+			cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
+			cairo_move_to (gaks, i+(int)fldstate.canv_step*4, fldstate.yo2);
+			cairo_line_to (gaks, i+(int)fldstate.canv_step*4, yheight+fldstate.yo2);
 
-						cairo_move_to (gaks, j+fldstate.canv_step*5, fldstate.height-yheight-fldstate.yo2);
-						cairo_line_to (gaks, j+fldstate.canv_step*5, yheight+fldstate.yo2);
-					}
-					for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=(int)fldstate.canv_step)
-					{	// 1-step y-grid
-						//if (((int)(j-fldstate.yo2-fldstate.canv_step)%(int)(fldstate.canv_step*4)) == 0)
-							//continue;
-						cairo_move_to (gaks, i, j);
-						cairo_line_to (gaks, i+fldstate.canv_step*8, j);
-					}
-					// Light Stroke Draw
-					cairo_stroke (gaks);
-				}
-
-				// Med Stroke
-				// only draw if window is large enough
-				//if (fldstate.width-fldstate.xo2 > 600)
-				{
-					// 4-step X
-					cairo_set_source_rgb(gaks, 0.5, 0.5, 0.9);
-					cairo_move_to (gaks, i+(int)fldstate.canv_step*4, fldstate.yo2);
-					cairo_line_to (gaks, i+(int)fldstate.canv_step*4, yheight+fldstate.yo2);
-
-					for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=4*(int)fldstate.canv_step)
-					{	// 4-Step Gaks
-						cairo_move_to (gaks, i, j);
-						cairo_line_to (gaks, i+(int)fldstate.canv_step*8, j);
-					}
-					// Med Stroke Draw
-					cairo_stroke(gaks);
-				}
+			for (j=fldstate.yo2+yheight; j>=fldstate.yo2; j-=4*(int)fldstate.canv_step)
+			{	// 4-Step Gaks
+				cairo_move_to (gaks, i, j);
+				cairo_line_to (gaks, i+(int)fldstate.canv_step*8, j);
 			}
+			// Med Stroke Draw
+			cairo_stroke(gaks);
 		}
 	}
 	// Cleanup
+	cairo_destroy(field);
+	cairo_destroy(gaks);
+	cairo_destroy(fnums);
+	//}
 	// Show the dots
 	draw_dots(widget);
 	draw_forms(widget);
 
 	// Make sure field won't be redrawn by default
 	do_field = 0;
+
 	update_entries();
 	dr_sidebar_update((DrSidebar*)sidebar);
+
+	// draw cairo stuff to window
+	surface_write = gdk_cairo_create(gtk_widget_get_window(widget));
+	cairo_set_source_surface(surface_write, surface, 1, 1);
+	cairo_paint (surface_write);
+	cairo_destroy(surface_write);
+
+	// destroy the surface
+	cairo_surface_destroy(surface);
 
 
 }
