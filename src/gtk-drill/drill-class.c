@@ -807,29 +807,23 @@ int draw_selected(GtkWidget *widget)
 	double sel_xmin, sel_xmax;
 	double sel_ymin, sel_ymax;
 
-	//selected = gdk_cairo_create(gtk_widget_get_window(widget));
+	// context for selected dots
 	selected = cairo_create(surface);
 	canvas_apply(selected);
 	cairo_set_line_width(selected, 1.5);
 	cairo_set_source_rgb(selected, 1, 0, 0);
 
-
-	//cairo_destroy(select_drag);
-	//select_drag = gdk_cairo_create(gtk_widget_get_window(widget));
+	// contents for selected dots (while dragging)
 	select_drag = cairo_create(surface);
 	canvas_apply(select_drag);
 	cairo_set_line_width(select_drag, 1.5);
 	cairo_set_source_rgba(select_drag, 1, 0, 0, 0.5);
 
-
-	//cairo_destroy(selected_area);
-	//selected_area = gdk_cairo_create(widget->window);
-	//selected_area = gdk_cairo_create(gtk_widget_get_window(widget));
+	// contents for a selected area
 	selected_area = cairo_create(surface);
 	canvas_apply(selected_area);
 	cairo_set_line_width(selected_area, 1.0);
 	cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);
-
 
 	// get set information
 	sets = pshow->sets;
@@ -888,7 +882,6 @@ int draw_selected(GtkWidget *widget)
 		cairo_fill(selected_area);
 		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.5);
 		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
-		cairo_stroke(selected_area);
 	}
 	if (fldstate.mouse_clicked == 0x1)
 	{
@@ -900,16 +893,18 @@ int draw_selected(GtkWidget *widget)
 		cairo_fill(selected_area);
 		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.5);
 		cairo_rectangle(selected_area, sel_xmin, sel_ymin, (sel_xmax-sel_xmin), (sel_ymax-sel_ymin));
-		cairo_stroke(selected_area);
 	}
+	// apply to canvas
+	cairo_stroke(selected_area);
 	cairo_stroke(selected);
-	//cairo_fill (selected);
 	cairo_stroke(select_drag);
-	//cairo_fill (select_drag);
+
+	// destroy canvas
 	cairo_destroy(selected);
 	cairo_destroy(select_drag);
 	cairo_destroy(selected_area);
-	do_selected = 0;
+
+	//do_selected = 0;
 	return 0;
 }
 
@@ -1016,8 +1011,8 @@ int draw_dots (GtkWidget *widget)
 		cairo_stroke(dots);
 		//cairo_fill (dots);
 		// Cleanup loose ends
-		if (do_selected)
-			draw_selected(widget);
+		//if (do_selected)
+		draw_selected(widget);
 		do_dots = 0;
 		cairo_destroy(dots);
 	}
@@ -1043,12 +1038,12 @@ void draw_field (GtkWidget *widget)
 	// Set up to redraw the field
 	//printf("do_field %i\n", do_field);
 	do_dots = 1;
-	do_selected = 1;
+	//do_selected = 1;
 	//if (do_field)
 	//{
 	// draw dots also
 	do_dots = 1;
-	do_selected = 1;
+	//do_selected = 1;
 	// (Re)allocate field
 	/*
 	if (!pstate.first_time)
