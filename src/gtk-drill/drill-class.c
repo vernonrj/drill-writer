@@ -1074,11 +1074,15 @@ void draw_field (GtkWidget *widget)
 			ynum = ynum - 5;
 		}
 		// Front Hash
-		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
-		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+		//cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+		//cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*32);
+		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.yo2 + yheight - fldstate.canv_step*32);
+		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.yo2 + yheight - fldstate.canv_step*32);
 		// Back Hash
-		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
-		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+		//cairo_move_to (field, i-2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+		//cairo_line_to (field, i+2*fldstate.canv_step, fldstate.height-fldstate.yo2-fldstate.canv_step*53);
+		cairo_move_to (field, i-2*fldstate.canv_step, fldstate.yo2 + yheight -fldstate.canv_step*53);
+		cairo_line_to (field, i+2*fldstate.canv_step, fldstate.yo2 + yheight -fldstate.canv_step*53);
 		cairo_stroke (field);
 	}
 
