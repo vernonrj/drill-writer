@@ -86,6 +86,8 @@ int show_construct(headset_t **dshow_r, int perfs)
 	// start at the beginning of the set
 	pstate.curr_step = 0;
 
+	pstate.setnum = 0;
+
 	*dshow_r = dshow;
 	return 0;
 }

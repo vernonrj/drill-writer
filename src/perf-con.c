@@ -265,7 +265,7 @@ double check_stepsize_selected(headset_t *dshow)
 	coord_t **coords = currset->coords;
 	coord_t **pcoords;
 
-	if (pstate.setnum == 0)
+	if (!prevset)
 		return 0;
 	pcoords = prevset->coords;
 	sCounts = currset->counts;
@@ -316,7 +316,7 @@ int max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 	// stepsize
 	double stepsize = 0;
 
-	if (pstate.setnum == 0)
+	if (!prevset)
 		return 0;
 	pcoords = prevset->coords;
 	sCounts = currset->counts;
