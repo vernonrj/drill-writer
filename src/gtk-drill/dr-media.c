@@ -140,6 +140,7 @@ gboolean play_show (GtkWidget *widget)
 	if (pstate.playing == 1 && time_elapsed >= (double)60/(double)local_tempo)// && !expose_flag)
 	{	
 		//set_step++;
+		g_timer_start(timer);
 		pstate.curr_step++;
 		do_field=0;	// don't need to redraw field
 		nextset = pshow->sets->currset->next;
@@ -162,7 +163,7 @@ gboolean play_show (GtkWidget *widget)
 		//g_print("Play_show %i %i %i\n", setnum, set_step, playing);
 		if (pstate.playing)
 		{
-			g_timer_start(timer);
+			//g_timer_start(timer);
 			return TRUE;
 		}
 		else
@@ -186,7 +187,8 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 {
 	if (!pstate.playing)
 	{
-		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
+		//(void)g_timeout_add(50, (GSourceFunc)play_show, window);
+		(void)g_timeout_add_full(G_PRIORITY_HIGH, 1, (GSourceFunc)play_show, window, NULL);
 		do_field=0;	// don't need to redraw field
 		dr_canvas_refresh(drill);
 		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, 
