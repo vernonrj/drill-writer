@@ -351,6 +351,7 @@ void group_add_to_set(group_t *group);
 void group_add_global(group_t *group);
 bool is_in_select(int index, select_t *selects);
 bool dots_within_range(double x1, double y1, double x2, double y2);
+bool group_is_selected(group_t *group, select_t *select);
 int add_group(void);
 
 // set-controls.c

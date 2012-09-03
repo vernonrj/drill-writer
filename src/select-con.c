@@ -331,6 +331,8 @@ select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 		while (last)
 		{
 			newlist = select_add(newlist, last->index, false);
+			if (last->group)
+				newlist->group = last->group;
 			last = last->next;
 		}
 	}
@@ -347,6 +349,8 @@ select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 	}
 	return newlist;
 }
+
+
 
 
 
@@ -656,6 +660,17 @@ bool is_in_select(int index, select_t *selects)
 	return false;
 }
 
+
+bool group_is_selected(group_t *group, select_t *select)
+{
+	while (select)
+	{
+		if (select->group == group)
+			return true;
+		select = select->next;
+	}
+	return false;
+}
 
 
 int add_group(void)

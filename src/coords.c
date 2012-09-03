@@ -151,11 +151,23 @@ int movexy(double xoff, double yoff)
 	coord_t **coords = pshow->sets->currset->coords;
 	select_t *selects = pstate.select;
 	select_t *group_selects = NULL;
+	fline_t *line;
 	int done = 0;
 	while(selects != NULL)
 	{
 		if (!group_selects && selects->group)
+		{
+			group = selects->group;
 			group_selects = selects->group->selects;
+			if (group->forms)
+			{
+				line = group->forms->form->line;
+				line->coords[0][0] += xoff;
+				line->coords[0][1] += yoff;
+				line->coords[1][0] += xoff;
+				line->coords[1][1] += yoff;
+			}
+		}
 		if(group_selects)
 		{
 			retr_coord(coords[group_selects->index], &x, &y);

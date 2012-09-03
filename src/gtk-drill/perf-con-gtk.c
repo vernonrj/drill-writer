@@ -288,6 +288,8 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				group = dr_check_form_selected(widget, event);
 				if (!group)
 					index = checkSelected(widget, event);
+				else
+					index = -1;
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
 					// ctrl-click
@@ -302,7 +304,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				else
 				{
 					// regular click
-					if (!isSelected(index) && !group)
+					if (!group && !isSelected(index))
 					{
 						// dot is not selected
 						select_dots_discard();
@@ -311,6 +313,14 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 						{
 							select_dots_add(index);
 						}
+					}
+					else if (group && !group_is_selected(group, pstate.select))
+					{
+						select_dots_discard();
+						mouse_discarded = 1;
+						pstate.select = select_add_group(pstate.select, group, false);
+						if (isSelected(index))
+							fldstate.mouse_clicked |= 0x2;
 					}
 					else
 					{
@@ -395,14 +405,13 @@ int isSelected(int index)
 group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
-	group_t *group = pshow->topgroups;
+	group_t *group = pshow->sets->currset->groups;
 	//group = checkGroups(widget, event, group);
 	//if (group)
 	//	return group;
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
-	group = pshow->sets->currset->groups;
 	group = checkGroups(coordx, coordy, group);
 	return group;
 }
