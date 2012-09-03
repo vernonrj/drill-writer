@@ -286,10 +286,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					index = checkSelected(widget, event);
 					*/
 				group = dr_check_form_selected(widget, event);
-				if (!group)
-					index = checkSelected(widget, event);
-				else
-					index = -1;
+				index = checkSelected(widget, event);
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
 					// ctrl-click
@@ -316,11 +313,12 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					}
 					else if (group && !group_is_selected(group, pstate.select))
 					{
-						select_dots_discard();
-						mouse_discarded = 1;
-						pstate.select = select_add_group(pstate.select, group, false);
 						if (isSelected(index))
 							fldstate.mouse_clicked |= 0x2;
+						else
+							mouse_discarded = 1;
+						select_dots_discard();
+						pstate.select = select_add_group(pstate.select, group, false);
 					}
 					else
 					{
