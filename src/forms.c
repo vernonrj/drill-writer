@@ -1,5 +1,30 @@
 #include "drill.h"
 
+bool form_checkEndpoints(form_t *form, double x, double y)
+{
+	int i;
+	double distance;
+	double dist_threshold = 9;
+	double **endpoints;
+	double *coords;
+	fline_t *line;
+	if(!form)
+		return NULL;
+	switch(form->type)
+	{
+		case 1:		// line
+			line = form->form->line;
+			if (dots_within_range(line->coords[0][0], line->coords[0][1], x, y))
+				return true;
+			else if (dots_within_range(line->coords[1][0], line->coords[1][1], x, y))
+				return true;
+			break;
+	}
+	return false;
+}
+			
+
+
 void form_build_line(group_t *group)
 {
 	// build a line

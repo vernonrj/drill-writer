@@ -291,6 +291,7 @@ void scale_form(double s_step);
 void rot_form(double s_step);
 
 // forms.c
+bool form_checkEndpoints(form_t *form, double x, double y);
 void form_build_line(group_t *group);
 
 // fieldrel.c
@@ -348,6 +349,7 @@ group_t *group_pop_from(group_t *group, group_t *curr);
 void group_add_to_set(group_t *group);
 void group_add_global(group_t *group);
 bool is_in_select(int index, select_t *selects);
+bool dots_within_range(double x1, double y1, double x2, double y2);
 int add_group(void);
 
 // set-controls.c

@@ -597,6 +597,23 @@ void group_add_global(group_t *group)
 }
 	
 
+bool dots_within_range(double x1, double y1, double x2, double y2)
+{
+	double dist_threshold = 9;
+	double distance;
+	double dx, dy;
+
+	dx = x1 - x2;
+	dy = y1 - y2;
+
+	distance = pow(dx, 2) + pow(dy, 2);
+	if (distance < dist_threshold)
+	       return true;
+	else
+		return false;
+}
+
+
 
 bool is_in_select(int index, select_t *selects)
 {

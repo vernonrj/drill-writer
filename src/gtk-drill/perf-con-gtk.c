@@ -234,6 +234,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 	
 	int index;
 	double coordx, coordy;
+	group_t *group;
 	// Length from click location to nearest dot
 
 
@@ -272,7 +273,14 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				index = checkSelected(widget, event);
+				group = dr_check_form_selected(widget, event);
+				if (group)
+				{
+					pstate.select = select_add_group(pstate.select, group, false);
+					index = -1;
+				}
+				else
+					index = checkSelected(widget, event);
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
 					// ctrl-click
@@ -287,7 +295,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				else
 				{
 					// regular click
-					if (!isSelected(index))
+					if (!isSelected(index) && !group)
 					{
 						// dot is not selected
 						select_dots_discard();
@@ -363,9 +371,46 @@ int isSelected(int index)
 
 
 
+group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
+{
+	group_t *group = pshow->topgroups;
+	//group = checkGroups(widget, event, group);
+	//if (group)
+	//	return group;
+	group = pshow->sets->currset->groups;
+	group = checkGroups(widget, event, group);
+	return group;
+}
+
+
+
+group_t *checkGroups(GtkWidget *widget, GdkEventButton *event, group_t *group)
+{
+	double **endpoints;
+	double coordx, coordy;
+	double dotx, doty;
+	double distance;
+	double dist_threshold = 9;
+	select_t *select;
+
+	coordx = event->x;
+	coordy = event->y;
+	pixel_to_field(&coordx, &coordy);
+
+	while (group)
+	{
+		if (group->forms && form_checkEndpoints(group->forms, coordx, coordy))
+			return group;
+		group = group->next;
+	}
+	return group;
+}
+
+
+
 int checkSelected(GtkWidget *widget, GdkEventButton *event)
 {
-	//guint state = event->state;
+	// find a dot close to mouseclick
 	double dist_threshold = 9;
 	double distance;
 	double workx, worky;
