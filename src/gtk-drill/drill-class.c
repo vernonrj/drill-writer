@@ -745,6 +745,8 @@ int draw_selected(GtkWidget *widget)
 	struct select_proto *select;
 	struct set_container *sets;
 	struct set_proto *currset;
+	group_t *group;
+	select_t *group_select;
 	int index;
 	double x, y;
 	double xmin = -1, xmax = -1;
@@ -792,15 +794,30 @@ int draw_selected(GtkWidget *widget)
 		sel_xmin = sel_xmax = 0;
 		sel_ymin = sel_ymax = 0;
 	}
+	group_select = NULL;
 	while (select != NULL)
 	{
-		index = select->index;
+		if (!group_select)
+		{
+			index = select->index;
+			group = select->group;
+			if (group)
+				group_select = group->selects;
+		}
+
+		if (group_select)
+			index = group_select->index;
+
 		retr_midset(currset, index, &x, &y);
 		xfield = x;
 		yfield = y;
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
-		select = select->next;
+		if (group_select)
+			group_select = group_select->next;
+		if (!group_select)
+			select = select->next;
+
 		if ((fldstate.mouse_clicked & 0x2) == 0x2)
 		{
 			// show dots being moved

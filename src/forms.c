@@ -22,7 +22,8 @@ bool form_checkEndpoints(form_t *form, double x, double y)
 	}
 	return false;
 }
-			
+
+
 
 
 void form_build_line(group_t *group)

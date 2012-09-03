@@ -139,7 +139,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 int isSelected(int index);
 int checkSelected(GtkWidget *widget, GdkEventButton *event);
 group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event);
-group_t *checkGroups(GtkWidget *widget, GdkEventButton *event, group_t *group);
+group_t *checkGroups(double coordx, double coordy, group_t *group);
 //int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 
 /*

@@ -111,9 +111,10 @@ struct select_proto
 {
 	// node with selection information
 	int index;
+	group_t *group;
 
 	select_t *next;
-	select_t *prev;
+	//select_t *prev;
 };
 
 

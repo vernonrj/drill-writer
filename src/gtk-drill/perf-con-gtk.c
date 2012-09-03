@@ -186,6 +186,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// handle un-click events on canvas
 	double x, y;
+	double x1, y1;
 	int index;
 	if (event->button == 1)
 	{
@@ -202,6 +203,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 				if (event->state == 256)
 				{
 					// regular click
+
 					if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
 						movexy(mouse_clickx, mouse_clicky);
@@ -273,6 +275,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
+				/*
 				group = dr_check_form_selected(widget, event);
 				if (group)
 				{
@@ -280,6 +283,10 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 					index = -1;
 				}
 				else
+					index = checkSelected(widget, event);
+					*/
+				group = dr_check_form_selected(widget, event);
+				if (!group)
 					index = checkSelected(widget, event);
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
@@ -354,17 +361,31 @@ int isSelected(int index)
 {
 	// check to see if a dot is in selected dots
 	struct select_proto *select;
+	select_t *group_select = NULL;
+	//group_t *group = NULL;
 	int isin = 0;
+	int index_selected;
 
 	select = pstate.select;
 	while (select != NULL)
 	{
-		if (index == select->index)
+		if (!group_select && select->group)
+			group_select = select->group->selects;
+		if (group_select)
+			index_selected = group_select->index;
+		else
+			index_selected = select->index;
+
+		//if (index == select->index)
+		if (index == index_selected)
 		{
 			isin = 1;
 			break;
 		}
-		select = select->next;
+		if (group_select)
+			group_select = group_select->next;
+		if (!group_select)
+			select = select->next;
 	}
 	return isin;
 }
@@ -373,29 +394,29 @@ int isSelected(int index)
 
 group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
 {
+	double coordx, coordy;
 	group_t *group = pshow->topgroups;
 	//group = checkGroups(widget, event, group);
 	//if (group)
 	//	return group;
+	coordx = event->x;
+	coordy = event->y;
+	pixel_to_field(&coordx, &coordy);
 	group = pshow->sets->currset->groups;
-	group = checkGroups(widget, event, group);
+	group = checkGroups(coordx, coordy, group);
 	return group;
 }
 
 
 
-group_t *checkGroups(GtkWidget *widget, GdkEventButton *event, group_t *group)
+group_t *checkGroups(double coordx, double coordy, group_t *group)
 {
 	double **endpoints;
-	double coordx, coordy;
 	double dotx, doty;
 	double distance;
 	double dist_threshold = 9;
 	select_t *select;
 
-	coordx = event->x;
-	coordy = event->y;
-	pixel_to_field(&coordx, &coordy);
 
 	while (group)
 	{

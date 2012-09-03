@@ -144,6 +144,9 @@ void select_dots_add(int index)
 	return;
 }
 
+
+
+
 select_t *select_add(select_t *psel, int index, bool toggle)
 {
 	// add a selection if it's not selected;
@@ -163,6 +166,7 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 			return NULL;
 		curr->next = NULL;
 		curr->index = index;
+		curr->group = NULL;
 		psel = curr;
 		// update selection center
 		//add_sel_center(pshow->sets->currset->coords[index]);
@@ -176,7 +180,7 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 		while (loop_done == 0)
 		{
 			// check for grouping
-			if (last->index == index)
+			if (!last->group && last->index == index)
 			{
 				// found a match, remove if toggle enabled
 				if (toggle && selects == NULL)
@@ -217,6 +221,7 @@ select_t *select_add(select_t *psel, int index, bool toggle)
 			if (!curr)
 				return NULL;
 			curr->index = index;
+			curr->group = NULL;
 			if (selects == NULL)
 			{
 				// insert at beginning
@@ -395,14 +400,37 @@ select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 {
 	// add group to selection
 	select_t *last;
+	select_t *curr;
 	if (!group)
 		return selects;
-	last = group->selects;
+	last = selects;
+	curr = NULL;
+	while (last)
+	{
+		if (last->group && last->group == group)
+			return selects;
+		curr = last;
+		last = last->next;
+	}
+	if (curr == NULL)
+	{
+		selects = select_add(selects, -1, false);
+		selects->group = group;
+		return selects;
+	}
+	last = NULL;
+	last = select_add(last, -1, false);
+	last->group = group;
+	curr->next = last;
+	return selects;
+	//last = group->selects;
+	/*
 	while (last)
 	{
 		selects = select_add(selects, last->index, toggle);
 		last = last->next;
 	}
+	*/
 	return selects;
 }
 

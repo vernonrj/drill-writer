@@ -147,17 +147,36 @@ int movexy(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff
 	double x, y;
+	group_t *group;
 	coord_t **coords = pshow->sets->currset->coords;
 	select_t *selects = pstate.select;
+	select_t *group_selects = NULL;
 	int done = 0;
 	while(selects != NULL)
 	{
-		retr_coord(coords[selects->index], &x, &y);
-		pushPerfmv(&pstate.undobr, selects->index, x, y, done);
+		if (!group_selects && selects->group)
+			group_selects = selects->group->selects;
+		if(group_selects)
+		{
+			retr_coord(coords[group_selects->index], &x, &y);
+			pushPerfmv(&pstate.undobr, group_selects->index, x, y, done);
+		}
+		else
+		{
+			retr_coord(coords[selects->index], &x, &y);
+			pushPerfmv(&pstate.undobr, selects->index, x, y, done);
+		}
 		x = x + xoff;
 		y = y + yoff;
-		set_coord(pshow, selects->index, x, y);
-		selects = selects->next;
+		if (group_selects)
+			set_coord(pshow, group_selects->index, x, y);
+		else
+			set_coord(pshow, selects->index, x, y);
+
+		if (group_selects)
+			group_selects = group_selects->next;
+		if (!group_selects)
+			selects = selects->next;
 	}
 	// move center of selection
 	x = pstate.center->x;
