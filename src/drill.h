@@ -317,12 +317,12 @@ int main (int argc, char *argv[]);
 perf_t *perf_construct(void);
 int perf_destroy(perf_t **perf_r);
 int perf_add(void);
-void revert_perf_selected(struct headset_proto *dshow);
-void revert_perf(struct headset_proto *dshow, int index);
-void delete_perf_selected(void);
-void delete_perf(perf_t *perf);
-double check_stepsize_selected(struct headset_proto *dshow);
-int max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
+void perf_revert_selected(struct headset_proto *dshow);
+void perf_revert(struct headset_proto *dshow, int index);
+void perf_delete_selected(void);
+void perf_delete(perf_t *perf);
+double perf_average_stepsize_selected(struct headset_proto *dshow);
+int perf_max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 
 // select-con.c
 // Selection control functions

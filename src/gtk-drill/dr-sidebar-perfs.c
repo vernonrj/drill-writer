@@ -81,7 +81,7 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	gtk_box_pack_start(GTK_BOX (pstszbox), label, FALSE, FALSE, 5);
 	gtk_widget_show(label);
 
-	stepsize = check_stepsize_selected(pshow);
+	stepsize = perf_average_stepsize_selected(pshow);
 	if (stepsize < 0.1)
 		snprintf(stepsize_buf, 19, "None");
 	else
@@ -103,7 +103,7 @@ static void dr_sidebar_perfs_init(DrSidebarPerfs *sidebarperfs)
 	gtk_box_pack_start(GTK_BOX (pstszmaxbox), label, FALSE, FALSE, 5);
 	gtk_widget_show(label);
 
-	index = max_stepsize_selected(pshow, &stepsize_max);
+	index = perf_max_stepsize_selected(pshow, &stepsize_max);
 	if (stepsize_max < 0.1)
 		snprintf(stepsize_max_buf, 19, "None");
 	else
@@ -163,14 +163,14 @@ void dr_sidebar_perfs_update(GtkWidget *sidebarperfs)
 	snprintf(perf_buf, 19, "%i", perf_cur);
 	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_perf), perf_buf);
 
-	stepsize = check_stepsize_selected(pshow);
+	stepsize = perf_average_stepsize_selected(pshow);
 	if (stepsize < 0.1)
 		snprintf(stepsize_buf, 19, "None");
 	else
 		sprintf(stepsize_buf, "%.2f:5", stepsize);
 	gtk_entry_set_text(GTK_ENTRY(lsidebarperfs->priv->entry_stepsize), stepsize_buf);
 
-	index = max_stepsize_selected(pshow, &stepsize_max);
+	index = perf_max_stepsize_selected(pshow, &stepsize_max);
 	if (stepsize_max < 0.1)
 		snprintf(stepsize_max_buf, 19, "None");
 	else

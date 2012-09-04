@@ -136,7 +136,7 @@ int perf_add(void)
 
 
 
-void revert_perf_selected(headset_t *dshow)
+void perf_revert_selected(headset_t *dshow)
 {
 	// revert selected performers to dot at the previous set
 	int index;
@@ -164,7 +164,7 @@ void revert_perf_selected(headset_t *dshow)
 			done = 1;
 		}
 		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, done);
-		revert_perf(dshow, index);
+		perf_revert(dshow, index);
 		// go to next performer
 		last = last->next;
 	}
@@ -172,7 +172,7 @@ void revert_perf_selected(headset_t *dshow)
 }
 	
 
-void revert_perf(headset_t *dshow, int index)
+void perf_revert(headset_t *dshow, int index)
 {
 	// revert a performer's dot to the dot at the previous set
 	set_t *prevset;
@@ -196,7 +196,7 @@ void revert_perf(headset_t *dshow, int index)
 
 
 
-void delete_perf_selected(void)
+void perf_delete_selected(void)
 {
 	// delete selected performers
 	int index;
@@ -225,7 +225,7 @@ void delete_perf_selected(void)
 		pushPerfDel(&pstate.undobr, &perf, pshow->sets->firstset, done);
 		// TODO: eventually have to unlink perf struct for undo
 		pshow->perfs[index] = perf;
-		delete_perf(perf);
+		perf_delete(perf);
 		perfs[index]->valid = 0;
 		// go to next performer
 		last = last->next;
@@ -236,7 +236,7 @@ void delete_perf_selected(void)
 
 
 
-void delete_perf(perf_t *perf)
+void perf_delete(perf_t *perf)
 {
 	// render performer invalid
 	perf->valid = 0;
@@ -245,7 +245,7 @@ void delete_perf(perf_t *perf)
 
 
 
-double check_stepsize_selected(headset_t *dshow)
+double perf_average_stepsize_selected(headset_t *dshow)
 {
 	// get average stepsize of selected dots
 	int count = 0;
@@ -293,7 +293,7 @@ double check_stepsize_selected(headset_t *dshow)
 
 
 
-int max_stepsize_selected(headset_t *dshow, double *stepsize_r)
+int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 {
 	// get the max stepsize of a group
 	// largest dot

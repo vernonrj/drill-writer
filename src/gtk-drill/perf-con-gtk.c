@@ -3,7 +3,7 @@ void view_stepsize_gtk(GtkWidget *widget)
 {
 	// view the stepsize of selected dots
 	double stepsize;
-	stepsize = check_stepsize_selected(pshow);
+	stepsize = perf_average_stepsize_selected(pshow);
 	printf("stepsize = %.2f:5\n", stepsize);
 	return;
 }
@@ -42,7 +42,7 @@ void revert_perf_gtk(GtkWidget *widget)
 	// revert selected performers
 	if (!pstate.playing)
 	{
-		revert_perf_selected(pshow);
+		perf_revert_selected(pshow);
 		//dr_canvas_refresh(drill);
 		dr_canvas_refresh(drill);
 	}
@@ -54,7 +54,7 @@ void delete_perf_gtk(GtkWidget *widget)
 	// Delete selected performers
 	if (!pstate.playing)
 	{
-		delete_perf_selected();
+		perf_delete_selected();
 		//dr_canvas_refresh(drill);
 		dr_canvas_refresh(drill);
 	}
