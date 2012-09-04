@@ -14,9 +14,9 @@ bool form_checkEndpoints(form_t *form, double x, double y)
 	{
 		case 1:		// line
 			line = form->form->line;
-			if (dots_within_range(line->coords[0][0], line->coords[0][1], x, y))
+			if (fieldrel_check_dots_within_range(line->coords[0][0], line->coords[0][1], x, y))
 				return true;
-			else if (dots_within_range(line->coords[1][0], line->coords[1][1], x, y))
+			else if (fieldrel_check_dots_within_range(line->coords[1][0], line->coords[1][1], x, y))
 				return true;
 			break;
 	}

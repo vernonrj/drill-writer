@@ -26,7 +26,7 @@ bin_PROGRAMS = drillwriter
 
 drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.hpp \
 		      coords.c fieldrel.c file-ops.c \
-		      main.c perf-con.c forms.c\
+		      main.c perf-con.c forms.c group.c\
 		      select-con.c set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/perf-con-gtk.c \

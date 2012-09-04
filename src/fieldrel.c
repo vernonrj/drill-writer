@@ -1,5 +1,22 @@
 #include "drill.h"
 
+
+bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2)
+{
+	double dist_threshold = 9;
+	double distance;
+	double dx, dy;
+
+	dx = x1 - x2;
+	dy = y1 - y2;
+
+	distance = pow(dx, 2) + pow(dy, 2);
+	if (distance < dist_threshold)
+	       return true;
+	else
+		return false;
+}
+
 // TODO: put side-to-side into one function like front-to-back
 int isInsideYard(double *x, double *y, int *field_side)
 {

@@ -296,6 +296,7 @@ bool form_checkEndpoints(form_t *form, double x, double y);
 void form_build_line(group_t *group);
 
 // fieldrel.c
+bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
 int isInsideYard(double *x, double *y, int *field_side);
 int getYardline(double *x, double *y);
 double getSidetoSide(double *x, double *y);
@@ -306,6 +307,15 @@ int xy_to_relation(double *x, double *y, char **buffer_r);
 int open_file(char *filename);
 int save_file(char *filename);
 
+// group.c
+// grouping functions
+group_t *group_construct(void);
+group_t *group_add_selects(group_t *group, select_t *newsels);
+group_t *group_remove_from(group_t *group, group_t *curr);
+group_t *group_pop_from(group_t *group, group_t *curr);
+void group_add_to_set(group_t *group);
+void group_add_global(group_t *group);
+bool group_is_selected(group_t *group, select_t *select);
 
 // main.c
 int show_construct(struct headset_proto **dshow_r, int perfs);
@@ -324,35 +334,27 @@ void perf_delete(perf_t *perf);
 double perf_average_stepsize_selected(struct headset_proto *dshow);
 int perf_max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 
+
+
 // select-con.c
 // Selection control functions
-void select_dots_discard(void);
+bool select_check_index_selected(int index, select_t *selects);
+bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
+select_t *select_add_index(select_t*, int index, bool toggle);
 void select_dots_add_index(int index);
+select_t *select_add_group(select_t*, group_t*, bool);
+void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle);
+select_t *select_add_in_rectangle(select_t*, double, double, double, double, bool);
+select_t *select_drop_multiple(select_t *mainlist, select_t *modifier);
+select_t *select_discard(select_t*);
+void select_dots_discard(void);
+select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle);
+void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle);
+select_t *select_all(select_t*, perf_t **perfs, int perfnum);
+int select_all_dots(void);
 void select_update_center(select_t *last);
 //void select_add_coord_to_center(coord_t *coord);
 //void select_remove_coord_from_center(coord_t *coord);
-select_t *select_discard(select_t*);
-select_t *select_add_index(select_t*, int index, bool toggle);
-select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle);
-bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
-void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle);
-select_t *select_add_in_rectangle(select_t*, double, double, double, double, bool);
-void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle);
-select_t *select_drop_multiple(select_t *mainlist, select_t *modifier);
-select_t *select_add_group(select_t*, group_t*, bool);
-select_t *select_all(select_t*, perf_t **perfs, int perfnum);
-int select_all_dots(void);
-//int select_all(void);
-group_t *group_construct(void);
-group_t *group_add_selects(group_t *group, select_t *newsels);
-group_t *group_remove_from(group_t *group, group_t *curr);
-group_t *group_pop_from(group_t *group, group_t *curr);
-void group_add_to_set(group_t *group);
-void group_add_global(group_t *group);
-bool is_in_select(int index, select_t *selects);
-bool dots_within_range(double x1, double y1, double x2, double y2);
-bool group_is_selected(group_t *group, select_t *select);
-int add_group(void);
 
 // set-controls.c
 // create a set with a given amount of performers
