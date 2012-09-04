@@ -2,6 +2,67 @@
 
 
 
+int mouse_click_find_close_dot(GtkWidget *widget, GdkEventButton *event)
+{
+	// find a dot close to mouseclick
+	double dist_threshold = 9;
+	double distance;
+	double workx, worky;
+	double coordx, coordy;
+	int perfnum;
+	int i;
+	int found_dot = 0;
+
+	coordx = event->x;
+	coordy = event->y;
+	pixel_to_field(&coordx, &coordy);
+
+	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
+	perfnum = pshow->perfnum;
+	//for (i=0; i<perfnum; i++)
+	perf_cur = 0;
+	for (i=0; i<perfnum; i++)
+	{
+		coords_retrieve_midset(pshow->sets->currset, i, &workx, &worky);
+		workx = workx - coordx;
+		worky = worky - coordy;
+		distance = pow(workx, 2) + pow(worky, 2);
+		/*
+		if (i == 0)
+		{
+			printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
+		}
+		*/
+		if (distance < dist_threshold && pshow->perfs[i]->valid)
+		{
+			// Found a closer dot
+			perf_cur = i;
+			dist_threshold = distance;
+			found_dot = 1;
+		}
+
+	}
+	if (found_dot == 1)
+	{
+		return perf_cur;
+		/*
+		i = inSelected(perf_cur);
+		if (state != 4) 
+		{
+			if (!i)
+				select_discard();
+		}
+		if (state != 0 || !i)
+			select_add(perf_cur);
+		*/
+	}
+	else
+		return -1;
+	return 0;
+}
+
+
+
 gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// handle un-click events on canvas
@@ -20,7 +81,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
 				//printf("event->state == %i\n", event->state);
-				if (event->state == 256)
+				if (event->state == GDK_BUTTON_PRESS_MASK)
 				{
 					// regular click
 
@@ -32,10 +93,10 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 						dr_canvas_refresh(drill);
 					}
 				}
-				else if (event->state == 256 + GDK_CONTROL_MASK)
+				else if (event->state == (GDK_BUTTON_PRESS_MASK | GDK_CONTROL_MASK))
 				{
 					// ctrl-click
-					index = checkSelected(widget, event);
+					index = mouse_click_find_close_dot(widget, event);
 					if (index != -1)
 						select_dots_add_index(index);
 				}
@@ -107,7 +168,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 					index = checkSelected(widget, event);
 					*/
 				group = dr_check_form_selected(widget, event);
-				index = checkSelected(widget, event);
+				index = mouse_click_find_close_dot(widget, event);
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
 					// ctrl-click
@@ -257,20 +318,20 @@ gboolean mouse_handle_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 	// propagate everything except control modifier
 	if (event->direction == GDK_SCROLL_UP)
 	{
-		if (event->state == 16)
+		if (event->state == 0)
 		{
 			// no modifiers
 			// move up
 			//canvas_move(widget, 0.0, -1*vscroll->step_increment);
 			canvas_move(widget, 0.0, -1*gtk_adjustment_get_step_increment(vscroll));
 		}
-		else if (event->state == 16+1)
+		else if (event->state == GDK_SHIFT_MASK)
 		{
 			// shift modifier
 			// move left
 			canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
-		else if (event->state == 16+4)
+		else if (event->state == GDK_CONTROL_MASK)
 		{
 			// ctrl modifier
 			// zoom in
@@ -279,18 +340,18 @@ gboolean mouse_handle_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
 	{
-		if (event->state == 16+0)
+		if (event->state == 0)
 		{
 			// move down
 			canvas_move(widget, 0.0, gtk_adjustment_get_step_increment(vscroll));
 		}
-		else if (event->state == 16+1)
+		else if (event->state == GDK_SHIFT_MASK)
 		{
 			// shift modifier
 			// move right
 			canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
-		else if (event->state == 16+4)
+		else if (event->state == GDK_CONTROL_MASK)
 		{
 			// ctrl modifier
 			// zoom out

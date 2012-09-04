@@ -88,6 +88,7 @@ void coords_move_selected_left_small(GtkWidget *widget);
 void coords_move_selected_right_small(GtkWidget *widget);
 
 // mouse_gtk.c
+int mouse_click_find_close_dot(GtkWidget *widget, GdkEventButton *event);
 gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event);
 gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event);
 gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event);
@@ -117,13 +118,6 @@ int buildIfacegtk(void);
 void do_undo_gtk(GtkWidget *widget);
 void do_redo_gtk(GtkWidget *widget);
 
-/*
-// media-gtk.c
-gboolean play_show (GtkWidget *widget);
-void stop_show (GtkWidget *widget);
-void queue_show (GtkWidget *widget);
-void play_show_from_start (GtkWidget *widget);
-*/
 
 // perf-con-gtk.c
 void view_stepsize_gtk(GtkWidget *widget);
@@ -133,14 +127,13 @@ void revert_perf_gtk(GtkWidget *widget);
 void delete_perf_gtk(GtkWidget *widget);
 //void xperf_change (GtkWidget *widget);
 //void yperf_change (GtkWidget *widget);
-void next_perf(GtkWidget *widget);
-void prev_perf(GtkWidget *widget);
+//void next_perf(GtkWidget *widget);
+//void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
 int select_group_gtk(GtkWidget *widget, group_t *group);
 int add_group_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
 int isSelected(int index);
-int checkSelected(GtkWidget *widget, GdkEventButton *event);
 group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event);
 group_t *checkGroups(double coordx, double coordy, group_t *group);
 //int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);

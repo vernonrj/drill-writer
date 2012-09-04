@@ -57,8 +57,8 @@ static const gchar *ui_info =
 "			<menuitem name='MoveDownSmall' action='MoveDownSmallAction'/>"
 "			<menuitem name='MoveLeftSmall' action='MoveLeftSmallAction'/>"
 "			<menuitem name='MoveRightSmall' action='MoveRightSmallAction'/>"
-"			<menuitem name='NextPerf' action='NextPerfAction'/>"
-"			<menuitem name='PrevPerf' action='PrevPerfAction'/>"
+//"			<menuitem name='NextPerf' action='NextPerfAction'/>"
+//"			<menuitem name='PrevPerf' action='PrevPerfAction'/>"
 "			<menuitem name='ExpandPerf' action='ExpandPerfAction'/>"
 "			<menuitem name='ContractPerf' action='ContractPerfAction'/>"
 "			<menuitem name='RotCWPerf' action='RotCWPerfAction'/>"
@@ -350,6 +350,7 @@ int buildIfacegtk(void)
 		"_Move Right (small)", "<control><shift>Right",
 		"Move performer right 0.25 steps",
 		G_CALLBACK (coords_move_selected_right_small) },
+	/*
 	{ "NextPerfAction", NULL,
 		"_Next Performer", "bracketright",
 		"Highlight next performer",
@@ -358,6 +359,7 @@ int buildIfacegtk(void)
 		"_Previous Performer", "bracketleft",
 		"Highlight previous performer",
 		G_CALLBACK (prev_perf) },
+		*/
 	{ "ExpandPerfAction", NULL,
 		"_Expand Form", "<control>bracketright",
 		"Expand the form around weighted center",

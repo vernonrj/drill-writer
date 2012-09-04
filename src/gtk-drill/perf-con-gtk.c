@@ -101,6 +101,7 @@ void yperf_change (GtkWidget *widget)
 */
 
 
+/*
 void next_perf(GtkWidget *widget)
 {
 	// Go to next sequential dot
@@ -111,7 +112,9 @@ void next_perf(GtkWidget *widget)
 		//dr_canvas_refresh(drill);
 	}
 }
+*/
 
+/*
 void prev_perf(GtkWidget *widget)
 {
 	// Go to previous sequential dot
@@ -122,6 +125,7 @@ void prev_perf(GtkWidget *widget)
 		//dr_canvas_refresh(drill);
 	}
 }
+*/
 
 int select_all_gtk (GtkWidget *widget)
 {
@@ -254,63 +258,5 @@ group_t *checkGroups(double coordx, double coordy, group_t *group)
 
 
 
-int checkSelected(GtkWidget *widget, GdkEventButton *event)
-{
-	// find a dot close to mouseclick
-	double dist_threshold = 9;
-	double distance;
-	double workx, worky;
-	double coordx, coordy;
-	int perfnum;
-	int i;
-	int found_dot = 0;
-
-	coordx = event->x;
-	coordy = event->y;
-	pixel_to_field(&coordx, &coordy);
-
-	//printf("button 1 pressed at %g %g %g\n", coordx, coordy, yo2);
-	perfnum = pshow->perfnum;
-	//for (i=0; i<perfnum; i++)
-	perf_cur = 0;
-	for (i=0; i<perfnum; i++)
-	{
-		coords_retrieve_midset(pshow->sets->currset, i, &workx, &worky);
-		workx = workx - coordx;
-		worky = worky - coordy;
-		distance = pow(workx, 2) + pow(worky, 2);
-		/*
-		if (i == 0)
-		{
-			printf("(x,y) at %.2f, %.2f (valid = %i)\n", workx, worky, pshow->perfs[i]->valid);
-		}
-		*/
-		if (distance < dist_threshold && pshow->perfs[i]->valid)
-		{
-			// Found a closer dot
-			perf_cur = i;
-			dist_threshold = distance;
-			found_dot = 1;
-		}
-
-	}
-	if (found_dot == 1)
-	{
-		return perf_cur;
-		/*
-		i = inSelected(perf_cur);
-		if (state != 4) 
-		{
-			if (!i)
-				select_discard();
-		}
-		if (state != 0 || !i)
-			select_add(perf_cur);
-		*/
-	}
-	else
-		return -1;
-	return 0;
-}
 
 
