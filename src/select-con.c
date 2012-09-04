@@ -5,7 +5,7 @@ void select_dots_discard(void)
 	// remove all dot selections from state
 	pstate.select = select_discard(pstate.select);
 	pstate.selnum = 0;
-	update_sel_center(pstate.select);
+	select_update_center(pstate.select);
 	return;
 }
 
@@ -30,7 +30,9 @@ select_t *select_discard(select_t *psel)
 	return psel;
 }
 
-void update_sel_center(select_t *last)
+
+
+void select_update_center(select_t *last)
 {
 	// update the center of the form based on dot selection
 	// TODO: Use heaps to keep track of max, min values?
@@ -76,7 +78,8 @@ void update_sel_center(select_t *last)
 }
 
 
-void add_sel_center(coord_t *coord)
+/*
+void select_add_coord_to_center(coord_t *coord)
 {
 	// add a selection to center weight
 	int selnum;
@@ -99,10 +102,12 @@ void add_sel_center(coord_t *coord)
 
 	return;
 }
+*/
 
 
 
-void rem_sel_center(coord_t *coord)
+/*
+void select_remove_coord_from_center(coord_t *coord)
 {
 	// remove a selection from center weight
 	int selnum;
@@ -134,20 +139,22 @@ void rem_sel_center(coord_t *coord)
 	
 	return;
 }
+*/
 
 
-void select_dots_add(int index)
+void select_dots_add_index(int index)
 {
 	// wrapper to add a dot to global selection
-	pstate.select = select_add(pstate.select, index, true);
-	update_sel_center(pstate.select);
+	pstate.select = select_add_index(pstate.select, index, true);
+	//update_sel_center(pstate.select);
+	select_update_center(pstate.select);
 	return;
 }
 
 
 
 
-select_t *select_add(select_t *psel, int index, bool toggle)
+select_t *select_add_index(select_t *psel, int index, bool toggle)
 {
 	// add a selection if it's not selected;
 	// remove a selection if it is selected and toggle is TRUE
@@ -250,7 +257,7 @@ select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle)
 
 	if (modifier)
 	{
-		last = select_add(mainlist, modifier->index, toggle);
+		last = select_add_index(mainlist, modifier->index, toggle);
 		*modifier_r = modifier->next;
 		free(modifier);
 		return last;
@@ -284,10 +291,10 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 	for (i=0; i<perfnum; i++)
 	{
 		retr_midset(pshow->sets->currset, i, &x, &y);
-		if (dot_in_rectangle(x, y, x1, y1, x2, y2))
+		if (select_check_dot_in_rectangle(x, y, x1, y1, x2, y2))
 		{
 			if (!is_in_select(i, select) && pshow->perfs[i]->valid)
-				select = select_add(select, i, true);
+				select = select_add_index(select, i, true);
 		}
 	}
 	return select;
@@ -304,7 +311,7 @@ void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool togg
 
 	while (last)
 	{
-		mainlist = select_add(mainlist, last->index, toggle);
+		mainlist = select_add_index(mainlist, last->index, toggle);
 		last = last->next;
 		free(modifier);
 		modifier = last;
@@ -330,7 +337,7 @@ select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 	{
 		while (last)
 		{
-			newlist = select_add(newlist, last->index, false);
+			newlist = select_add_index(newlist, last->index, false);
 			if (last->group)
 				newlist->group = last->group;
 			last = last->next;
@@ -344,7 +351,7 @@ select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 		while (inc->next && inc->index < last->index)
 			inc = inc->next;
 		if (last->index != inc->index)
-			newlist = select_add(newlist, last->index, false);
+			newlist = select_add_index(newlist, last->index, false);
 		last = last->next;
 	}
 	return newlist;
@@ -355,7 +362,7 @@ select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 
 
 
-bool dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2)
+bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2)
 {
 	//double xmin, xmax, ymin, ymax;
 	bool chkx, chky;
@@ -397,9 +404,6 @@ bool dot_in_rectangle(double x, double y, double x1, double y1, double x2, doubl
 
 
 
-
-
-	
 select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 {
 	// add group to selection
@@ -418,12 +422,12 @@ select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 	}
 	if (curr == NULL)
 	{
-		selects = select_add(selects, -1, false);
+		selects = select_add_index(selects, -1, false);
 		selects->group = group;
 		return selects;
 	}
 	last = NULL;
-	last = select_add(last, -1, false);
+	last = select_add_index(last, -1, false);
 	last->group = group;
 	curr->next = last;
 	return selects;
@@ -440,7 +444,7 @@ select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 
 
 
-int wrap_select_all(void)
+int select_all_dots(void)
 {
 	pstate.select = select_all(pstate.select, pshow->perfs, pshow->perfnum);
 	return 0;
@@ -463,15 +467,12 @@ select_t *select_all(select_t *selects, perf_t **perfs, int perfnum)
 		if (perfs[i]->valid != 0)
 		{
 			// performer is valid. Add
-			selects = select_add(selects, i, true);
+			selects = select_add_index(selects, i, true);
 		}
 	}
-	update_sel_center(selects);
+	select_update_center(selects);
 	return selects;
 }
-
-
-
 
 
 
@@ -512,13 +513,13 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 		if (scurr->index < glast->index)
 		{
 			// selection goes next
-			select_new = select_add(select_new, scurr->index, false);
+			select_new = select_add_index(select_new, scurr->index, false);
 			scurr = scurr->next;
 		}
 		else if (scurr->index > glast->index)
 		{
 			// group goes next
-			select_new = select_add(select_new, glast->index, false);
+			select_new = select_add_index(select_new, glast->index, false);
 			glast = glast->next;
 		}
 		else
@@ -530,12 +531,12 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 	// clean up
 	while (scurr)
 	{
-		select_new = select_add(select_new, scurr->index, false);
+		select_new = select_add_index(select_new, scurr->index, false);
 		scurr = scurr->next;
 	}
 	while (glast)
 	{
-		select_new = select_add(select_new, glast->index, false);
+		select_new = select_add_index(select_new, glast->index, false);
 		glast = glast->next;
 	}
 	// add new selection to group

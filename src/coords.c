@@ -219,7 +219,7 @@ int align_dots(void)
 		select = select->next;
 	}
 	// move center of selection
-	update_sel_center(pstate.select);
+	select_update_center(pstate.select);
 	return 0;
 }
 

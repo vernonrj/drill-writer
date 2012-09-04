@@ -467,7 +467,7 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 		// Store new set
 		fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
 		select_push_all(&fldstate.mouse_selection, &new_select, false);
-		update_sel_center(fldstate.mouse_selection);
+		select_update_center(fldstate.mouse_selection);
 
 		// add new dots
 		if (event->state == 256 + GDK_CONTROL_MASK)

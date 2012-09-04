@@ -129,7 +129,7 @@ int perf_add(void)
 	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 1;
 	select_dots_discard();
-	select_dots_add(index);
+	select_dots_add_index(index);
 	pushPerfMk(&pstate.undobr, index, 1);
 	return index;
 }

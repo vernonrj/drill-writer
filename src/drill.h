@@ -327,21 +327,21 @@ int perf_max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 // select-con.c
 // Selection control functions
 void select_dots_discard(void);
-void select_dots_add(int index);
-void update_sel_center(select_t *last);
-void add_sel_center(coord_t *coord);
-void rem_sel_center(coord_t *coord);
+void select_dots_add_index(int index);
+void select_update_center(select_t *last);
+//void select_add_coord_to_center(coord_t *coord);
+//void select_remove_coord_from_center(coord_t *coord);
 select_t *select_discard(select_t*);
-select_t *select_add(select_t*, int index, bool toggle);
+select_t *select_add_index(select_t*, int index, bool toggle);
 select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle);
-bool dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
+bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
 void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle);
 select_t *select_add_in_rectangle(select_t*, double, double, double, double, bool);
 void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle);
 select_t *select_drop_multiple(select_t *mainlist, select_t *modifier);
 select_t *select_add_group(select_t*, group_t*, bool);
 select_t *select_all(select_t*, perf_t **perfs, int perfnum);
-int wrap_select_all(void);
+int select_all_dots(void);
 //int select_all(void);
 group_t *group_construct(void);
 group_t *group_add_selects(group_t *group, select_t *newsels);

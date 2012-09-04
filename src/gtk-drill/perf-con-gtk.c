@@ -125,7 +125,7 @@ void prev_perf(GtkWidget *widget)
 
 int select_all_gtk (GtkWidget *widget)
 {
-	wrap_select_all();
+	select_all_dots();
 	dr_canvas_refresh(drill);
 	//dr_canvas_refresh(drill);
 	return 0;
@@ -217,7 +217,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 					// ctrl-click
 					index = checkSelected(widget, event);
 					if (index != -1)
-						select_dots_add(index);
+						select_dots_add_index(index);
 				}
 
 
@@ -308,7 +308,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 						mouse_discarded = 1;
 						if (index != -1)
 						{
-							select_dots_add(index);
+							select_dots_add_index(index);
 						}
 					}
 					else if (group && !group_is_selected(group, pstate.select))
