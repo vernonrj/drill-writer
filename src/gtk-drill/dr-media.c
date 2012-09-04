@@ -1,6 +1,6 @@
 // Functions like playing, stopping, etc go here (automated set movement)
 //#include "drill.h"
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 #include "dr-media.h"
 
 static void dr_mediabar_class_init(DrMediabarClass *klass);

@@ -1,4 +1,4 @@
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 
 /*
 void save_file_gtk(GtkWidget *widget)

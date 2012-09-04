@@ -1,4 +1,4 @@
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 #include "dr-sidebar-perfs.h"
 
 static void dr_sidebar_perfs_class_init(DrSidebarPerfsClass *klass);

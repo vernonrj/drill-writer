@@ -24,14 +24,14 @@ bin_PROGRAMS = drillwriter
 
 ## included in distribution archives of the project.
 
-drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.hpp \
+drillwriter_SOURCES = drill.h gtk-drill/drillwriter_gtk.h testbench/tb.hpp testbench/util.hpp \
 		      coords.c fieldrel.c file-ops.c \
 		      main.c perf-con.c forms.c group.c\
 		      select-con.c set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/perf-con-gtk.c \
-		      gtk-drill/mouse_gtk.c \
-		      gtk-drill/dr-drill.h gtk-drill/drill-class.c \
+		      gtk-drill/mouse_gtk.c \ gtk-drill/dr-zoom-gtk.c \
+		      gtk-drill/dr-drill-class.h gtk-drill/dr-drill-class.c \
 		      gtk-drill/dr-setbar.h gtk-drill/dr-setbar.c \
 		      gtk-drill/dr-media.h gtk-drill/dr-media.c \
 		      gtk-drill/dr-perfbar.h gtk-drill/dr-perfbar.c \

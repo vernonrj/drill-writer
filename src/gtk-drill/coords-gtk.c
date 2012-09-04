@@ -1,4 +1,4 @@
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 
 // Side-to-Side relations
 void coords_change_ss_entry_gtk(GtkWidget *widget)

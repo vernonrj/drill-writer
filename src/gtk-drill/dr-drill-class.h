@@ -49,6 +49,13 @@ cairo_t *selected_area;
 cairo_t *surface_write; // field to draw to
 cairo_t *canv_form;
 
+// dr-zoom-gtk.c
+void zoom_amnt(double invalue, bool from_mouse);
+void zoom_in(GtkWidget *widget, bool from_mouse);
+void zoom_out(GtkWidget *widget, bool from_mouse);
+void zoom_standard(GtkWidget *widget);
+void zoom_fit(GtkWidget *widget);
+
 // drawfield.c
 void force_redraw(GtkWidget *widget);
 int field_init(void);
@@ -60,15 +67,9 @@ int draw_dots (GtkWidget *widget);
 void draw_field (GtkWidget *widget);
 
 // drill.c
-void zoom_amnt(double invalue, bool from_mouse);
 void dr_canvas_refresh(GtkWidget *widget);
 void canvas_apply(cairo_t *cr);
 void canvas_move(GtkWidget *widget, double valuex, double valuey);
-gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event);
-void zoom_in(GtkWidget *widget, bool from_mouse);
-void zoom_out(GtkWidget *widget, bool from_mouse);
-void zoom_standard(GtkWidget *widget);
-void zoom_fit(GtkWidget *widget);
 GType gtk_drill_get_type(void);
 void gtk_drill_set_state(GtkDrill *drill, gint num);
 GtkWidget * gtk_drill_new(void);

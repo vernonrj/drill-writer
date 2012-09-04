@@ -1,8 +1,8 @@
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 
 
 
-gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
+gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// handle un-click events on canvas
 	double x, y;
@@ -51,8 +51,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 
 
 
-
-gboolean clicked(GtkWidget *widget, GdkEventButton *event)
+gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// Handle click event on canvas
 	
@@ -188,8 +187,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 
 
 
-
-gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
+gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 {
 	// caught a mouse movement event
 	double coordx, coordy;
@@ -249,6 +247,64 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	g_free(buffer);
 	dr_canvas_refresh(drill);
 
+	return TRUE;
+}
+
+
+gboolean mouse_handle_scroll_event(GtkWidget *widget, GdkEventScroll *event)
+{
+	// handle zoom events
+	// propagate everything except control modifier
+	if (event->direction == GDK_SCROLL_UP)
+	{
+		if (event->state == 0)
+		{
+			// no modifiers
+			// move up
+			//canvas_move(widget, 0.0, -1*vscroll->step_increment);
+			canvas_move(widget, 0.0, -1*gtk_adjustment_get_step_increment(vscroll));
+		}
+		else if (event->state == 1)
+		{
+			// shift modifier
+			// move left
+			canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
+		}
+		else if (event->state == 4)
+		{
+			// ctrl modifier
+			// zoom in
+			zoom_in(widget, true);
+		}
+	}
+	else if (event->direction == GDK_SCROLL_DOWN)
+	{
+		if (event->state == 0)
+		{
+			// move down
+			canvas_move(widget, 0.0, gtk_adjustment_get_step_increment(vscroll));
+		}
+		else if (event->state == 1)
+		{
+			// shift modifier
+			// move right
+			canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
+		}
+		else if (event->state == 4)
+		{
+			// ctrl modifier
+			// zoom out
+			zoom_out(widget, true);
+		}
+	}
+	else if (event->direction == GDK_SCROLL_LEFT)
+	{
+		canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
+	}
+	else if (event->direction == GDK_SCROLL_RIGHT)
+	{
+		canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
+	}
 	return TRUE;
 }
 

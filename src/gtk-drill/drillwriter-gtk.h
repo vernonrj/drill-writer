@@ -1,6 +1,6 @@
 #include "drill.h"		// field class
 #include "dr-media.h"		// mediabar class
-#include "dr-drill.h"
+#include "dr-drill-class.h"
 #include "dr-setbar.h"		// setbar class
 #include "dr-perfbar.h"
 #include "dr-sidebar.h"
@@ -88,7 +88,10 @@ void coords_move_selected_left_small(GtkWidget *widget);
 void coords_move_selected_right_small(GtkWidget *widget);
 
 // mouse_gtk.c
-gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
+gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event);
+gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event);
+gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event);
+gboolean mouse_handle_scroll_event(GtkWidget *widget, GdkEventScroll *event);
 
 
 
@@ -136,8 +139,6 @@ int select_all_gtk (GtkWidget *widget);
 int select_group_gtk(GtkWidget *widget, group_t *group);
 int add_group_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
-gboolean unclicked(GtkWidget *widget, GdkEventButton *event);
-gboolean clicked(GtkWidget *widget, GdkEventButton *event);
 int isSelected(int index);
 int checkSelected(GtkWidget *widget, GdkEventButton *event);
 group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event);

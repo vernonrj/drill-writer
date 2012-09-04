@@ -1,4 +1,4 @@
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 /* TODO:	Make scrollbar its own class
  * 		Scrolling and zooming are handled in a class
  * TODO:	When in a form, endpoints are black, dynamic dots are grayed out

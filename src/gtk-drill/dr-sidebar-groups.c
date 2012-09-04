@@ -1,4 +1,4 @@
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 //#include "dr-sidebar-groups.h"
 
 static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *klass);

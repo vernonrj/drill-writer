@@ -76,7 +76,8 @@ am_drillwriter_OBJECTS = drillwriter-coords.$(OBJEXT) \
 	drillwriter-main-gtk.$(OBJEXT) \
 	drillwriter-perf-con-gtk.$(OBJEXT) \
 	drillwriter-mouse_gtk.$(OBJEXT) \
-	drillwriter-drill-class.$(OBJEXT) \
+	drillwriter-dr-zoom-gtk.$(OBJEXT) \
+	drillwriter-dr-drill-class.$(OBJEXT) \
 	drillwriter-dr-setbar.$(OBJEXT) drillwriter-dr-media.$(OBJEXT) \
 	drillwriter-dr-perfbar.$(OBJEXT) \
 	drillwriter-dr-sidebar.$(OBJEXT) \
@@ -261,14 +262,14 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
-drillwriter_SOURCES = drill.h gtk-drill/d_gtk.h testbench/tb.hpp testbench/util.hpp \
+drillwriter_SOURCES = drill.h gtk-drill/drillwriter_gtk.h testbench/tb.hpp testbench/util.hpp \
 		      coords.c fieldrel.c file-ops.c \
 		      main.c perf-con.c forms.c group.c\
 		      select-con.c set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/perf-con-gtk.c \
-		      gtk-drill/mouse_gtk.c \
-		      gtk-drill/dr-drill.h gtk-drill/drill-class.c \
+		      gtk-drill/mouse_gtk.c \ gtk-drill/dr-zoom-gtk.c \
+		      gtk-drill/dr-drill-class.h gtk-drill/dr-drill-class.c \
 		      gtk-drill/dr-setbar.h gtk-drill/dr-setbar.c \
 		      gtk-drill/dr-media.h gtk-drill/dr-media.c \
 		      gtk-drill/dr-perfbar.h gtk-drill/dr-perfbar.c \
@@ -374,6 +375,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-coords-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-coords.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-drill-class.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-group-cell.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-media.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-perfbar.Po@am__quote@
@@ -382,7 +384,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-sidebar-perfs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-sidebar-sets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-sidebar.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-drill-class.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-dr-zoom-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-fieldrel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-file-ops-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drillwriter-file-ops.Po@am__quote@
@@ -643,19 +645,33 @@ drillwriter-mouse_gtk.obj: gtk-drill/mouse_gtk.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-mouse_gtk.obj `if test -f 'gtk-drill/mouse_gtk.c'; then $(CYGPATH_W) 'gtk-drill/mouse_gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/mouse_gtk.c'; fi`
 
-drillwriter-drill-class.o: gtk-drill/drill-class.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drill-class.o -MD -MP -MF $(DEPDIR)/drillwriter-drill-class.Tpo -c -o drillwriter-drill-class.o `test -f 'gtk-drill/drill-class.c' || echo '$(srcdir)/'`gtk-drill/drill-class.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drill-class.Tpo $(DEPDIR)/drillwriter-drill-class.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/drill-class.c' object='drillwriter-drill-class.o' libtool=no @AMDEPBACKSLASH@
+drillwriter-dr-zoom-gtk.o: gtk-drill/dr-zoom-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-dr-zoom-gtk.o -MD -MP -MF $(DEPDIR)/drillwriter-dr-zoom-gtk.Tpo -c -o drillwriter-dr-zoom-gtk.o `test -f 'gtk-drill/dr-zoom-gtk.c' || echo '$(srcdir)/'`gtk-drill/dr-zoom-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-dr-zoom-gtk.Tpo $(DEPDIR)/drillwriter-dr-zoom-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/dr-zoom-gtk.c' object='drillwriter-dr-zoom-gtk.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drill-class.o `test -f 'gtk-drill/drill-class.c' || echo '$(srcdir)/'`gtk-drill/drill-class.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-dr-zoom-gtk.o `test -f 'gtk-drill/dr-zoom-gtk.c' || echo '$(srcdir)/'`gtk-drill/dr-zoom-gtk.c
 
-drillwriter-drill-class.obj: gtk-drill/drill-class.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-drill-class.obj -MD -MP -MF $(DEPDIR)/drillwriter-drill-class.Tpo -c -o drillwriter-drill-class.obj `if test -f 'gtk-drill/drill-class.c'; then $(CYGPATH_W) 'gtk-drill/drill-class.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/drill-class.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-drill-class.Tpo $(DEPDIR)/drillwriter-drill-class.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/drill-class.c' object='drillwriter-drill-class.obj' libtool=no @AMDEPBACKSLASH@
+drillwriter-dr-zoom-gtk.obj: gtk-drill/dr-zoom-gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-dr-zoom-gtk.obj -MD -MP -MF $(DEPDIR)/drillwriter-dr-zoom-gtk.Tpo -c -o drillwriter-dr-zoom-gtk.obj `if test -f 'gtk-drill/dr-zoom-gtk.c'; then $(CYGPATH_W) 'gtk-drill/dr-zoom-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/dr-zoom-gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-dr-zoom-gtk.Tpo $(DEPDIR)/drillwriter-dr-zoom-gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/dr-zoom-gtk.c' object='drillwriter-dr-zoom-gtk.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-drill-class.obj `if test -f 'gtk-drill/drill-class.c'; then $(CYGPATH_W) 'gtk-drill/drill-class.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/drill-class.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-dr-zoom-gtk.obj `if test -f 'gtk-drill/dr-zoom-gtk.c'; then $(CYGPATH_W) 'gtk-drill/dr-zoom-gtk.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/dr-zoom-gtk.c'; fi`
+
+drillwriter-dr-drill-class.o: gtk-drill/dr-drill-class.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-dr-drill-class.o -MD -MP -MF $(DEPDIR)/drillwriter-dr-drill-class.Tpo -c -o drillwriter-dr-drill-class.o `test -f 'gtk-drill/dr-drill-class.c' || echo '$(srcdir)/'`gtk-drill/dr-drill-class.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-dr-drill-class.Tpo $(DEPDIR)/drillwriter-dr-drill-class.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/dr-drill-class.c' object='drillwriter-dr-drill-class.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-dr-drill-class.o `test -f 'gtk-drill/dr-drill-class.c' || echo '$(srcdir)/'`gtk-drill/dr-drill-class.c
+
+drillwriter-dr-drill-class.obj: gtk-drill/dr-drill-class.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-dr-drill-class.obj -MD -MP -MF $(DEPDIR)/drillwriter-dr-drill-class.Tpo -c -o drillwriter-dr-drill-class.obj `if test -f 'gtk-drill/dr-drill-class.c'; then $(CYGPATH_W) 'gtk-drill/dr-drill-class.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/dr-drill-class.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/drillwriter-dr-drill-class.Tpo $(DEPDIR)/drillwriter-dr-drill-class.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtk-drill/dr-drill-class.c' object='drillwriter-dr-drill-class.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -c -o drillwriter-dr-drill-class.obj `if test -f 'gtk-drill/dr-drill-class.c'; then $(CYGPATH_W) 'gtk-drill/dr-drill-class.c'; else $(CYGPATH_W) '$(srcdir)/gtk-drill/dr-drill-class.c'; fi`
 
 drillwriter-dr-setbar.o: gtk-drill/dr-setbar.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(drillwriter_CFLAGS) $(CFLAGS) -MT drillwriter-dr-setbar.o -MD -MP -MF $(DEPDIR)/drillwriter-dr-setbar.Tpo -c -o drillwriter-dr-setbar.o `test -f 'gtk-drill/dr-setbar.c' || echo '$(srcdir)/'`gtk-drill/dr-setbar.c

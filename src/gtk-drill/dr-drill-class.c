@@ -1,8 +1,8 @@
 // drill.c
 
 //#include "drill.h"
-#include "d_gtk.h"
-#include "dr-drill.h"
+#include "drillwriter-gtk.h"
+#include "dr-drill-class.h"
 
 static void gtk_drill_get_preferred_width(GtkWidget *widget, gint *minimal_width, gint *natural_width);
 static void gtk_drill_get_preferred_height(GtkWidget *widget, gint *minimal_height, gint *natural_height);
@@ -17,89 +17,6 @@ static void gtk_drill_destroy(GtkWidget *widget);
 
 
 
-void zoom_amnt(double invalue, bool from_mouse)
-{
-	// for now, just zoom relative
-	double value;
-	double offsetx1, offsety1;
-	double offsetx2, offsety2;
-	double page_sizex, page_sizey;
-	double mousex, mousey;
-	double hsc_psize, vsc_psize;
-	// block scroll signals for scrollbars
-	// while adjusting canvas scaling, scroll amount
-	g_signal_handler_block(hscroll, hscroll_id);
-	g_signal_handler_block(vscroll, vscroll_id);
-	if (!invalue || (fldstate.zoom_amnt * invalue) < 1)
-	{
-		// set zoom to 100%
-		fldstate.zoom_amnt = 1;
-		gtk_adjustment_set_page_size(hscroll, fldstate.width);
-		gtk_adjustment_set_page_size(vscroll, fldstate.height);
-		fldstate.fieldx = 0;
-		fldstate.fieldy = 0;
-		hsc_psize = gtk_adjustment_get_page_size(hscroll);
-		vsc_psize = gtk_adjustment_get_page_size(vscroll);
-		gtk_adjustment_configure(hscroll, 0.0, 0.0, fldstate.width, hsc_psize / 10, hsc_psize / 10 * 9, hsc_psize);
-		gtk_adjustment_configure(vscroll, 0.0, 0.0, fldstate.height, vsc_psize / 10, vsc_psize / 10 * 9, vsc_psize);
-		canvas_move(drill, 0, 0);
-		g_signal_handler_unblock(hscroll, hscroll_id);
-		g_signal_handler_unblock(vscroll, vscroll_id);
-		return;
-	}
-	else
-	{
-		// zoom and scale the canvas
-		value = invalue;
-		// get the old page size
-		offsetx1 = gtk_adjustment_get_upper(hscroll) / fldstate.zoom_amnt;
-		offsety1 = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
-		// new zoom factor
-		fldstate.zoom_amnt *= value;
-		// new page size
-		page_sizex = gtk_adjustment_get_upper(hscroll) / fldstate.zoom_amnt;
-		page_sizey = gtk_adjustment_get_upper(vscroll) / fldstate.zoom_amnt;
-		// change scrollbars
-		gtk_adjustment_configure(hscroll, fldstate.fieldx, 0.0, fldstate.width, page_sizex / 10, page_sizex / 10 * 9, page_sizex);
-		gtk_adjustment_configure(vscroll, fldstate.fieldy, 0.0, fldstate.height, page_sizey / 10, page_sizey / 10 * 9, page_sizey);
-		// calculate base offset after zoom
-		offsetx2 = (offsetx1 - page_sizex) / 2;
-		offsety2 = (offsety1 - page_sizey) / 2;
-		if (from_mouse)
-		{
-			// get mouse position
-			// use it in canvas offset
-			mousex = fldstate.mousex;
-			mousey = fldstate.mousey;
-			// translate mouse position to pixel values
-			field_to_pixel(&mousex, &mousey);
-			// calculate a mouse offset factor
-			mousex = 2*(mousex - fldstate.fieldx) / offsetx1;
-			mousey = 2*(mousey - fldstate.fieldy) / offsety1;
-		}
-		else
-		{
-			// don't use mouse for zoom offset
-			mousex = 1;
-			mousey = 1;
-		}
-		// offset the canvas after zooming based on mouse position
-		canvas_move(drill, offsetx2*mousex, offsety2*mousey);
-		// release scrollbars
-		g_signal_handler_unblock(hscroll, hscroll_id);
-		g_signal_handler_unblock(vscroll, vscroll_id);
-		return;
-	}
-	return;
-}
-
-
-
-void zoom_fit(GtkWidget *widget)
-{
-	zoom_amnt(0.0, false);
-	return;
-}
 
 
 void dr_canvas_refresh(GtkWidget *widget)
@@ -165,90 +82,6 @@ void canvas_move(GtkWidget *widget, double valuex, double valuey)
 
 	return;
 }
-
-
-
-gboolean handle_mouse_scroll_event(GtkWidget *widget, GdkEventScroll *event)
-{
-	// handle zoom events
-	// propagate everything except control modifier
-	if (event->direction == GDK_SCROLL_UP)
-	{
-		if (event->state == 0)
-		{
-			// no modifiers
-			// move up
-			//canvas_move(widget, 0.0, -1*vscroll->step_increment);
-			canvas_move(widget, 0.0, -1*gtk_adjustment_get_step_increment(vscroll));
-		}
-		else if (event->state == 1)
-		{
-			// shift modifier
-			// move left
-			canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
-		}
-		else if (event->state == 4)
-		{
-			// ctrl modifier
-			// zoom in
-			zoom_in(widget, true);
-		}
-	}
-	else if (event->direction == GDK_SCROLL_DOWN)
-	{
-		if (event->state == 0)
-		{
-			// move down
-			canvas_move(widget, 0.0, gtk_adjustment_get_step_increment(vscroll));
-		}
-		else if (event->state == 1)
-		{
-			// shift modifier
-			// move right
-			canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
-		}
-		else if (event->state == 4)
-		{
-			// ctrl modifier
-			// zoom out
-			zoom_out(widget, true);
-		}
-	}
-	else if (event->direction == GDK_SCROLL_LEFT)
-	{
-		canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
-	}
-	else if (event->direction == GDK_SCROLL_RIGHT)
-	{
-		canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
-	}
-	return TRUE;
-}
-
-
-
-void zoom_in(GtkWidget *widget, bool from_mouse)
-{
-	// zoom canvas in
-	zoom_amnt(1.1, from_mouse);
-}
-
-
-
-void zoom_out(GtkWidget *widget, bool from_mouse)
-{
-	// zoom canvas out
-	zoom_amnt(0.9, from_mouse);
-}
-
-
-
-void zoom_standard(GtkWidget *widget)
-{
-	// zoom canvas to 100%
-	zoom_amnt(0, false);
-}
-
 
 
 GType gtk_drill_get_type(void)
@@ -347,10 +180,10 @@ static void gtk_drill_class_init(GtkDrillClass *class)
 	widget_class->get_preferred_height = gtk_drill_get_preferred_height;
 	widget_class->size_allocate = gtk_drill_size_allocate;
 	widget_class->draw = gtk_drill_expose;
-	widget_class->motion_notify_event = xy_movement;
-	widget_class->button_press_event = clicked;
-	widget_class->button_release_event = unclicked;
-	widget_class->scroll_event = handle_mouse_scroll_event;
+	widget_class->motion_notify_event = mouse_xy_movement;
+	widget_class->button_press_event = mouse_clicked;
+	widget_class->button_release_event = mouse_unclicked;
+	widget_class->scroll_event = mouse_handle_scroll_event;
 	widget_class->destroy = gtk_drill_destroy;
 
 

@@ -1,4 +1,4 @@
-#include "d_gtk.h"
+#include "drillwriter-gtk.h"
 #include "dr-sidebar.h"
 #include "dr-sidebar-perfs.h"
 #include "dr-sidebar-sets.h"
