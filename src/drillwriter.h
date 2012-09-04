@@ -317,7 +317,7 @@ void group_add_to_set(group_t *group);
 void group_add_global(group_t *group);
 bool group_is_selected(group_t *group, select_t *select);
 
-// main.c
+// drillwriter.c
 int show_construct(struct headset_proto **dshow_r, int perfs);
 int show_destroy(struct headset_proto **dshow_r);
 int main (int argc, char *argv[]);

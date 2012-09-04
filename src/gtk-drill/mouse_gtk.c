@@ -257,20 +257,20 @@ gboolean mouse_handle_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 	// propagate everything except control modifier
 	if (event->direction == GDK_SCROLL_UP)
 	{
-		if (event->state == 0)
+		if (event->state == 16)
 		{
 			// no modifiers
 			// move up
 			//canvas_move(widget, 0.0, -1*vscroll->step_increment);
 			canvas_move(widget, 0.0, -1*gtk_adjustment_get_step_increment(vscroll));
 		}
-		else if (event->state == 1)
+		else if (event->state == 16+1)
 		{
 			// shift modifier
 			// move left
 			canvas_move(widget, -1*gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
-		else if (event->state == 4)
+		else if (event->state == 16+4)
 		{
 			// ctrl modifier
 			// zoom in
@@ -279,18 +279,18 @@ gboolean mouse_handle_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 	}
 	else if (event->direction == GDK_SCROLL_DOWN)
 	{
-		if (event->state == 0)
+		if (event->state == 16+0)
 		{
 			// move down
 			canvas_move(widget, 0.0, gtk_adjustment_get_step_increment(vscroll));
 		}
-		else if (event->state == 1)
+		else if (event->state == 16+1)
 		{
 			// shift modifier
 			// move right
 			canvas_move(widget, gtk_adjustment_get_step_increment(hscroll), 0.0);
 		}
-		else if (event->state == 4)
+		else if (event->state == 16+4)
 		{
 			// ctrl modifier
 			// zoom out

@@ -2,7 +2,7 @@
 // main.c
 #include <stdlib.h>
 
-#include "drill.h"		// header file, with most global variables
+#include "drillwriter.h"		// header file, with most global variables
 
 int show_construct(headset_t **dshow_r, int perfs)
 {

@@ -1,5 +1,5 @@
 // Functions that manipulate performers go here
-#include "drill.h"
+#include "drillwriter.h"
 
 // performer storage
 perf_t *perf_construct(void)

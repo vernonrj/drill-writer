@@ -1,5 +1,5 @@
 // Functions that manipulate files go here
-#include "drill.h"
+#include "drillwriter.h"
 
 int file_getline(FILE *fp, char **buffer_r);
 int file_getValidLine(FILE *fp, char **buffer_r);

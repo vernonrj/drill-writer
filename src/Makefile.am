@@ -24,9 +24,9 @@ bin_PROGRAMS = drillwriter
 
 ## included in distribution archives of the project.
 
-drillwriter_SOURCES = drill.h gtk-drill/drillwriter_gtk.h testbench/tb.hpp testbench/util.hpp \
+drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h \
 		      coords.c fieldrel.c file-ops.c \
-		      main.c perf-con.c forms.c group.c\
+		      drillwriter.c perf-con.c forms.c group.c\
 		      select-con.c set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/perf-con-gtk.c \
@@ -40,6 +40,7 @@ drillwriter_SOURCES = drill.h gtk-drill/drillwriter_gtk.h testbench/tb.hpp testb
 		      gtk-drill/dr-sidebar-perfs.h gtk-drill/dr-sidebar-perfs.c \
 		      gtk-drill/dr-sidebar-groups.h gtk-drill/dr-sidebar-groups.c \
 		      gtk-drill/dr-group-cell.h gtk-drill/dr-group-cell.c 
+##testbench/tb.hpp testbench/util.hpp \
 ##testbench/testbench.cpp testbench/util.cpp
 
 ## Define an independent executable script for inclusion in the distribution
