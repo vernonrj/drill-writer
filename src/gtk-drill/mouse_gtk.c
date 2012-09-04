@@ -69,6 +69,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	double x, y;
 	//double x1, y1;
 	int index;
+	group_t *group;
 	if (event->button == 1)
 	{
 		switch(mouse_currentMode)
@@ -80,11 +81,12 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				pixel_to_field(&x, &y);
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
+				group = dr_check_form_selected(widget, event);
 				//printf("event->state == %i\n", event->state);
 				if (event->state == GDK_BUTTON_PRESS_MASK)
 				{
 					// regular click
-
+					//index = mouse_click_find_close_dot(widget, event);
 					if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
 						coords_movexy(mouse_clickx, mouse_clicky);
@@ -92,14 +94,25 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 						//dr_canvas_refresh(drill);
 						dr_canvas_refresh(drill);
 					}
+					/*
+					else if (mouse_discarded && !isSelected(index))
+					{
+						if (index != -1)
+							select_dots_add_index(index);
+					}
+					*/
 				}
+				/*
 				else if (event->state == (GDK_BUTTON_PRESS_MASK | GDK_CONTROL_MASK))
 				{
 					// ctrl-click
 					index = mouse_click_find_close_dot(widget, event);
-					if (index != -1)
+					if (group)
+						pstate.select = select_add_group(pstate.select, group, true);
+					else if (index != -1)
 						select_dots_add_index(index);
 				}
+				*/
 
 
 				break;
@@ -157,28 +170,19 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				/*
-				group = dr_check_form_selected(widget, event);
-				if (group)
-				{
-					pstate.select = select_add_group(pstate.select, group, false);
-					index = -1;
-				}
-				else
-					index = checkSelected(widget, event);
-					*/
 				group = dr_check_form_selected(widget, event);
 				index = mouse_click_find_close_dot(widget, event);
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
 					// ctrl-click
-					//select_dots_add(index);
+					if (!group && index != -1)
+						select_dots_add_index(index);
 				}
 				else if (event->state == GDK_SHIFT_MASK)// && index != -1)
 				{
 					// shift-click
-					//if (pshow->topgroups && is_in_select(index, pshow->topgroups->selects))
-						//pstate.select = select_add_group(pstate.select, pshow->topgroups, false);
+					if (!group && !isSelected(index) && index != -1)
+						select_dots_add_index(index);
 				}
 				else
 				{
@@ -193,6 +197,12 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 							select_dots_add_index(index);
 						}
 					}
+					else
+					{
+						// hold click; dots being moved
+						fldstate.mouse_clicked |= 0x2;
+					}
+					/*
 					else if (group && !group_is_selected(group, pstate.select))
 					{
 						if (isSelected(index))
@@ -202,11 +212,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						select_dots_discard();
 						pstate.select = select_add_group(pstate.select, group, false);
 					}
-					else
-					{
-						// hold click; dots being moved
-						fldstate.mouse_clicked |= 0x2;
-					}
+					*/
 				}
 				//printf("event = %i\n", event->state);
 				//dr_canvas_refresh(drill);

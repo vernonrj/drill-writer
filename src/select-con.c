@@ -186,7 +186,7 @@ select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 		return selects;
 	}
 	last = NULL;
-	last = select_add_index(last, -1, false);
+	last = select_add_index(last, -1, toggle);
 	last->group = group;
 	curr->next = last;
 	return selects;
