@@ -2,11 +2,11 @@
 
 bool form_checkEndpoints(form_t *form, double x, double y)
 {
-	int i;
-	double distance;
-	double dist_threshold = 9;
-	double **endpoints;
-	double *coords;
+	//int i;
+	//double distance;
+	//double dist_threshold = 9;
+	//double **endpoints;
+	//double *coords;
 	fline_t *line;
 	if(!form)
 		return NULL;

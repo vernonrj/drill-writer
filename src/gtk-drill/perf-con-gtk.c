@@ -186,7 +186,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// handle un-click events on canvas
 	double x, y;
-	double x1, y1;
+	//double x1, y1;
 	int index;
 	if (event->button == 1)
 	{
@@ -346,7 +346,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				//coordy = (coordy-yo2-25)/step;
 				coordy = round((coordy-fldstate.yo2)/fldstate.canv_step);
 				*/
-				index = add_perf();
+				index = perf_add();
 				set_coord(pshow, index, coordx, coordy);
 				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
@@ -418,11 +418,11 @@ group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
 
 group_t *checkGroups(double coordx, double coordy, group_t *group)
 {
-	double **endpoints;
-	double dotx, doty;
-	double distance;
-	double dist_threshold = 9;
-	select_t *select;
+	//double **endpoints;
+	//double dotx, doty;
+	//double distance;
+	//double dist_threshold = 9;
+	//select_t *select;
 
 
 	while (group)

@@ -44,7 +44,7 @@ int perf_destroy(perf_t **perf_r)
 
 
 
-int add_perf(void)
+int perf_add(void)
 {
 	// Add a performer
 	

@@ -316,7 +316,7 @@ int main (int argc, char *argv[]);
 // create container for performers
 perf_t *perf_construct(void);
 int perf_destroy(perf_t **perf_r);
-int add_perf(void);
+int perf_add(void);
 void revert_perf_selected(struct headset_proto *dshow);
 void revert_perf(struct headset_proto *dshow, int index);
 void delete_perf_selected(void);

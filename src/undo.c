@@ -391,7 +391,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			break;
 		case 3:		// perf was deleted
 				// re-add performer
-			index = add_perf();
+			index = perf_add();
 			if (index == -1)
 				return -1;
 			perfcurr = dshow->perfs[index];
