@@ -1,7 +1,7 @@
 #include "d_gtk.h"
 
 // Side-to-Side relations
-void change_ss_entry(GtkWidget *widget)
+void coords_change_ss_entry_gtk(GtkWidget *widget)
 {
 	// change side-to-side
 	double cx = pstate.center->x;
@@ -37,7 +37,7 @@ void change_ss_entry(GtkWidget *widget)
 	return;
 }
 
-void toggle_ssYdRel(GtkWidget *widget)
+void coords_toggle_ssYdRel_gtk(GtkWidget *widget)
 {
 	// change relationship from 	outside->inside
 	// 				inside->outside
@@ -73,7 +73,7 @@ void toggle_ssYdRel(GtkWidget *widget)
 	return;
 }
 
-void toggle_ssSide(GtkWidget *widget)
+void coords_toggle_ssSide_gtk(GtkWidget *widget)
 {
 	// change side from side 1 to side 2
 	// 	or side 2 to side 1
@@ -86,13 +86,13 @@ void toggle_ssSide(GtkWidget *widget)
 	return;
 }
 
-void toggle_ssYdLine(GtkWidget *widget)
+void coords_toggle_ssYdLine_gtk(GtkWidget *widget)
 {
 	return;
 }
 
 // Front-to-back relations
-void change_fb_entry(GtkWidget *widget)
+void coords_change_fb_entry_gtk(GtkWidget *widget)
 {
 	// change front-to-back
 	double cx = pstate.center->x;
@@ -148,7 +148,7 @@ void change_fb_entry(GtkWidget *widget)
 	return;
 }
 
-void toggle_fbHashRel(GtkWidget *widget)
+void coords_toggle_fbHashRel_gtk(GtkWidget *widget)
 {
 	// toggle relation from ins/out
 	// 			out/ins
@@ -202,7 +202,7 @@ void toggle_fbHashRel(GtkWidget *widget)
 	return;
 }
 
-void toggle_fbFrontBack(GtkWidget *widget)
+void coords_toggle_fbFrontBack_gtk(GtkWidget *widget)
 {
 	// toggle relation from front/back
 	//const gchar *buffer;
@@ -261,7 +261,7 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	return;
 }
 
-void toggle_HashSide(GtkWidget *widget)
+void coords_toggle_HashSide_gtk(GtkWidget *widget)
 {
 	// toggle hash/sideline
 	//const gchar *buffer;
@@ -302,7 +302,7 @@ void toggle_HashSide(GtkWidget *widget)
 	return;
 }
 
-void expand_form(GtkWidget *widget)
+void coords_expand_form_gtk(GtkWidget *widget)
 {
 	// expand the form by 1 step
 	coords_box_scale_form_from_center(1);
@@ -310,7 +310,7 @@ void expand_form(GtkWidget *widget)
 	return;
 }
 
-void contract_form(GtkWidget *widget)
+void coords_contract_form_gtk(GtkWidget *widget)
 {
 	// contract the form by 1 step
 	coords_box_scale_form_from_center(-1);
@@ -318,7 +318,7 @@ void contract_form(GtkWidget *widget)
 	return;
 }
 
-void rot_cw(GtkWidget *widget)
+void coords_rot_cw_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
 	coords_rot_selected_around_center(M_PI/16);
@@ -326,7 +326,7 @@ void rot_cw(GtkWidget *widget)
 	return;
 }
 
-void rot_countercw(GtkWidget *widget)
+void coords_rot_countercw_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
 	coords_rot_selected_around_center(-M_PI/16);
@@ -334,7 +334,7 @@ void rot_countercw(GtkWidget *widget)
 	return;
 }
 
-void rot_cw_small(GtkWidget *widget)
+void coords_rot_cw_small_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
 	coords_rot_selected_around_center(M_PI/64);
@@ -342,7 +342,7 @@ void rot_cw_small(GtkWidget *widget)
 	return;
 }
 
-void rot_countercw_small(GtkWidget *widget)
+void coords_rot_countercw_small_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
 	coords_rot_selected_around_center(-M_PI/64);
@@ -350,7 +350,7 @@ void rot_countercw_small(GtkWidget *widget)
 	return;
 }
 
-void dot_align_to_grid(GtkWidget *widget)
+void coords_dot_align_to_grid_gtk(GtkWidget *widget)
 {
 	// align dots to 8:5 grid (called from gtk)
 	coords_align_dots_to_grid();
@@ -358,7 +358,7 @@ void dot_align_to_grid(GtkWidget *widget)
 	return;
 }
 
-void move_up(GtkWidget *widget)
+void coords_move_selected_up(GtkWidget *widget)
 {
 	// Move a dot backfield if not stepped
 	if (pstate.curr_step == 0)
@@ -368,7 +368,7 @@ void move_up(GtkWidget *widget)
 	}
 }
 
-void move_down(GtkWidget *widget)
+void coords_move_selected_down(GtkWidget *widget)
 {
 	// Move a dot frontfield
 	if (pstate.curr_step == 0)
@@ -378,7 +378,7 @@ void move_down(GtkWidget *widget)
 	}
 }
 
-void move_left(GtkWidget *widget)
+void coords_move_selected_left(GtkWidget *widget)
 {
 	// Move a dot toward left goal line
 	if (pstate.curr_step == 0)
@@ -388,7 +388,7 @@ void move_left(GtkWidget *widget)
 	}
 }
 
-void move_right(GtkWidget *widget)
+void coords_move_selected_right(GtkWidget *widget)
 {
 	// Move a dot toward right goal line
 	if (pstate.curr_step == 0)
@@ -398,7 +398,7 @@ void move_right(GtkWidget *widget)
 	}
 }
 
-void move_up_small(GtkWidget *widget)
+void coords_move_selected_up_small(GtkWidget *widget)
 {
 	// Move a dot toward back sideline (0.25)
 	if (pstate.curr_step == 0)
@@ -408,7 +408,7 @@ void move_up_small(GtkWidget *widget)
 	}
 }
 
-void move_down_small(GtkWidget *widget)
+void coords_move_selected_down_small(GtkWidget *widget)
 {
 	// Move a dot toward front sideline (0.25)
 	if (pstate.curr_step == 0)
@@ -418,7 +418,7 @@ void move_down_small(GtkWidget *widget)
 	}
 }
 	
-void move_left_small(GtkWidget *widget)
+void coords_move_selected_left_small(GtkWidget *widget)
 {
 	// Move a dot toward left goal line (0.25)
 	if (pstate.curr_step == 0)
@@ -428,7 +428,7 @@ void move_left_small(GtkWidget *widget)
 	}
 }
 
-void move_right_small(GtkWidget *widget)
+void coords_move_selected_right_small(GtkWidget *widget)
 {
 	// Move a dot toward right goal line (0.25)
 	if (pstate.curr_step == 0)
@@ -438,65 +438,3 @@ void move_right_small(GtkWidget *widget)
 	}
 }
 
-gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
-{
-	// caught a mouse movement event
-	double coordx, coordy;
-	gchar *buffer;
-	int excode;
-	select_t *new_select;
-	new_select = NULL;
-	select_t *select_added;
-	select_added = NULL;
-	select_t *select_omitted = NULL;
-	//select_t *last;
-
-	coordx = event->x;
-	coordy = event->y;
-	pixel_to_field(&coordx, &coordy);
-	if (fldstate.mouse_clicked == 0x1)
-	{
-		// click drag
-		// get what's currently in selection rectangle
-		new_select = select_add_in_rectangle(new_select, fldstate.mouse_clickx, fldstate.mouse_clicky,
-				coordx, coordy, false);
-		// then find what's been added, what's gone
-		select_added = select_drop_multiple(new_select, fldstate.mouse_selection);
-		select_omitted = select_drop_multiple(fldstate.mouse_selection, new_select);
-
-		// Store new set
-		fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
-		select_push_all(&fldstate.mouse_selection, &new_select, false);
-		select_update_center(fldstate.mouse_selection);
-
-		// add new dots
-		if (event->state == 256 + GDK_CONTROL_MASK)
-		{
-			select_push_all(&pstate.select, &select_added, true);
-			select_add_multiple(&pstate.select, &select_omitted, true);
-		}
-		else if (event->state == 256 || event->state == (256 + GDK_SHIFT_MASK))
-		{
-			// normal or shift-clicked
-			select_push_all(&pstate.select, &select_added, false);
-			// drop ommitted dots
-			pstate.select = select_drop_multiple(pstate.select, select_omitted);
-		}
-	}
-	else
-		fldstate.mouse_selection = NULL;
-	fldstate.mousex = coordx;
-	fldstate.mousey = coordy;
-	// store mouse event
-	excode = fieldrel_convert_xy_to_relation(&coordx, &coordy, &buffer);
-	if (excode == -1)
-		return FALSE;
-
-
-	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id));
-	gtk_statusbar_push(GTK_STATUSBAR(statusbar), GPOINTER_TO_INT(context_id), buffer);
-	g_free(buffer);
-	dr_canvas_refresh(drill);
-
-	return TRUE;
-}

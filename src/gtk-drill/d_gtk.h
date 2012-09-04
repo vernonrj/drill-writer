@@ -63,29 +63,31 @@ GTimer *timer;
 
 // Functions
 // coords-gtk.c
-void change_ss_entry(GtkWidget *widget);
-void toggle_ssYdRel(GtkWidget *widget);
-void toggle_ssSide(GtkWidget *widget);
-void toggle_ssYdLine(GtkWidget *widget);
-void change_fb_entry(GtkWidget *widget);
-void toggle_fbHashRel(GtkWidget *widget);
-void toggle_fbFrontBack(GtkWidget *widget);
-void toggle_HashSide(GtkWidget *widget);
-void expand_form(GtkWidget *widget);
-void contract_form(GtkWidget *widget);
-void rot_cw(GtkWidget *widget);
-void rot_countercw(GtkWidget *widget);
-void rot_cw_small(GtkWidget *widget);
-void rot_countercw_small(GtkWidget *widget);
-void dot_align_to_grid(GtkWidget *widget);
-void move_up(GtkWidget *widget);
-void move_down(GtkWidget *widget);
-void move_left(GtkWidget *widget);
-void move_right(GtkWidget *widget);
-void move_up_small(GtkWidget *widget);
-void move_down_small(GtkWidget *widget);
-void move_left_small(GtkWidget *widget);
-void move_right_small(GtkWidget *widget);
+void coords_change_ss_entry_gtk(GtkWidget *widget);
+void coords_toggle_ssYdRel_gtk(GtkWidget *widget);
+void coords_toggle_ssSide_gtk(GtkWidget *widget);
+void coords_toggle_ssYdLine_gtk(GtkWidget *widget);
+void coords_change_fb_entry_gtk(GtkWidget *widget);
+void coords_toggle_fbHashRel_gtk(GtkWidget *widget);
+void coords_toggle_fbFrontBack_gtk(GtkWidget *widget);
+void coords_toggle_HashSide_gtk(GtkWidget *widget);
+void coords_expand_form_gtk(GtkWidget *widget);
+void coords_contract_form_gtk(GtkWidget *widget);
+void coords_rot_cw_gtk(GtkWidget *widget);
+void coords_rot_countercw_gtk(GtkWidget *widget);
+void coords_rot_cw_small_gtk(GtkWidget *widget);
+void coords_rot_countercw_small_gtk(GtkWidget *widget);
+void coords_dot_align_to_grid_gtk(GtkWidget *widget);
+void coords_move_selected_up(GtkWidget *widget);
+void coords_move_selected_down(GtkWidget *widget);
+void coords_move_selected_left(GtkWidget *widget);
+void coords_move_selected_right(GtkWidget *widget);
+void coords_move_selected_up_small(GtkWidget *widget);
+void coords_move_selected_down_small(GtkWidget *widget);
+void coords_move_selected_left_small(GtkWidget *widget);
+void coords_move_selected_right_small(GtkWidget *widget);
+
+// mouse_gtk.c
 gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event);
 
 

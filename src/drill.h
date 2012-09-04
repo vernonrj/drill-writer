@@ -271,7 +271,7 @@ int startTk(int argc, char *argv[]);
 int buildIfacegtk(void);
 int runTk(void);
 // c++ functions
-int menuIface(void);
+//int menuIface(void);
 
 // coords.c
 // create container for dots

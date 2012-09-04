@@ -101,7 +101,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	ssStepEntry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(ssStepEntry), 50);
 	g_signal_connect(ssStepEntry, "activate",
-		       	G_CALLBACK(change_ss_entry), ssStepEntry);
+		       	G_CALLBACK(coords_change_ss_entry_gtk), ssStepEntry);
 	gtk_entry_set_text(GTK_ENTRY(ssStepEntry), ss_buf);
 	//tmp_pos = GTK_ENTRY(ssStepEntry)->text_length;
 	//gtk_editable_select_region(GTK_EDITABLE(ssStepEntry), 0, GTK_ENTRY(ssStepEntry)->text_length);
@@ -114,7 +114,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// yardline relation
 	ssYdRelButton = gtk_button_new_with_label ("inside");
 	g_signal_connect(ssYdRelButton,
-		       	"clicked", G_CALLBACK(toggle_ssYdRel), NULL);
+		       	"clicked", G_CALLBACK(coords_toggle_ssYdRel_gtk), NULL);
 	//gtk_box_pack_start(GTK_BOX (perfbar), sidesideBtns.ssYdRelButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (perfSSbox), ssYdRelButton, FALSE, FALSE, 0);
 	gtk_widget_show(ssYdRelButton);
@@ -122,7 +122,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// side of the field
 	ssSide = gtk_button_new_with_label ("Side 1");
 	g_signal_connect(ssSide,
-		       	"clicked", G_CALLBACK(toggle_ssSide), NULL);
+		       	"clicked", G_CALLBACK(coords_toggle_ssSide_gtk), NULL);
 	//gtk_box_pack_start(GTK_BOX (perfbar), sidesideBtns.ssSide, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (perfSSbox), ssSide, FALSE, FALSE, 0);
 	gtk_widget_show(ssSide);
@@ -130,7 +130,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// yardline
 	ssYdLine = gtk_button_new_with_label ("50");
 	g_signal_connect(ssYdLine,
-		       	"clicked", G_CALLBACK(toggle_ssYdLine), NULL);
+		       	"clicked", G_CALLBACK(coords_toggle_ssYdLine_gtk), NULL);
 	//gtk_box_pack_start(GTK_BOX (perfbar), sidesideBtns.ssYdLine, FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX (perfSSbox), ssYdLine, FALSE, FALSE, 5);
 	gtk_widget_show(ssYdLine);
@@ -156,7 +156,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	fbStepEntry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(fbStepEntry), 50);
 	g_signal_connect(fbStepEntry, "activate",
-		       	G_CALLBACK(change_fb_entry), fbStepEntry);
+		       	G_CALLBACK(coords_change_fb_entry_gtk), fbStepEntry);
 	gtk_entry_set_text(GTK_ENTRY(fbStepEntry), fb_buf);
 	//tmp_pos = GTK_ENTRY(fbStepEntry)->text_length;
 	//gtk_editable_select_region(GTK_EDITABLE(fbStepEntry), 0, GTK_ENTRY(fbStepEntry)->text_length);
@@ -169,7 +169,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// Hash relation button
 	fbHashRelButton = gtk_button_new_with_label ("inside");
 	g_signal_connect(fbHashRelButton,
-		       	"clicked", G_CALLBACK(toggle_fbHashRel), NULL);
+		       	"clicked", G_CALLBACK(coords_toggle_fbHashRel_gtk), NULL);
 	//gtk_box_pack_start(GTK_BOX (perfbar), frbkBtns.fbHashRelButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (perfFBbox), fbHashRelButton, FALSE, FALSE, 0);
 	gtk_widget_show(fbHashRelButton);
@@ -177,7 +177,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// Front/Back toggle button
 	fbToggleButton = gtk_button_new_with_label ("Front");
 	g_signal_connect(fbToggleButton,
-		       	"clicked", G_CALLBACK(toggle_fbFrontBack), NULL);
+		       	"clicked", G_CALLBACK(coords_toggle_fbFrontBack_gtk), NULL);
 	//gtk_box_pack_start(GTK_BOX (perfbar), frbkBtns.fbToggleButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (perfFBbox), fbToggleButton, FALSE, FALSE, 0);
 	gtk_widget_show(fbToggleButton);
@@ -185,7 +185,7 @@ static void dr_perfbar_init(DrPerfbar *perfbar)
 	// Hash/Sideline toggle button
 	HashSideButton = gtk_button_new_with_label ("Sideline");
 	g_signal_connect(HashSideButton,
-		       	"clicked", G_CALLBACK(toggle_HashSide), NULL);
+		       	"clicked", G_CALLBACK(coords_toggle_HashSide_gtk), NULL);
 	//gtk_box_pack_start(GTK_BOX (perfbar), frbkBtns.HashSideButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX (perfFBbox), HashSideButton, FALSE, FALSE, 0);
 	gtk_widget_show(HashSideButton);
