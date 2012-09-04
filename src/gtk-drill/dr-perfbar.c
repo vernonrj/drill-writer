@@ -239,9 +239,9 @@ int update_entries(void)
 	// Update all the entries
 	cx = pstate.center->x;
 	cy = pstate.center->y;
-	ssStep = getSidetoSide(&cx, &cy);
+	ssStep = fieldrel_get_side_to_side(&cx, &cy);
 	sprintf(ss_buf, "%.2f", ssStep);
-	yardRel = isInsideYard(&cx, &cy, &fieldSide);
+	yardRel = fieldrel_check_is_inside_yard(&cx, &cy, &fieldSide);
 	if (yardRel == -1)
 	{
 		// outside
@@ -258,8 +258,8 @@ int update_entries(void)
 		sprintf(ss_ydrel, "on");
 	}
 	sprintf(ss_siderel, "side %i", fieldSide);
-	sprintf(ss_ydline, "%i", getYardline(&cx, &cy));
-	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, &fb_frontback, &fb_hashside);
+	sprintf(ss_ydline, "%i", fieldrel_get_yardline_number(&cx, &cy));
+	fbStep = fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel, &fb_frontback, &fb_hashside);
 	fb_buf = g_strdup_printf("%.2f", fbStep);
 	entry_upifCh(aperfbar->priv->ssStepEntry, ss_buf);
 	// change yard relation button

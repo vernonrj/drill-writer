@@ -18,7 +18,7 @@ bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2
 }
 
 // TODO: put side-to-side into one function like front-to-back
-int isInsideYard(double *x, double *y, int *field_side)
+int fieldrel_check_is_inside_yard(double *x, double *y, int *field_side)
 {
 	// check to see if a dot is inside or outside
 	// a yardline
@@ -79,7 +79,8 @@ int isInsideYard(double *x, double *y, int *field_side)
 	return 0;
 }
 
-int getYardline(double *x, double *y)
+//int getYardline(double *x, double *y)
+int fieldrel_get_yardline_number(double *x, double *y)
 {
 	// get yardline number
 	int yardline;
@@ -96,7 +97,8 @@ int getYardline(double *x, double *y)
 }
 
 
-double getSidetoSide(double *x, double *y)
+//double getSidetoSide(double *x, double *y)
+double fieldrel_get_side_to_side(double *x, double *y)
 {
 	// get the side-to-side relation
 	double ssrel;
@@ -112,7 +114,8 @@ double getSidetoSide(double *x, double *y)
 	return ssrel;
 }
 
-double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r)
+//double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r)
+double fieldrel_get_front_to_back(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r)
 {
 	// check to see if a dot is inside or outside
 	// a hash/sideline, and whether it's on the front or back
@@ -225,7 +228,7 @@ double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r
 }
 
 
-int xy_to_relation(double *x, double *y, char **buffer_r)
+int fieldrel_convert_xy_to_relation(double *x, double *y, char **buffer_r)
 {
 	// convert event to side-side and front-back relation
 	int yardline;
@@ -251,8 +254,8 @@ int xy_to_relation(double *x, double *y, char **buffer_r)
 	coordy = *y;
 	// Get side-to-side
 	relation = (int)coordx % 8;
-	relation = isInsideYard(x, y, &sidetoside);
-	ssrel = getSidetoSide(x, y);
+	relation = fieldrel_check_is_inside_yard(x, y, &sidetoside);
+	ssrel = fieldrel_get_side_to_side(x, y);
 	sideside_relation = (char*)malloc(21*sizeof(char));
 	if (!sideside_relation)
 		return -1;
@@ -287,9 +290,9 @@ int xy_to_relation(double *x, double *y, char **buffer_r)
 	}
 
 	// Get yardline relation
-	yardline = getYardline(x, y);
+	yardline = fieldrel_get_yardline_number(x, y);
 
-	fbrel = getFronttoBack(x, y, &inorout, &frontback, &hashorside);
+	fbrel = fieldrel_get_front_to_back(x, y, &inorout, &frontback, &hashorside);
 	fbbuffer = (char*)malloc(21*sizeof(char));
 	if (!fbbuffer)
 		return -1;

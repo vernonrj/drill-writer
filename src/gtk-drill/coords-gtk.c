@@ -12,8 +12,8 @@ void change_ss_entry(GtkWidget *widget)
 	double ssStep;
 	const gchar *buffer;
 	//char *newtext;
-	ssStep = getSidetoSide(&cx, &cy);
-	yardrel = isInsideYard(&cx, &cy, &fieldside);
+	ssStep = fieldrel_get_side_to_side(&cx, &cy);
+	yardrel = fieldrel_check_is_inside_yard(&cx, &cy, &fieldside);
 	buffer = gtk_entry_get_text(GTK_ENTRY(widget));
 	new_cx = atof(buffer);
 	if (ssStep != new_cx)
@@ -49,9 +49,9 @@ void toggle_ssYdRel(GtkWidget *widget)
 	//buffer = gtk_button_get_label(GTK_BUTTON(widget));
 	cx = pstate.center->x;
 	cy = pstate.center->y;
-	ssStep = getSidetoSide(&cx, &cy);
+	ssStep = fieldrel_get_side_to_side(&cx, &cy);
 	ssStep = roundf(4*ssStep)/4;
-	yardrel = isInsideYard(&cx, &cy, &fieldside);
+	yardrel = fieldrel_check_is_inside_yard(&cx, &cy, &fieldside);
 	if (ssStep == 4)
 	{
 		// don't do anything
@@ -108,7 +108,7 @@ void change_fb_entry(GtkWidget *widget)
 	gchar *fb_frontback;
 	gchar *fb_hashside;
 
-	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel,
+	fbStep = fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel,
 			&fb_frontback, &fb_hashside);
 	buffer = gtk_entry_get_text(GTK_ENTRY(widget));
 	new_cy = atof(buffer);
@@ -160,7 +160,7 @@ void toggle_fbHashRel(GtkWidget *widget)
 	gchar *fb_hashside;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
-	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
+	fbStep = fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	if (!strcmp(fb_frontback, "front"))
 	{
@@ -217,7 +217,7 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	gchar *fb_hashside;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
-	fbStep = getFronttoBack(&cx, &cy, &fb_hashrel, 
+	fbStep = fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	if (!strcmp(fb_hashside, "hash"))
 	{
@@ -273,7 +273,7 @@ void toggle_HashSide(GtkWidget *widget)
 	gchar *fb_hashside;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
-	getFronttoBack(&cx, &cy, &fb_hashrel, 
+	fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	int fb;
 	if (!strcmp(fb_frontback, "front"))
@@ -305,7 +305,7 @@ void toggle_HashSide(GtkWidget *widget)
 void expand_form(GtkWidget *widget)
 {
 	// expand the form by 1 step
-	coords_box_scale_form(1);
+	coords_box_scale_form_from_center(1);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -313,7 +313,7 @@ void expand_form(GtkWidget *widget)
 void contract_form(GtkWidget *widget)
 {
 	// contract the form by 1 step
-	coords_box_scale_form(-1);
+	coords_box_scale_form_from_center(-1);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -488,7 +488,7 @@ gboolean xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	fldstate.mousex = coordx;
 	fldstate.mousey = coordy;
 	// store mouse event
-	excode = xy_to_relation(&coordx, &coordy, &buffer);
+	excode = fieldrel_convert_xy_to_relation(&coordx, &coordy, &buffer);
 	if (excode == -1)
 		return FALSE;
 

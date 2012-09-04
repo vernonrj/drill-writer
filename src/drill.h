@@ -287,8 +287,8 @@ int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r);
 int coords_movexy(double xoff, double yoff);
 int coords_align_dots_to_grid(void);
 int coords_movexy_grid(double xoff, double yoff);
-void coords_box_scale_form(double s_step);
-void coords_scale_form(double s_step);
+void coords_box_scale_form_from_center(double s_step);
+void coords_scale_form_from_center(double s_step);
 void coords_rot_selected_around_center(double s_step);
 
 // forms.c
@@ -297,11 +297,11 @@ void form_build_line(group_t *group);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
-int isInsideYard(double *x, double *y, int *field_side);
-int getYardline(double *x, double *y);
-double getSidetoSide(double *x, double *y);
-double getFronttoBack(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r);
-int xy_to_relation(double *x, double *y, char **buffer_r);
+int fieldrel_check_is_inside_yard(double *x, double *y, int *field_side);
+int fieldrel_get_yardline_number(double *x, double *y);
+double fieldrel_get_side_to_side(double *x, double *y);
+double fieldrel_get_front_to_back(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r);
+int fieldrel_convert_xy_to_relation(double *x, double *y, char **buffer_r);
 
 // file-ops.c
 int open_file(char *filename);

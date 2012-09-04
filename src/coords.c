@@ -252,7 +252,7 @@ int coords_movexy_grid(double xoff, double yoff)
 }
 
 
-void coords_box_scale_form(double s_step)
+void coords_box_scale_form_from_center(double s_step)
 {
 	// move furthest dot (s_step, s_step) toward/away from center
 	// move other dots a ratio of
@@ -331,7 +331,7 @@ void coords_box_scale_form(double s_step)
 
 
 
-void coords_scale_form(double s_step)
+void coords_scale_form_from_center(double s_step)
 {
 	// move every dot s_step toward/away from center
 	// basic expansion or contraction of form
