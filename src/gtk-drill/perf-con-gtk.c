@@ -74,7 +74,7 @@ void xperf_change (GtkWidget *widget)
 		perf_buffer = atof(entry_buffer);
 		if (perf_buffer>0 && perf_buffer<=160)
 		{
-			set_coord(pshow, perf_cur, perf_buffer, coords->y);
+			coords_set_coord(pshow, perf_cur, perf_buffer, coords->y);
 			//perf[setnum][perf_cur][0] = perf_buffer;
 		}
 		dr_canvas_refresh(drill);
@@ -92,7 +92,7 @@ void yperf_change (GtkWidget *widget)
 		perf_buffer = atoi(entry_buffer);
 		if (perf_buffer>0 && perf_buffer<=85)
 		{
-			set_coord(pshow, perf_cur, coords->x, perf_buffer);
+			coords_set_coord(pshow, perf_cur, coords->x, perf_buffer);
 			//perf[setnum][perf_cur][1] = perf_buffer;
 		}
 		dr_canvas_refresh(drill);
@@ -206,7 +206,7 @@ gboolean unclicked(GtkWidget *widget, GdkEventButton *event)
 
 					if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
-						movexy(mouse_clickx, mouse_clicky);
+						coords_movexy(mouse_clickx, mouse_clicky);
 						mouse_discarded = 0;
 						//dr_canvas_refresh(drill);
 						dr_canvas_refresh(drill);
@@ -347,7 +347,7 @@ gboolean clicked(GtkWidget *widget, GdkEventButton *event)
 				coordy = round((coordy-fldstate.yo2)/fldstate.canv_step);
 				*/
 				index = perf_add();
-				set_coord(pshow, index, coordx, coordy);
+				coords_set_coord(pshow, index, coordx, coordy);
 				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
 				//mouse_currentMode = SELECTONE;
@@ -457,7 +457,7 @@ int checkSelected(GtkWidget *widget, GdkEventButton *event)
 	perf_cur = 0;
 	for (i=0; i<perfnum; i++)
 	{
-		retr_midset(pshow->sets->currset, i, &workx, &worky);
+		coords_retrieve_midset(pshow->sets->currset, i, &workx, &worky);
 		workx = workx - coordx;
 		worky = worky - coordy;
 		distance = pow(workx, 2) + pow(worky, 2);

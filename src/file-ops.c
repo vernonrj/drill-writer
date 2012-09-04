@@ -435,7 +435,7 @@ int open_file(char *filename)
 				//printf("(x,y) = %i %.2f %.2f\n", cnum, x, y);
 				//printf("valid = %i\n", perfs[i]->valid);
 				if (perfs[i]->valid != 0)
-					set_coord(pshow, cnum, x, y);
+					coords_set_coord(pshow, cnum, x, y);
 				i++;
 			} while (i < perfnum);
 		}

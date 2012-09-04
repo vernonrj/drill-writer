@@ -23,13 +23,13 @@ void change_ss_entry(GtkWidget *widget)
 				|| (yardrel == 1 && fieldside == 2))
 		{
 			// move right
-			movexy(ssStep-new_cx, 0);
+			coords_movexy(ssStep-new_cx, 0);
 		}
 		else if ((yardrel == 1 && fieldside == 1)
 				|| (yardrel == -1 && fieldside == 2))
 		{
 			// move left
-			movexy(new_cx-ssStep, 0);
+			coords_movexy(new_cx-ssStep, 0);
 		}	
 		dr_canvas_refresh(drill);
 	}
@@ -60,14 +60,14 @@ void toggle_ssYdRel(GtkWidget *widget)
 			|| (yardrel == 1 && fieldside == 2))
 	{
 		// move right
-		movexy(2*ssStep, 0);
+		coords_movexy(2*ssStep, 0);
 		dr_canvas_refresh(drill);
 	}
 	else if ((yardrel == 1 && fieldside == 1) 
 			|| (yardrel == -1 && fieldside == 2))
 	{
 		// move left
-		movexy(-2*ssStep, 0);
+		coords_movexy(-2*ssStep, 0);
 		dr_canvas_refresh(drill);
 	}
 	return;
@@ -80,7 +80,7 @@ void toggle_ssSide(GtkWidget *widget)
 	double cx;
 	cx = pstate.center->x;
 
-	movexy(2*(80-cx), 0);
+	coords_movexy(2*(80-cx), 0);
 	dr_canvas_refresh(drill);
 
 	return;
@@ -131,13 +131,13 @@ void change_fb_entry(GtkWidget *widget)
 		if (!strcmp(fb_frontback, "front"))
 		{
 			// front
-			movexy(0, inOut * (new_cy-fbStep));
+			coords_movexy(0, inOut * (new_cy-fbStep));
 			dr_canvas_refresh(drill);
 		}
 		else if (!strcmp(fb_frontback, "back"))
 		{
 			// back
-			movexy(0, -inOut*(new_cy-fbStep));
+			coords_movexy(0, -inOut*(new_cy-fbStep));
 			dr_canvas_refresh(drill);
 		}
 	}
@@ -168,13 +168,13 @@ void toggle_fbHashRel(GtkWidget *widget)
 		if (!strcmp(fb_hashrel, "inside"))
 		{
 			// inside front, add
-			movexy(0, 2*fbStep);
+			coords_movexy(0, 2*fbStep);
 			dr_canvas_refresh(drill);
 		}
 		else if (!strcmp(fb_hashrel, "outside"))
 		{
 			// outside front, subtract
-			movexy(0, -2*fbStep);
+			coords_movexy(0, -2*fbStep);
 			dr_canvas_refresh(drill);
 		}
 	}
@@ -184,13 +184,13 @@ void toggle_fbHashRel(GtkWidget *widget)
 		if (!strcmp(fb_hashrel, "inside"))
 		{
 			// inside back, subtract
-			movexy(0, -2*fbStep);
+			coords_movexy(0, -2*fbStep);
 			dr_canvas_refresh(drill);
 		}
 		else if (!strcmp(fb_hashrel, "outside"))
 		{
 			// outside back, add
-			movexy(0, 2*fbStep);
+			coords_movexy(0, 2*fbStep);
 			dr_canvas_refresh(drill);
 		}
 	}
@@ -246,13 +246,13 @@ void toggle_fbFrontBack(GtkWidget *widget)
 	if (!strcmp(fb_hashrel, "inside"))
 	{
 		// inside front hash/side
-		movexy(0, fb * (shstep - 2*fbStep));
+		coords_movexy(0, fb * (shstep - 2*fbStep));
 		dr_canvas_refresh(drill);
 	}
 	else if (!strcmp(fb_hashrel, "outside"))
 	{
 		// outside front hash/side
-		movexy(0, fb * (shstep + 2*fbStep));
+		coords_movexy(0, fb * (shstep + 2*fbStep));
 		dr_canvas_refresh(drill);
 	}
 	g_free (fb_hashrel);
@@ -285,13 +285,13 @@ void toggle_HashSide(GtkWidget *widget)
 	if (!strcmp(fb_hashside, "hash"))
 	{
 		// front/back hash
-		movexy(0, fb * 32);
+		coords_movexy(0, fb * 32);
 		dr_canvas_refresh(drill);
 	}
 	else if (!strcmp(fb_hashside, "sideline"))
 	{
 		// front/back sideline
-		movexy(0, -fb*32);
+		coords_movexy(0, -fb*32);
 		dr_canvas_refresh(drill);
 	}
 
@@ -305,7 +305,7 @@ void toggle_HashSide(GtkWidget *widget)
 void expand_form(GtkWidget *widget)
 {
 	// expand the form by 1 step
-	box_scale_form(1);
+	coords_box_scale_form(1);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -313,7 +313,7 @@ void expand_form(GtkWidget *widget)
 void contract_form(GtkWidget *widget)
 {
 	// contract the form by 1 step
-	box_scale_form(-1);
+	coords_box_scale_form(-1);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -321,7 +321,7 @@ void contract_form(GtkWidget *widget)
 void rot_cw(GtkWidget *widget)
 {
 	// rotate form clockwise
-	rot_form(M_PI/16);
+	coords_rot_selected_around_center(M_PI/16);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -329,7 +329,7 @@ void rot_cw(GtkWidget *widget)
 void rot_countercw(GtkWidget *widget)
 {
 	// rotate form clockwise
-	rot_form(-M_PI/16);
+	coords_rot_selected_around_center(-M_PI/16);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -337,7 +337,7 @@ void rot_countercw(GtkWidget *widget)
 void rot_cw_small(GtkWidget *widget)
 {
 	// rotate form clockwise
-	rot_form(M_PI/64);
+	coords_rot_selected_around_center(M_PI/64);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -345,7 +345,7 @@ void rot_cw_small(GtkWidget *widget)
 void rot_countercw_small(GtkWidget *widget)
 {
 	// rotate form clockwise
-	rot_form(-M_PI/64);
+	coords_rot_selected_around_center(-M_PI/64);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -353,7 +353,7 @@ void rot_countercw_small(GtkWidget *widget)
 void dot_align_to_grid(GtkWidget *widget)
 {
 	// align dots to 8:5 grid (called from gtk)
-	align_dots();
+	coords_align_dots_to_grid();
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -363,7 +363,7 @@ void move_up(GtkWidget *widget)
 	// Move a dot backfield if not stepped
 	if (pstate.curr_step == 0)
 	{
-		movexy(0, -1);
+		coords_movexy(0, -1);
 		dr_canvas_refresh(drill);
 	}
 }
@@ -373,7 +373,7 @@ void move_down(GtkWidget *widget)
 	// Move a dot frontfield
 	if (pstate.curr_step == 0)
 	{
-		movexy(0, 1);
+		coords_movexy(0, 1);
 		dr_canvas_refresh(drill);
 	}
 }
@@ -383,7 +383,7 @@ void move_left(GtkWidget *widget)
 	// Move a dot toward left goal line
 	if (pstate.curr_step == 0)
 	{
-		movexy(-1, 0);
+		coords_movexy(-1, 0);
 		dr_canvas_refresh(drill);
 	}
 }
@@ -393,7 +393,7 @@ void move_right(GtkWidget *widget)
 	// Move a dot toward right goal line
 	if (pstate.curr_step == 0)
 	{
-		movexy(1, 0);
+		coords_movexy(1, 0);
 		dr_canvas_refresh(drill);
 	}
 }
@@ -403,7 +403,7 @@ void move_up_small(GtkWidget *widget)
 	// Move a dot toward back sideline (0.25)
 	if (pstate.curr_step == 0)
 	{
-		movexy(0, -0.25);
+		coords_movexy(0, -0.25);
 		dr_canvas_refresh(drill);
 	}
 }
@@ -413,7 +413,7 @@ void move_down_small(GtkWidget *widget)
 	// Move a dot toward front sideline (0.25)
 	if (pstate.curr_step == 0)
 	{
-		movexy(0, 0.25);
+		coords_movexy(0, 0.25);
 		dr_canvas_refresh(drill);
 	}
 }
@@ -423,7 +423,7 @@ void move_left_small(GtkWidget *widget)
 	// Move a dot toward left goal line (0.25)
 	if (pstate.curr_step == 0)
 	{
-		movexy(-0.25, 0);
+		coords_movexy(-0.25, 0);
 		dr_canvas_refresh(drill);
 	}
 }
@@ -433,7 +433,7 @@ void move_right_small(GtkWidget *widget)
 	// Move a dot toward right goal line (0.25)
 	if (pstate.curr_step == 0)
 	{
-		movexy(0.25, 0);
+		coords_movexy(0.25, 0);
 		dr_canvas_refresh(drill);
 	}
 }

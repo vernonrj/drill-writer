@@ -196,19 +196,19 @@ int main (int argc, char *argv[])
 	}
 	currset = pshow->sets->firstset;
 	currset->counts = 0;
-	set_coord(pshow, 0, 32, 53);
-	set_coord(pshow, 1, 36, 53);
-	set_coord(pshow, 2, 40, 53);
-	set_coord(pshow, 3, 34, 49);
-	set_coord(pshow, 4, 38, 49);
-	set_coord(pshow, 5, 36, 45);
+	coords_set_coord(pshow, 0, 32, 53);
+	coords_set_coord(pshow, 1, 36, 53);
+	coords_set_coord(pshow, 2, 40, 53);
+	coords_set_coord(pshow, 3, 34, 49);
+	coords_set_coord(pshow, 4, 38, 49);
+	coords_set_coord(pshow, 5, 36, 45);
 
-	set_coord(pshow, 6, 32, 70);
-	set_coord(pshow, 7, 36, 70);
-	set_coord(pshow, 8, 40, 70);
-	set_coord(pshow, 9, 34, 66);
-	set_coord(pshow, 10, 38, 66);
-	set_coord(pshow, 11, 36, 62);
+	coords_set_coord(pshow, 6, 32, 70);
+	coords_set_coord(pshow, 7, 36, 70);
+	coords_set_coord(pshow, 8, 40, 70);
+	coords_set_coord(pshow, 9, 34, 66);
+	coords_set_coord(pshow, 10, 38, 66);
+	coords_set_coord(pshow, 11, 36, 62);
 	// add new set
 	add_set();
 	currset = pshow->sets->currset;
@@ -217,7 +217,7 @@ int main (int argc, char *argv[])
 	for (i=0; i<12; i++)
 	{
 		prevcr = prevset->coords[i];
-		set_coord(pshow, i, prevcr->x+4, prevcr->y);
+		coords_set_coord(pshow, i, prevcr->x+4, prevcr->y);
 	}
 	// add new set
 	add_set();
@@ -227,7 +227,7 @@ int main (int argc, char *argv[])
 	for (i=0; i<12; i++)
 	{
 		prevcr = prevset->coords[i];
-		set_coord(pshow, i, prevcr->x, prevcr->y-10);
+		coords_set_coord(pshow, i, prevcr->x, prevcr->y-10);
 	}
 
 	// Start at first set

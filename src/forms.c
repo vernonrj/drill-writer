@@ -55,12 +55,12 @@ void form_build_line(group_t *group)
 	}
 	line->dots = (int*)malloc(index*sizeof(int));
 	select = group->selects;
-	retr_midset(pshow->sets->currset, select->index, &line->coords[0][0], &line->coords[0][1]);
+	coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[0][0], &line->coords[0][1]);
 	for (i=0; i<index; i++)
 	{
 		line->dots[i] = select->index;
 		if (i == index - 1)
-			retr_midset(pshow->sets->currset, select->index, &line->coords[1][0], &line->coords[1][1]);
+			coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[1][0], &line->coords[1][1]);
 		select = select->next;
 
 	}

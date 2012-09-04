@@ -280,16 +280,16 @@ coord_t *coord_construct(void);
 coord_t *coord_construct_with_data(double x, double y);
 coord_t **coords_destruct(coord_t **coords, int perfs);
 // set/retrieve coordinates from coord struct
-int set_coord(struct headset_proto *dshow, int index, double x, double y);
-int set_coord_valid(coord_t **curr, int index, double x, double y);
-int retr_coord(coord_t *curr, double *x, double *y);
-int retr_midset(set_t *currset, int index, double *x_r, double *y_r);
-int movexy(double xoff, double yoff);
-int align_dots(void);
-int movexy_grid(double xoff, double yoff);
-void box_scale_form(double s_step);
-void scale_form(double s_step);
-void rot_form(double s_step);
+int coords_set_coord(struct headset_proto *dshow, int index, double x, double y);
+int coords_set_coord_valid(coord_t **curr, int index, double x, double y);
+int coords_retrieve(coord_t *curr, double *x, double *y);
+int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r);
+int coords_movexy(double xoff, double yoff);
+int coords_align_dots_to_grid(void);
+int coords_movexy_grid(double xoff, double yoff);
+void coords_box_scale_form(double s_step);
+void coords_scale_form(double s_step);
+void coords_rot_selected_around_center(double s_step);
 
 // forms.c
 bool form_checkEndpoints(form_t *form, double x, double y);

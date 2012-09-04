@@ -183,13 +183,13 @@ void perf_revert(headset_t *dshow, int index)
 	if (prevset == NULL)
 	{
 		// first set
-		set_coord(dshow, index, 0, 0);
+		coords_set_coord(dshow, index, 0, 0);
 	}
 	else
 	{
 		// not first set; use previous dots
 		prevcoord = prevset->coords[index];
-		set_coord(dshow, index, prevcoord->x, prevcoord->y);
+		coords_set_coord(dshow, index, prevcoord->x, prevcoord->y);
 	}
 	return;
 }

@@ -233,7 +233,7 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 
 	for (i=0; i<perfnum; i++)
 	{
-		retr_midset(pshow->sets->currset, i, &x, &y);
+		coords_retrieve_midset(pshow->sets->currset, i, &x, &y);
 		if (select_check_dot_in_rectangle(x, y, x1, y1, x2, y2))
 		{
 			if (!select_check_index_selected(i, select) && pshow->perfs[i]->valid)
