@@ -86,35 +86,13 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				if (event->state == GDK_BUTTON_PRESS_MASK)
 				{
 					// regular click
-					//index = mouse_click_find_close_dot(widget, event);
+					// move dots
 					if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
 						coords_movexy(mouse_clickx, mouse_clicky);
-						mouse_discarded = 0;
-						//dr_canvas_refresh(drill);
 						dr_canvas_refresh(drill);
 					}
-					/*
-					else if (mouse_discarded && !isSelected(index))
-					{
-						if (index != -1)
-							select_dots_add_index(index);
-					}
-					*/
 				}
-				/*
-				else if (event->state == (GDK_BUTTON_PRESS_MASK | GDK_CONTROL_MASK))
-				{
-					// ctrl-click
-					index = mouse_click_find_close_dot(widget, event);
-					if (group)
-						pstate.select = select_add_group(pstate.select, group, true);
-					else if (index != -1)
-						select_dots_add_index(index);
-				}
-				*/
-
-
 				break;
 		}
 	}
@@ -178,13 +156,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 					if (!group && index != -1)
 						select_dots_add_index(index);
 				}
-				else if (event->state == GDK_SHIFT_MASK)// && index != -1)
-				{
-					// shift-click
-					if (!group && !isSelected(index) && index != -1)
-						select_dots_add_index(index);
-				}
-				else
+				else if (event->state == 0)
 				{
 					// regular click
 					if (!group && !isSelected(index))
@@ -214,6 +186,14 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 					}
 					*/
 				}
+				/*
+				else if (event->state == GDK_SHIFT_MASK)// && index != -1)
+				{
+					// shift-click
+					if (!group && !isSelected(index) && index != -1)
+						select_dots_add_index(index);
+				}
+				*/
 				//printf("event = %i\n", event->state);
 				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
@@ -291,6 +271,7 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 			select_push_all(&pstate.select, &select_added, true);
 			select_add_multiple(&pstate.select, &select_omitted, true);
 		}
+		/*
 		else if (event->state == 256 || event->state == (256 + GDK_SHIFT_MASK))
 		{
 			// normal or shift-clicked
@@ -298,6 +279,7 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 			// drop ommitted dots
 			pstate.select = select_drop_multiple(pstate.select, select_omitted);
 		}
+		*/
 	}
 	else
 		fldstate.mouse_selection = NULL;
