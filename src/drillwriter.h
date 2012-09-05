@@ -124,7 +124,8 @@ struct select_proto
 
 typedef struct // fline_t
 {
-	double coords[2][2];
+	double endpoints[2][2];
+	double **coords;
 	int *dots;
 } fline_t;
 
@@ -132,7 +133,8 @@ typedef struct // fblock_t
 {
 	bool points[4];	// 1 0
 			// 2 3
-	double coords[4][2];
+	double endpoints[4][2];
+	double **coords;
 	int hFiles;	// # of horizontal files
 	int vFiles;	// # of vertical files
 	int **dots;	// Grid for the dots (perf nums)
@@ -142,8 +144,9 @@ typedef struct // fblock_t
 typedef struct // farc_t
 {
 	int points[2];	// endpoints
-	double coords[2];
-	double *midpts;	// midpoints
+	double endpoints[2][2];
+	double **midpts;// midpoints
+	double **coords;
 	int degree;	// number of midpoints
 	int *dots;	// list of the dots (perf nums)
 			// this is very intense computation,
@@ -161,6 +164,7 @@ typedef union // formType_t
 struct  form_proto // form_t
 {
 	int type;
+	int dot_num;
 	formType_t *form;
 	form_t *next;
 };

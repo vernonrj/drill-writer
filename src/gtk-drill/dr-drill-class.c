@@ -552,12 +552,12 @@ int draw_forms(GtkWidget *widget)
 		{
 			case 1:		// line
 				line = form->form->line;
-				x = line->coords[0][0];
-				y = line->coords[0][1];
+				x = line->endpoints[0][0];
+				y = line->endpoints[0][1];
 				field_to_pixel(&x, &y);
 				cairo_move_to(canv_form, x, y);
-				x = line->coords[1][0];
-				y = line->coords[1][1];
+				x = line->endpoints[1][0];
+				y = line->endpoints[1][1];
 				field_to_pixel(&x, &y);
 				cairo_line_to(canv_form, x, y);
 				break;

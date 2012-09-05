@@ -266,20 +266,18 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 		select_update_center(fldstate.mouse_selection);
 
 		// add new dots
-		if (event->state == 256 + GDK_CONTROL_MASK)
+		if (event->state == (GDK_BUTTON_PRESS_MASK | GDK_CONTROL_MASK))
 		{
 			select_push_all(&pstate.select, &select_added, true);
 			select_add_multiple(&pstate.select, &select_omitted, true);
 		}
-		/*
-		else if (event->state == 256 || event->state == (256 + GDK_SHIFT_MASK))
+		else if (event->state == GDK_BUTTON_PRESS_MASK)
 		{
 			// normal or shift-clicked
 			select_push_all(&pstate.select, &select_added, false);
 			// drop ommitted dots
 			pstate.select = select_drop_multiple(pstate.select, select_omitted);
 		}
-		*/
 	}
 	else
 		fldstate.mouse_selection = NULL;

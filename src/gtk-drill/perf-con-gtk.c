@@ -237,6 +237,13 @@ group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
 }
 
 
+/*
+group_t *dr_check_form(group_t *group)
+{
+	if (group->forms && 
+	*/
+
+
 
 group_t *checkGroups(double coordx, double coordy, group_t *group)
 {

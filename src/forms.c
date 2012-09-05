@@ -14,14 +14,29 @@ bool form_checkEndpoints(form_t *form, double x, double y)
 	{
 		case 1:		// line
 			line = form->form->line;
-			if (fieldrel_check_dots_within_range(line->coords[0][0], line->coords[0][1], x, y))
+			if (fieldrel_check_dots_within_range(line->endpoints[0][0], line->endpoints[0][1], x, y))
 				return true;
-			else if (fieldrel_check_dots_within_range(line->coords[1][0], line->coords[1][1], x, y))
+			else if (fieldrel_check_dots_within_range(line->endpoints[1][0], line->endpoints[1][1], x, y))
 				return true;
 			break;
 	}
 	return false;
 }
+
+
+
+/*
+bool form_contains_coords(form_t *form, double x, double y)
+{
+	fline_t *line;
+	if (!form)
+		return false;
+	switch(form->type)
+	{
+		case 1:		// line
+			line = form->form->line;
+
+*/
 
 
 
@@ -34,6 +49,7 @@ void form_build_line(group_t *group)
 	select_t *select;
 	int i;
 	int index = 0;
+	double slopex, slopey;
 
 	if (!group->forms)
 		group->forms = (form_t*)malloc(sizeof(form_t));
@@ -46,23 +62,34 @@ void form_build_line(group_t *group)
 	form->form->line = (fline_t*)malloc(sizeof(fline_t));
 	line = form->form->line;
 	for (i=0; i<2; i++)
-		line->coords[i][0] = line->coords[i][1] = 0;
+		line->endpoints[i][0] = line->endpoints[i][1] = 0;
 	select = group->selects;
 	while (select)
 	{
 		index++;
 		select = select->next;
 	}
+	form->dot_num = index;
 	line->dots = (int*)malloc(index*sizeof(int));
 	select = group->selects;
-	coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[0][0], &line->coords[0][1]);
+	coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[0][0], &line->endpoints[0][1]);
+	line->coords = (double**)malloc(index*sizeof(double*));
 	for (i=0; i<index; i++)
 	{
+		line->coords[i] = (double*)malloc(2*sizeof(double));
+		coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[i][0], &line->coords[i][1]);
 		line->dots[i] = select->index;
 		if (i == index - 1)
-			coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[1][0], &line->coords[1][1]);
+			coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[1][0], &line->endpoints[1][1]);
 		select = select->next;
 
+	}
+	slopey = (line->endpoints[1][1] - line->endpoints[0][1]); 
+       	slopex = (line->endpoints[1][0] - line->endpoints[0][0]);
+	for (i=0; i<index; i++)
+	{
+		line->coords[i][0] = i*slopex + line->endpoints[0][0];
+		line->coords[i][1] = i*slopey + line->endpoints[1][0];
 	}
 }
 

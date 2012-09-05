@@ -164,10 +164,10 @@ int coords_movexy(double xoff, double yoff)
 			if (group->forms)
 			{
 				line = group->forms->form->line;
-				line->coords[0][0] += xoff;
-				line->coords[0][1] += yoff;
-				line->coords[1][0] += xoff;
-				line->coords[1][1] += yoff;
+				line->endpoints[0][0] += xoff;
+				line->endpoints[0][1] += yoff;
+				line->endpoints[1][0] += xoff;
+				line->endpoints[1][1] += yoff;
 			}
 		}
 		if(group_selects)
