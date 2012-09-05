@@ -81,13 +81,26 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				pixel_to_field(&x, &y);
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
-				group = dr_check_form_endpoints(widget, event);
+				//group = dr_check_form_endpoints(widget, event);
+				group = pshow->sets->currset->groups;
+				while (group)
+				{
+					if (group->forms && form_contains_coords(group->forms, fldstate.mouse_clickx, fldstate.mouse_clicky))
+						break;
+					group = group->next;
+				}
 				//printf("event->state == %i\n", event->state);
 				if (event->state == GDK_BUTTON_PRESS_MASK)
 				{
 					// regular click
 					// move dots
-					if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
+					if(!mouse_discarded && form_checkEndpoints(group->forms, fldstate.mouse_clickx, fldstate.mouse_clicky))
+					{
+						form_move_endpoint(group, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+						dr_canvas_refresh(drill);
+						//printf("ping\n");
+					}
+					else if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
 						coords_movexy(mouse_clickx, mouse_clicky);
 						dr_canvas_refresh(drill);

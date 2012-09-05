@@ -304,6 +304,8 @@ bool form_contains_coords(form_t *form, double x, double y);
 void form_build_line(group_t *group);
 bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2);
 group_t *form_find_group_with_index(group_t *group, int index);
+int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2);
+int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y2);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

@@ -170,3 +170,69 @@ group_t *form_find_group_with_index(group_t *group, int index)
 }
 
 
+int form_update(form_t *form)
+{
+	int i;
+	int index;
+	double slopex, slopey;
+	fline_t *line;
+	switch(form->type)
+	{
+		case 1:		// line
+			line = form->form->line;
+			index = form->dot_num;
+			slopex = (line->endpoints[1][0] - line->endpoints[0][0]) / (index - 1);
+			slopey = (line->endpoints[1][1] - line->endpoints[0][1]) / (index - 1);
+
+			for(i=0; i<index; i++)
+			{
+				line->coords[i][0] = i*slopex + line->endpoints[0][0];
+				line->coords[i][1] = i*slopey + line->endpoints[0][1];
+				coords_set_coord(pshow, line->dots[i], line->coords[i][0], line->coords[i][1]);
+			}
+			break;
+	}
+	return 0;
+}
+
+
+int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2)
+{
+	int i;
+	fline_t *line;
+	double *endpoint;
+	switch(form->type)
+	{
+		case 1:		// line
+			line = form->form->line;
+			for (i=0; i<2; i++)
+			{
+				endpoint = line->endpoints[i];
+				if (fieldrel_check_dots_within_range(endpoint[0], endpoint[1], x1, y1))
+				{
+					endpoint[0] = x2;
+					endpoint[1] = y2;
+				}
+			}
+			form_update(form);
+			break;
+	}
+	return 0;
+}
+
+
+
+int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y2)
+{
+	while (group)
+	{
+		if (group->forms && form_checkEndpoints(group->forms, x1, y1))
+		{
+			form_set_endpoint(group->forms, x1, y1, x2, y2);
+			return 0;
+		}
+		group = group->next;
+	}
+	return -1;
+}
+
