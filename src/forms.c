@@ -92,6 +92,10 @@ void form_build_line(group_t *group)
 		line->coords[i] = (double*)malloc(2*sizeof(double));
 		coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[i][0], &line->coords[i][1]);
 		line->dots[i] = select->index;
+		if (i != 0 && i != index - 1)
+			coords_set_managed_by_index(select->index, 0x1);
+		else
+			coords_set_managed_by_index(select->index, 0x2);
 		if (i == index - 1)
 			coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[1][0], &line->endpoints[1][1]);
 		select = select->next;
@@ -110,5 +114,59 @@ void form_build_line(group_t *group)
 }
 
 
+
+bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2)
+{
+	int i;
+	int index;
+	double **coords;
+	fline_t *line;
+	switch(form->type)
+	{
+		case 1:		// line
+			line = form->form->line;
+			index = form->dot_num;
+			coords = line->coords;
+			for (i=0; i<index; i++)
+			{
+				if (select_check_dot_in_rectangle(coords[i][0], coords[i][1],
+							x1, y1, x2, y2))
+					return true;
+			}
+			break;
+	}
+	return false;
+}
+
+
+
+group_t *form_find_group_with_index(group_t *group, int index)
+{
+	int i;
+	int dot_num;
+	fline_t *line;
+	while (group)
+	{
+		if (!group->forms)
+		{
+			group = group->next;
+			continue;
+		}
+		switch(group->forms->type)
+		{
+			case 1:		// line
+				line = group->forms->form->line;
+				dot_num = group->forms->dot_num;
+				for (i=0; i<dot_num; i++)
+				{
+					if (line->dots[i] == index)
+						return group;
+				}
+				break;
+		}
+		group = group->next;
+	}
+	return group;
+}
 
 

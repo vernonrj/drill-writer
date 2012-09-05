@@ -201,8 +201,7 @@ struct tempo_proto
 struct coord_proto
 {
 	// stores dot for one performer on one set
-	// Manual/Managed Dot (Used for Forms)
-	bool type;
+	int type;	// manual/managed/endpoint (0/1/2)
 	// location info
 	double x;
 	double y;
@@ -286,6 +285,10 @@ coord_t **coords_destruct(coord_t **coords, int perfs);
 // set/retrieve coordinates from coord struct
 int coords_set_coord(struct headset_proto *dshow, int index, double x, double y);
 int coords_set_coord_valid(coord_t **curr, int index, double x, double y);
+int coords_check_managed(coord_t *coord);
+int coords_set_managed(coord_t *coord, int state);
+int coords_check_managed_by_index(int index);
+int coords_set_managed_by_index(int index, int state);
 int coords_retrieve(coord_t *curr, double *x, double *y);
 int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r);
 int coords_movexy(double xoff, double yoff);
@@ -299,6 +302,8 @@ void coords_rot_selected_around_center(double s_step);
 bool form_checkEndpoints(form_t *form, double x, double y);
 bool form_contains_coords(form_t *form, double x, double y);
 void form_build_line(group_t *group);
+bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2);
+group_t *form_find_group_with_index(group_t *group, int index);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
@@ -343,6 +348,8 @@ int perf_max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 
 // select-con.c
 // Selection control functions
+select_t *select_construct(void);
+select_t *select_construct_with_index(int index);
 bool select_check_index_selected(int index, select_t *selects);
 bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
 select_t *select_add_index(select_t*, int index, bool toggle);

@@ -224,7 +224,7 @@ int isSelected(int index)
 
 
 
-group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
+group_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
 	group_t *group = pshow->sets->currset->groups;
@@ -234,7 +234,7 @@ group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
-	group = checkGroups(coordx, coordy, group);
+	group = check_endpoints(coordx, coordy, group);
 	return group;
 }
 
@@ -257,7 +257,7 @@ group_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
 
 
 
-group_t *checkGroups(double coordx, double coordy, group_t *group)
+group_t *check_endpoints(double coordx, double coordy, group_t *group)
 {
 	//double **endpoints;
 	//double dotx, doty;

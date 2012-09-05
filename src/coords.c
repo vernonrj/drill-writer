@@ -93,6 +93,43 @@ int coords_set_coord_valid(coord_t **curr, int index, double x, double y)
 
 
 
+int coords_check_managed(coord_t *coord)
+{
+	if (!coord)
+		return -1;
+	return coord->type;
+}
+
+
+int coords_set_managed(coord_t *coord, int state)
+{
+	if (!coord)
+		return -1;
+	coord->type = state;
+	return 0;
+}
+
+
+int coords_check_managed_by_index(int index)
+{
+	if (index >= 0)
+		return coords_check_managed(pshow->sets->currset->coords[index]);
+	else
+		return -1;
+}
+
+
+int coords_set_managed_by_index(int index, int state)
+{
+	if (index >= 0)
+		return coords_set_managed(pshow->sets->currset->coords[index], state);
+	else
+		return -1;
+}
+
+
+
+
 int coords_retrieve(coord_t *curr, double *x, double *y)
 {
 	// retrieve coordinates from the coord struct

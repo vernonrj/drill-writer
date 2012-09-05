@@ -81,7 +81,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				pixel_to_field(&x, &y);
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
-				group = dr_check_form_selected(widget, event);
+				group = dr_check_form_endpoints(widget, event);
 				//printf("event->state == %i\n", event->state);
 				if (event->state == GDK_BUTTON_PRESS_MASK)
 				{
@@ -149,7 +149,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				group_endpoints = dr_check_form_selected(widget, event);
+				group_endpoints = dr_check_form_endpoints(widget, event);
 				group = dr_check_form(widget, event);
 				index = mouse_click_find_close_dot(widget, event);
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
@@ -161,14 +161,20 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				else if (event->state == 0)
 				{
 					// regular click
-					if (group_endpoints && !group_is_selected(group_endpoints, pstate.select))
+					//if (group_endpoints && !group_is_selected(group_endpoints, pstate.select))
+					if (coords_check_managed_by_index(index) == 0x2
+							&& !group_is_selected(
+								form_find_group_with_index(pshow->sets->currset->groups, index), pstate.select))
 					{
 						// select form with ability to scale form
 						select_dots_discard();
 						pstate.select = select_add_group(pstate.select, group_endpoints, false);
 						mouse_discarded = 1;
 					}
-					else if (group && !group_is_selected(group, pstate.select))
+					//else if (group && !group_is_selected(group, pstate.select))
+					else if (coords_check_managed_by_index(index) == 0x1 
+							&& !group_is_selected(
+								form_find_group_with_index(pshow->sets->currset->groups, index), pstate.select))
 					{
 						// select form, can't scale or rotate
 						select_dots_discard();

@@ -1,6 +1,31 @@
 #include "drillwriter.h"
 
 
+select_t *select_construct(void)
+{
+	select_t *select;
+	select = (select_t*)malloc(sizeof(select_t));
+	if (!select)
+		return NULL;
+	select->index = -1;
+	//select->index = index;
+	select->group = NULL;
+	select->next = NULL;
+	return select;
+}
+
+
+select_t *select_construct_with_index(int index)
+{
+	select_t *select;
+	select = select_construct();
+	if (select)
+		select->index = index;
+	return select;
+}
+
+
+
 bool select_check_index_selected(int index, select_t *selects)
 {
 	// check to see if dot is in list of selects
@@ -72,12 +97,7 @@ select_t *select_add_index(select_t *psel, int index, bool toggle)
 	if (!psel)
 	{
 		// no selection yet
-		curr = (select_t*)malloc(sizeof(select_t));
-		if (!curr)
-			return NULL;
-		curr->next = NULL;
-		curr->index = index;
-		curr->group = NULL;
+		curr = select_construct_with_index(index);
 		psel = curr;
 		// update selection center
 		//add_sel_center(pshow->sets->currset->coords[index]);
@@ -128,11 +148,7 @@ select_t *select_add_index(select_t *psel, int index, bool toggle)
 		if (matched == 0)
 		{
 			// create a new node
-			curr = (select_t*)malloc(sizeof(select_t));
-			if (!curr)
-				return NULL;
-			curr->index = index;
-			curr->group = NULL;
+			curr = select_construct_with_index(index);
 			if (selects == NULL)
 			{
 				// insert at beginning
@@ -230,13 +246,30 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 	int i;
 	int perfnum = pshow->perfnum;
 	double x, y;
+	group_t *group = pshow->sets->currset->groups;
 
+	/*
+	while (group)
+	{
+		if (group->forms && form_contained_in_rectangle(group->forms, x1, y1, x2, y2))
+		{
+			select = select_add_group(select, group, true);
+		}
+		group = group->next;
+	}
+	*/
 	for (i=0; i<perfnum; i++)
 	{
 		coords_retrieve_midset(pshow->sets->currset, i, &x, &y);
 		if (select_check_dot_in_rectangle(x, y, x1, y1, x2, y2))
 		{
-			if (!select_check_index_selected(i, select) && pshow->perfs[i]->valid)
+			if (coords_check_managed_by_index(i) != 0x0)
+			{
+				select = select_add_group(select, 
+						form_find_group_with_index(group, i), 
+						toggle);
+			}
+			else if (!select_check_index_selected(i, select) && pshow->perfs[i]->valid)
 				select = select_add_index(select, i, true);
 		}
 	}
@@ -395,6 +428,7 @@ void select_update_center(select_t *last)
 	//select_t *last;
 	coord_t **coords;
 	coord_t *coord;
+	select_t *group_selects = NULL;
 
 	cx = 0;
 	cy = 0;
@@ -403,12 +437,24 @@ void select_update_center(select_t *last)
 	while (last)
 	{
 		// get coordinates for selected dot
-		index = last->index;
+		if (!group_selects && last->group)
+			group_selects = last->group->selects;
+		if (group_selects)
+			index = group_selects->index;
+		else
+			index = last->index;
+		if (index == -1)
+		{
+			printf("Error: index is wrong\n");
+		}
 		coord = coords[index];
 		cx = cx + coord->x;
 		cy = cy + coord->y;
 		selnum++;
-		last = last->next;
+		if (group_selects)
+			group_selects = group_selects->next;
+		else
+			last = last->next;
 	}
 	if (selnum == 0)
 	{
