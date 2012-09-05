@@ -25,18 +25,31 @@ bool form_checkEndpoints(form_t *form, double x, double y)
 
 
 
-/*
 bool form_contains_coords(form_t *form, double x, double y)
 {
+	int i;
 	fline_t *line;
+	int index;
+	double **coords;
 	if (!form)
 		return false;
+	index = form->dot_num;
 	switch(form->type)
 	{
 		case 1:		// line
 			line = form->form->line;
+			coords = line->coords;
+			for (i=0; i<index; i++)
+			{
+				if (fieldrel_check_dots_within_range(coords[i][0], coords[i][1], x, y))
+					return true;
+			}
+			break;
+	}
+	return false;
+}
 
-*/
+
 
 
 
@@ -84,12 +97,15 @@ void form_build_line(group_t *group)
 		select = select->next;
 
 	}
-	slopey = (line->endpoints[1][1] - line->endpoints[0][1]); 
-       	slopex = (line->endpoints[1][0] - line->endpoints[0][0]);
+	slopey = (line->endpoints[1][1] - line->endpoints[0][1]) / (index - 1);
+       	slopex = (line->endpoints[1][0] - line->endpoints[0][0]) / (index - 1);
+	select = group->selects;
 	for (i=0; i<index; i++)
 	{
 		line->coords[i][0] = i*slopex + line->endpoints[0][0];
-		line->coords[i][1] = i*slopey + line->endpoints[1][0];
+		line->coords[i][1] = i*slopey + line->endpoints[0][1];
+		coords_set_coord(pshow, select->index, line->coords[i][0], line->coords[i][1]);
+		select = select->next;
 	}
 }
 

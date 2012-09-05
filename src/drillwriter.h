@@ -297,6 +297,7 @@ void coords_rot_selected_around_center(double s_step);
 
 // forms.c
 bool form_checkEndpoints(form_t *form, double x, double y);
+bool form_contains_coords(form_t *form, double x, double y);
 void form_build_line(group_t *group);
 
 // fieldrel.c

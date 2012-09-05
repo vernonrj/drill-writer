@@ -222,6 +222,8 @@ int isSelected(int index)
 
 
 
+
+
 group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
@@ -237,11 +239,21 @@ group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event)
 }
 
 
-/*
-group_t *dr_check_form(group_t *group)
+group_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
 {
-	if (group->forms && 
-	*/
+	double coordx, coordy;
+	group_t *group = pshow->sets->currset->groups;
+	coordx = event->x;
+	coordy = event->y;
+	pixel_to_field(&coordx, &coordy);
+	while (group)
+	{
+		if (group->forms && form_contains_coords(group->forms, coordx, coordy))
+			return group;
+		group = group->next;
+	}
+	return NULL;
+}
 
 
 

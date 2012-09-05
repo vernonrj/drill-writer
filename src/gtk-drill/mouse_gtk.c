@@ -110,6 +110,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 	int index;
 	double coordx, coordy;
 	group_t *group;
+	group_t *group_endpoints;
 	// Length from click location to nearest dot
 
 
@@ -148,18 +149,33 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				group = dr_check_form_selected(widget, event);
+				group_endpoints = dr_check_form_selected(widget, event);
+				group = dr_check_form(widget, event);
 				index = mouse_click_find_close_dot(widget, event);
 				if (event->state == GDK_CONTROL_MASK)// && index != -1)
 				{
 					// ctrl-click
-					if (!group && index != -1)
+					if (!group_endpoints && index != -1)
 						select_dots_add_index(index);
 				}
 				else if (event->state == 0)
 				{
 					// regular click
-					if (!group && !isSelected(index))
+					if (group_endpoints && !group_is_selected(group_endpoints, pstate.select))
+					{
+						// select form with ability to scale form
+						select_dots_discard();
+						pstate.select = select_add_group(pstate.select, group_endpoints, false);
+						mouse_discarded = 1;
+					}
+					else if (group && !group_is_selected(group, pstate.select))
+					{
+						// select form, can't scale or rotate
+						select_dots_discard();
+						pstate.select = select_add_group(pstate.select, group, false);
+						mouse_discarded = 1;
+					}
+					else if (!isSelected(index))
 					{
 						// dot is not selected
 						select_dots_discard();

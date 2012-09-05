@@ -135,6 +135,7 @@ int add_group_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
 int isSelected(int index);
 group_t *dr_check_form_selected(GtkWidget *widget, GdkEventButton *event);
+group_t *dr_check_form(GtkWidget *widget, GdkEventButton *event);
 group_t *checkGroups(double coordx, double coordy, group_t *group);
 //int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 

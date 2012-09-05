@@ -148,8 +148,10 @@ int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r)
 int coords_movexy(double xoff, double yoff)
 {
 	// move selected dots by xoff and yoff
+	int i;
+	int index;
 	double x, y;
-	group_t *group;
+	group_t *group = NULL;
 	coord_t **coords = pshow->sets->currset->coords;
 	select_t *selects = pstate.select;
 	select_t *group_selects = NULL;
@@ -168,6 +170,16 @@ int coords_movexy(double xoff, double yoff)
 				line->endpoints[0][1] += yoff;
 				line->endpoints[1][0] += xoff;
 				line->endpoints[1][1] += yoff;
+				index = group->forms->dot_num;
+				for (i=0; i<index; i++)
+				{
+					line->coords[i][0] += xoff;
+					line->coords[i][1] += yoff;
+					coords_set_coord(pshow, line->dots[i], line->coords[i][0], line->coords[i][1]);
+				}
+				group_selects = NULL;
+				selects = selects->next;
+				continue;
 			}
 		}
 		if(group_selects)
@@ -180,17 +192,21 @@ int coords_movexy(double xoff, double yoff)
 			coords_retrieve(coords[selects->index], &x, &y);
 			pushPerfmv(&pstate.undobr, selects->index, x, y, done);
 		}
+
 		x = x + xoff;
 		y = y + yoff;
 		if (group_selects)
+		{
 			coords_set_coord(pshow, group_selects->index, x, y);
-		else
-			coords_set_coord(pshow, selects->index, x, y);
-
-		if (group_selects)
 			group_selects = group_selects->next;
-		if (!group_selects)
+			if (!group_selects)
+				selects = selects->next;
+		}
+		else
+		{
+			coords_set_coord(pshow, selects->index, x, y);
 			selects = selects->next;
+		}
 	}
 	// move center of selection
 	x = pstate.center->x;
