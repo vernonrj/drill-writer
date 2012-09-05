@@ -87,28 +87,37 @@ group_t *form_build_line(group_t *group)
 	form->dot_num = index;
 	if (!index)
 	{
+		index = 3;
+		form->dot_num = 3;
+		/*
 		// no dots yet
 		line->dots = NULL;
 		line->coords = NULL;
 		return group;
+		*/
 	}
 	line->dots = (int*)malloc(index*sizeof(int));
 	select = group->selects;
-	coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[0][0], &line->endpoints[0][1]);
+	if (select)
+		coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[0][0], &line->endpoints[0][1]);
 	line->coords = (double**)malloc(index*sizeof(double*));
 	for (i=0; i<index; i++)
 	{
 		line->coords[i] = (double*)malloc(2*sizeof(double));
-		coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[i][0], &line->coords[i][1]);
-		line->dots[i] = select->index;
-		if (i != 0 && i != index - 1)
-			coords_set_managed_by_index(select->index, 0x1);
+		if (select)
+		{
+			coords_retrieve_midset(pshow->sets->currset, select->index, &line->coords[i][0], &line->coords[i][1]);
+			line->dots[i] = select->index;
+			if (i != 0 && i != index - 1)
+				coords_set_managed_by_index(select->index, 0x1);
+			else
+				coords_set_managed_by_index(select->index, 0x2);
+			if (i == index - 1)
+				coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[1][0], &line->endpoints[1][1]);
+			select = select->next;
+		}
 		else
-			coords_set_managed_by_index(select->index, 0x2);
-		if (i == index - 1)
-			coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[1][0], &line->endpoints[1][1]);
-		select = select->next;
-
+			line->dots[i] = -1;
 	}
 	slopey = (line->endpoints[1][1] - line->endpoints[0][1]) / (index - 1);
        	slopex = (line->endpoints[1][0] - line->endpoints[0][0]) / (index - 1);
@@ -117,8 +126,11 @@ group_t *form_build_line(group_t *group)
 	{
 		line->coords[i][0] = i*slopex + line->endpoints[0][0];
 		line->coords[i][1] = i*slopey + line->endpoints[0][1];
-		coords_set_coord(pshow, select->index, line->coords[i][0], line->coords[i][1]);
-		select = select->next;
+		if (select)
+		{
+			coords_set_coord(pshow, select->index, line->coords[i][0], line->coords[i][1]);
+			select = select->next;
+		}
 	}
 	return group;
 }
@@ -198,7 +210,8 @@ int form_update(form_t *form)
 			{
 				line->coords[i][0] = i*slopex + line->endpoints[0][0];
 				line->coords[i][1] = i*slopey + line->endpoints[0][1];
-				coords_set_coord(pshow, line->dots[i], line->coords[i][0], line->coords[i][1]);
+				if (line->dots[i] != -1)
+					coords_set_coord(pshow, line->dots[i], line->coords[i][0], line->coords[i][1]);
 			}
 			break;
 	}

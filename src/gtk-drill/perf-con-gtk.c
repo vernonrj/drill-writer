@@ -206,8 +206,12 @@ int isSelected(int index)
 		else
 			index_selected = select->index;
 
-		//if (index == select->index)
-		if (index == index_selected)
+		if (index == -1)
+		{
+			isin = -1;
+			break;
+		}
+		else if (index == index_selected)
 		{
 			isin = 1;
 			break;

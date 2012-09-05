@@ -201,7 +201,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						pstate.select = select_add_group(pstate.select, group, false);
 						mouse_discarded = 1;
 					}
-					else if (!isSelected(index))
+					else if (isSelected(index) != 1 && !group && !group_endpoints)
 					{
 						// dot is not selected
 						select_dots_discard();
