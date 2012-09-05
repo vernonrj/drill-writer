@@ -522,6 +522,32 @@ int field_to_pixel(double *x_r, double *y_r)
 }
 
 
+cairo_t *draw_moving_form(cairo_t *cr, group_t *group)
+{
+	double offsetx, offsety;
+	double x, y;
+	fline_t *line = group->forms->form->line;
+
+	// show form being moved
+	offsetx = fldstate.mouse_clickx - fldstate.mousex;
+	offsety = fldstate.mouse_clicky - fldstate.mousey;
+	x = line->endpoints[0][0];
+	y = line->endpoints[0][1];
+	x -= offsetx;
+	y -= offsety;
+	field_to_pixel(&x, &y);
+	cairo_move_to(cr, x, y);
+	x = line->endpoints[1][0];
+	y = line->endpoints[1][1];
+	x -= offsetx;
+	y -= offsety;
+	field_to_pixel(&x, &y);
+	cairo_line_to(cr, x, y);
+
+	return cr;
+}
+
+
 
 int draw_forms(GtkWidget *widget)
 {
@@ -561,24 +587,6 @@ int draw_forms(GtkWidget *widget)
 				y = line->endpoints[1][1];
 				field_to_pixel(&x, &y);
 				cairo_line_to(canv_form, x, y);
-				if ((fldstate.mouse_clicked & 0x2) == 0x2)
-				{
-					// show form being moved
-					offsetx = fldstate.mouse_clickx - fldstate.mousex;
-					offsety = fldstate.mouse_clicky - fldstate.mousey;
-					x = line->endpoints[0][0];
-					y = line->endpoints[0][1];
-					x -= offsetx;
-					y -= offsety;
-					field_to_pixel(&x, &y);
-					cairo_move_to(canv_form, x, y);
-					x = line->endpoints[1][0];
-					y = line->endpoints[1][1];
-					x -= offsetx;
-					y -= offsety;
-					field_to_pixel(&x, &y);
-					cairo_line_to(canv_form, x, y);
-				}
 				break;
 		}
 		group = group->next;
@@ -654,8 +662,14 @@ int draw_selected(GtkWidget *widget)
 			index = select->index;
 			group = select->group;
 			if (group)
+			{
 				group_select = group->selects;
+				if (group->forms && (fldstate.mouse_clicked & 0x2) == 0x2)
+					select_drag = draw_moving_form(select_drag, group);
+			}
 		}
+		if (group_select)
+			index = group_select->index;
 
 		if (index == -1)
 		{
@@ -663,8 +677,6 @@ int draw_selected(GtkWidget *widget)
 			select = select->next;
 			continue;
 		}
-		if (group_select)
-			index = group_select->index;
 
 		coords_retrieve_midset(currset, index, &x, &y);
 		xfield = x;
