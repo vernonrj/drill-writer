@@ -187,29 +187,19 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				else if (event->state == 0)
 				{
 					// regular click
-					//if (group_endpoints && !group_is_selected(group_endpoints, pstate.select))
-					if (coords_check_managed_by_index(index) == 0x2
-							&& !group_is_selected(
-								form_find_group_with_index(pshow->sets->currset->groups, index), pstate.select))
+					if (group_endpoints && !group_is_selected(group_endpoints, pstate.select))
 					{
 						// select form with ability to scale form
 						select_dots_discard();
 						pstate.select = select_add_group(pstate.select, group_endpoints, false);
 						mouse_discarded = 1;
 					}
-					//else if (group && !group_is_selected(group, pstate.select))
-					else if (coords_check_managed_by_index(index) == 0x1 
-							&& !group_is_selected(
-								form_find_group_with_index(pshow->sets->currset->groups, index), pstate.select))
+					else if (group && !group_is_selected(group, pstate.select))
 					{
 						// select form, can't scale or rotate
 						select_dots_discard();
 						pstate.select = select_add_group(pstate.select, group, false);
 						mouse_discarded = 1;
-					}
-					else if (group_endpoints || group)
-					{
-						printf("ping\n");
 					}
 					else if (!isSelected(index))
 					{

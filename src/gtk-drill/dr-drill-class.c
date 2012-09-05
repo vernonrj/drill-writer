@@ -657,6 +657,12 @@ int draw_selected(GtkWidget *widget)
 				group_select = group->selects;
 		}
 
+		if (index == -1)
+		{
+			group_select = NULL;
+			select = select->next;
+			continue;
+		}
 		if (group_select)
 			index = group_select->index;
 
