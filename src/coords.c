@@ -192,7 +192,7 @@ int coords_movexy(double xoff, double yoff)
 	coord_t **coords = pshow->sets->currset->coords;
 	select_t *selects = pstate.select;
 	select_t *group_selects = NULL;
-	fline_t *line;
+	form_t *form;
 	int done = 0;
 	while(selects != NULL)
 	{
@@ -200,19 +200,19 @@ int coords_movexy(double xoff, double yoff)
 		{
 			group = selects->group;
 			group_selects = selects->group->selects;
-			if (group->forms)
+			form = group->forms;
+			if (form)
 			{
-				line = group->forms->form->line;
-				line->endpoints[0][0] += xoff;
-				line->endpoints[0][1] += yoff;
-				line->endpoints[1][0] += xoff;
-				line->endpoints[1][1] += yoff;
-				index = group->forms->dot_num;
+				form->endpoints[0][0] += xoff;
+				form->endpoints[0][1] += yoff;
+				form->endpoints[1][0] += xoff;
+				form->endpoints[1][1] += yoff;
+				index = form->dot_num;
 				for (i=0; i<index; i++)
 				{
-					line->coords[i][0] += xoff;
-					line->coords[i][1] += yoff;
-					coords_set_coord(pshow, line->dots[i], line->coords[i][0], line->coords[i][1]);
+					form->coords[i][0] += xoff;
+					form->coords[i][1] += yoff;
+					coords_set_coord(pshow, form->dots[i], form->coords[i][0], form->coords[i][1]);
 				}
 				group_selects = NULL;
 				selects = selects->next;

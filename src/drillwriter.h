@@ -120,51 +120,14 @@ struct select_proto
 
 
 // Forms
-
-typedef struct // fline_t
-{
-	double endpoints[2][2];
-	double **coords;
-	int *dots;
-} fline_t;
-
-typedef struct // fblock_t
-{
-	bool points[4];	// 1 0
-			// 2 3
-	double endpoints[4][2];
-	double **coords;
-	int hFiles;	// # of horizontal files
-	int vFiles;	// # of vertical files
-	int **dots;	// Grid for the dots (perf nums)
-			// allocation uses hFiles and vFiles
-} fblock_t;
-
-typedef struct // farc_t
-{
-	int points[2];	// endpoints
-	double endpoints[2][2];
-	double **midpts;// midpoints
-	double **coords;
-	int degree;	// number of midpoints
-	int *dots;	// list of the dots (perf nums)
-			// this is very intense computation,
-			// so an array will be needed
-} farc_t;
-
-
-typedef union // formType_t
-{
-	fline_t *line;
-	fblock_t *block;
-	farc_t *arc;
-} formType_t;
-
 struct  form_proto // form_t
 {
 	int type;
 	int dot_num;
-	formType_t *form;
+	double endpoints[2][2];
+	double **coords;
+	int *dots;
+	//formType_t *form;
 	form_t *next;
 };
 
@@ -303,6 +266,7 @@ bool form_contains_coords(form_t *form, double x, double y);
 group_t *form_build_line(group_t *group);
 bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2);
 group_t *form_find_group_with_index(group_t *group, int index);
+int form_update_line(form_t *form);
 int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2);
 int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y2);
 

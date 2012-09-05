@@ -526,19 +526,19 @@ cairo_t *draw_moving_form(cairo_t *cr, group_t *group)
 {
 	double offsetx, offsety;
 	double x, y;
-	fline_t *line = group->forms->form->line;
+	form_t *form = group->forms;
 
 	// show form being moved
 	offsetx = fldstate.mouse_clickx - fldstate.mousex;
 	offsety = fldstate.mouse_clicky - fldstate.mousey;
-	x = line->endpoints[0][0];
-	y = line->endpoints[0][1];
+	x = form->endpoints[0][0];
+	y = form->endpoints[0][1];
 	x -= offsetx;
 	y -= offsety;
 	field_to_pixel(&x, &y);
 	cairo_move_to(cr, x, y);
-	x = line->endpoints[1][0];
-	y = line->endpoints[1][1];
+	x = form->endpoints[1][0];
+	y = form->endpoints[1][1];
 	x -= offsetx;
 	y -= offsety;
 	field_to_pixel(&x, &y);
@@ -552,7 +552,6 @@ cairo_t *draw_moving_form(cairo_t *cr, group_t *group)
 int draw_forms(GtkWidget *widget)
 {
 	form_t *form;
-	fline_t *line;
 	//fblock_t *block;
 	//farc_t *arc;
 	group_t *group;
@@ -578,13 +577,12 @@ int draw_forms(GtkWidget *widget)
 		switch (form->type)
 		{
 			case 1:		// line
-				line = form->form->line;
-				x = line->endpoints[0][0];
-				y = line->endpoints[0][1];
+				x = form->endpoints[0][0];
+				y = form->endpoints[0][1];
 				field_to_pixel(&x, &y);
 				cairo_move_to(canv_form, x, y);
-				x = line->endpoints[1][0];
-				y = line->endpoints[1][1];
+				x = form->endpoints[1][0];
+				y = form->endpoints[1][1];
 				field_to_pixel(&x, &y);
 				cairo_line_to(canv_form, x, y);
 				break;
