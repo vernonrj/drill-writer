@@ -532,6 +532,7 @@ int draw_forms(GtkWidget *widget)
 	group_t *group;
 	//select_t *select;
 	double x, y;
+	double offsetx, offsety;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
@@ -560,6 +561,24 @@ int draw_forms(GtkWidget *widget)
 				y = line->endpoints[1][1];
 				field_to_pixel(&x, &y);
 				cairo_line_to(canv_form, x, y);
+				if ((fldstate.mouse_clicked & 0x2) == 0x2)
+				{
+					// show form being moved
+					offsetx = fldstate.mouse_clickx - fldstate.mousex;
+					offsety = fldstate.mouse_clicky - fldstate.mousey;
+					x = line->endpoints[0][0];
+					y = line->endpoints[0][1];
+					x -= offsetx;
+					y -= offsety;
+					field_to_pixel(&x, &y);
+					cairo_move_to(canv_form, x, y);
+					x = line->endpoints[1][0];
+					y = line->endpoints[1][1];
+					x -= offsetx;
+					y -= offsety;
+					field_to_pixel(&x, &y);
+					cairo_line_to(canv_form, x, y);
+				}
 				break;
 		}
 		group = group->next;
