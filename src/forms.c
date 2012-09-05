@@ -54,7 +54,7 @@ bool form_contains_coords(form_t *form, double x, double y)
 
 
 
-void form_build_line(group_t *group)
+group_t *form_build_line(group_t *group)
 {
 	// build a line
 	form_t *form;
@@ -64,10 +64,12 @@ void form_build_line(group_t *group)
 	int index = 0;
 	double slopex, slopey;
 
+	if (!group)
+		group = group_construct();
 	if (!group->forms)
 		group->forms = (form_t*)malloc(sizeof(form_t));
 	else
-		return;
+		return group;
 	form = group->forms;
 	form->next = NULL;
 	form->type = 1;
@@ -83,6 +85,13 @@ void form_build_line(group_t *group)
 		select = select->next;
 	}
 	form->dot_num = index;
+	if (!index)
+	{
+		// no dots yet
+		line->dots = NULL;
+		line->coords = NULL;
+		return group;
+	}
 	line->dots = (int*)malloc(index*sizeof(int));
 	select = group->selects;
 	coords_retrieve_midset(pshow->sets->currset, select->index, &line->endpoints[0][0], &line->endpoints[0][1]);
@@ -111,6 +120,7 @@ void form_build_line(group_t *group)
 		coords_set_coord(pshow, select->index, line->coords[i][0], line->coords[i][1]);
 		select = select->next;
 	}
+	return group;
 }
 
 
@@ -212,6 +222,7 @@ int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2)
 				{
 					endpoint[0] = x2;
 					endpoint[1] = y2;
+					break;
 				}
 			}
 			form_update(form);

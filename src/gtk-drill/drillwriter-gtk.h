@@ -11,8 +11,8 @@
 #include <gtk-3.0/gtk/gtk.h>
 #include <glib.h>
 #include <cairo.h>
-#include <glib-object.h>
-#include <gdk/gdkkeysyms.h>
+//#include <glib-object.h>
+//#include <gdk/gdkkeysyms.h>
 GtkWidget *mybox;		// container for drill and scrollbars
 
 GtkWidget *window;		// container for a show

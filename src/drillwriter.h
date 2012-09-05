@@ -37,9 +37,8 @@ typedef struct headset_proto headset_t;
 enum ENUM_MOUSE_MODE
 {
 	SELECTONE,	// select one performer
-	SELECTDRAG,	// drag-select performers
 	ADDPERF,	// add performer
-	MVPERF,		// move performer
+	ADDFORM
 };
 
 int mouse_currentMode;
@@ -301,7 +300,7 @@ void coords_rot_selected_around_center(double s_step);
 // forms.c
 bool form_checkEndpoints(form_t *form, double x, double y);
 bool form_contains_coords(form_t *form, double x, double y);
-void form_build_line(group_t *group);
+group_t *form_build_line(group_t *group);
 bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2);
 group_t *form_find_group_with_index(group_t *group, int index);
 int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2);

@@ -701,7 +701,7 @@ int draw_selected(GtkWidget *widget)
 		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.5);
 		cairo_rectangle(selected_area, xmin-stepoff, ymin-stepoff, (xmax-xmin)+2*stepoff, (ymax-ymin)+2*stepoff);
 	}
-	if (fldstate.mouse_clicked == 0x1)
+	if (fldstate.mouse_clicked == 0x1 && mouse_currentMode == SELECTONE)
 	{
 		// show selection box
 		cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);

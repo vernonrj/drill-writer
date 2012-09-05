@@ -94,7 +94,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				{
 					// regular click
 					// move dots
-					if(!mouse_discarded && form_checkEndpoints(group->forms, fldstate.mouse_clickx, fldstate.mouse_clicky))
+					if(!mouse_discarded && group && form_checkEndpoints(group->forms, fldstate.mouse_clickx, fldstate.mouse_clicky))
 					{
 						form_move_endpoint(group, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
 						dr_canvas_refresh(drill);
@@ -107,6 +107,19 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 					}
 				}
 				break;
+			case ADDFORM:
+				// add a form
+				x = event->x;
+				y = event->y;
+				pixel_to_field(&x, &y);
+				group = form_build_line(NULL);
+				form_set_endpoint(group->forms, 0, 0, x, y);
+				form_set_endpoint(group->forms, 0, 0, fldstate.mouse_clickx, fldstate.mouse_clicky);
+				group_add_to_set(group);
+				mouse_currentMode = SELECTONE;
+
+				break;
+				
 		}
 	}
 	fldstate.mouse_clicked = 0;
@@ -194,6 +207,10 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						pstate.select = select_add_group(pstate.select, group, false);
 						mouse_discarded = 1;
 					}
+					else if (group_endpoints || group)
+					{
+						printf("ping\n");
+					}
 					else if (!isSelected(index))
 					{
 						// dot is not selected
@@ -233,11 +250,6 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
 				break;
-			case SELECTDRAG:
-				// Select (by dragging) performers
-				//dr_canvas_refresh(drill);
-				dr_canvas_refresh(drill);
-				break;
 			case ADDPERF:
 				// Add performers by clicking on canvas
 				coordx = event->x;
@@ -254,11 +266,6 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
 				//mouse_currentMode = SELECTONE;
-				break;
-			case MVPERF:
-				// Move performers by clicking on canvas?
-				//dr_canvas_refresh(drill);
-				dr_canvas_refresh(drill);
 				break;
 		}
 	}
@@ -285,7 +292,7 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
-	if (fldstate.mouse_clicked == 0x1)
+	if (fldstate.mouse_clicked == 0x1 && mouse_currentMode == SELECTONE)
 	{
 		// click drag
 		// get what's currently in selection rectangle
