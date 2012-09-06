@@ -207,13 +207,7 @@ int coords_movexy(double xoff, double yoff)
 				form->endpoints[0][1] += yoff;
 				form->endpoints[1][0] += xoff;
 				form->endpoints[1][1] += yoff;
-				index = form->dot_num;
-				for (i=0; i<index; i++)
-				{
-					form->coords[i][0] += xoff;
-					form->coords[i][1] += yoff;
-					coords_set_coord(pshow, form->dots[i], form->coords[i][0], form->coords[i][1]);
-				}
+				form_update_line(form);
 				group_selects = NULL;
 				selects = selects->next;
 				continue;

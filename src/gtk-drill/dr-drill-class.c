@@ -666,6 +666,7 @@ int draw_selected(GtkWidget *widget)
 	}
 	else
 	{
+		// don't show mouse drag select
 		sel_xmin = sel_xmax = 0;
 		sel_ymin = sel_ymax = 0;
 	}

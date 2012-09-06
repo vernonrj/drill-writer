@@ -245,4 +245,27 @@ int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y
 }
 
 
+int form_unmanage_dot(form_t *form, int index)
+{
+	int i;
+	int *dot;
+	int dot_num;
 
+	if (!form)
+		return -1;
+	dot = form->dots;
+	dot_num = form->dot_num;
+	for(i=0; i<dot_num; i++)
+	{
+		if (dot[i] == index)
+		{
+			// found dot
+			dot[i] = -1;
+			coords_set_managed_by_index(index, 0);
+			break;
+		}
+	}
+	return 0;
+}
+
+	

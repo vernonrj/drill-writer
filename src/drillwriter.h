@@ -269,6 +269,7 @@ group_t *form_find_group_with_index(group_t *group, int index);
 int form_update_line(form_t *form);
 int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2);
 int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y2);
+int form_unmanage_dot(form_t *form, int index);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
