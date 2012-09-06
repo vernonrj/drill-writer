@@ -52,6 +52,12 @@ bool form_contains_coords(form_t *form, double x, double y)
 
 
 
+/*
+form_t *form_find_with_endpoint_from_group(group_t *group, double x, double y)
+{
+*/
+
+
 
 
 group_t *form_build_line(group_t *group)
@@ -237,4 +243,6 @@ int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y
 	}
 	return -1;
 }
+
+
 

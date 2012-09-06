@@ -525,24 +525,41 @@ int field_to_pixel(double *x_r, double *y_r)
 cairo_t *draw_moving_form(cairo_t *cr, group_t *group)
 {
 	double offsetx, offsety;
-	double x, y;
+	double x1, y1, x2, y2;
+	double x1rel, y1rel, x2rel, y2rel;
 	form_t *form = group->forms;
 
 	// show form being moved
 	offsetx = fldstate.mouse_clickx - fldstate.mousex;
 	offsety = fldstate.mouse_clicky - fldstate.mousey;
-	x = form->endpoints[0][0];
-	y = form->endpoints[0][1];
-	x -= offsetx;
-	y -= offsety;
-	field_to_pixel(&x, &y);
-	cairo_move_to(cr, x, y);
-	x = form->endpoints[1][0];
-	y = form->endpoints[1][1];
-	x -= offsetx;
-	y -= offsety;
-	field_to_pixel(&x, &y);
-	cairo_line_to(cr, x, y);
+	x1 = form->endpoints[0][0];
+	y1 = form->endpoints[0][1];
+	x2 = form->endpoints[1][0];
+	y2 = form->endpoints[1][1];
+	if (!fieldrel_check_dots_within_range(x1, y1, fldstate.mouse_clickx, fldstate.mouse_clicky))
+	{
+		x2rel = x2 - offsetx;
+		y2rel = y2 - offsety;
+	}
+	else
+	{
+		x2rel = x2;
+		y2rel = y2;
+	}
+	if (!fieldrel_check_dots_within_range(x2, y2, fldstate.mouse_clickx, fldstate.mouse_clicky))
+	{
+		x1rel = x1 - offsetx;
+		y1rel = y1 - offsety;
+	}
+	else
+	{
+		x1rel = x1;
+		y1rel = y1;
+	}
+	field_to_pixel(&x1rel, &y1rel);
+	field_to_pixel(&x2rel, &y2rel);
+	cairo_move_to(cr, x1rel, y1rel);
+	cairo_line_to(cr, x2rel, y2rel);
 
 	return cr;
 }
