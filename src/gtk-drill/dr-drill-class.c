@@ -703,7 +703,7 @@ int draw_selected(GtkWidget *widget)
 		if (!group_select)
 			select = select->next;
 
-		if ((fldstate.mouse_clicked & 0x2) == 0x2)
+		if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed_by_index(index))
 		{
 			// show dots being moved
 			offsetx = fldstate.mouse_clickx - fldstate.mousex;
