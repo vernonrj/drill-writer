@@ -9,8 +9,10 @@ struct _DrGroupCellPrivate {
 	//GtkWidget *button_add;
 	GtkWidget *button_del;
 	GtkWidget *button_name;
-	group_t *group;
 	GtkWidget *context_menu;
+	GtkWidget *expander;
+	GtkWidget *expander_box;
+	group_t *group;
 	DrGroupCell *next;
 };
 
@@ -167,6 +169,8 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	GtkWidget *entry;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
+	GtkWidget *expander;
+	GtkWidget *expander_box;
 	//const gchar *init_chars;
 
 	//char groupname_buf[20];
@@ -187,6 +191,19 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	groupcell->priv->button_del = button;
 
 
+	/*
+	expander = gtk_expander_new("");
+	gtk_box_pack_start(GTK_BOX(groupcell), expander, TRUE, TRUE, 0);
+	groupcell->priv->expander = expander;
+	gtk_expander_set_label_widget(GTK_EXPANDER(expander), button);
+	gtk_widget_show(expander);
+
+	button = gtk_button_new_with_label("test");
+	gtk_container_add(GTK_CONTAINER(expander), button);
+	gtk_widget_show(button);
+	*/
+
+
 	button = gtk_button_new_with_label("New Group");
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	g_signal_connect(button, "clicked", G_CALLBACK(group_cell_select_group), groupcell);
@@ -196,26 +213,15 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	groupcell->priv->button_name = button;
 
 
-	//sprintf(groupname_buf, "Empty");
-	//init_chars = gtk_button_get_label(GTK_BUTTON(button));
-	//entry_buffer = gtk_entry_buffer_new(init_chars, strlen(init_chars)+1);
-
-	//sprintf(groupname_buf, "Empty");
-	//entry = gtk_entry_new_with_buffer (entry_buffer);
 	entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(entry), gtk_button_get_label(GTK_BUTTON(button)));
-	//gtk_entry_set_max_length (GTK_ENTRY (groupcell->priv->entry_name), 5);
-	//g_signal_connect (entry_groupname, "activate", G_CALLBACK (goto_perf), entry_groupname);
-	//gtk_entry_set_text (GTK_ENTRY (entry), groupname_buf);
-	//tmp_pos = GTK_ENTRY (entry_counts)->text_length;
 	gtk_entry_set_alignment(GTK_ENTRY (entry), 1);
 	gtk_entry_set_width_chars(GTK_ENTRY (entry), 4);
-	//gtk_box_pack_start (GTK_BOX (perfbar), entry_groupname, FALSE, TRUE, 5);
 	gtk_box_pack_start (GTK_BOX (groupcell), entry, TRUE, TRUE, 5);
 	g_signal_connect(entry, "activate", G_CALLBACK(group_cell_set_name), groupcell);
-	//g_signal_connect(entry, "leave_notify_event", G_CALLBACK(group_cell_set_name), groupcell);
-	//gtk_widget_show(entry);
 	groupcell->priv->entry_name = entry;
+
+
 
 	menu = gtk_menu_new();
 	menuitem = mymenu_append(menu, "Edit Name");
