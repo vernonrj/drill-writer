@@ -39,6 +39,8 @@ bool form_contains_coords(form_t *form, double x, double y)
 		case 1:		// line
 			//line = form->form->line;
 			coords = form->coords;
+			x -= form->endpoints[0][0];
+			y -= form->endpoints[0][1];
 			for (i=0; i<index; i++)
 			{
 				if (fieldrel_check_dots_within_range(coords[i][0], coords[i][1], x, y))
@@ -188,19 +190,22 @@ int form_update_line(form_t *form)
 	int i;
 	int index;
 	double slopex, slopey;
+	double endpointx, endpointy;
 	switch(form->type)
 	{
 		case 1:		// line
 			index = form->dot_num;
 			slopex = (form->endpoints[1][0] - form->endpoints[0][0]) / (index - 1);
 			slopey = (form->endpoints[1][1] - form->endpoints[0][1]) / (index - 1);
+			endpointx = form->endpoints[0][0];
+			endpointy = form->endpoints[0][1];
 
 			for(i=0; i<index; i++)
 			{
-				form->coords[i][0] = i*slopex + form->endpoints[0][0];
-				form->coords[i][1] = i*slopey + form->endpoints[0][1];
+				form->coords[i][0] = i*slopex;// + form->endpoints[0][0];
+				form->coords[i][1] = i*slopey;// + form->endpoints[0][1];
 				if (form->dots[i] != -1)
-					coords_set_coord(pshow, form->dots[i], form->coords[i][0], form->coords[i][1]);
+					coords_set_coord(pshow, form->dots[i], form->coords[i][0]+endpointx, form->coords[i][1]+endpointy);
 			}
 			break;
 	}
@@ -245,6 +250,28 @@ int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y
 }
 
 
+int form_movexy(form_t *form, double xoff, double yoff)
+{
+	int i, index;
+	int *dots;
+	double endpointx, endpointy;
+	if (!form)
+		return -1;
+	dots = form->dots;
+	form->endpoints[0][0] += xoff;
+	form->endpoints[1][0] += xoff;
+	form->endpoints[0][1] += yoff;
+	form->endpoints[1][1] += yoff;
+	endpointx = form->endpoints[0][0];
+	endpointy = form->endpoints[0][1];
+	index = form->dot_num;
+	for(i=0; i<index; i++)
+		if (dots[i] != -1)
+			coords_set_coord(pshow, form->dots[i], form->coords[i][0]+endpointx, form->coords[i][1]+endpointy);
+	return 0;
+}
+
+
 int form_unmanage_dot(form_t *form, int index)
 {
 	int i;
@@ -268,4 +295,3 @@ int form_unmanage_dot(form_t *form, int index)
 	return 0;
 }
 
-	

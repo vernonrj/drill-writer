@@ -203,11 +203,14 @@ int coords_movexy(double xoff, double yoff)
 			form = group->forms;
 			if (form)
 			{
+				form_movexy(form, xoff, yoff);
+				/*
 				form->endpoints[0][0] += xoff;
 				form->endpoints[0][1] += yoff;
 				form->endpoints[1][0] += xoff;
 				form->endpoints[1][1] += yoff;
 				form_update_line(form);
+				*/
 				group_selects = NULL;
 				selects = selects->next;
 				continue;
