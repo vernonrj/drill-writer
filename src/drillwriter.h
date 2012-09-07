@@ -110,7 +110,8 @@ struct select_proto
 {
 	// node with selection information
 	int index;
-	group_t *group;
+	//group_t *group;
+	form_t *form;
 
 	select_t *next;
 	//select_t *prev;
@@ -138,7 +139,7 @@ struct group_proto
 	// node with grouping information
 	select_t *selects;
 	char *name;
-	form_t *forms;
+	//form_t *forms;
 	bool local;
 	group_t *next;
 };
@@ -190,6 +191,7 @@ struct set_proto
 	char *info;	// set info
 	coord_t **coords;
 	group_t *groups;
+	form_t *forms;
 	int counts;
 	int midset;
 	set_t *next;
@@ -261,16 +263,21 @@ void coords_scale_form_from_center(double s_step);
 void coords_rot_selected_around_center(double s_step);
 
 // forms.c
+bool form_is_selected(form_t *form, select_t *select);
 bool form_checkEndpoints(form_t *form, double x, double y);
 bool form_contains_coords(form_t *form, double x, double y);
-group_t *form_build_line(group_t *group);
+form_t *form_find_with_endpoint(form_t *form, double x, double y);
+form_t *form_find_with_coords(form_t *form, double x, double y);
+form_t *form_build_line(form_t *form, select_t *select_head);
 bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2);
-group_t *form_find_group_with_index(group_t *group, int index);
+form_t *form_find_form_with_index(form_t *form, int index);
 int form_update_line(form_t *form);
 int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2);
-int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y2);
+int form_move_endpoint(form_t *form, double x1, double y1, double x2, double y2);
 int form_movexy(form_t *form, double x, double y);
 int form_unmanage_dot(form_t *form, int index);
+select_t *form_get_contained_dots(form_t *form);
+void form_add_to_set(form_t *form);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
@@ -292,7 +299,7 @@ group_t *group_remove_from(group_t *group, group_t *curr);
 group_t *group_pop_from(group_t *group, group_t *curr);
 void group_add_to_set(group_t *group);
 void group_add_global(group_t *group);
-bool group_is_selected(group_t *group, select_t *select);
+//bool group_is_selected(group_t *group, select_t *select);
 
 // drillwriter.c
 int show_construct(struct headset_proto **dshow_r, int perfs);
@@ -321,7 +328,8 @@ bool select_check_index_selected(int index, select_t *selects);
 bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
 select_t *select_add_index(select_t*, int index, bool toggle);
 void select_dots_add_index(int index);
-select_t *select_add_group(select_t*, group_t*, bool);
+select_t *select_add_group(select_t *select, group_t *group);
+select_t *select_add_form(select_t*, form_t*, bool);
 void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle);
 select_t *select_add_in_rectangle(select_t*, double, double, double, double, bool);
 select_t *select_drop_multiple(select_t *mainlist, select_t *modifier);

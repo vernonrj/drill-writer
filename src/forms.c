@@ -1,19 +1,35 @@
 #include "drillwriter.h"
 
+form_t *form_construct()
+{
+	return NULL;
+}
+
+bool form_is_selected(form_t *form, select_t *select)
+{
+	while (select)
+	{
+		if (!select->form)
+		{
+			select = select->next;
+			continue;
+		}
+		if (select->form == form)
+			return true;
+		select = select->next;
+	}
+	return false;
+}
+
+
+
 bool form_checkEndpoints(form_t *form, double x, double y)
 {
-	//int i;
-	//double distance;
-	//double dist_threshold = 9;
-	//double **endpoints;
-	//double *coords;
-	//fline_t *line;
 	if(!form)
 		return NULL;
 	switch(form->type)
 	{
 		case 1:		// line
-			//line = form->form->line;
 			if (fieldrel_check_dots_within_range(form->endpoints[0][0], form->endpoints[0][1], x, y))
 				return true;
 			else if (fieldrel_check_dots_within_range(form->endpoints[1][0], form->endpoints[1][1], x, y))
@@ -53,35 +69,44 @@ bool form_contains_coords(form_t *form, double x, double y)
 
 
 
-
-/*
-form_t *form_find_with_endpoint_from_group(group_t *group, double x, double y)
+form_t *form_find_with_endpoint(form_t *form, double x, double y)
 {
-*/
+	while (form)
+	{
+		if (form_checkEndpoints(form, x, y))
+			return form;
+		form = form->next;
+	}
+	return NULL;
+}
+
+
+
+form_t *form_find_with_coords(form_t *form, double x, double y)
+{
+	while (form)
+	{
+		if (form_contains_coords(form, x, y))
+			return form;
+		form = form->next;
+	}
+	return NULL;
+}
 
 
 
 
-group_t *form_build_line(group_t *group)
+form_t *form_build_line(form_t *form, select_t *select_head)
 {
 	// build a line
 	
-	form_t *form;
-	select_t *select;
 	int i;
 	int index = 0;
+	select_t *select;
 
-	// check to see if starting from empty group
-	if (!group)
-		group = group_construct();
-	// check to see if there are more forms
-	if (!group->forms)
-		group->forms = (form_t*)malloc(sizeof(form_t));
-	else
-		return group;
+	form = (form_t*)malloc(sizeof(form_t));
 
 	// initialize
-	form = group->forms;
 	form->next = NULL;
 	form->type = 1;
 	for (i=0; i<2; i++)
@@ -89,7 +114,7 @@ group_t *form_build_line(group_t *group)
 
 	// get number of selects
 	// for allocation purposes
-	select = group->selects;
+	select = select_head;
 	while (select)
 	{
 		index++;
@@ -106,8 +131,8 @@ group_t *form_build_line(group_t *group)
 	// allocate dot list
 	form->dots = (int*)malloc(index*sizeof(int));
 
+	select = select_head;
 	// get endpoints, continue allocation
-	select = group->selects;
 	if (select)
 		coords_retrieve_midset(pshow->sets->currset, select->index, &form->endpoints[0][0], &form->endpoints[0][1]);
 	form->coords = (double**)malloc(index*sizeof(double*));
@@ -133,7 +158,7 @@ group_t *form_build_line(group_t *group)
 		}
 	}
 	form_update_line(form);
-	return group;
+	return form;
 }
 
 
@@ -155,19 +180,12 @@ bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, 
 
 
 
-group_t *form_find_group_with_index(group_t *group, int index)
+form_t *form_find_form_with_index(form_t *form, int index)
 {
 	int i;
 	int dot_num;
-	form_t *form;
-	while (group)
+	while (form)
 	{
-		form = group->forms;
-		if (!form)
-		{
-			group = group->next;
-			continue;
-		}
 		dot_num = form->dot_num;
 		switch(form->type)
 		{
@@ -175,13 +193,13 @@ group_t *form_find_group_with_index(group_t *group, int index)
 				for (i=0; i<dot_num; i++)
 				{
 					if (form->dots[i] == index)
-						return group;
+						return form;
 				}
 				break;
 		}
-		group = group->next;
+		form = form->next;
 	}
-	return group;
+	return form;
 }
 
 
@@ -235,16 +253,16 @@ int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2)
 
 
 
-int form_move_endpoint(group_t *group, double x1, double y1, double x2, double y2)
+int form_move_endpoint(form_t *form, double x1, double y1, double x2, double y2)
 {
-	while (group)
+	while (form)
 	{
-		if (group->forms && form_checkEndpoints(group->forms, x1, y1))
+		if (form_checkEndpoints(form, x1, y1))
 		{
-			form_set_endpoint(group->forms, x1, y1, x2, y2);
+			form_set_endpoint(form, x1, y1, x2, y2);
 			return 0;
 		}
-		group = group->next;
+		form = form->next;
 	}
 	return -1;
 }
@@ -294,4 +312,44 @@ int form_unmanage_dot(form_t *form, int index)
 	}
 	return 0;
 }
+
+
+
+select_t *form_get_contained_dots(form_t *form)
+{
+	int i;
+	int index;
+	int *dots;
+	select_t *select = NULL;
+
+	if (!form)
+		return NULL;
+	index = form->dot_num;
+	dots = form->dots;
+	for(i=0; i<index; i++)
+		select = select_add_index(select, dots[i], false);
+	return select;
+}
+
+
+void form_add_to_set(form_t *form)
+{
+	form_t *setform = pshow->sets->currset->forms;
+	form_t *curr = NULL;
+	if (!setform)
+	{
+		pshow->sets->currset->forms = form;
+		return;
+	}
+	while (setform)
+	{
+		if (setform == form)
+			return;
+		curr = setform;
+		setform = setform->next;
+	}
+	curr->next = form;
+	return;
+}
+
 

@@ -30,7 +30,9 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	form_build_line(groupcell->priv->group);
+	form_t *form = NULL;
+	form = form_build_line(form, groupcell->priv->group->selects);
+	form_add_to_set(form);
 	return;
 }
 

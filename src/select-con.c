@@ -9,7 +9,7 @@ select_t *select_construct(void)
 		return NULL;
 	select->index = -1;
 	//select->index = index;
-	select->group = NULL;
+	select->form = NULL;
 	select->next = NULL;
 	return select;
 }
@@ -111,7 +111,7 @@ select_t *select_add_index(select_t *psel, int index, bool toggle)
 		while (loop_done == 0)
 		{
 			// check for grouping
-			if (!last->group && last->index == index)
+			if (!last->form && last->index == index)
 			{
 				// found a match, remove if toggle enabled
 				if (toggle && selects == NULL)
@@ -179,18 +179,34 @@ void select_dots_add_index(int index)
 
 
 
-select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
+select_t *select_add_group(select_t *select, group_t *group)
+{
+	select_t *group_selects;
+	if (!group)
+		return select;
+	group_selects = group->selects;
+	while (group_selects)
+	{
+		select = select_add_index(select, group_selects->index, false);
+		group_selects = group_selects->next;
+	}
+	return select;
+}
+	
+
+
+select_t *select_add_form(select_t *selects, form_t *form, bool toggle)
 {
 	// add group to selection
 	select_t *last;
 	select_t *curr;
-	if (!group)
+	if (!form)
 		return selects;
 	last = selects;
 	curr = NULL;
 	while (last)
 	{
-		if (last->group && last->group == group)
+		if (last->form && last->form == form)
 			return selects;
 		curr = last;
 		last = last->next;
@@ -198,12 +214,12 @@ select_t *select_add_group(select_t *selects, group_t *group, bool toggle)
 	if (curr == NULL)
 	{
 		selects = select_add_index(selects, -1, false);
-		selects->group = group;
+		selects->form = form;
 		return selects;
 	}
 	last = NULL;
 	last = select_add_index(last, -1, toggle);
-	last->group = group;
+	last->form = form;
 	curr->next = last;
 	return selects;
 	//last = group->selects;
@@ -246,7 +262,6 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 	int i;
 	int perfnum = pshow->perfnum;
 	double x, y;
-	group_t *group = pshow->sets->currset->groups;
 
 	/*
 	while (group)
@@ -265,8 +280,8 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 		{
 			if (coords_check_managed_by_index(i) != 0x0)
 			{
-				select = select_add_group(select, 
-						form_find_group_with_index(group, i), 
+				select = select_add_form(select, 
+						form_find_form_with_index(pshow->sets->currset->forms, i), 
 						toggle);
 			}
 			else if (!select_check_index_selected(i, select) && pshow->perfs[i]->valid)
@@ -294,8 +309,8 @@ select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
 		while (last)
 		{
 			newlist = select_add_index(newlist, last->index, false);
-			if (last->group)
-				newlist->group = last->group;
+			if (last->form)
+				newlist->form = last->form;
 			last = last->next;
 		}
 	}
@@ -421,14 +436,13 @@ select_t *select_all(select_t *selects, perf_t **perfs, int perfnum)
 void select_update_center(select_t *last)
 {
 	// update the center of the form based on dot selection
-	// TODO: Use heaps to keep track of max, min values?
 	int index;
 	int selnum = 0;
 	double cx, cy;
 	//select_t *last;
 	coord_t **coords;
 	coord_t *coord;
-	select_t *group_selects = NULL;
+	form_t *form = NULL;
 
 	cx = 0;
 	cy = 0;
@@ -437,12 +451,15 @@ void select_update_center(select_t *last)
 	while (last)
 	{
 		// get coordinates for selected dot
-		if (!group_selects && last->group)
-			group_selects = last->group->selects;
-		if (group_selects)
-			index = group_selects->index;
-		else
-			index = last->index;
+		if (!form && last->form)
+			form = last->form;
+		if (form)
+		{
+			// TODO: Add form
+			last = last->next;
+			continue;
+		}
+		index = last->index;
 		if (index == -1)
 		{
 			printf("Error: index is wrong\n");
@@ -451,10 +468,7 @@ void select_update_center(select_t *last)
 		cx = cx + coord->x;
 		cy = cy + coord->y;
 		selnum++;
-		if (group_selects)
-			group_selects = group_selects->next;
-		else
-			last = last->next;
+		last = last->next;
 	}
 	if (selnum == 0)
 	{
@@ -475,70 +489,3 @@ void select_update_center(select_t *last)
 
 	return;
 }
-
-
-
-/*
-void select_add_coord_to_center(coord_t *coord)
-{
-	// add a selection to center weight
-	int selnum;
-	double x, y;
-	
-	// open up weight
-	selnum = pstate.selnum;
-	x = pstate.center->x * selnum;
-	y = pstate.center->y * selnum;
-
-	// add new dot to center
-	x = x + coord->x;
-	y = y + coord->y;
-	selnum++;
-
-	// take mean of new set
-	pstate.center->x = x / selnum;
-	pstate.center->y = y / selnum;
-	pstate.selnum = selnum;
-
-	return;
-}
-*/
-
-
-
-/*
-void select_remove_coord_from_center(coord_t *coord)
-{
-	// remove a selection from center weight
-	int selnum;
-	double x, y;
-
-	// open up weight
-	selnum = pstate.selnum;
-	if (selnum == 0)
-		return;
-	else if (selnum == 1)
-	{
-		pstate.selnum = 0;
-		pstate.center->x = 0;
-		pstate.center->y = 0;
-		return;
-	}
-	x = pstate.center->x * selnum;
-	y = pstate.center->y * selnum;
-
-	// remove dot from center
-	x = x - coord->x;
-	y = y - coord->y;
-	selnum--;
-
-	// take mean of new set if not 0
-	pstate.center->x = x / selnum;
-	pstate.center->y = y / selnum;
-	pstate.selnum = selnum;
-	
-	return;
-}
-*/
-
-

@@ -136,10 +136,10 @@ int select_all_gtk (GtkWidget *widget)
 }
 
 
-int select_group_gtk(GtkWidget *widget, group_t *group)
+int select_form_gtk(GtkWidget *widget, form_t *form)
 {
 	//select_t *select = group->selects;
-	pstate.select = select_add_group(pstate.select, group, false);
+	pstate.select = select_add_form(pstate.select, form, false);
 	/*
 	while (select)
 	{
@@ -152,7 +152,12 @@ int select_group_gtk(GtkWidget *widget, group_t *group)
 }
 
 
-
+int select_group_gtk(GtkWidget *widget, group_t *group)
+{
+	pstate.select = select_add_group(pstate.select, group);
+	dr_canvas_refresh(drill);
+	return 0;
+}
 
 
 int add_group_gtk (GtkWidget *widget)
@@ -191,18 +196,18 @@ int isSelected(int index)
 {
 	// check to see if a dot is in selected dots
 	struct select_proto *select;
-	select_t *group_select = NULL;
 	//group_t *group = NULL;
 	int isin = 0;
 	int index_selected;
+	select_t *form_select = NULL;
 
 	select = pstate.select;
 	while (select != NULL)
 	{
-		if (!group_select && select->group)
-			group_select = select->group->selects;
-		if (group_select)
-			index_selected = group_select->index;
+		if (!form_select && select->form)
+			form_select = form_get_contained_dots(select->form);
+		if (form_select)
+			index_selected = form_select->index;
 		else
 			index_selected = select->index;
 
@@ -216,9 +221,9 @@ int isSelected(int index)
 			isin = 1;
 			break;
 		}
-		if (group_select)
-			group_select = group_select->next;
-		if (!group_select)
+		if (form_select)
+			form_select = form_select->next;
+		if (!form_select)
 			select = select->next;
 	}
 	return isin;
@@ -228,55 +233,46 @@ int isSelected(int index)
 
 
 
-group_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event)
+form_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
-	group_t *group = pshow->sets->currset->groups;
-	//group = checkGroups(widget, event, group);
-	//if (group)
-	//	return group;
+	form_t *form = pshow->sets->currset->forms;
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
-	group = check_endpoints(coordx, coordy, group);
-	return group;
+	form = check_endpoints(coordx, coordy, form);
+	return form;
 }
 
 
-group_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
+form_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
-	group_t *group = pshow->sets->currset->groups;
+	form_t *form = pshow->sets->currset->forms;
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
-	while (group)
+	while (form)
 	{
-		if (group->forms && form_contains_coords(group->forms, coordx, coordy))
-			return group;
-		group = group->next;
+		if (form_contains_coords(form, coordx, coordy))
+			return form;
+		form = form->next;
 	}
 	return NULL;
 }
 
 
 
-group_t *check_endpoints(double coordx, double coordy, group_t *group)
+form_t *check_endpoints(double coordx, double coordy, form_t *form)
 {
-	//double **endpoints;
-	//double dotx, doty;
-	//double distance;
-	//double dist_threshold = 9;
-	//select_t *select;
 
-
-	while (group)
+	while (form)
 	{
-		if (group->forms && form_checkEndpoints(group->forms, coordx, coordy))
-			return group;
-		group = group->next;
+		if (form_checkEndpoints(form, coordx, coordy))
+			return form;
+		form = form->next;
 	}
-	return group;
+	return form;
 }
 
 

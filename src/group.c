@@ -9,7 +9,6 @@ group_t *group_construct(void)
 	if (!group)
 		return NULL;
 	group->selects = NULL;
-	group->forms = NULL;
 	group->next = NULL;
 	group->name = (char*)malloc(10*sizeof(char));
 	group->local = false;
@@ -157,6 +156,7 @@ void group_add_global(group_t *group)
 	return;
 }
 
+/*
 bool group_is_selected(group_t *group, select_t *select)
 {
 	while (select)
@@ -167,4 +167,4 @@ bool group_is_selected(group_t *group, select_t *select)
 	}
 	return false;
 }
-
+*/

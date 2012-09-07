@@ -130,13 +130,14 @@ void delete_perf_gtk(GtkWidget *widget);
 //void next_perf(GtkWidget *widget);
 //void prev_perf(GtkWidget *widget);
 int select_all_gtk (GtkWidget *widget);
+int select_form_gtk(GtkWidget *widget, form_t *form);
 int select_group_gtk(GtkWidget *widget, group_t *group);
 int add_group_gtk (GtkWidget *widget);
 int select_mode_gtk (GtkWidget *widget);
 int isSelected(int index);
-group_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event);
-group_t *dr_check_form(GtkWidget *widget, GdkEventButton *event);
-group_t *check_endpoints(double coordx, double coordy, group_t *group);
+form_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event);
+form_t *dr_check_form(GtkWidget *widget, GdkEventButton *event);
+form_t *check_endpoints(double coordx, double coordy, form_t *form);
 //int select_oneperf_gtk(GtkWidget *widget, GdkEventButton *event);
 
 /*

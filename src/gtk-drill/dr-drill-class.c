@@ -522,12 +522,11 @@ int field_to_pixel(double *x_r, double *y_r)
 }
 
 
-cairo_t *draw_moving_form(cairo_t *cr, group_t *group)
+cairo_t *draw_moving_form(cairo_t *cr, form_t *form)
 {
 	double offsetx, offsety;
 	double x1, y1, x2, y2;
 	double x1rel, y1rel, x2rel, y2rel;
-	form_t *form = group->forms;
 
 	// show form being moved
 	offsetx = fldstate.mouse_clickx - fldstate.mousex;
@@ -571,26 +570,17 @@ int draw_forms(GtkWidget *widget)
 	form_t *form;
 	//fblock_t *block;
 	//farc_t *arc;
-	group_t *group;
 	//select_t *select;
 	double x, y;
-	double offsetx, offsety;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
 	cairo_set_line_width(canv_form, 2.0);
 	cairo_set_source_rgb(canv_form, 1, 0.5, 1);
 
-	group = pshow->sets->currset->groups;
-	while (group)
+	form = pshow->sets->currset->forms;
+	while (form)
 	{
-		// cycle through all the groups
-		if (!group->forms)
-		{
-			group = group->next;
-			continue;
-		}
-		form = group->forms;
 		switch (form->type)
 		{
 			case 1:		// line
@@ -604,7 +594,7 @@ int draw_forms(GtkWidget *widget)
 				cairo_line_to(canv_form, x, y);
 				break;
 		}
-		group = group->next;
+		form = form->next;
 	}
 
 	cairo_stroke(canv_form);
@@ -620,8 +610,8 @@ int draw_selected(GtkWidget *widget)
 	struct select_proto *select;
 	struct set_container *sets;
 	struct set_proto *currset;
-	group_t *group;
-	select_t *group_select;
+	form_t *form;
+	select_t *form_select;
 	int index;
 	double x, y;
 	double xmin = -1, xmax = -1;
@@ -670,26 +660,26 @@ int draw_selected(GtkWidget *widget)
 		sel_xmin = sel_xmax = 0;
 		sel_ymin = sel_ymax = 0;
 	}
-	group_select = NULL;
+	form_select = NULL;
 	while (select != NULL)
 	{
-		if (!group_select)
+		if (!form_select)
 		{
 			index = select->index;
-			group = select->group;
-			if (group)
+			form = select->form;
+			if (form)
 			{
-				group_select = group->selects;
-				if (group->forms && (fldstate.mouse_clicked & 0x2) == 0x2)
-					select_drag = draw_moving_form(select_drag, group);
+				form_select = form_get_contained_dots(form);
+				if ((fldstate.mouse_clicked & 0x2) == 0x2)
+					select_drag = draw_moving_form(select_drag, form);
 			}
 		}
-		if (group_select)
-			index = group_select->index;
+		if (form_select)
+			index = form_select->index;
 
 		if (index == -1)
 		{
-			group_select = NULL;
+			form_select = NULL;
 			select = select->next;
 			continue;
 		}
@@ -699,9 +689,9 @@ int draw_selected(GtkWidget *widget)
 		yfield = y;
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
-		if (group_select)
-			group_select = group_select->next;
-		if (!group_select)
+		if (form_select)
+			form_select = form_select->next;
+		if (!form_select)
 			select = select->next;
 
 		if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed_by_index(index))
