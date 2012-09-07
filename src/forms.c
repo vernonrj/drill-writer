@@ -133,8 +133,10 @@ form_t *form_build_line(form_t *form, select_t *select_head)
 
 	select = select_head;
 	// get endpoints, continue allocation
+	/*
 	if (select)
 		coords_retrieve_midset(pshow->sets->currset, select->index, &form->endpoints[0][0], &form->endpoints[0][1]);
+		*/
 	form->coords = (double**)malloc(index*sizeof(double*));
 	for (i=0; i<index; i++)
 	{
@@ -147,8 +149,10 @@ form_t *form_build_line(form_t *form, select_t *select_head)
 				coords_set_managed_by_index(select->index, 0x1);
 			else
 				coords_set_managed_by_index(select->index, 0x2);
+			/*
 			if (i == index - 1)
 				coords_retrieve_midset(pshow->sets->currset, select->index, &form->endpoints[1][0], &form->endpoints[1][1]);
+				*/
 			select = select->next;
 		}
 		else
@@ -351,5 +355,6 @@ void form_add_to_set(form_t *form)
 	curr->next = form;
 	return;
 }
+
 
 

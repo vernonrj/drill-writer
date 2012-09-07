@@ -32,7 +32,10 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	form_t *form = NULL;
 	form = form_build_line(form, groupcell->priv->group->selects);
-	form_add_to_set(form);
+	//form_add_to_set(form);
+	select_dots_discard();
+	pstate.select = select_add_form(pstate.select, form, false);
+	mouse_currentMode = ADDFORM;
 	return;
 }
 

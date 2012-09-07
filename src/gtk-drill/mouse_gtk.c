@@ -109,12 +109,14 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				x = event->x;
 				y = event->y;
 				pixel_to_field(&x, &y);
-				form = form_build_line(NULL, NULL);
+				//form = form_build_line(NULL, NULL);
+				form = pstate.select->form;
 				form_set_endpoint(form, 0, 0, x, y);
 				form_set_endpoint(form, 0, 0, fldstate.mouse_clickx, fldstate.mouse_clicky);
 				form_add_to_set(form);
+				form_update_line(form);
 				mouse_currentMode = SELECTONE;
-
+				dr_canvas_refresh(drill);
 				break;
 				
 		}
@@ -242,6 +244,8 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
 				//mouse_currentMode = SELECTONE;
+				break;
+			case ADDFORM:
 				break;
 		}
 	}
