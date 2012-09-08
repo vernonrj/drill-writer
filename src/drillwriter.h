@@ -279,6 +279,7 @@ int form_movexy(form_t *form, double x, double y);
 int form_unmanage_dot(form_t *form, int index);
 select_t *form_get_contained_dots(form_t *form);
 void form_add_to_set(form_t *form);
+coord_t **form_get_coords(form_t *form);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

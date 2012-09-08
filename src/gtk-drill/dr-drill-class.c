@@ -527,6 +527,11 @@ cairo_t *draw_moving_form(cairo_t *cr, form_t *form)
 	double offsetx, offsety;
 	double x1, y1, x2, y2;
 	double x1rel, y1rel, x2rel, y2rel;
+	double x, y;
+	int dot_num;
+	int i;
+	double **coords;
+	double slopex, slopey;
 
 	// show form being moved
 	offsetx = fldstate.mouse_clickx - fldstate.mousex;
@@ -555,10 +560,32 @@ cairo_t *draw_moving_form(cairo_t *cr, form_t *form)
 		x1rel = x1;
 		y1rel = y1;
 	}
-	field_to_pixel(&x1rel, &y1rel);
-	field_to_pixel(&x2rel, &y2rel);
-	cairo_move_to(cr, x1rel, y1rel);
-	cairo_line_to(cr, x2rel, y2rel);
+	x = x1rel;
+	y = y1rel;
+	field_to_pixel(&x, &y);
+	cairo_move_to(cr, x, y);
+	x = x2rel;
+	y = y2rel;
+	field_to_pixel(&x, &y);
+	cairo_line_to(cr, x, y);
+
+	dot_num = form->dot_num;
+	slopex = (x2rel - x1rel) / (dot_num - 1);
+	slopey = (y2rel - y1rel) / (dot_num - 1);
+	for(i=0; i<dot_num; i++)
+	{
+		x = i*slopex+x1rel;
+		y = i*slopey+y1rel;
+		field_to_pixel(&x, &y);
+		if (form->dots[i] != -1)
+			drawing_method(cr, x, y);
+		else
+		{
+			cairo_new_sub_path(cr);
+			cairo_arc(cr, x, y, 2*fldstate.canv_step/3, 0, 360);
+		}
+
+	}
 
 	return cr;
 }
@@ -572,6 +599,10 @@ int draw_forms(GtkWidget *widget)
 	//farc_t *arc;
 	//select_t *select;
 	double x, y;
+	int i;
+	int dot_num;
+	int *dots;
+	double **coords;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
@@ -581,6 +612,9 @@ int draw_forms(GtkWidget *widget)
 	form = pshow->sets->currset->forms;
 	while (form)
 	{
+		dot_num = form->dot_num;
+		coords = form->coords;
+		dots = form->dots;
 		switch (form->type)
 		{
 			case 1:		// line
@@ -592,6 +626,17 @@ int draw_forms(GtkWidget *widget)
 				y = form->endpoints[1][1];
 				field_to_pixel(&x, &y);
 				cairo_line_to(canv_form, x, y);
+				for(i=0; i<dot_num; i++)
+				{
+					if (dots[i] == -1)
+					{
+						x = coords[i][0] + form->endpoints[0][0];
+						y = coords[i][1] + form->endpoints[0][1];
+						field_to_pixel(&x, &y);
+						cairo_new_sub_path(canv_form);
+						cairo_arc(canv_form, x, y, 2*fldstate.canv_step/3, 0, 360);
+					}
+				}
 				break;
 		}
 		form = form->next;

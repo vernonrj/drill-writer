@@ -387,4 +387,25 @@ void form_add_to_set(form_t *form)
 }
 
 
-
+coord_t **form_get_coords(form_t *form)
+{
+	int i;
+	int dot_num;
+	coord_t **coords;
+	if (!form)
+		return NULL;
+	dot_num = form->dot_num;
+	coords = coords_construct(dot_num);
+	if (!coords)
+		return NULL;
+	for(i=0; i<dot_num; i++)
+	{
+		coords[i]->x = form->coords[i][0];
+		coords[i]->y = form->coords[i][1];
+		if (form->dots[i] == -1)
+			coords[i]->type = 0;
+		else
+			coords[i]->type = 1;
+	}
+	return coords;
+}	
