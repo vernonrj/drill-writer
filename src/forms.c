@@ -81,6 +81,59 @@ form_t *form_find_with_endpoint(form_t *form, double x, double y)
 }
 
 
+form_t *form_find_with_hole(form_t *form, double x, double y)
+{
+	int i;
+	int *dots;
+	int dot_num;
+	double **coords;
+	double coordx, coordy;
+	while (form)
+	{
+		coordx = x - form->endpoints[0][0];
+		coordy = y - form->endpoints[0][1];
+		dots = form->dots;
+		dot_num = form->dot_num;
+		coords = form->coords;
+		for(i=0; i<dot_num; i++)
+			if (dots[i] == -1 && fieldrel_check_dots_within_range(coords[i][0], coords[i][1], coordx, coordy))
+				return form;
+		form = form->next;
+	}
+	return NULL;
+}
+
+
+form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, double y)
+{
+	int i;
+	int *dots;
+	int dot_num;
+	double **coords;
+	if (!form)
+		return NULL;
+	dots = form->dots;
+	coords = form->coords;
+	dot_num = form->dot_num;
+	x -= form->endpoints[0][0];
+	y -= form->endpoints[0][1];
+	for(i=0; i<dot_num; i++)
+	{
+		if (dots[i] == -1 && fieldrel_check_dots_within_range(coords[i][0], coords[i][1], x, y))
+		{
+			dots[i] = index;
+			if (i == 0 || i == dot_num - 1)
+				coords_set_managed_by_index(index, 2);
+			else
+				coords_set_managed_by_index(index, 1);
+			form_update_line(form);
+			return form;
+		}
+	}
+	return NULL;
+}
+
+
 
 form_t *form_find_with_coords(form_t *form, double x, double y)
 {

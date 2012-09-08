@@ -207,6 +207,9 @@ int coords_movexy(double xoff, double yoff)
 		x = x + xoff;
 		y = y + yoff;
 		coords_set_coord(pshow, selects->index, x, y);
+		if (form = form_find_with_hole(pshow->sets->currset->forms, x, y))
+			form_add_index_to_hole_with_coords(form, selects->index, x, y);
+
 		selects = selects->next;
 	}
 	// move center of selection
