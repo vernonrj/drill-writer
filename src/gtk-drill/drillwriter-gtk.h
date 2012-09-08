@@ -13,6 +13,13 @@
 #include <cairo.h>
 //#include <glib-object.h>
 //#include <gdk/gdkkeysyms.h>
+
+enum group_cell_type
+{
+	GROUP_CELL_TYPE_GROUP,
+	GROUP_CELL_TYPE_FORM
+};
+
 GtkWidget *mybox;		// container for drill and scrollbars
 
 GtkWidget *window;		// container for a show

@@ -34,6 +34,8 @@ GtkWidget *dr_group_cell_new(void);
 G_END_DECLS
 #endif // __DR_GROUP_CELL_H__
 
+int dr_group_cell_get_container_type(GtkWidget *widget);
+void dr_group_cell_set_container_type(GtkWidget *widget, int type);
 group_t *dr_group_cell_get_group(GtkWidget *groupcell);
 void dr_group_cell_set_group(GtkWidget *groupcell, group_t *group);
 form_t *dr_group_cell_get_form(GtkWidget *widget);

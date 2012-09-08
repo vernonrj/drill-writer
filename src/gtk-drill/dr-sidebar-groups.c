@@ -1,6 +1,7 @@
 #include "drillwriter-gtk.h"
 //#include "dr-sidebar-groups.h"
 
+
 static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *klass);
 static void dr_sidebar_groups_init(DrSidebarGroups *sidebar_groups);
 
@@ -87,12 +88,12 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 	bool listEmpty = false;
 	while (last && (group || form))
 	{
-		if (!dr_group_cell_get_group(last))
+		if ((dr_group_cell_get_container_type(last) == GROUP_CELL_TYPE_GROUP) && !dr_group_cell_get_group(last))
 		{
 			gtk_widget_hide(last);
 			last = dr_group_cell_delete_from(last, lastcurr);
 		}
-		else if (!dr_group_cell_get_form(last))
+		else if ((dr_group_cell_get_container_type(last) == GROUP_CELL_TYPE_FORM) && !dr_group_cell_get_form(last))
 		{
 			gtk_widget_hide(last);
 			last = dr_group_cell_delete_from(last, lastcurr);

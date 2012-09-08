@@ -1,6 +1,8 @@
 #include "drillwriter-gtk.h"
 //#include "dr-sidebar-groups.h"
 
+
+
 static void dr_group_cell_class_init(DrGroupCellClass *klass);
 static void dr_group_cell_init(DrGroupCell *groupcell);
 
@@ -14,6 +16,7 @@ struct _DrGroupCellPrivate {
 	GtkWidget *expander_box;
 	group_t *group;
 	form_t *form;
+	int type;
 	DrGroupCell *next;
 };
 
@@ -249,6 +252,22 @@ GtkWidget *dr_group_cell_new(void)
 }
 
 
+int dr_group_cell_get_container_type(GtkWidget *widget)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
+
+	return groupcell->priv->type;
+}
+
+void dr_group_cell_set_container_type(GtkWidget *widget, int type)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+
+	groupcell->priv->type = type;
+	return;
+}
 
 
 group_t *dr_group_cell_get_group(GtkWidget *grpcell)
@@ -268,6 +287,7 @@ void dr_group_cell_set_group(GtkWidget *groupcell_widget, group_t *group)
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	groupcell->priv->group = group;
 	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), group->name);
+	dr_group_cell_set_container_type(groupcell_widget, GROUP_CELL_TYPE_GROUP);
 	return;
 }
 
@@ -286,6 +306,7 @@ void dr_group_cell_set_form(GtkWidget *groupcell_widget, form_t *form)
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	groupcell->priv->form = form;
 	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), form->name);
+	dr_group_cell_set_container_type(groupcell_widget, GROUP_CELL_TYPE_FORM);
 	return;
 }
 
