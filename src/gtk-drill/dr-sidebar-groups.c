@@ -72,6 +72,7 @@ GtkWidget *dr_sidebar_groups_new(void)
 
 DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, GtkWidget **last_r, group_t **group_r, form_t **form_r)
 {
+	// update a list of group cells
 	GtkWidget *last;
 	group_t *group;
 	form_t *form;
@@ -88,21 +89,26 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 	bool listEmpty = false;
 	while (last && (group || form))
 	{
+		// delete nodes that are present in group cells,
+		// but not present in group or form list.
+		// Currently, only a list of global groups and groups, forms from the current set are tracked
 		if ((dr_group_cell_get_container_type(last) == GROUP_CELL_TYPE_GROUP) && !dr_group_cell_get_group(last))
 		{
+			// group was deleted (or out of scope). Delete group cell
 			gtk_widget_hide(last);
 			last = dr_group_cell_delete_from(last, lastcurr);
 		}
 		else if ((dr_group_cell_get_container_type(last) == GROUP_CELL_TYPE_FORM) && !dr_group_cell_get_form(last))
 		{
+			// form was deleted (or out of scope). Delete form cell
 			gtk_widget_hide(last);
 			last = dr_group_cell_delete_from(last, lastcurr);
 		}
 		else
 		{
+			// traverse to the next node
 			lastcurr = last;
 			last = dr_group_cell_get_next(lastcurr);
-			//lastgroup = group;
 			if (group)
 				group = group->next;
 			else if (form)
@@ -111,15 +117,18 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 	}
 	while (last)
 	{
-		if (!dr_group_cell_get_group(last))
+		// remove any excess nodes
+		if ((dr_group_cell_get_container_type(last) == GROUP_CELL_TYPE_GROUP) && !dr_group_cell_get_group(last))
 		{
+			// remove groups that are deleted, but at the end of the list
 			gtk_widget_hide(last);
 			if (last == lastcurr)
 				listEmpty = true;
 			last = dr_group_cell_delete_from(last, lastcurr);
 		}
-		else if (!dr_group_cell_get_form(last))
+		else if ((dr_group_cell_get_container_type(last) == GROUP_CELL_TYPE_FORM) && !dr_group_cell_get_form(last))
 		{
+			// remove forms that are deleted
 			gtk_widget_hide(last);
 			if (last == lastcurr)
 				listEmpty = true;
@@ -127,11 +136,13 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 		}
 		else
 		{
+			// group or form is still allocated
 			listEmpty = false;
 			lastcurr = last;
 			last = dr_group_cell_get_next(last);
 		}
 	}
+	// make sure if list is now empty, node is shown as empty
 	if (!listEmpty)
 		last = lastcurr;
 	else
@@ -141,6 +152,7 @@ DrSidebarGroups *dr_sidebar_groups_update_from(DrSidebarGroups *lsidebargroups, 
 		*group_r = group;
 	if (form_r)
 		*form_r = form;
+
 	return lsidebargroups;
 }
 
@@ -154,7 +166,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	GtkWidget *last = lsidebargroups->priv->group_cell;
 	GtkWidget *lastcurr = last;
 	group_t *group = pshow->topgroups;
-	form_t *form = pshow->sets->currset->forms;
+	form_t *form; 
 
 
 	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, &group, NULL);
@@ -220,8 +232,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		group = group->next;
 	}
 
-
-	/*
+	form = pshow->sets->currset->forms;
 	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, NULL, &form);
 	if (!last)
 		lsidebargroups->priv->form_cell = NULL;
@@ -244,7 +255,6 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(last);
 		form = form->next;
 	}
-	*/
 
 
 	if (!lsidebargroups->priv->group_cell)
@@ -271,6 +281,11 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	{
 		gtk_widget_hide(lsidebargroups->priv->form_frame);
 		gtk_widget_hide(lsidebargroups->priv->box_form);
+	}
+	else
+	{
+		gtk_widget_show(lsidebargroups->priv->box_form);
+		gtk_widget_show(lsidebargroups->priv->form_frame);
 	}
 	return;
 }
