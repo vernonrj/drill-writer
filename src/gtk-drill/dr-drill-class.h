@@ -48,6 +48,7 @@ cairo_t *select_drag;	// dots being dragged by mouse
 cairo_t *selected_area;
 cairo_t *surface_write; // field to draw to
 cairo_t *canv_form;
+cairo_t *canv_form_select;
 
 // dr-zoom-gtk.c
 void zoom_amnt(double invalue, bool from_mouse);

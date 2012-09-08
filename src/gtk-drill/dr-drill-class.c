@@ -522,7 +522,8 @@ int field_to_pixel(double *x_r, double *y_r)
 }
 
 
-cairo_t *draw_moving_form(cairo_t *cr, form_t *form)
+
+cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 {
 	double offsetx, offsety;
 	double x1, y1, x2, y2;
@@ -603,47 +604,64 @@ int draw_forms(GtkWidget *widget)
 	int dot_num;
 	int *dots;
 	double **coords;
+	cairo_t *cr;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
 	cairo_set_line_width(canv_form, 2.0);
 	cairo_set_source_rgb(canv_form, 1, 0.5, 1);
 
+	canv_form_select = cairo_create(surface);
+	canvas_apply(canv_form_select);
+	cairo_set_line_width(canv_form_select, 2.0);
+	cairo_set_source_rgb(canv_form_select, 1, 0.5, 0);
+
+
 	form = pshow->sets->currset->forms;
 	while (form)
 	{
+		if (form_is_selected(form, pstate.select))
+		{
+			cr = canv_form_select;
+			if ((fldstate.mouse_clicked & 0x2) == 0x2)
+			{
+				canv_form_select = draw_selected_form(canv_form_select, form);
+				form = form->next;
+				continue;
+			}
+		}
+		else
+			cr = canv_form;
 		dot_num = form->dot_num;
 		coords = form->coords;
 		dots = form->dots;
-		switch (form->type)
+		x = form->endpoints[0][0];
+		y = form->endpoints[0][1];
+		field_to_pixel(&x, &y);
+		cairo_move_to(cr, x, y);
+		x = form->endpoints[1][0];
+		y = form->endpoints[1][1];
+		field_to_pixel(&x, &y);
+		cairo_line_to(cr, x, y);
+		for(i=0; i<dot_num; i++)
 		{
-			case 1:		// line
-				x = form->endpoints[0][0];
-				y = form->endpoints[0][1];
+			if (dots[i] == -1)
+			{
+				// hole in the form
+				x = coords[i][0] + form->endpoints[0][0];
+				y = coords[i][1] + form->endpoints[0][1];
 				field_to_pixel(&x, &y);
-				cairo_move_to(canv_form, x, y);
-				x = form->endpoints[1][0];
-				y = form->endpoints[1][1];
-				field_to_pixel(&x, &y);
-				cairo_line_to(canv_form, x, y);
-				for(i=0; i<dot_num; i++)
-				{
-					if (dots[i] == -1)
-					{
-						x = coords[i][0] + form->endpoints[0][0];
-						y = coords[i][1] + form->endpoints[0][1];
-						field_to_pixel(&x, &y);
-						cairo_new_sub_path(canv_form);
-						cairo_arc(canv_form, x, y, 2*fldstate.canv_step/3, 0, 360);
-					}
-				}
-				break;
+				cairo_new_sub_path(cr);
+				cairo_arc(cr, x, y, 2*fldstate.canv_step/3, 0, 360);
+			}
 		}
 		form = form->next;
 	}
 
 	cairo_stroke(canv_form);
 	cairo_destroy(canv_form);
+	cairo_stroke(canv_form_select);
+	cairo_destroy(canv_form_select);
 	return 0;
 }
 
@@ -715,8 +733,10 @@ int draw_selected(GtkWidget *widget)
 			if (form)
 			{
 				form_select = form_get_contained_dots(form);
+				/*
 				if ((fldstate.mouse_clicked & 0x2) == 0x2)
-					select_drag = draw_moving_form(select_drag, form);
+					canv_form_select = draw_selected_form(canv_form_select, form);
+					*/
 			}
 		}
 		if (form_select)
