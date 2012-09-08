@@ -259,6 +259,7 @@ int coords_movexy(double xoff, double yoff);
 int coords_align_dots_to_grid(void);
 int coords_movexy_grid(double xoff, double yoff);
 void coords_box_scale_form_from_center(double s_step);
+void coords_scale_coords_from_center(double s_step, double *x_ref, double *y_ref, double xc, double yc);
 void coords_scale_form_from_center(double s_step);
 void coords_rot_selected_around_center(double s_step);
 
@@ -280,6 +281,7 @@ int form_unmanage_dot(form_t *form, int index);
 select_t *form_get_contained_dots(form_t *form);
 void form_add_to_set(form_t *form);
 coord_t **form_get_coords(form_t *form);
+void form_scale_from_center(form_t *form, double s_step);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

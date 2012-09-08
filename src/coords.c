@@ -301,6 +301,11 @@ void coords_box_scale_form_from_center(double s_step)
 	while (last != NULL)
 	{
 		// get maxes separately
+		if (last->form)
+		{
+			last = last->next;
+			continue;
+		}
 		index = last->index;
 		coord = coords[index];
 		coords_retrieve(coord, &x, &y);
@@ -324,6 +329,12 @@ void coords_box_scale_form_from_center(double s_step)
 	while (last != NULL)
 	{
 		// get coords for selected dot
+		if (last->form)
+		{
+			form_scale_from_center(last->form, s_step);
+			last = last->next;
+			continue;
+		}
 		index = last->index;
 		coord = coords[index];
 		coords_retrieve(coord, &x, &y);
@@ -379,8 +390,16 @@ void coords_scale_form_from_center(double s_step)
 	while (last != NULL)
 	{
 		// get coords for selected dot
+		if (last->form)
+		{
+			form_scale_from_center(last->form, s_step);
+			last = last->next;
+			continue;
+		}
 		index = last->index;
 		coord = coords[index];
+		coords_scale_coords_from_center(s_step, &coord->x, &coord->y, cx, cy);
+		/*
 		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
 		distx = cx - coord->x;
 		disty = cy - coord->y;
@@ -406,10 +425,52 @@ void coords_scale_form_from_center(double s_step)
 			coord->y = cy - disty;
 			// expand next dot
 		}
+		*/
 		last = last->next;
 	}
 	return;
 }
+
+
+void coords_scale_coords_from_center(double s_step, double *x_ref, double *y_ref, double xc, double yc)
+{
+	double distx, disty;
+	double angle, hypo;
+	int signx, signy;
+	double x, y;
+
+	x = *x_ref;
+	y = *y_ref;
+
+	distx = xc - x;
+	disty = yc - y;
+	signx = distx < 0;
+	signy = disty < 0;
+	angle = atan(disty / distx);
+	if (angle < 0)
+		angle = -1 * angle;
+	hypo = powf(distx, 2) + powf(disty, 2);
+	hypo = sqrtf(hypo);
+	// don't contract if too close to center
+	if (s_step > 0 || hypo > -1 * s_step)
+	{
+		// expand or contract
+		distx = (hypo+s_step)*cos(angle);
+		disty = (hypo+s_step)*sin(angle);
+		if (signx)
+			distx = -1 * distx;
+		if (signy)
+			disty = -1 * disty;
+		// return to cartesian space
+		x = xc - distx;
+		y = yc - disty;
+		// expand next dot
+	}
+	*x_ref = x;
+	*y_ref = y;
+	return;
+}
+
 
 
 

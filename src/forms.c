@@ -409,3 +409,20 @@ coord_t **form_get_coords(form_t *form)
 	}
 	return coords;
 }	
+
+
+void form_scale_from_center(form_t *form, double s_step)
+{
+	int i;
+	double cx, cy;
+	if (!form)
+		return;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
+	for(i=0; i<2; i++)
+		coords_scale_coords_from_center(s_step, &form->endpoints[i][0], &form->endpoints[i][1], cx, cy);
+	form_update_line(form);
+	return;
+}
+
+

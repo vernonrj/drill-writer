@@ -222,15 +222,6 @@ select_t *select_add_form(select_t *selects, form_t *form, bool toggle)
 	last->form = form;
 	curr->next = last;
 	return selects;
-	//last = group->selects;
-	/*
-	while (last)
-	{
-		selects = select_add(selects, last->index, toggle);
-		last = last->next;
-	}
-	*/
-	return selects;
 }
 
 
@@ -443,44 +434,62 @@ void select_update_center(select_t *last)
 	coord_t **coords;
 	coord_t *coord;
 	form_t *form = NULL;
+	double minx, miny, maxx, maxy;
+	double x, y;
 
 	cx = 0;
 	cy = 0;
+	minx = miny = -1;
+	maxx = maxy = -1;
 	//last = pstate.select;
 	coords = pshow->sets->currset->coords;
 	while (last)
 	{
 		// get coordinates for selected dot
-		if (!form && last->form)
-			form = last->form;
-		if (form)
-		{
-			// TODO: Add form
-			last = last->next;
-			continue;
-		}
 		index = last->index;
-		if (index == -1)
+		if (!form && !last->form)
 		{
-			printf("Error: index is wrong\n");
+			coord = coords[index];
+			x = coord->x;
+			y = coord->y;
 		}
-		coord = coords[index];
-		cx = cx + coord->x;
-		cy = cy + coord->y;
-		selnum++;
-		last = last->next;
+		else if (!form)
+		{
+			form = last->form;
+			x = form->endpoints[0][0];
+			y = form->endpoints[0][1];
+		}
+		else
+		{
+			x = form->endpoints[1][0];
+			y = form->endpoints[1][1];
+			form = NULL;
+		}
+		if (x > maxx)
+			maxx = x;
+		if (x < minx || minx == -1)
+			minx = x;
+		if (y > maxy)
+			maxy = y;
+		if (y < miny || miny == -1)
+			miny = y;
+		//cx = cx + coord->x;
+		//cy = cy + coord->y;
+		if (!form)
+		{
+			selnum++;
+			last = last->next;
+		}
 	}
-	if (selnum == 0)
+	if (!selnum)
 	{
-		// no selections
 		cx = 0;
 		cy = 0;
 	}
 	else
 	{
-		// have selections
-		cx = cx / selnum;
-		cy = cy / selnum;
+		cx = (maxx - minx) / 2 + minx;
+		cy = (maxy - miny) / 2 + miny;
 	}
 	// store
 	pstate.center->x = cx;

@@ -96,11 +96,13 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 					if(!mouse_discarded && form_checkEndpoints(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 					{
 						form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+						select_update_center(pstate.select);
 						dr_canvas_refresh(drill);
 					}
 					else if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
 						coords_movexy(mouse_clickx, mouse_clicky);
+						select_update_center(pstate.select);
 						dr_canvas_refresh(drill);
 					}
 				}
@@ -114,6 +116,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				form_add_to_set(form);
 				form_update_line(form);
 				mouse_currentMode = SELECTONE;
+				select_update_center(pstate.select);
 				dr_canvas_refresh(drill);
 				break;
 				
@@ -199,6 +202,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						// select form with ability to scale form
 						select_dots_discard();
 						pstate.select = select_add_form(pstate.select, form_endpoints, false);
+						select_update_center(pstate.select);
 						mouse_discarded = 1;
 					}
 					else if (form && !form_is_selected(form, pstate.select))
@@ -206,6 +210,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						// select form, can't scale or rotate
 						select_dots_discard();
 						pstate.select = select_add_form(pstate.select, form, false);
+						select_update_center(pstate.select);
 						mouse_discarded = 1;
 					}
 					else if (isSelected(index) != 1 && !form && !form_endpoints)
