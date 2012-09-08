@@ -366,7 +366,10 @@ select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle)
 
 	if (modifier)
 	{
-		last = select_add_index(mainlist, modifier->index, toggle);
+		if (modifier->form)
+			last = select_add_form(mainlist, modifier->form, toggle);
+		else
+			last = select_add_index(mainlist, modifier->index, toggle);
 		*modifier_r = modifier->next;
 		free(modifier);
 		return last;
