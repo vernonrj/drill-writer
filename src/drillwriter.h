@@ -123,6 +123,7 @@ struct select_proto
 // Forms
 struct  form_proto // form_t
 {
+	char *name;
 	int type;
 	int dot_num;
 	double endpoints[2][2];

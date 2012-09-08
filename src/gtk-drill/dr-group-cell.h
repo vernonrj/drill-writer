@@ -36,9 +36,11 @@ G_END_DECLS
 
 group_t *dr_group_cell_get_group(GtkWidget *groupcell);
 void dr_group_cell_set_group(GtkWidget *groupcell, group_t *group);
+form_t *dr_group_cell_get_form(GtkWidget *widget);
+void dr_group_cell_set_form(GtkWidget *groupcell_widget, form_t *form);
 GtkWidget *dr_group_cell_get_next(GtkWidget *groupcell);
 bool dr_group_cell_has_next(GtkWidget *groupcell);
 GtkWidget *dr_group_cell_add(GtkWidget *groupcell, group_t *group);
-GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group);
+GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_t *form);
 GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container);
 

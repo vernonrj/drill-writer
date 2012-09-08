@@ -2,7 +2,29 @@
 
 form_t *form_construct()
 {
-	return NULL;
+	int i;
+	int index;
+	form_t *form;
+
+	form = (form_t*)malloc(sizeof(form_t));
+
+	// initialize
+	form->next = NULL;
+	form->type = 0;
+	form->name = NULL;
+	for (i=0; i<2; i++)
+		form->endpoints[i][0] = form->endpoints[i][1] = 0;
+	index = 3;
+	form->dot_num = 3;
+	form->dots = (int*)malloc(index*sizeof(int));
+	form->coords = (double**)malloc(index*sizeof(double*));
+	for (i=0; i<index; i++)
+	{
+		form->coords[i] = (double*)malloc(2*sizeof(double));
+		form->dots[i] = -1;
+		form->coords[i][0] = form->coords[i][1] = 0;
+	}
+	return form;
 }
 
 bool form_is_selected(form_t *form, select_t *select)
@@ -189,6 +211,8 @@ form_t *form_build_line(form_t *form, select_t *select_head)
 	// initialize
 	form->next = NULL;
 	form->type = 1;
+	form->name = (char*)malloc(10*sizeof(char));
+	snprintf(form->name, 10, "New Form");
 	for (i=0; i<2; i++)
 		form->endpoints[i][0] = form->endpoints[i][1] = 0;
 

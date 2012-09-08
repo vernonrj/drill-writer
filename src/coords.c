@@ -207,7 +207,7 @@ int coords_movexy(double xoff, double yoff)
 		x = x + xoff;
 		y = y + yoff;
 		coords_set_coord(pshow, selects->index, x, y);
-		if (form = form_find_with_hole(pshow->sets->currset->forms, x, y))
+		if ((form = form_find_with_hole(pshow->sets->currset->forms, x, y)) != NULL)
 			form_add_index_to_hole_with_coords(form, selects->index, x, y);
 
 		selects = selects->next;
@@ -370,13 +370,13 @@ void coords_scale_form_from_center(double s_step)
 	// center
 	double cx, cy;
 	// distance
-	double distx, disty;
+	//double distx, disty;
 	// sign
-	int signx, signy;
+	//int signx, signy;
 	// hypotenuse
-	double hypo;
+	//double hypo;
 	// angle
-	double angle;
+	//double angle;
 	// selection
 	select_t *last;
 	// coordinates

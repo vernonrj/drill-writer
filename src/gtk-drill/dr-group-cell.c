@@ -13,6 +13,7 @@ struct _DrGroupCellPrivate {
 	GtkWidget *expander;
 	GtkWidget *expander_box;
 	group_t *group;
+	form_t *form;
 	DrGroupCell *next;
 };
 
@@ -270,6 +271,24 @@ void dr_group_cell_set_group(GtkWidget *groupcell_widget, group_t *group)
 	return;
 }
 
+
+form_t *dr_group_cell_get_form(GtkWidget *widget)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), NULL);
+	return groupcell->priv->form;
+}
+
+
+void dr_group_cell_set_form(GtkWidget *groupcell_widget, form_t *form)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	groupcell->priv->form = form;
+	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), form->name);
+	return;
+}
+
 GtkWidget *dr_group_cell_get_next(GtkWidget *groupcell_widget)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
@@ -300,13 +319,16 @@ GtkWidget *dr_group_cell_add(GtkWidget *groupcell_widget, group_t *group)
 	return last;
 }
 
-GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group)
+GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_t *form)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	GtkWidget *last;
 	GtkWidget *curr;
 	last = dr_group_cell_new();
-	dr_group_cell_set_group(last, group);
+	if (group)
+		dr_group_cell_set_group(last, group);
+	if (form)
+		dr_group_cell_set_form(last, form);
 	if (!groupcell)
 		return last;
 	if (!IS_GROUP_CELL(groupcell))
@@ -317,6 +339,7 @@ GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group)
 	groupcell->priv->next = (DrGroupCell*)last;
 	return curr;
 }
+
 
 GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 {
