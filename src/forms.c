@@ -94,6 +94,33 @@ form_t *form_find_with_coords(form_t *form, double x, double y)
 }
 
 
+int form_find_index_with_coords(form_t *form, double x, double y)
+{
+	// return an index that matches (x, y)
+	int i;
+	int *dots;
+	double **coords;
+	int dot_num;
+	double coordx, coordy;
+	if (!form)
+		return -1;
+	dots = form->dots;
+	dot_num = form->dot_num;
+	coords = form->coords;
+	x -= form->endpoints[0][0];
+	y -= form->endpoints[0][1];
+	for(i=0; i<dot_num; i++)
+	{
+		coordx = coords[i][0];
+		coordy = coords[i][1];
+		if (fieldrel_check_dots_within_range(coordx, coordy, x, y))
+			return dots[i];
+	}
+	return -1;
+}
+
+
+
 
 
 form_t *form_build_line(form_t *form, select_t *select_head)
@@ -331,7 +358,10 @@ select_t *form_get_contained_dots(form_t *form)
 	index = form->dot_num;
 	dots = form->dots;
 	for(i=0; i<index; i++)
-		select = select_add_index(select, dots[i], false);
+	{
+		if (dots[i] != -1)
+			select = select_add_index(select, dots[i], false);
+	}
 	return select;
 }
 

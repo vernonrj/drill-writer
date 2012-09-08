@@ -67,18 +67,19 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 {
 	// handle un-click events on canvas
 	double x, y;
+	int index;
 	//double x1, y1;
 	form_t *form;
 	form = pshow->sets->currset->forms;
+	x = event->x;
+	y = event->y;
+	pixel_to_field(&x, &y);
 	if (event->button == 1)
 	{
 		switch(mouse_currentMode)
 		{
 			case SELECTONE:
 				// move a performer
-				x = event->x;
-				y = event->y;
-				pixel_to_field(&x, &y);
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
 				//group = dr_check_form_endpoints(widget, event);
@@ -106,9 +107,6 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				break;
 			case ADDFORM:
 				// add a form
-				x = event->x;
-				y = event->y;
-				pixel_to_field(&x, &y);
 				//form = form_build_line(NULL, NULL);
 				form = pstate.select->form;
 				form_set_endpoint(form, 0, 0, x, y);
@@ -121,6 +119,16 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				
 		}
 	}
+	else if (event->button == 3)
+	{
+		// right-click
+		form = form_find_with_coords(pshow->sets->currset->forms, x, y);
+		index = form_find_index_with_coords(form, x, y);
+		printf("%i\n", index);
+		if (index != -1)
+			form_unmanage_dot(form, index);
+	}
+
 	fldstate.mouse_clicked = 0;
 	dr_canvas_refresh(drill);
 	return TRUE;

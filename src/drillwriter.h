@@ -268,6 +268,7 @@ bool form_checkEndpoints(form_t *form, double x, double y);
 bool form_contains_coords(form_t *form, double x, double y);
 form_t *form_find_with_endpoint(form_t *form, double x, double y);
 form_t *form_find_with_coords(form_t *form, double x, double y);
+int form_find_index_with_coords(form_t *form, double x, double y);
 form_t *form_build_line(form_t *form, select_t *select_head);
 bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2);
 form_t *form_find_form_with_index(form_t *form, int index);
