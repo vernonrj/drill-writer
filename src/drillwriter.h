@@ -273,6 +273,7 @@ bool form_checkEndpoints(form_t *form, double x, double y);
 bool form_contains_coords(form_t *form, double x, double y);
 form_t *form_find_with_endpoint(form_t *form, double x, double y);
 form_t *form_find_with_hole(form_t *form, double x, double y);
+form_t *form_find_with_endpoint_hole(form_t *form, double x, double y);
 form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, double y);
 form_t *form_find_with_coords(form_t *form, double x, double y);
 int form_find_index_with_coords(form_t *form, double x, double y);

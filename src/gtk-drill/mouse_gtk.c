@@ -68,6 +68,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	// handle un-click events on canvas
 	double x, y;
 	int index;
+	form_t *form2;
 	//double x1, y1;
 	form_t *form;
 	form = pshow->sets->currset->forms;
@@ -83,19 +84,31 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
 				//group = dr_check_form_endpoints(widget, event);
+				/*
 				while (form)
 				{
 					if (form_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 						break;
 					form = form->next;
 				}
+				*/
+				form = form_find_with_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky);
 				if (event->state == GDK_BUTTON_PRESS_MASK)
 				{
 					// regular click
 					// move dots
 					if(!mouse_discarded && form_checkEndpoints(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 					{
-						form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+						while (form && form_checkEndpoints(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
+						{
+							form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+							if ((form2 = form_find_with_endpoint_hole(pshow->sets->currset->forms, x, y)) != NULL)
+							{
+								index = form_find_index_with_coords(form, x, y);
+								form_add_index_to_hole_with_coords(form2, index, x, y);
+							}
+							form = form_find_with_endpoint(form->next, fldstate.mouse_clickx, fldstate.mouse_clicky);
+						}
 						select_update_center(pstate.select);
 						dr_canvas_refresh(drill);
 					}
@@ -201,9 +214,13 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 					{
 						// select form with ability to scale form
 						select_dots_discard();
-						pstate.select = select_add_form(pstate.select, form_endpoints, false);
-						select_update_center(pstate.select);
 						mouse_discarded = 1;
+						while (form_endpoints && !form_is_selected(form_endpoints, pstate.select))
+						{
+							pstate.select = select_add_form(pstate.select, form_endpoints, false);
+							form_endpoints = form_find_with_endpoint(form_endpoints->next, mouse_clickx, mouse_clicky);
+						}
+							select_update_center(pstate.select);
 					}
 					else if (form && !form_is_selected(form, pstate.select))
 					{

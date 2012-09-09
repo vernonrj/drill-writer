@@ -175,12 +175,31 @@ form_t *form_find_with_hole(form_t *form, double x, double y)
 }
 
 
+form_t *form_find_with_endpoint_hole(form_t *form, double x, double y)
+{
+	int i;
+	double coordx, coordy;
+	while (form)
+	{
+		for(i=0; i<2; i++)
+			if (fieldrel_check_dots_within_range(form->endpoints[i][0], form->endpoints[i][1], x, y))
+				return form;
+		form = form->next;
+	}
+	return form;
+}
+
+
+
+
 form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, double y)
 {
 	int i;
 	int *dots;
 	int dot_num;
 	double **coords;
+	int manage_state = coords_check_managed_by_index(index);
+	double coordx, coordy;
 	if (!form)
 		return NULL;
 	dots = form->dots;
@@ -194,7 +213,16 @@ form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, do
 		{
 			dots[i] = index;
 			if (i == 0 || i == dot_num - 1)
-				coords_set_managed_by_index(index, 2);
+			{
+				if (coords_check_managed_by_index(index) == 2)
+				{
+					// pairing endpoints together
+					coords_retrieve_midset(pshow->sets->currset, index, &coordx, &coordy);
+					form_set_endpoint(form, form->endpoints[0][0], form->endpoints[0][1], coordx, coordy);
+				}
+				else
+					coords_set_managed_by_index(index, 2);
+			}
 			else
 				coords_set_managed_by_index(index, 1);
 			form_update_line(form);
@@ -559,7 +587,7 @@ select_t *form_flatten(form_t *form, select_t *select_head)
 	int dot_num;
 	int *dots;
 	select_t *last;
-	select_t *select;
+	select_t *select = NULL;
 	if (!form)
 		return select;
 	if (!select_head)
