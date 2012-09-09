@@ -271,6 +271,11 @@ double perf_average_stepsize_selected(headset_t *dshow)
 	sCounts = currset->counts;
 	while (last != NULL)
 	{
+		if (last->form)
+		{
+			last = last->next;
+			continue;
+		}
 		index = last->index;
 		x = coords[index]->x;
 		y = coords[index]->y;
@@ -322,6 +327,11 @@ int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 	sCounts = currset->counts;
 	while (last != NULL)
 	{
+		if (last->form)
+		{
+			last = last->next;
+			continue;
+		}
 		index = last->index;
 		x = coords[index]->x;
 		y = coords[index]->y;

@@ -502,4 +502,35 @@ void form_scale_from_center(form_t *form, double s_step)
 	return;
 }
 
-
+select_t *form_flatten(form_t *form, select_t *select_head, select_t *select)
+{
+	int i;
+	int dot_num;
+	int *dots;
+	select_t *last;
+	if (!form)
+		return select;
+	if (!select_head)
+		return NULL;
+	last = select_head;
+	if (select_head != select)
+	{
+		while (last && last->next != select)
+			last = last->next;
+		if (!last)
+		{
+			printf("WARNING: selection not in scope!\n");
+			return NULL;
+		}
+		last->next = select->next;
+	}
+	else if (select_head == select)
+		select_head = select_head->next;
+	dot_num = form->dot_num;
+	dots = form->dots;
+	for (i=0; i<dot_num; i++)
+		if (dots[i] != -1)
+			select_head = select_add_index(select_head, dots[i], false);
+	free(select);
+	return select_head;
+}

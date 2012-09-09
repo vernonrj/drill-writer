@@ -258,6 +258,7 @@ int newset_create(set_container_t *sets)
 void goto_set(int set_buffer)
 {
 	int i = 0;
+	set_t *curr = pshow->sets->currset;
 	set_t *last = pshow->sets->firstset;
 
 	for (i=0; i<set_buffer && last != NULL; i++)
@@ -270,6 +271,7 @@ void goto_set(int set_buffer)
 	{
 		pshow->sets->currset = last;
 		pstate.setnum = i;
+		pstate.select = select_update_scope_set1_set2(pstate.select, curr, last);
 	}
 	return;
 }
@@ -348,6 +350,7 @@ void delete_set(void)
 
 void set_first(void)
 {	// Move to first set
+	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
 	pshow->sets->currset = pshow->sets->firstset;
 	pstate.curr_step = 0;
 	pstate.setnum=0;
@@ -366,6 +369,7 @@ void set_last(void)
 		last = last->next;
 		pstate.setnum++;
 	}
+	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, last);
 	pshow->sets->currset = last;
 	pstate.curr_step = 0;
 
@@ -378,6 +382,7 @@ void set_next(void)
 {	// Move to the next set
 	if (pshow->sets->currset->next != NULL)
 	{
+		pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->currset->next);
 		pshow->sets->currset = pshow->sets->currset->next;
 		pstate.setnum++;
 		pstate.curr_step = 0;
@@ -443,6 +448,7 @@ void set_prev(void)
 			// first set
 			pstate.setnum = 0;
 		}
+		pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, last);
 		pshow->sets->currset = last;
 	}
 }

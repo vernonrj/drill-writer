@@ -285,6 +285,7 @@ select_t *form_get_contained_dots(form_t *form);
 void form_add_to_set(form_t *form);
 coord_t **form_get_coords(form_t *form);
 void form_scale_from_center(form_t *form, double s_step);
+select_t *form_flatten(form_t *form, select_t *select_head, select_t *select);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
@@ -347,6 +348,7 @@ void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle);
 select_t *select_all(select_t*, perf_t **perfs, int perfnum);
 int select_all_dots(void);
 void select_update_center(select_t *last);
+select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset);
 //void select_add_coord_to_center(coord_t *coord);
 //void select_remove_coord_from_center(coord_t *coord);
 

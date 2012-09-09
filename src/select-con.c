@@ -501,3 +501,40 @@ void select_update_center(select_t *last)
 
 	return;
 }
+
+select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset)
+{
+	form_t *formcurr, *formnext, *form;
+	form_t *formcurr_head, *formnext_head;
+	form_t *flast;
+	select_t *select;
+
+	select = select_head;
+
+	formcurr_head = currset->forms;
+	formnext_head = nextset->forms;
+	while (select)
+	{
+		if (!select->form)
+		{
+			select = select->next;
+			continue;
+		}
+		form = select->form;
+		formnext = formnext_head;
+		while (formnext)
+		{
+			if (form == formnext)
+			{
+				break;
+			}
+			formcurr = formcurr->next;
+		}
+		if (formnext == NULL)
+			select_head = form_flatten(form, select_head, select);
+		select = select->next;
+	}
+	return select_head;
+}
+
+
