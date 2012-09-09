@@ -48,7 +48,10 @@ static void group_cell_select_group(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	select_group_gtk(widget, groupcell->priv->group);
+	if (dr_group_cell_get_container_type((GtkWidget*)data) == GROUP_CELL_TYPE_GROUP)
+		select_group_gtk(widget, groupcell->priv->group);
+	else
+		select_form_gtk(widget, groupcell->priv->form);
 	return;
 }
 
