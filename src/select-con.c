@@ -531,7 +531,7 @@ select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, s
 			formcurr = formcurr->next;
 		}
 		if (formnext == NULL)
-			select_head = form_flatten(form, select_head, select);
+			select_head = form_flatten(form, select_head);
 		select = select->next;
 	}
 	return select_head;

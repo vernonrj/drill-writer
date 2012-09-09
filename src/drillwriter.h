@@ -288,7 +288,7 @@ select_t *form_get_contained_dots(form_t *form);
 void form_add_to_set(form_t *form);
 coord_t **form_get_coords(form_t *form);
 void form_scale_from_center(form_t *form, double s_step);
-select_t *form_flatten(form_t *form, select_t *select_head, select_t *select);
+select_t *form_flatten(form_t *form, select_t *select_head);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

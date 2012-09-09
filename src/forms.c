@@ -34,6 +34,10 @@ form_t *form_destruct(form_t *form)
 	int dot_num;
 	form_t *last;
 	int *dots;
+	bool is_selected = form_is_selected(form, pstate.select);
+	if (is_selected)
+		pstate.select = form_flatten(form, pstate.select);
+
 
 	last = form->next;
 	dots = form->dots;
@@ -42,6 +46,8 @@ form_t *form_destruct(form_t *form)
 	dot_num = form->dot_num;
 	for (i=0; i<dot_num; i++)
 	{
+		if (is_selected)
+			select_add_index(pstate.select, dots[i], false);
 		coords_set_managed_by_index(dots[i], 0);
 		free(form->coords[i]);
 	}
@@ -545,35 +551,41 @@ void form_scale_from_center(form_t *form, double s_step)
 	return;
 }
 
-select_t *form_flatten(form_t *form, select_t *select_head, select_t *select)
+
+
+select_t *form_flatten(form_t *form, select_t *select_head)
 {
 	int i;
 	int dot_num;
 	int *dots;
 	select_t *last;
+	select_t *select;
 	if (!form)
 		return select;
 	if (!select_head)
 		return NULL;
 	last = select_head;
-	if (select_head != select)
+	if (select_head->form == form)
+		select_head = select_head->next;
+	else
 	{
-		while (last && last->next != select)
+		while (last && last->form != form)
+		{
+			select = last;
 			last = last->next;
+		}
 		if (!last)
 		{
 			printf("WARNING: selection not in scope!\n");
 			return NULL;
 		}
-		last->next = select->next;
+		select->next = last->next;
 	}
-	else if (select_head == select)
-		select_head = select_head->next;
 	dot_num = form->dot_num;
 	dots = form->dots;
 	for (i=0; i<dot_num; i++)
 		if (dots[i] != -1)
 			select_head = select_add_index(select_head, dots[i], false);
-	free(select);
+	free(last);
 	return select_head;
 }
