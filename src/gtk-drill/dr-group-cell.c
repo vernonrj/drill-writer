@@ -109,7 +109,7 @@ gint group_cell_toggle_group_scope(GtkWidget *widget, gpointer *data)
 		group_add_global(groupcell->priv->group);
 		groupcell->priv->group->local = false;
 	}
-	else
+	else if (!groupcell->priv->form)
 	{
 		// switch global group to local
 		pshow->topgroups = group_pop_from(groupcell->priv->group, pshow->topgroups);
@@ -153,11 +153,19 @@ gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 	gtk_widget_hide(widget);
 	gtk_widget_show(groupcell->priv->button_name);
 	gtk_widget_set_sensitive(groupcell->priv->button_name, TRUE);
-	free(groupcell->priv->group->name);
 	size = sizeof(char)*(strlen(new_name)+1);
 	name = (char*)malloc(size);
 	strncpy(name, new_name, size);
-	groupcell->priv->group->name = name;
+	if (dr_group_cell_get_container_type((GtkWidget*)data) == GROUP_CELL_TYPE_GROUP)
+	{
+		free(groupcell->priv->group->name);
+		groupcell->priv->group->name = name;
+	}
+	else if (dr_group_cell_get_container_type((GtkWidget*)data) == GROUP_CELL_TYPE_FORM)
+	{
+		free(groupcell->priv->form->name);
+		groupcell->priv->form->name = name;
+	}
 	return 0;
 }
 
