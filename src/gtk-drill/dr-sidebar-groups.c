@@ -169,6 +169,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	form_t *form; 
 
 
+	// Global Groups
 	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, &group, NULL);
 	if (!last)
 		lsidebargroups->priv->group_cell = NULL;
@@ -192,6 +193,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		group = group->next;
 	}
 
+	// Local Groups
 	last = lsidebargroups->priv->group_cell_local;
 	group = pshow->sets->currset->groups;
 	if (pshow->sets->currset != lsidebargroups->priv->currset)
@@ -207,8 +209,6 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		last = NULL;
 		lsidebargroups->priv->currset = pshow->sets->currset;
 	}
-
-
 	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, &group, NULL);
 	if (!last)
 		lsidebargroups->priv->group_cell_local = NULL;
@@ -232,6 +232,8 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		group = group->next;
 	}
 
+	// Forms
+	last = lsidebargroups->priv->form_cell;
 	form = pshow->sets->currset->forms;
 	lsidebargroups = dr_sidebar_groups_update_from(lsidebargroups, &last, NULL, &form);
 	if (!last)

@@ -71,6 +71,10 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 		// local group
 		pshow->sets->currset->groups = group_remove_from(groupcell->priv->group, pshow->sets->currset->groups);
 	}
+	else if (groupcell->priv->form)
+	{
+		printf("Not done yet\n");
+	}
 	else
 	{
 		// global group
