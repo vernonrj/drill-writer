@@ -306,6 +306,7 @@ int save_file(char *filename);
 // grouping functions
 group_t *group_construct(void);
 group_t *group_add_selects(group_t *group, select_t *newsels);
+group_t *group_remove_selects(group_t *group, select_t *select);
 group_t *group_remove_from(group_t *group, group_t *curr);
 group_t *group_pop_from(group_t *group, group_t *curr);
 void group_add_to_set(group_t *group);

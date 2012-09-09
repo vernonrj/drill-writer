@@ -69,6 +69,14 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 }
 
 
+group_t *group_remove_selects(group_t *group, select_t *select)
+{
+	if (!group || !select)
+		return group;
+	group->selects = select_drop_multiple(group->selects, select);
+	return group;
+}
+
 
 
 group_t *group_remove_from(group_t *group, group_t *curr)

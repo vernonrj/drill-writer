@@ -64,6 +64,14 @@ static void select_add_to_group_cell(GtkWidget *widget, gpointer *data)
 	return;
 }
 
+static void select_remove_from_group_cell(GtkWidget *widget, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	groupcell->priv->group = group_remove_selects(groupcell->priv->group, pstate.select);
+}
+
+
 
 static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 {
@@ -256,6 +264,8 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	g_signal_connect(menuitem, "activate", G_CALLBACK(group_cell_toggle_group_scope), groupcell);
 	menuitem = mymenu_append(menu, "Add Dots");
 	g_signal_connect(menuitem, "activate", G_CALLBACK(select_add_to_group_cell), groupcell);
+	menuitem = mymenu_append(menu, "Remove Dots");
+	g_signal_connect(menuitem, "activate", G_CALLBACK(select_remove_from_group_cell), groupcell);
 	menuitem = mymenu_append(menu, "Add Form");
 	g_signal_connect(menuitem, "activate", G_CALLBACK(dr_group_cell_add_form), groupcell);
 	gtk_widget_show(menu);
