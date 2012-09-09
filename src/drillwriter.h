@@ -265,6 +265,9 @@ void coords_scale_form_from_center(double s_step);
 void coords_rot_selected_around_center(double s_step);
 
 // forms.c
+form_t *form_construct();
+form_t *form_destruct(form_t *form);
+form_t *form_remove_from(form_t *curr, form_t *form_head);
 bool form_is_selected(form_t *form, select_t *select);
 bool form_checkEndpoints(form_t *form, double x, double y);
 bool form_contains_coords(form_t *form, double x, double y);

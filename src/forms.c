@@ -27,6 +27,49 @@ form_t *form_construct()
 	return form;
 }
 
+
+form_t *form_destruct(form_t *form)
+{
+	int i;
+	int dot_num;
+	form_t *last;
+	int *dots;
+
+	last = form->next;
+	dots = form->dots;
+	if (form->name)
+		free(form->name);
+	dot_num = form->dot_num;
+	for (i=0; i<dot_num; i++)
+	{
+		coords_set_managed_by_index(dots[i], 0);
+		free(form->coords[i]);
+	}
+	free(form->coords);
+	free(form->dots);
+	free(form);
+	return last;
+}
+
+
+form_t *form_remove_from(form_t *curr, form_t *form_head)
+{
+	form_t *last;
+	if (!form_head || curr == form_head)
+		return (form_destruct(curr));
+	last = form_head;
+	while (last && last->next != curr)
+		last = last->next;
+	if (!last)
+	{
+		printf("WARNING: Form to be removed not in scope!\n");
+		return form_head;
+	}
+	last->next = form_destruct(curr);
+	return form_head;
+}
+
+
 bool form_is_selected(form_t *form, select_t *select)
 {
 	while (select)

@@ -69,21 +69,23 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	if (groupcell->priv->group->local)
+	if (groupcell->priv->form)
+	{
+		// form
+		pshow->sets->currset->forms = form_remove_from(groupcell->priv->form, pshow->sets->currset->forms);
+	}
+	else if (groupcell->priv->group && groupcell->priv->group->local)
 	{
 		// local group
 		pshow->sets->currset->groups = group_remove_from(groupcell->priv->group, pshow->sets->currset->groups);
 	}
-	else if (groupcell->priv->form)
-	{
-		printf("Not done yet\n");
-	}
-	else
+	else if (groupcell->priv->group)
 	{
 		// global group
 		pshow->topgroups = group_remove_from(groupcell->priv->group, pshow->topgroups);
 	}
 	groupcell->priv->group = NULL;
+	groupcell->priv->form = NULL;
 	dr_sidebar_update((DrSidebar*)sidebar);
 }
 
