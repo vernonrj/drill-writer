@@ -169,6 +169,10 @@ struct coord_proto
 	// location info
 	double x;
 	double y;
+
+	int form_num;
+	int form_alloc;
+	form_t **forms;
 };
 
 
@@ -254,6 +258,8 @@ int coords_check_managed(coord_t *coord);
 int coords_set_managed(coord_t *coord, int state);
 int coords_check_managed_by_index(int index);
 int coords_set_managed_by_index(int index, int state);
+int coords_track_form(int index, form_t *form);
+int coords_untrack_form(int index, form_t *form);
 int coords_retrieve(coord_t *curr, double *x, double *y);
 int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r);
 int coords_movexy(double xoff, double yoff);

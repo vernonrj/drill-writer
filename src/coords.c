@@ -43,6 +43,8 @@ coord_t *coord_construct_with_data(double x, double y)
 	coord = (coord_t*)malloc(sizeof(coord_t));
 	if (coord != NULL)
 	{
+		coord->form_num = 0;
+		coord->forms = NULL;
 		coord->type = 0;
 		coord->x = x;
 		coord->y = y;
@@ -64,7 +66,11 @@ coord_t **coords_destruct(coord_t **coords, int perfs)
 	// free up coord array
 	int i;
 	for (i=0; i<perfs; i++)
+	{
+		if (coords[i]->form_num)
+			free(coords[i]->forms);
 		free(coords[i]);
+	}
 	free(coords);
 	return coords;
 }
@@ -125,6 +131,63 @@ int coords_set_managed_by_index(int index, int state)
 		return coords_set_managed(pshow->sets->currset->coords[index], state);
 	else
 		return -1;
+}
+
+
+
+int coords_track_form(int index, form_t *form)
+{
+	int i;
+	coord_t *coord;
+	int form_num = 0;
+	int form_alloc = 0;
+	form_t **form_list = NULL;
+	coord = pshow->sets->currset->coords[index];
+	if ((coord->form_alloc-coord->form_num) == 0)
+	{
+		if (coord->forms != NULL)
+		{
+			form_num = coord->form_num;
+			form_list = coord->forms;
+			form_alloc = coord->form_alloc;
+			for(i=0; i<form_num; i++)
+				if (form == form_list[i])
+					return 0;
+		}
+		form_alloc++;
+		coord->forms = (form_t**)malloc((form_alloc)*sizeof(form_t*));
+		for(i=0; i<form_num; i++)
+			coord->forms[i] = form_list[i];
+	}
+	coord->forms[form_num] = form;
+	coord->form_num++;
+	coord->form_alloc = form_alloc;
+	return 0;
+}
+
+
+
+int coords_untrack_form(int index, form_t *form)
+{
+	int i;
+	coord_t *coord = pshow->sets->currset->coords[index];
+	bool found_form = false;
+
+	for(i=0; i<coord->form_num; i++)
+	{
+		if (found_form)
+		{
+			coord->forms[i-1] = coord->forms[i];
+			coord->forms[i] = NULL;
+		}
+		if (form == coord->forms[i])
+		{
+			found_form = true;
+			coord->forms[i] = NULL;
+			coord->form_num--;
+		}
+	}
+	return 0;
 }
 
 
