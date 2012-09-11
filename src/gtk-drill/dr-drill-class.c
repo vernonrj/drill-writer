@@ -531,7 +531,6 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 	double x, y;
 	int dot_num;
 	int i;
-	double **coords;
 	double slopex, slopey;
 
 	// show form being moved
@@ -578,7 +577,7 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 		x = i*slopex+x1rel;
 		y = i*slopey+y1rel;
 		field_to_pixel(&x, &y);
-		if (form->dots[i] != -1)
+		if (form->fcoords[i]->dot != -1)
 			drawing_method(cr, x, y);
 		else
 		{
@@ -602,9 +601,11 @@ int draw_forms(GtkWidget *widget)
 	double x, y;
 	int i;
 	int dot_num;
-	int *dots;
-	double **coords;
+	//int *dots;
+	//double **coords;
 	cairo_t *cr;
+	form_coord_t **fcoords;
+	coord_t *coord;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
@@ -620,6 +621,7 @@ int draw_forms(GtkWidget *widget)
 	form = pshow->sets->currset->forms;
 	while (form)
 	{
+		fcoords = form->fcoords;
 		if (form_is_selected(form, pstate.select))
 		{
 			cr = canv_form_select;
@@ -633,8 +635,8 @@ int draw_forms(GtkWidget *widget)
 		else
 			cr = canv_form;
 		dot_num = form->dot_num;
-		coords = form->coords;
-		dots = form->dots;
+		//coords = form->coords;
+		//dots = form->dots;
 		x = form->endpoints[0][0];
 		y = form->endpoints[0][1];
 		field_to_pixel(&x, &y);
@@ -645,11 +647,12 @@ int draw_forms(GtkWidget *widget)
 		cairo_line_to(cr, x, y);
 		for(i=0; i<dot_num; i++)
 		{
-			if (dots[i] == -1)
+			coord = fcoords[i]->coord;
+			if (fcoords[i]->dot == -1)
 			{
 				// hole in the form
-				x = coords[i][0] + form->endpoints[0][0];
-				y = coords[i][1] + form->endpoints[0][1];
+				x = coord->x + form->endpoints[0][0];
+				y = coord->y + form->endpoints[0][1];
 				field_to_pixel(&x, &y);
 				cairo_new_sub_path(cr);
 				cairo_arc(cr, x, y, 2*fldstate.canv_step/3, 0, 360);

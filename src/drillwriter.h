@@ -21,9 +21,6 @@
 
 typedef struct undo_proto undo_t;
 typedef struct select_proto select_t;
-// typedef struct [] fblock_t
-// typedef struct [] farc_t
-// typedef union [] formType_t
 typedef struct form_proto form_t;
 typedef struct group_proto group_t;
 typedef struct tempo_proto tempo_t;
@@ -92,14 +89,14 @@ struct undo_proto
 	union undo_union
 	{
 		set_t *set;		// if set was deleted
-		int tempo;			// if tempo was changed
-		int counts;			// if count was changed
-		perf_t *sperf;	// if perf was changed (not coord)
-		int pindex;			// if perf location changed
+		int tempo;		// if tempo was changed
+		int counts;		// if count was changed
+		perf_t *sperf;		// if perf was changed (not coord)
+		int pindex;		// if perf location changed
 	} ud;
 	coord_t **coords;		// if perf is to be deleted
-	double x, y;				// relative/absolute coords
-	int done;				// whether or not cascade should stop here
+	double x, y;			// relative/absolute coords
+	int done;			// whether or not cascade should stop here
 
 	undo_t *next;
 };
@@ -109,27 +106,43 @@ struct undo_proto
 struct select_proto
 {
 	// node with selection information
-	int index;
-	//group_t *group;
-	form_t *form;
+	// can contain a single dot, or an entire form
+	// (not both)
+	int index;		// performer 
+	form_t *form;		// form
 
 	select_t *next;
-	//select_t *prev;
 };
 
 
 
 
 // Forms
+typedef struct form_coord_proto
+{
+	// info about coordinate conained
+	// in form
+	int dot;		// performer
+	int form_num;		// number of mapped forms (>=1)
+	int form_alloc;		// memory allocated for forms
+	form_t **forms;		// forms this dot is mapped to
+	int *dot_type;		// types for forms
+	coord_t *coord;		// coordinate
+} form_coord_t;
+
 struct  form_proto // form_t
 {
-	char *name;
-	int type;
-	int dot_num;
-	double endpoints[2][2];
-	double **coords;
-	int *dots;
-	//formType_t *form;
+	char *name;		// name of form
+	// form type:
+	// 	0:	no form
+	// 	1:	straight
+	// 	2:	curve
+	// 	3:	circular?
+	// 	4:	ovoid?
+	int type;		
+	int dot_num;		// number of dots
+	double endpoints[2][2];	
+	form_coord_t **fcoords;	// coord data
 	form_t *next;
 };
 
@@ -138,10 +151,9 @@ struct  form_proto // form_t
 struct group_proto
 {
 	// node with grouping information
-	select_t *selects;
-	char *name;
-	//form_t *forms;
-	bool local;
+	char *name;		// name of group
+	select_t *selects;	// performers in group
+	bool local;		// toplevel/set-local status
 	group_t *next;
 };
 
@@ -272,6 +284,7 @@ void coords_rot_selected_around_center(double s_step);
 
 // forms.c
 form_t *form_construct();
+form_t *form_construct_with_size(int index);
 form_t *form_destruct(form_t *form);
 form_t *form_remove_from(form_t *curr, form_t *form_head);
 bool form_is_selected(form_t *form, select_t *select);

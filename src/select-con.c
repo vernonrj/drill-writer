@@ -505,13 +505,11 @@ void select_update_center(select_t *last)
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset)
 {
 	form_t *formcurr, *formnext, *form;
-	form_t *formcurr_head, *formnext_head;
-	form_t *flast;
+	form_t *formnext_head;
 	select_t *select;
 
 	select = select_head;
 
-	formcurr_head = currset->forms;
 	formnext_head = nextset->forms;
 	while (select)
 	{

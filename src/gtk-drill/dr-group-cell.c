@@ -203,8 +203,8 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	GtkWidget *entry;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	GtkWidget *expander;
-	GtkWidget *expander_box;
+	//GtkWidget *expander;
+	//GtkWidget *expander_box;
 	//const gchar *init_chars;
 
 	//char groupname_buf[20];
