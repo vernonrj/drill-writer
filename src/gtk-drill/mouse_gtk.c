@@ -97,9 +97,9 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				{
 					// regular click
 					// move dots
-					if(!mouse_discarded && form_checkEndpoints(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
+					if(!mouse_discarded && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 					{
-						while (form && form_checkEndpoints(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
+						while (form && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 						{
 							form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
 							if ((form2 = form_find_with_endpoint_hole(pshow->sets->currset->forms, x, y)) != NULL)

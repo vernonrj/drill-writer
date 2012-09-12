@@ -268,7 +268,7 @@ form_t *check_endpoints(double coordx, double coordy, form_t *form)
 
 	while (form)
 	{
-		if (form_checkEndpoints(form, coordx, coordy))
+		if (form_endpoint_contains_coords(form, coordx, coordy))
 			return form;
 		form = form->next;
 	}

@@ -1,7 +1,23 @@
 #include "drillwriter.h"
 
 
-form_t *form_construct()
+form_coord_t *fcoord_construct(void)
+{
+	form_coord_t *fcoord;
+	fcoord = (form_coord_t*)malloc(sizeof(form_coord_t));
+	fcoord->dot = -1;
+	fcoord->coord = coord_construct();
+	fcoord->forms = (form_t**)malloc(sizeof(form_t*));
+	fcoord->forms[0] = NULL;
+	fcoord->dot_type = (int*)malloc(sizeof(int));
+	fcoord->dot_type[0] = 1;
+	fcoord->form_num = 1;
+	fcoord->form_alloc = 1;
+	return fcoord;
+}
+
+
+form_t *form_construct(void)
 {
 	return form_construct_with_size(3);
 }
@@ -27,21 +43,16 @@ form_t *form_construct_with_size(int index)
 	form->fcoords = (form_coord_t**)malloc(index*sizeof(form_coord_t*));
 	for (i=0; i<index; i++)
 	{
-		form->fcoords[i] = (form_coord_t*)malloc(sizeof(form_coord_t));
-		form->fcoords[i]->dot = -1;
-		form->fcoords[i]->coord = coord_construct();
-		form->fcoords[i]->forms = (form_t**)malloc(sizeof(form_t*));
+		form->fcoords[i] = fcoord_construct();
 		form->fcoords[i]->forms[0] = form;
-		form->fcoords[i]->dot_type = (int*)malloc(sizeof(int));
-		form->fcoords[i]->dot_type[0] = 1;
-		form->fcoords[i]->form_num = 1;
-		form->fcoords[i]->form_alloc = 1;
 	}
 	form->fcoords[0]->dot_type[0] = 2;
 	if (index > 0)
 		form->fcoords[i-1]->dot_type[0] = 2;
 	return form;
 }
+
+
 
 
 
@@ -67,25 +78,88 @@ form_t *form_destruct(form_t *form)
 	{
 		if (is_selected)
 			select_add_index(pstate.select, fcoords[i]->dot, false);
-		//coords_set_managed_by_index(dots[i], 0);
 		coords_set_managed_by_index(fcoords[i]->dot, 0);
-		//free(form->coords[i]);
-		// free form_coord struct
 		free(form->fcoords[i]->forms);
 		free(form->fcoords[i]->dot_type);
 		free(form->fcoords[i]->coord);
 		free(form->fcoords[i]);
 	}
 	free(form->fcoords);
-	//free(form->coords);
-	//free(form->dots);
 	free(form);
 	return last;
 }
 
 
+
+form_t *form_add_hole_around_index(form_t *form, int index, bool after)
+{
+	int i;
+	int piv = 0;
+	form_coord_t **fcoords;
+	form_coord_t **fcoords_new;
+	int dot_num;
+
+	fcoords = form->fcoords;
+	dot_num = form->dot_num;
+
+	fcoords_new = (form_coord_t**)malloc((dot_num+1)*sizeof(form_coord_t*));
+	for(i=0; i<dot_num; i++)
+	{
+		if (fcoords[i]->dot == index)
+		{
+			fcoords_new[i+after] = fcoord_construct();
+			piv++;
+			fcoords_new[i+piv-after] = fcoords[i];
+		}
+		else
+			fcoords_new[i+piv] = fcoords[i];
+	}
+	form->dot_num++;
+
+	return form;
+}
+
+
+
+
+form_t *form_remove_index(form_t *form, int index)
+{
+	int i;
+	int ii = 0;
+	int piv_index = -1;
+	form_coord_t **fcoords;
+	form_coord_t **fcoords_new;
+	int dot_num;
+
+	fcoords = form->fcoords;
+	dot_num = form->dot_num;
+
+	fcoords_new = (form_coord_t**)malloc((dot_num-1)*sizeof(form_coord_t*));
+	for(i=0; i<dot_num; i++)
+	{
+		if (fcoords[i]->dot != index)
+		{
+			fcoords_new[ii] = fcoords[i];
+			ii++;
+		}
+		else
+			piv_index = i;
+	}
+	form->dot_num--;
+	free(fcoords[piv_index]->forms);
+	free(fcoords[piv_index]->dot_type);
+	free(fcoords[piv_index]->coord);
+	free(fcoords[piv_index]);
+	free(fcoords);
+	form->fcoords = fcoords_new;
+
+	return form;
+}
+
+
 form_t *form_remove_from(form_t *curr, form_t *form_head)
 {
+	// remove form from formlist
 	form_t *last;
 	if (!form_head || curr == form_head)
 		return (form_destruct(curr));
@@ -120,19 +194,15 @@ bool form_is_selected(form_t *form, select_t *select)
 
 
 
-bool form_checkEndpoints(form_t *form, double x, double y)
+//bool form_checkEndpoints(form_t *form, double x, double y)
+bool form_endpoint_contains_coords(form_t *form, double x, double y)
 {
 	if(!form)
 		return NULL;
-	switch(form->type)
-	{
-		case 1:		// line
-			if (fieldrel_check_dots_within_range(form->endpoints[0][0], form->endpoints[0][1], x, y))
-				return true;
-			else if (fieldrel_check_dots_within_range(form->endpoints[1][0], form->endpoints[1][1], x, y))
-				return true;
-			break;
-	}
+	if (fieldrel_check_dots_within_range(form->endpoints[0][0], form->endpoints[0][1], x, y))
+		return true;
+	else if (fieldrel_check_dots_within_range(form->endpoints[1][0], form->endpoints[1][1], x, y))
+		return true;
 	return false;
 }
 
@@ -148,37 +218,110 @@ bool form_contains_coords(form_t *form, double x, double y)
 	if (!form)
 		return false;
 	index = form->dot_num;
-	switch(form->type)
+	fcoords = form->fcoords;
+	x -= form->endpoints[0][0];
+	y -= form->endpoints[0][1];
+	for (i=0; i<index; i++)
 	{
-		case 1:		// line
-			//line = form->form->line;
-			//coords = form->coords;
-			fcoords = form->fcoords;
-			x -= form->endpoints[0][0];
-			y -= form->endpoints[0][1];
-			for (i=0; i<index; i++)
-			{
-				coord = fcoords[i]->coord;
-				if (fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
-					return true;
-			}
-			break;
+		coord = fcoords[i]->coord;
+		if (fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+			return true;
 	}
 	return false;
 }
 
 
 
-form_t *form_find_with_endpoint(form_t *form, double x, double y)
+bool form_hole_contains_coords(form_t *form, double x, double y)
+{
+	int i;
+	double coordx, coordy;
+	int dot_num;
+	coord_t *coord;
+	form_coord_t **fcoords;
+
+	fcoords = form->fcoords;
+	coordx = x - form->endpoints[0][0];
+	coordy = y - form->endpoints[0][1];
+	//dots = form->dots;
+	dot_num = form->dot_num;
+	//coords = form->coords;
+	for(i=0; i<dot_num; i++)
+	{
+		coord = fcoords[i]->coord;
+		if (fcoords[i]->dot == -1 && fieldrel_check_dots_within_range(coord->x, coord->y, coordx, coordy))
+			return true;
+	}
+	return false;
+}
+
+
+
+int form_find_index_with_coords(form_t *form, double x, double y)
+{
+	// return an index that matches (x, y)
+	int i;
+	//int *dots;
+	//double **coords;
+	int dot_num;
+	double coordx, coordy;
+	form_coord_t **fcoords;
+	coord_t *coord;
+	int dot;
+	if (!form)
+		return -1;
+	//dots = form->dots;
+	dot_num = form->dot_num;
+	fcoords = form->fcoords;
+	//coords = form->coords;
+	x -= form->endpoints[0][0];
+	y -= form->endpoints[0][1];
+	for(i=0; i<dot_num; i++)
+	{
+		dot = fcoords[i]->dot;
+		coord = fcoords[i]->coord;
+		coordx = coord->x;
+		coordy = coord->y;
+		if (fieldrel_check_dots_within_range(coordx, coordy, x, y))
+			return dot;
+	}
+	return -1;
+}
+
+
+
+form_t *form_find_form_with_index(form_t *form, int index)
+{
+	int i;
+	int dot_num;
+	form_coord_t **fcoords;
+	while (form)
+	{
+		fcoords = form->fcoords;
+		dot_num = form->dot_num;
+		for (i=0; i<dot_num; i++)
+		{
+			if (fcoords[i]->dot == index)
+				return form;
+		}
+		form = form->next;
+	}
+	return form;
+}
+
+
+
+form_t *form_find_with_coords(form_t *form, double x, double y)
 {
 	while (form)
 	{
-		if (form_checkEndpoints(form, x, y))
+		if (form_contains_coords(form, x, y))
 			return form;
 		form = form->next;
 	}
 	return NULL;
 }
+
 
 
 form_t *form_find_with_hole(form_t *form, double x, double y)
@@ -190,9 +333,9 @@ form_t *form_find_with_hole(form_t *form, double x, double y)
 	//double **coords;
 	double coordx, coordy;
 	coord_t *coord;
+	fcoords = form->fcoords;
 	while (form)
 	{
-		fcoords = form->fcoords;
 		coordx = x - form->endpoints[0][0];
 		coordy = y - form->endpoints[0][1];
 		//dots = form->dots;
@@ -208,6 +351,20 @@ form_t *form_find_with_hole(form_t *form, double x, double y)
 	}
 	return NULL;
 }
+
+
+
+form_t *form_find_with_endpoint(form_t *form, double x, double y)
+{
+	while (form)
+	{
+		if (form_endpoint_contains_coords(form, x, y))
+			return form;
+		form = form->next;
+	}
+	return NULL;
+}
+
 
 
 form_t *form_find_with_endpoint_hole(form_t *form, double x, double y)
@@ -270,51 +427,6 @@ form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, do
 		}
 	}
 	return NULL;
-}
-
-
-
-form_t *form_find_with_coords(form_t *form, double x, double y)
-{
-	while (form)
-	{
-		if (form_contains_coords(form, x, y))
-			return form;
-		form = form->next;
-	}
-	return NULL;
-}
-
-
-int form_find_index_with_coords(form_t *form, double x, double y)
-{
-	// return an index that matches (x, y)
-	int i;
-	//int *dots;
-	//double **coords;
-	int dot_num;
-	double coordx, coordy;
-	form_coord_t **fcoords;
-	coord_t *coord;
-	int dot;
-	if (!form)
-		return -1;
-	//dots = form->dots;
-	dot_num = form->dot_num;
-	fcoords = form->fcoords;
-	//coords = form->coords;
-	x -= form->endpoints[0][0];
-	y -= form->endpoints[0][1];
-	for(i=0; i<dot_num; i++)
-	{
-		dot = fcoords[i]->dot;
-		coord = fcoords[i]->coord;
-		coordx = coord->x;
-		coordy = coord->y;
-		if (fieldrel_check_dots_within_range(coordx, coordy, x, y))
-			return dot;
-	}
-	return -1;
 }
 
 
@@ -390,27 +502,6 @@ bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, 
 
 
 
-form_t *form_find_form_with_index(form_t *form, int index)
-{
-	int i;
-	int dot_num;
-	while (form)
-	{
-		dot_num = form->dot_num;
-		switch(form->type)
-		{
-			case 1:		// line
-				for (i=0; i<dot_num; i++)
-				{
-					if (form->fcoords[i]->dot == index)
-						return form;
-				}
-				break;
-		}
-		form = form->next;
-	}
-	return form;
-}
 
 
 int form_update_line(form_t *form)
@@ -474,7 +565,7 @@ int form_move_endpoint(form_t *form, double x1, double y1, double x2, double y2)
 {
 	while (form)
 	{
-		if (form_checkEndpoints(form, x1, y1))
+		if (form_endpoint_contains_coords(form, x1, y1))
 		{
 			form_set_endpoint(form, x1, y1, x2, y2);
 			return 0;
