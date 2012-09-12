@@ -587,3 +587,94 @@ select_t *select_find_form_with_endpoint_hole(select_t *select, double x, double
 	return select_find_form_with_attr(select, x, y, &form_endpoint_hole_contains_coords); 
 }
 
+
+select_t *select_get_in_area(double x, double y)
+{
+	int i;
+	int min_index = -1;
+	int index;
+	form_t *form = pshow->sets->currset->forms;
+	form_t *min_form = NULL;
+	int perfnum = pshow->perfnum;
+	double coordx, coordy;
+	double distance, distance_min = -1;
+	coord_t *coord;
+	select_t *dot_select = NULL;
+	select_t *form_select = NULL;
+	select_t *select = NULL;
+	for(i=0; i<perfnum; i++)
+	{
+		if (!coords_check_managed_by_index(i))
+		{
+			coords_retrieve_midset(pshow->sets->currset, i, &coordx, &coordy);
+			if (fieldrel_check_dots_within_range(x, y, coordx, coordy))
+				dot_select = select_add_index(dot_select, i, false);
+		}
+	}
+	while (form)
+	{
+		form = form_find_with_coords(form, x, y);
+		form_select = select_add_form(form_select, form, false);
+		if (form)
+			form = form->next;
+	}
+	if (dot_select)
+	{
+		select = dot_select;
+		distance_min = -1;
+		while (select)
+		{
+			coords_retrieve_midset(pshow->sets->currset, select->index, &coordx, &coordy);
+			distance = pow(coordx,2) + pow(coordy,2);
+			if (distance < distance_min || distance_min == -1)
+			{
+				distance_min = distance;
+				min_index = select->index;
+			}
+			select = select->next;
+		}
+		select = NULL;
+		dot_select = select_discard(dot_select);
+		dot_select = select_add_index(dot_select, min_index, false);
+	}
+	if (form_select)
+	{
+		select = form_select;
+		distance_min = -1;
+		while (select)
+		{
+			index = form_find_index_with_coords(select->form, x, y);
+			if (index == -1)
+			{
+				coord = form_get_coord_near(select->form, x, y);
+				coordx = coord->x;
+				coordy = coord->y;
+			}
+			else
+				coords_retrieve_midset(pshow->sets->currset, index, &coordx, &coordy);
+			distance = pow(coordx,2) + pow(coordy,2);
+			if (distance < distance_min || distance_min == -1)
+			{
+				distance_min = distance;
+				min_form = select->form;
+			}
+			select = select->next;
+		}
+		select = NULL;
+		form_select = select_discard(form_select);
+		form_select = select_add_form(form_select, min_form, false);
+	}
+
+	if (!form_select)
+		return dot_select;
+	else if (!dot_select)
+		return form_select;
+	if (form_hole_contains_coords(form_select->form, x, y))
+		return dot_select;
+	else
+		return form_select;
+	return NULL;
+}
+
+
+

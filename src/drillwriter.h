@@ -312,6 +312,7 @@ int form_unmanage_dot(form_t *form, int index);
 select_t *form_get_contained_dots(form_t *form);
 void form_add_to_set(form_t *form);
 coord_t **form_get_coords(form_t *form);
+coord_t *form_get_coord_near(form_t *form, double x, double y);
 void form_scale_from_center(form_t *form, double s_step);
 select_t *form_flatten(form_t *form, select_t *select_head);
 
@@ -383,6 +384,7 @@ select_t *select_find_form_with_coords(select_t *select, double x, double y);
 select_t *select_find_form_with_hole(select_t *select, double x, double y);
 select_t *select_find_form_with_endpoint(select_t *select, double x, double y);
 select_t *select_find_form_with_endpoint_hole(select_t *select, double x, double y);
+select_t *select_get_in_area(double x, double y);
 //void select_add_coord_to_center(coord_t *coord);
 //void select_remove_coord_from_center(coord_t *coord);
 

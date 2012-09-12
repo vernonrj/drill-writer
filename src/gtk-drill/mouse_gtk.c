@@ -155,8 +155,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 	
 	int index;
 	double coordx, coordy;
-	form_t *form;
-	form_t *form_endpoints;
+	select_t *select = NULL;
 	// Length from click location to nearest dot
 
 
@@ -195,41 +194,33 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				form_endpoints = dr_check_form_endpoints(widget, event);
-				form = dr_check_form(widget, event);
-				index = mouse_click_find_close_dot(widget, event);
-				if (event->state == GDK_CONTROL_MASK)// && index != -1)
+				select = select_get_in_area(mouse_clickx, mouse_clicky);
+				if (!select)
+				{
+					select_dots_discard();
+					break;
+				}
+				if (event->state == GDK_CONTROL_MASK)
 				{
 					// ctrl-click
-					if (!form_endpoints && index != -1)
-						select_dots_add_index(index);
+					if (!select->form)
+						select_dots_add_index(select->index);
 				}
 				else if (event->state == 0)
 				{
 					// regular click
-					if (form_endpoints && !form_is_selected(form_endpoints, pstate.select))
+					if (select->form && !form_is_selected(select->form, pstate.select))
 					{
 						// select form with ability to scale form
 						select_dots_discard();
 						mouse_discarded = 1;
-						if (form_endpoints && !form_is_selected(form_endpoints, pstate.select))
-						{
-							pstate.select = select_add_form(pstate.select, form_endpoints, false);
-							//form_endpoints = form_find_with_endpoint(form_endpoints->next, mouse_clickx, mouse_clicky);
-						}
-							select_update_center(pstate.select);
-					}
-					else if (form && !form_is_selected(form, pstate.select))
-					{
-						// select form, can't scale or rotate
-						select_dots_discard();
-						pstate.select = select_add_form(pstate.select, form, false);
+						pstate.select = select_add_form(pstate.select, select->form, false);
 						select_update_center(pstate.select);
-						mouse_discarded = 1;
 					}
-					else if (isSelected(index) != 1 && !form && !form_endpoints)
+					else if (!select->form && isSelected(select->index) != 1) 
 					{
 						// dot is not selected
+						index = select->index;
 						select_dots_discard();
 						mouse_discarded = 1;
 						if (index != -1)
@@ -243,16 +234,6 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						fldstate.mouse_clicked |= 0x2;
 					}
 				}
-				/*
-				else if (event->state == GDK_SHIFT_MASK)// && index != -1)
-				{
-					// shift-click
-					if (!group && !isSelected(index) && index != -1)
-						select_dots_add_index(index);
-				}
-				*/
-				//printf("event = %i\n", event->state);
-				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
 				break;
 			case ADDPERF:

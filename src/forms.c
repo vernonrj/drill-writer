@@ -708,6 +708,49 @@ coord_t **form_get_coords(form_t *form)
 }	
 
 
+
+coord_t *form_get_coord_near(form_t *form, double x, double y)
+{
+	int i;
+	int min_index = -1;
+	double min_distance = -1;
+	double distance;
+	int dot_num;
+	coord_t *coord;
+	form_coord_t **fcoords;
+	if (!form)
+		return NULL;
+	dot_num = form->dot_num;
+	coord = coord_construct();
+	fcoords = form->fcoords;
+	if (!coord)
+		return NULL;
+	x -= form->endpoints[0][0];
+	y -= form->endpoints[0][1];
+	for(i=0; i<dot_num; i++)
+	{
+		coord = fcoords[i]->coord;
+		if (fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		{
+			distance = pow(coord->x,2) + pow(coord->y,2);
+			if (distance < min_distance || min_distance == -1)
+			{
+				min_index = i;
+				min_distance = distance;
+			}
+		}
+	}
+	if (min_index != -1)
+	{
+		coord = coord_construct_with_data(fcoords[min_index]->coord->x+form->endpoints[0][0],
+				fcoords[min_index]->coord->y+form->endpoints[0][1]);
+		return coord;
+	}
+	return NULL;
+}
+
+
+
 void form_scale_from_center(form_t *form, double s_step)
 {
 	int i;
