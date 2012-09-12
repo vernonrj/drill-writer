@@ -85,7 +85,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
 				select = select_find_form_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
-				if (event->state == GDK_BUTTON_PRESS_MASK)
+				if ((event->state & ~GDK_SHIFT_MASK)== GDK_BUTTON_PRESS_MASK)
 				{
 					form = select ? select->form : NULL;
 					// regular click
@@ -94,7 +94,10 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 					{
 						while (form && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 						{
-							form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+							if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+								form_move_endpoint_grid(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+							else
+								form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
 							if ((select = select_find_form_with_endpoint_hole(select->next, x, y)) != NULL)
 							{
 								form2 = select->form;
@@ -112,7 +115,10 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 					}
 					else if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
-						coords_movexy(mouse_clickx, mouse_clicky);
+						if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+							coords_movexy_grid(mouse_clickx, mouse_clicky);
+						else
+							coords_movexy(mouse_clickx, mouse_clicky);
 						select_update_center(pstate.select);
 						dr_canvas_refresh(drill);
 					}
@@ -206,7 +212,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 					if (!select->form)
 						select_dots_add_index(select->index);
 				}
-				else if (event->state == 0)
+				else if ((event->state & ~GDK_SHIFT_MASK)== 0)
 				{
 					// regular click
 					if (select->form && !form_is_selected(select->form, pstate.select))
@@ -280,6 +286,11 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
+	if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+	{
+		coordx = round(coordx);
+		coordy = round(coordy);
+	}
 	if (fldstate.mouse_clicked == 0x1 && mouse_currentMode == SELECTONE)
 	{
 		// click drag

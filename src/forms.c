@@ -571,6 +571,29 @@ int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2)
 
 
 
+int form_set_endpoint_grid(form_t *form, double x1, double y1, double x2, double y2)
+{
+	int i;
+	double *endpoint;
+	if (!form)
+		return -1;
+	for (i=0; i<2; i++)
+	{
+		endpoint = form->endpoints[i];
+		if (fieldrel_check_dots_within_range(endpoint[0], endpoint[1], x1, y1))
+		{
+			endpoint[0] = round(x2);
+			endpoint[1] = round(y2);
+			break;
+		}
+	}
+	form_update_line(form);
+	return 0;
+}
+
+
+
+
 int form_move_endpoint(form_t *form, double x1, double y1, double x2, double y2)
 {
 	while (form)
@@ -578,6 +601,21 @@ int form_move_endpoint(form_t *form, double x1, double y1, double x2, double y2)
 		if (form_endpoint_contains_coords(form, x1, y1))
 		{
 			form_set_endpoint(form, x1, y1, x2, y2);
+			return 0;
+		}
+		form = form->next;
+	}
+	return -1;
+}
+
+
+int form_move_endpoint_grid(form_t *form, double x1, double y1, double x2, double y2)
+{
+	while (form)
+	{
+		if (form_endpoint_contains_coords(form, x1, y1))
+		{
+			form_set_endpoint_grid(form, x1, y1, x2, y2);
 			return 0;
 		}
 		form = form->next;
