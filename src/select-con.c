@@ -625,7 +625,7 @@ select_t *select_get_in_area(double x, double y)
 		while (select)
 		{
 			coords_retrieve_midset(pshow->sets->currset, select->index, &coordx, &coordy);
-			distance = pow(coordx,2) + pow(coordy,2);
+			distance = pow((coordx-x),2) + pow((coordy-y),2);
 			if (distance < distance_min || distance_min == -1)
 			{
 				distance_min = distance;
@@ -652,7 +652,7 @@ select_t *select_get_in_area(double x, double y)
 			}
 			else
 				coords_retrieve_midset(pshow->sets->currset, index, &coordx, &coordy);
-			distance = pow(coordx,2) + pow(coordy,2);
+			distance = pow((coordx-x),2) + pow((coordy-y),2);
 			if (distance < distance_min || distance_min == -1)
 			{
 				distance_min = distance;
@@ -660,7 +660,6 @@ select_t *select_get_in_area(double x, double y)
 			}
 			select = select->next;
 		}
-		select = NULL;
 		form_select = select_discard(form_select);
 		form_select = select_add_form(form_select, min_form, false);
 	}
