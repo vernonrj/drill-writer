@@ -208,6 +208,27 @@ bool form_endpoint_contains_coords(form_t *form, double x, double y)
 
 
 
+bool form_endpoint_hole_contains_coords(form_t *form, double x, double y)
+{
+	double coordx, coordy;
+	form_coord_t **fcoords;
+	int dot_num;
+	if (!form)
+		return NULL;
+	dot_num = form->dot_num;
+	fcoords = form->fcoords;
+	coordx = form->endpoints[0][0];
+	coordy = form->endpoints[0][1];
+	if (fcoords[0]->dot == -1 && fieldrel_check_dots_within_range(coordx, coordy, x, y))
+		return true;
+	coordx = form->endpoints[dot_num-1][0];
+	coordy = form->endpoints[dot_num-1][1];
+	if (fcoords[dot_num-1]->dot == -1 && fieldrel_check_dots_within_range(coordx, coordy, x, y))
+		return true;
+	return false;
+}
+
+
 bool form_contains_coords(form_t *form, double x, double y)
 {
 	int i;
@@ -254,6 +275,9 @@ bool form_hole_contains_coords(form_t *form, double x, double y)
 	}
 	return false;
 }
+
+
+
 
 
 
@@ -324,29 +348,14 @@ form_t *form_find_with_coords(form_t *form, double x, double y)
 
 
 
+
 form_t *form_find_with_hole(form_t *form, double x, double y)
 {
-	int i;
-	//int *dots;
-	int dot_num;
-	form_coord_t **fcoords;
-	//double **coords;
-	double coordx, coordy;
-	coord_t *coord;
-	fcoords = form->fcoords;
+	// find a form with a hole at coords
 	while (form)
 	{
-		coordx = x - form->endpoints[0][0];
-		coordy = y - form->endpoints[0][1];
-		//dots = form->dots;
-		dot_num = form->dot_num;
-		//coords = form->coords;
-		for(i=0; i<dot_num; i++)
-		{
-			coord = fcoords[i]->coord;
-			if (fcoords[i]->dot == -1 && fieldrel_check_dots_within_range(coord->x, coord->y, coordx, coordy))
-				return form;
-		}
+		if (form_hole_contains_coords(form, x, y))
+			return form;
 		form = form->next;
 	}
 	return NULL;
@@ -356,6 +365,7 @@ form_t *form_find_with_hole(form_t *form, double x, double y)
 
 form_t *form_find_with_endpoint(form_t *form, double x, double y)
 {
+	// find a form with an endpoint that matches coords
 	while (form)
 	{
 		if (form_endpoint_contains_coords(form, x, y))
@@ -369,16 +379,16 @@ form_t *form_find_with_endpoint(form_t *form, double x, double y)
 
 form_t *form_find_with_endpoint_hole(form_t *form, double x, double y)
 {
-	int i;
+	// find a form with an endpoint hole that matches the coords
 	while (form)
 	{
-		for(i=0; i<2; i++)
-			if (fieldrel_check_dots_within_range(form->endpoints[i][0], form->endpoints[i][1], x, y))
-				return form;
+		if (form_endpoint_hole_contains_coords(form, x, y))
+			return form;
 		form = form->next;
 	}
-	return form;
+	return NULL;
 }
+
 
 
 

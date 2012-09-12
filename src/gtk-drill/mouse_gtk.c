@@ -69,6 +69,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	double x, y;
 	int index;
 	form_t *form2;
+	select_t *select;
 	//double x1, y1;
 	form_t *form;
 	form = pshow->sets->currset->forms;
@@ -83,18 +84,10 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				// move a performer
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
-				//group = dr_check_form_endpoints(widget, event);
-				/*
-				while (form)
-				{
-					if (form_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
-						break;
-					form = form->next;
-				}
-				*/
-				form = form_find_with_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky);
+				select = select_find_form_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
 				if (event->state == GDK_BUTTON_PRESS_MASK)
 				{
+					form = select ? select->form : NULL;
 					// regular click
 					// move dots
 					if(!mouse_discarded && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
@@ -102,12 +95,17 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 						while (form && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 						{
 							form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
-							if ((form2 = form_find_with_endpoint_hole(pshow->sets->currset->forms, x, y)) != NULL)
+							if ((select = select_find_form_with_endpoint_hole(select->next, x, y)) != NULL)
 							{
+								form2 = select->form;
 								index = form_find_index_with_coords(form, x, y);
 								form_add_index_to_hole_with_coords(form2, index, x, y);
 							}
-							form = form_find_with_endpoint(form->next, fldstate.mouse_clickx, fldstate.mouse_clicky);
+							if (select)
+								select = select_find_form_with_endpoint(select->next, fldstate.mouse_clickx, fldstate.mouse_clicky);
+							else
+								select = NULL;
+							form = select ? select->form : NULL;
 						}
 						select_update_center(pstate.select);
 						dr_canvas_refresh(drill);
@@ -122,7 +120,6 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				break;
 			case ADDFORM:
 				// add a form
-				//form = form_build_line(NULL, NULL);
 				form = pstate.select->form;
 				form_set_endpoint(form, 0, 0, x, y);
 				form_set_endpoint(form, 0, 0, fldstate.mouse_clickx, fldstate.mouse_clicky);
@@ -215,10 +212,10 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						// select form with ability to scale form
 						select_dots_discard();
 						mouse_discarded = 1;
-						while (form_endpoints && !form_is_selected(form_endpoints, pstate.select))
+						if (form_endpoints && !form_is_selected(form_endpoints, pstate.select))
 						{
 							pstate.select = select_add_form(pstate.select, form_endpoints, false);
-							form_endpoints = form_find_with_endpoint(form_endpoints->next, mouse_clickx, mouse_clicky);
+							//form_endpoints = form_find_with_endpoint(form_endpoints->next, mouse_clickx, mouse_clicky);
 						}
 							select_update_center(pstate.select);
 					}

@@ -535,4 +535,55 @@ select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, s
 	return select_head;
 }
 
+select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_t*,double,double))
+{
+	// use comparison fptr to find a selected form with certain attributes
+	form_t *form;
+	while(select)
+	{
+		if (!select->form)
+		{
+			select = select->next;
+			continue;
+		}
+		form = select->form;
+		if (fptr(form, x, y))
+			return select;
+		select = select->next;
+	}
+	return NULL;
+}
+
+
+select_t *select_find_form_with_coords(select_t *select, double x, double y)
+{
+	// find and return a selected form
+	// that contains a coordinate (x, y)
+	return select_find_form_with_attr(select, x, y, &form_contains_coords);
+}
+
+select_t *select_find_form_with_hole(select_t *select, double x, double y)
+{
+	// find and return a selected form
+	// that contains a hole (x, y)
+	return select_find_form_with_attr(select, x, y, &form_hole_contains_coords);
+}
+
+
+
+select_t *select_find_form_with_endpoint(select_t *select, double x, double y)
+{
+	// find and return a selected form
+	// that contains an endpoint (x, y)
+	return select_find_form_with_attr(select, x, y, &form_endpoint_contains_coords);
+}
+
+
+
+select_t *select_find_form_with_endpoint_hole(select_t *select, double x, double y)
+{
+	// find and return a selected form
+	// that contains an endpoint hole (x, y)
+	return select_find_form_with_attr(select, x, y, &form_endpoint_hole_contains_coords); 
+}
 
