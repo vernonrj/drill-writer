@@ -843,3 +843,22 @@ select_t *form_flatten(form_t *form, select_t *select_head)
 	free(last);
 	return select_head;
 }
+
+
+form_t *form_copy(form_t *form)
+{
+	int i;
+	int dot_num;
+	form_t *newform;
+	dot_num = form->dot_num;
+	newform = form_construct_with_size(dot_num);
+	newform->type = form->type;
+	memcpy(newform->name, form->name, strlen(form->name));
+	for(i=0; i<dot_num; i++)
+	{
+		newform->fcoords[i]->dot = form->fcoords[i]->dot;
+		memcpy(newform->fcoords[i]->coord, form->fcoords[i]->coord, sizeof(coord_t));
+	}
+	return newform;
+}
+

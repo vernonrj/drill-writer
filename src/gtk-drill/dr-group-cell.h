@@ -45,4 +45,6 @@ bool dr_group_cell_has_next(GtkWidget *groupcell);
 GtkWidget *dr_group_cell_add(GtkWidget *groupcell, group_t *group);
 GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_t *form);
 GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container);
+void dr_group_cell_set_is_this_set(GtkWidget *widget, bool is_this_set);
+form_t *dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data);
 

@@ -17,6 +17,9 @@ struct _DrGroupCellPrivate {
 	group_t *group;
 	form_t *form;
 	int type;
+	bool this_set;
+	gulong button_del_id;
+	gulong button_add_id;
 	DrGroupCell *next;
 };
 
@@ -96,6 +99,9 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 	groupcell->priv->form = NULL;
 	dr_sidebar_update((DrSidebar*)sidebar);
 }
+
+
+
 
 
 gint group_cell_clicked(GtkWidget *widget, GdkEventButton *event, gpointer *data)
@@ -193,6 +199,10 @@ GtkWidget *mymenu_append(GtkWidget *menu, char *name)
 
 
 
+		
+
+
+
 static void dr_group_cell_init(DrGroupCell *groupcell)
 {
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
@@ -203,6 +213,8 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	GtkWidget *entry;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
+	gulong button_del_id;
+	gulong button_add_id;
 	//GtkWidget *expander;
 	//GtkWidget *expander_box;
 	//const gchar *init_chars;
@@ -216,26 +228,19 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 
 	button = gtk_button_new();
 	image = gtk_image_new_from_stock(GTK_STOCK_REMOVE, GTK_ICON_SIZE_MENU);
+	button_del_id = g_signal_connect(button, "clicked", G_CALLBACK(dr_group_cell_remove_cell), groupcell);
+	button_add_id = g_signal_connect(button, "clicked", G_CALLBACK(dr_group_cell_transplant_cell), groupcell);
+	g_signal_handler_block(button, button_add_id);
+	groupcell->priv->button_add_id = button_add_id;
+	groupcell->priv->button_del_id = button_del_id;
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	gtk_button_set_image(GTK_BUTTON(button), image);
 	gtk_widget_show(image);
 	gtk_widget_show(button);
 	gtk_box_pack_end(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
-	g_signal_connect(button, "clicked", G_CALLBACK(dr_group_cell_remove_cell), groupcell);
 	groupcell->priv->button_del = button;
 
-
-	/*
-	expander = gtk_expander_new("");
-	gtk_box_pack_start(GTK_BOX(groupcell), expander, TRUE, TRUE, 0);
-	groupcell->priv->expander = expander;
-	gtk_expander_set_label_widget(GTK_EXPANDER(expander), button);
-	gtk_widget_show(expander);
-
-	button = gtk_button_new_with_label("test");
-	gtk_container_add(GTK_CONTAINER(expander), button);
-	gtk_widget_show(button);
-	*/
+	groupcell->priv->this_set = true;
 
 
 	button = gtk_button_new_with_label("New Group");
@@ -421,5 +426,36 @@ GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 	if (curr != NULL)
 		curr->priv->next = groupcell->priv->next;
 	return (GtkWidget*)groupcell->priv->next;
+}
+
+
+void dr_group_cell_set_is_this_set(GtkWidget *widget, bool is_this_set)
+{
+	GtkWidget *image;
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	groupcell->priv->this_set = is_this_set;
+	if (is_this_set == FALSE)
+	{
+		image = gtk_image_new_from_stock(GTK_STOCK_ADD, GTK_ICON_SIZE_MENU);
+		g_signal_handler_block(groupcell->priv->button_del, groupcell->priv->button_del_id);
+		g_signal_handler_unblock(groupcell->priv->button_del, groupcell->priv->button_add_id);
+		gtk_button_set_image(GTK_BUTTON(groupcell->priv->button_del), image);
+	}
+	else
+	{
+		image = gtk_image_new_from_stock(GTK_STOCK_REMOVE, GTK_ICON_SIZE_MENU);
+		g_signal_handler_block(groupcell->priv->button_del, groupcell->priv->button_add_id);
+		g_signal_handler_unblock(groupcell->priv->button_del, groupcell->priv->button_del_id);
+		gtk_button_set_image(GTK_BUTTON(groupcell->priv->button_del), image);
+	}
+	return;
+}
+
+form_t *dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)data;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), NULL);
+	return form_copy(groupcell->priv->form);
 }
 
