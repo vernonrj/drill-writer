@@ -204,6 +204,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				if (!select)
 				{
 					select_dots_discard();
+					mouse_discarded = 1;
 					break;
 				}
 				if (event->state == GDK_CONTROL_MASK)
