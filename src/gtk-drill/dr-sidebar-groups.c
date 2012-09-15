@@ -284,10 +284,6 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 				lsidebargroups->priv->form_cell = last;
 				dr_group_cell_set_form(last, form);
 			}
-			else if (!last)
-			{
-				printf("ping\n");
-			}
 			else
 			{
 				last = dr_group_cell_append(last, NULL, form);
@@ -300,37 +296,38 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		inc++;
 	}
 
-	/*
 	// Previous Set Forms
 	last = lsidebargroups->priv->prev_form_cell;
 	if (pshow->sets->currset->prev)
 		form = pshow->sets->currset->prev->forms;
 	else
 		form = NULL;
-	dr_sidebar_groups_update_from(lsidebargroups->priv->prev_form_cell, &last);
-	if (!last)
-		lsidebargroups->priv->prev_form_cell = NULL;
+	index = dr_sidebar_groups_update_from(lsidebargroups->priv->box_prev_form, &lsidebargroups->priv->prev_form_cell, &last);
+	inc = 0;
 	while (form)
 	{
 		// added a new prev form
 		// add another sidebar ref
-		if (!last)
+		if (inc >= index)
 		{
-			last = dr_group_cell_new();
-			lsidebargroups->priv->prev_form_cell = last;
-			dr_group_cell_set_form(last, form);
+			if (!lsidebargroups->priv->prev_form_cell)
+			{
+				last = dr_group_cell_new();
+				lsidebargroups->priv->prev_form_cell = last;
+				dr_group_cell_set_form(last, form);
+			}
+			else
+			{
+				last = dr_group_cell_append(last, NULL, form);
+				last = dr_group_cell_get_next(last);
+			}
+			gtk_box_pack_start(GTK_BOX(lsidebargroups->priv->box_prev_form), last, FALSE, FALSE, 0);
+			dr_group_cell_set_is_this_set(last, false);
+			gtk_widget_show(last);
 		}
-		else
-		{
-			last = dr_group_cell_append(last, NULL, form);
-			last = dr_group_cell_get_next(last);
-		}
-		gtk_box_pack_start(GTK_BOX(lsidebargroups->priv->box_prev_form), last, FALSE, FALSE, 0);
-		dr_group_cell_set_is_this_set(last, false);
-		gtk_widget_show(last);
 		form = form->next;
+		inc++;
 	}
-	*/
 
 
 	if (!lsidebargroups->priv->group_cell)
@@ -353,7 +350,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(lsidebargroups->priv->box_local);
 		gtk_widget_show(lsidebargroups->priv->local_frame);
 	}
-	if (false && !lsidebargroups->priv->form_cell)
+	if (!lsidebargroups->priv->form_cell)
 	{
 		gtk_widget_hide(lsidebargroups->priv->form_frame);
 		gtk_widget_hide(lsidebargroups->priv->box_form);
@@ -363,7 +360,6 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(lsidebargroups->priv->box_form);
 		gtk_widget_show(lsidebargroups->priv->form_frame);
 	}
-	/*
 	if (!lsidebargroups->priv->prev_form_cell)
 	{
 		gtk_widget_hide(lsidebargroups->priv->prev_frame);
@@ -374,7 +370,6 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(lsidebargroups->priv->prev_frame);
 		gtk_widget_show(lsidebargroups->priv->box_prev_form);
 	}
-	*/
 	return;
 }
 
