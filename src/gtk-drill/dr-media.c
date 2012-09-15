@@ -216,7 +216,8 @@ void play_show_from_start (GtkWidget *widget)
 		pshow->sets->currset->prev = 0;
 		pstate.curr_step = 0;
 		pstate.setnum=0;
-		(void)g_timeout_add(50, (GSourceFunc)play_show, window);
+		(void)g_timeout_add_full(G_PRIORITY_HIGH, 1, (GSourceFunc)play_show, window, NULL);
+		//(void)g_timeout_add(50, (GSourceFunc)play_show, window);
 		pstate.playing=1;
 		dr_canvas_refresh(drill);
 		//gtk_widget_queue_draw_area(window, 0, 0, 

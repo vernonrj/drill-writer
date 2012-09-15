@@ -7,6 +7,7 @@ static void dr_group_cell_class_init(DrGroupCellClass *klass);
 static void dr_group_cell_init(DrGroupCell *groupcell);
 
 struct _DrGroupCellPrivate {
+	gpointer garbage;
 	GtkWidget *entry_name;
 	//GtkWidget *button_add;
 	GtkWidget *button_del;
@@ -235,9 +236,9 @@ static void dr_group_cell_init(DrGroupCell *groupcell)
 	groupcell->priv->button_del_id = button_del_id;
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	gtk_button_set_image(GTK_BUTTON(button), image);
-	gtk_widget_show(image);
-	gtk_widget_show(button);
 	gtk_box_pack_end(GTK_BOX(groupcell), button, FALSE, FALSE, 0);
+	gtk_widget_show(button);
+	gtk_widget_show(image);
 	groupcell->priv->button_del = button;
 
 	groupcell->priv->this_set = true;
@@ -398,11 +399,10 @@ GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	DrGroupCell *curr = (DrGroupCell*)container;
-	//gtk_widget_hide(widget);
+	DrGroupCell *gnext;
 	if (!groupcell || !container)
 		return NULL;
-	if (!IS_GROUP_CELL(groupcell))
-		return NULL;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), NULL);
 	if (!IS_GROUP_CELL(curr))
 		return NULL;
 	if (container != widget)
@@ -413,19 +413,35 @@ GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 	else
 		curr = NULL;
 	//gtk_widget_hide(groupcell->priv->button_add);
-	//g_free(groupcell->priv->button_add);
 
-	gtk_widget_hide(groupcell->priv->button_del);
-	//g_free(groupcell->priv->button_del);
-
-	gtk_widget_hide(groupcell->priv->button_name);
-	//g_free(groupcell->priv->button_name);
-
-
-	gtk_widget_hide((GtkWidget*)groupcell);
 	if (curr != NULL)
 		curr->priv->next = groupcell->priv->next;
-	return (GtkWidget*)groupcell->priv->next;
+	gnext = groupcell->priv->next;
+
+	/*
+	if (false)
+	{
+		// for now, always push onto stack
+		groupcell->priv->group = NULL;
+		groupcell->priv->form = NULL;
+		spool = (stack_pool_t*)malloc(sizeof(stack_pool_t));
+		spool->data = widget;
+		g_trash_stack_push(&stack_pool, spool);
+	}
+	else
+	*/
+	{
+		//gtk_widget_hide(groupcell->priv->button_del);
+		gtk_widget_destroy(groupcell->priv->button_del);
+
+		//gtk_widget_hide(groupcell->priv->button_name);
+		gtk_widget_destroy(groupcell->priv->button_name);
+
+
+		//gtk_widget_hide((GtkWidget*)groupcell);
+		gtk_widget_destroy((GtkWidget*)groupcell);
+	}
+	return GTK_WIDGET(gnext);
 }
 
 

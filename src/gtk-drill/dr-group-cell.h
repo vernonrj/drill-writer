@@ -34,6 +34,13 @@ GtkWidget *dr_group_cell_new(void);
 G_END_DECLS
 #endif // __DR_GROUP_CELL_H__
 
+struct stack_pool_proto
+{
+	struct stack_pool_proto *next;
+	gpointer data;
+};
+typedef struct stack_pool_proto stack_pool_t;
+
 int dr_group_cell_get_container_type(GtkWidget *widget);
 void dr_group_cell_set_container_type(GtkWidget *widget, int type);
 group_t *dr_group_cell_get_group(GtkWidget *groupcell);

@@ -69,6 +69,7 @@ static void dr_sidebar_init(DrSidebar *lsidebar)
 	//lsidebar->priv->sidebarsets = sidebarsets;
 }
 
+
 GtkWidget *dr_sidebar_new(void)
 {
 	return GTK_WIDGET(g_object_new(dr_sidebar_get_type(), NULL));

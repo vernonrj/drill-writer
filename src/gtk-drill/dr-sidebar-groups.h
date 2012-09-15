@@ -34,22 +34,8 @@ GtkWidget *dr_sidebar_groups_new(void);
 G_END_DECLS
 #endif // __SIDEBAR_GROUPS_H__
 
-struct group_box_proto
-{
-	// used on group sidebar tab
-	// to show group information
-	group_t *group;
-	GtkWidget *button;
-
-	struct group_box_proto *next;
-};
-
-typedef struct group_box_proto group_box_t;
-
+GTrashStack *stack_pool;
 
 void dr_sidebar_groups_update(GtkWidget *sidebargroups);
-group_box_t *dr_create_group_box(void);
-group_box_t *dr_add_group_box_from_select(group_box_t *gbox, select_t *select);
-
 
 
