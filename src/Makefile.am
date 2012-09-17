@@ -24,7 +24,7 @@ bin_PROGRAMS = drillwriter
 
 ## included in distribution archives of the project.
 
-drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h \
+drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h bsd-queue.h \
 		      coords.c fieldrel.c file-ops.c \
 		      drillwriter.c perf-con.c forms.c group.c\
 		      select-con.c set-controls.c tempo.c undo.c \

@@ -18,9 +18,11 @@
 #include <time.h>
 #include <stdio.h>
 #include <math.h>
+#include "bsd-queue.h"
 
 typedef struct undo_proto undo_t;
 typedef struct select_proto select_t;
+typedef struct form_container_proto form_container_t;
 typedef struct form_proto form_t;
 typedef struct group_proto group_t;
 typedef struct tempo_proto tempo_t;
@@ -118,6 +120,18 @@ struct select_proto
 
 
 // Forms
+struct form_container_proto
+{
+	// container for forms
+	LIST_ENTRY(form_container_proto) formlist_entries;
+	int* set_index;
+	form_t **forms;
+	int size;
+	int size_alloc;
+};
+LIST_HEAD(form_list_proto, form_container_proto);
+typedef struct form_list_proto form_list_t;
+
 typedef struct form_coord_proto
 {
 	// info about coordinate conained
@@ -244,6 +258,8 @@ struct headset_proto
 	tempo_t *currtempo;
 	// Toplevel groups
 	group_t *topgroups;
+	// full forms
+	form_list_t *topforms;
 };
 
 // main show container
@@ -318,6 +334,14 @@ coord_t *form_get_coord_near(form_t *form, double x, double y);
 void form_scale_from_center(form_t *form, double s_step);
 select_t *form_flatten(form_t *form, select_t *select_head);
 form_t *form_copy(form_t *form);
+form_container_t *form_container_construct(void);
+form_container_t *form_container_construct_with_form(form_t *form, int index);
+form_container_t *form_container_destruct(form_container_t *last);
+form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index);
+int form_container_add_set(form_list_t *head, form_container_t *last, int index);
+int form_container_remove_set(form_list_t *head, form_container_t *last, int index);
+form_container_t *form_container_find_with_form(form_list_t *head, form_t *form);
+form_t *form_container_find_form_at_index(form_container_t *last, int index);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

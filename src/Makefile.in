@@ -262,7 +262,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
-drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h \
+drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h bsd-queue.h \
 		      coords.c fieldrel.c file-ops.c \
 		      drillwriter.c perf-con.c forms.c group.c\
 		      select-con.c set-controls.c tempo.c undo.c \

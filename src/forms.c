@@ -849,16 +849,238 @@ form_t *form_copy(form_t *form)
 {
 	int i;
 	int dot_num;
+	int size;
+	int index;
+	int type;
 	form_t *newform;
 	dot_num = form->dot_num;
 	newform = form_construct_with_size(dot_num);
 	newform->type = form->type;
-	memcpy(newform->name, form->name, strlen(form->name));
+	size = strlen(form->name)+1;
+	newform->name = (char*)malloc(size*sizeof(char));
+	strncpy(newform->name, form->name, size);
 	for(i=0; i<dot_num; i++)
 	{
-		newform->fcoords[i]->dot = form->fcoords[i]->dot;
+		index = form->fcoords[i]->dot;
+		newform->fcoords[i]->dot = index;
+		if (index != -1)
+		{
+			type = (0 || (dot_num -1)) + 1;
+			coords_set_managed_by_index(index, type);
+		}
 		memcpy(newform->fcoords[i]->coord, form->fcoords[i]->coord, sizeof(coord_t));
 	}
+	for(i=0; i<2; i++)
+	{
+		newform->endpoints[i][0] = form->endpoints[i][0];
+		newform->endpoints[i][1] = form->endpoints[i][1];
+	}
+	form_update_line(newform);
 	return newform;
+}
+
+
+
+form_container_t *form_container_construct(void)
+{
+	form_container_t *last;
+
+	last = (form_container_t*)malloc(sizeof(form_container_t));
+	last->size = 0;
+	last->size_alloc = 0;
+	return last;
+}
+
+form_container_t *form_container_construct_with_form(form_t *form, int index)
+{
+	int size_alloc;
+	form_container_t *last;
+	last = form_container_construct();
+	size_alloc = last->size_alloc = 5;
+	
+	last->forms = (form_t**)malloc(size_alloc*sizeof(form_t*));
+	last->set_index = (int*)malloc(size_alloc*sizeof(int));
+	last->forms[0] = form;
+	last->set_index[0] = index;
+	last->size = 1;
+
+	return last;
+}
+		
+
+form_container_t *form_container_destroy(form_container_t *last)
+{
+	free(last->forms);
+	free(last->set_index);
+	LIST_REMOVE(last, formlist_entries);
+	free(last);
+	return NULL;
+}
+
+
+form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index)
+{
+	form_container_t *last;
+
+	if (!head)
+	{
+		head = (form_list_t*)malloc(sizeof(form_list_t));
+		LIST_INIT(head);
+	}
+	
+	last = form_container_construct_with_form(form, index);
+
+	LIST_INSERT_HEAD(head, last, formlist_entries);
+
+	return head;
+}
+
+
+
+
+
+
+int form_container_add_set(form_list_t *head, form_container_t *last, int index)
+{
+	int i;
+	int pivot;
+	int size;
+	int size_alloc;
+	int *set_index;
+	form_t **forms;
+	int excode;
+	if (!last)
+		return -1;
+	size = last->size;
+	size_alloc = last->size_alloc;
+	while (size >= size_alloc)
+	{
+		set_index = (int*)malloc((size_alloc+5)*sizeof(int));
+		forms = (form_t**)malloc((size_alloc+5)*sizeof(form_t*));
+		for (i=0; i<size; i++)
+		{
+			set_index[i] = last->set_index[i];
+			forms[i] = last->forms[i];
+		}
+		size_alloc+=5;
+		free(last->set_index);
+		free(last->forms);
+		last->set_index = set_index;
+		last->forms = forms;
+		last->size_alloc = size_alloc;
+	}
+	forms = last->forms;
+	set_index = last->set_index;
+	for(i=0; i<size; i++)
+	{
+		if (set_index[i] >= index)
+			break;
+	}
+	if (set_index[i] == index)
+		return 0;
+	pivot = i;
+	for(i = size; i >= pivot; i--)
+	{
+		set_index[i+1] = set_index[i];
+		forms[i+1] = forms[i];
+	}
+	size++;
+	last->size = size;
+	set_index[pivot] = index;
+	if (pivot > 0 && set_index[pivot] == set_index[pivot-1]+1)
+	{
+		// re-using form from previous set
+		forms[pivot] = form_copy(forms[pivot-1]);
+		excode = 0;
+	}
+	else
+	{
+		// making new form. Indicate in exit code
+		forms[pivot] = form_construct();
+		excode = 1;
+	}
+	form_add_to_set(forms[pivot]);
+	return excode;
+}
+
+
+int form_container_remove_set(form_list_t *head, form_container_t *last, int index)
+{
+	int i;
+	int size;
+	bool removed_flag = false;
+	form_t **forms;
+	int *set_index;
+
+	if (!last)
+		return -1;
+	size = last->size;
+	forms = last->forms;
+	set_index = last->set_index;
+	for(i=0; i<size; i++)
+	{
+		if (set_index[i] == index)
+		{
+			removed_flag = true;
+			form_destruct(forms[i]);
+		}
+		if (removed_flag && i < (size-1))
+		{
+			set_index[i] = set_index[i+1];
+			forms[i] = forms[i+1];
+		}
+	}
+	last->size--;
+	if (last->size <= 0)
+	{
+		last = form_container_destroy(last);
+		return 1;
+	}
+	return 0;
+}
+
+
+
+form_container_t *form_container_find_with_form(form_list_t *head, form_t *form)
+{
+	int i;
+	form_t **forms;
+	int size;
+	form_container_t *last;
+	bool found_form = false;
+
+	last = LIST_FIRST(head);
+	while (last)
+	{
+		forms = last->forms;
+		size = last->size;
+		for (i=0; i<size; i++)
+		{
+			if (forms[i] == form)
+			{
+				found_form = true;
+				break;
+			}
+		}
+		if (found_form)
+			break;
+		last = LIST_NEXT(last, formlist_entries);
+	}
+	return last;
+}
+
+
+form_t *form_container_find_form_at_index(form_container_t *last, int index)
+{
+	int i;
+	int size;
+	int *set_index;
+
+	set_index = last->set_index;
+	size = last->size;
+	for(i=0; i<size; i++)
+		if (set_index[i] == index)
+			return last->forms[i];
+	return NULL;
 }
 

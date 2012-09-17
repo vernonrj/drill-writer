@@ -40,9 +40,12 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	form_t *form = NULL;
 	form = form_build_line(form, groupcell->priv->group->selects);
+	form->name = (char*)malloc(10*sizeof(char));
+	snprintf(form->name, 10, "New Form");
 	//form_add_to_set(form);
 	select_dots_discard();
 	pstate.select = select_add_form(pstate.select, form, false);
+	pshow->topforms = form_container_add_form(pshow->topforms, form, pstate.setnum);
 	mouse_currentMode = ADDFORM;
 	return;
 }
@@ -85,6 +88,7 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 	{
 		// form
 		pshow->sets->currset->forms = form_remove_from(groupcell->priv->form, pshow->sets->currset->forms);
+		form_container_remove_set(pshow->topforms, form_container_find_with_form(pshow->topforms, groupcell->priv->form), pstate.setnum);
 	}
 	else if (groupcell->priv->group && groupcell->priv->group->local)
 	{
@@ -468,10 +472,20 @@ void dr_group_cell_set_is_this_set(GtkWidget *widget, bool is_this_set)
 	return;
 }
 
-form_t *dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
+void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 {
+	form_t *form;
+	int excode;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
-	g_return_val_if_fail(IS_GROUP_CELL(groupcell), NULL);
-	return form_copy(groupcell->priv->form);
+	form_container_t *fcont;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	//form = form_copy(groupcell->priv->form);
+	fcont = form_container_find_with_form(pshow->topforms, groupcell->priv->form);
+	excode = form_container_add_set(pshow->topforms, fcont, pstate.setnum);
+	if (excode == 1)
+		mouse_currentMode = ADDFORM;
+	form = form_container_find_form_at_index(fcont, pstate.setnum);
+	form_add_to_set(form);
+	return;
 }
 

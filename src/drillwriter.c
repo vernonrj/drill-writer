@@ -76,6 +76,7 @@ int show_construct(headset_t **dshow_r, int perfs)
 	pstate.select = 0;
 	// Initialize toplevel groups to NULL
 	dshow->topgroups = NULL;
+	dshow->topforms = NULL;
 	// Set the current set to opening set
 	dshow->sets->currset = dshow->sets->firstset;
 	// init undo/redo to NULL
@@ -207,6 +208,7 @@ int main (int argc, char *argv[])
 	for(i=0; i<6; i++)
 		select = select_add_index(select, i, false);
 	form = form_build_line(NULL, select);
+	pshow->topforms = form_container_add_form(pshow->topforms, form, pstate.setnum);
 	free(form->name);
 	form->name = (char*)malloc(6*sizeof(char));
 	snprintf(form->name, 6, "Form1");
@@ -224,6 +226,7 @@ int main (int argc, char *argv[])
 	for(i=6; i<12; i++)
 		select = select_add_index(select, i, false);
 	form = form_build_line(NULL, select);
+	pshow->topforms = form_container_add_form(pshow->topforms, form, pstate.setnum);
 	free(form->name);
 	form->name = (char*)malloc(6*sizeof(char));
 	snprintf(form->name, 6, "Form2");
