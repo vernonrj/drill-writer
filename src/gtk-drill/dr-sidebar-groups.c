@@ -10,11 +10,11 @@ struct _DrSidebarGroupsPrivate {
 	GtkWidget *group_cell;
 	GtkWidget *group_cell_local;
 	GtkWidget *form_cell;
-	GtkWidget *prev_form_cell;
+	GtkWidget *prev_form_cell, *next_form_cell;
 	GtkWidget *global_frame, *local_frame, *form_frame;
-	GtkWidget *prev_frame;
+	GtkWidget *prev_frame, *next_frame;
 	GtkWidget *box_global, *box_local, *box_form;
-	GtkWidget *box_prev_form;
+	GtkWidget *box_prev_form, *box_next_form;
 	set_t *currset;
 };
 
@@ -33,8 +33,8 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 {
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
 	GtkWidget *button_add_group;
-	GtkWidget *prev_frame;
-	GtkWidget *box_prev_form;
+	GtkWidget *prev_frame, *next_frame;
+	GtkWidget *box_prev_form, *box_next_form;
 
 
 	sidebargroups->priv = DR_SIDEBAR_GROUPS_GET_PRIVATE(sidebargroups);
@@ -71,6 +71,14 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	box_prev_form = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(prev_frame), box_prev_form);
 	sidebargroups->priv->box_prev_form = box_prev_form;
+
+	next_frame = gtk_frame_new("Next Set");
+	gtk_box_pack_start(GTK_BOX(sidebargroups), next_frame, FALSE, FALSE, 0);
+	sidebargroups->priv->next_frame = next_frame;
+	box_next_form = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_container_add(GTK_CONTAINER(next_frame), box_next_form);
+	sidebargroups->priv->box_next_form = box_next_form;
+
 
 	stack_pool = NULL;
 	
@@ -329,6 +337,38 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		inc++;
 	}
 
+	// Next Set Forms
+	last = lsidebargroups->priv->next_form_cell;
+	if (pshow->sets->currset->next)
+		form = pshow->sets->currset->next->forms;
+	else
+		form = NULL;
+	index = dr_sidebar_groups_update_from(lsidebargroups->priv->box_next_form, &lsidebargroups->priv->next_form_cell, &last);
+	inc = 0;
+	while (form)
+	{
+		// added a new next form
+		// add another sidebar ref
+		if (inc >= index)
+		{
+			if (!lsidebargroups->priv->next_form_cell)
+			{
+				last = dr_group_cell_new();
+				lsidebargroups->priv->next_form_cell = last;
+				dr_group_cell_set_form(last, form);
+			}
+			else
+			{
+				last = dr_group_cell_append(last, NULL, form);
+				last = dr_group_cell_get_next(last);
+			}
+			gtk_box_pack_start(GTK_BOX(lsidebargroups->priv->box_next_form), last, FALSE, FALSE, 0);
+			dr_group_cell_set_is_this_set(last, false);
+			gtk_widget_show(last);
+		}
+		form = form->next;
+		inc++;
+	}
 
 	if (!lsidebargroups->priv->group_cell)
 	{
@@ -369,6 +409,16 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	{
 		gtk_widget_show(lsidebargroups->priv->prev_frame);
 		gtk_widget_show(lsidebargroups->priv->box_prev_form);
+	}
+	if (!lsidebargroups->priv->next_form_cell)
+	{
+		gtk_widget_hide(lsidebargroups->priv->next_frame);
+		gtk_widget_hide(lsidebargroups->priv->box_next_form);
+	}
+	else
+	{
+		gtk_widget_show(lsidebargroups->priv->next_frame);
+		gtk_widget_show(lsidebargroups->priv->box_next_form);
 	}
 	return;
 }
