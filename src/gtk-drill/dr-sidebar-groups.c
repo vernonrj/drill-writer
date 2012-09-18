@@ -117,6 +117,7 @@ int dr_sidebar_groups_update_from(GtkWidget *container, GtkWidget **head_r, GtkW
 	int index = 0;
 	int type;
 	int inc;
+	form_container_t *fcont;
 	while (last)
 	{
 		type = dr_group_cell_get_container_type(last);
@@ -125,7 +126,9 @@ int dr_sidebar_groups_update_from(GtkWidget *container, GtkWidget **head_r, GtkW
 		is_local = dr_group_cell_get_is_this_set(last);
 		if (!is_local)
 			if (dr_group_cell_check_form_nonlocal(last))
+			{
 				form_parent_present = true;
+			}
 
 		// delete nodes that are present in group cells,
 		// but not present in group or form list.
@@ -173,7 +176,13 @@ int dr_sidebar_groups_update_from(GtkWidget *container, GtkWidget **head_r, GtkW
 	{
 		// added a new group
 		// add another sidebar ref
-		if (inc >= index)
+		fcont = form_container_find_with_form(pshow->topforms, form);
+		if (!is_this_set && fcont && form_container_find_form_at_index(fcont, pstate.setnum) != form 
+				&&form_container_mapped_at_set(fcont, pstate.setnum))
+		{
+			index++;
+		}
+		else if (inc >= index)
 		{
 			if (!last)
 			{
