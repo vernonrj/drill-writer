@@ -208,6 +208,29 @@ int dr_sidebar_groups_update_from(GtkWidget *container, GtkWidget **head_r, GtkW
 }
 
 
+void dr_sidebar_groups_flush_local(GtkWidget *container, GtkWidget **cell_r)
+{
+	GtkWidget *last;
+	GtkWidget *lastcurr;
+	GtkWidget *gnext;
+	if (!cell_r)
+		return;
+	last = *cell_r;
+
+	lastcurr = last;
+	while (last)
+	{
+		gtk_widget_hide(last);
+		g_object_ref(last);
+		gtk_container_remove(GTK_CONTAINER(container), last);
+		gnext = dr_group_cell_delete_from(last, lastcurr);
+		last = gnext;
+	}
+	*cell_r = last;
+	return;
+}
+
+
 void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 {
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
@@ -215,8 +238,6 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 
 	lsidebargroups = (DrSidebarGroups*)sidebargroups;
 	GtkWidget *last;
-	GtkWidget *lastcurr;
-	GtkWidget *gnext;
 
 	if (pshow->sets->currset != lsidebargroups->priv->currset)
 	{
@@ -224,42 +245,16 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		last = lsidebargroups->priv->group_cell_local;
 
 		// groups
-		lastcurr = last;
-		while (last)
-		{
-			gtk_widget_hide(last);
-			g_object_ref(last);
-			gtk_container_remove(GTK_CONTAINER(lsidebargroups->priv->box_local), last);
-			gnext = dr_group_cell_delete_from(last, lastcurr);
-			last = gnext;
-		}
-		lsidebargroups->priv->group_cell_local = NULL;
+		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_local, &lsidebargroups->priv->group_cell_local);
 
 		// forms
-		last = lsidebargroups->priv->form_cell;
-		lastcurr = last;
-		while (last)
-		{
-			gtk_widget_hide(last);
-			g_object_ref(last);
-			gtk_container_remove(GTK_CONTAINER(lsidebargroups->priv->box_form), last);
-			gnext = dr_group_cell_delete_from(last, lastcurr);
-			last = gnext;
-		}
-		lsidebargroups->priv->form_cell = NULL;
+		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_form, &lsidebargroups->priv->form_cell);
 
 		// forms from previous set
-		last = lsidebargroups->priv->prev_form_cell;
-		lastcurr = last;
-		while (last)
-		{
-			gtk_widget_hide(last);
-			g_object_ref(last);
-			gtk_container_remove(GTK_CONTAINER(lsidebargroups->priv->box_prev_form), last);
-			gnext = dr_group_cell_delete_from(last, lastcurr);
-			last = gnext;
-		}
-		lsidebargroups->priv->prev_form_cell = NULL;
+		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_prev_form, &lsidebargroups->priv->prev_form_cell);
+
+		// forms from next set
+		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_next_form, &lsidebargroups->priv->next_form_cell);
 
 		last = NULL;
 		lsidebargroups->priv->currset = pshow->sets->currset;
