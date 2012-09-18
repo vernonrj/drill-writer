@@ -454,6 +454,8 @@ void dr_group_cell_set_is_this_set(GtkWidget *widget, bool is_this_set)
 	GtkWidget *image;
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	if (is_this_set == groupcell->priv->this_set)
+		return;
 	groupcell->priv->this_set = is_this_set;
 	if (is_this_set == FALSE)
 	{
@@ -472,6 +474,14 @@ void dr_group_cell_set_is_this_set(GtkWidget *widget, bool is_this_set)
 	return;
 }
 
+
+bool dr_group_cell_get_is_this_set(GtkWidget *widget)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), false);
+	return groupcell->priv->this_set;
+}
+
 void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 {
 	form_t *form;
@@ -487,5 +497,19 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 	form = form_container_find_form_at_index(fcont, pstate.setnum);
 	form_add_to_set(form);
 	return;
+}
+
+
+bool dr_group_cell_check_form_nonlocal(GtkWidget *widget)
+{
+	form_container_t *fcont;
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	g_return_val_if_fail(IS_GROUP_CELL(groupcell), false);
+	if (!groupcell->priv->form)
+		return false;
+	fcont = form_container_find_with_form(pshow->topforms, groupcell->priv->form);
+	if (!fcont)
+		return false;
+	return form_container_mapped_at_set(fcont, pstate.setnum);
 }
 

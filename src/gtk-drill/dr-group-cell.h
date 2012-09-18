@@ -53,5 +53,7 @@ GtkWidget *dr_group_cell_add(GtkWidget *groupcell, group_t *group);
 GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_t *form);
 GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container);
 void dr_group_cell_set_is_this_set(GtkWidget *widget, bool is_this_set);
+bool dr_group_cell_get_is_this_set(GtkWidget *widget);
 void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data);
+bool dr_group_cell_check_form_nonlocal(GtkWidget *widget);
 

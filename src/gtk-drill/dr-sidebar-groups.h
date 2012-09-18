@@ -38,4 +38,3 @@ GTrashStack *stack_pool;
 
 void dr_sidebar_groups_update(GtkWidget *sidebargroups);
 
-

@@ -36,7 +36,8 @@ form_t *form_construct_with_size(int index)
 	// initialize
 	form->next = NULL;
 	form->type = 0;
-	form->name = NULL;
+	form->name = (char*)malloc(sizeof(char));
+	form->name[0] = '\0';
 	for (i=0; i<2; i++)
 		form->endpoints[i][0] = form->endpoints[i][1] = 0;
 	form->dot_num = index;
@@ -161,8 +162,13 @@ form_t *form_remove_from(form_t *curr, form_t *form_head)
 {
 	// remove form from formlist
 	form_t *last;
+	if (!curr)
+		return NULL;
 	if (!form_head || curr == form_head)
-		return (form_destruct(curr));
+	{
+		//return (form_destruct(curr));
+		return curr->next;
+	}
 	last = form_head;
 	while (last && last->next != curr)
 		last = last->next;
@@ -171,7 +177,7 @@ form_t *form_remove_from(form_t *curr, form_t *form_head)
 		printf("WARNING: Form to be removed not in scope!\n");
 		return form_head;
 	}
-	last->next = form_destruct(curr);
+	last->next = curr->next;//form_destruct(curr);
 	return form_head;
 }
 
@@ -1084,3 +1090,16 @@ form_t *form_container_find_form_at_index(form_container_t *last, int index)
 	return NULL;
 }
 
+
+bool form_container_mapped_at_set(form_container_t *last, int setnum)
+{
+	int i;
+	int *set_index;
+	if (!last)
+		return false;
+	set_index = last->set_index;
+	for(i=0; i<last->size; i++)
+		if (set_index[i] == setnum)
+			return true;
+	return false;
+}

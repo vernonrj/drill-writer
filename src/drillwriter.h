@@ -342,6 +342,7 @@ int form_container_add_set(form_list_t *head, form_container_t *last, int index)
 int form_container_remove_set(form_list_t *head, form_container_t *last, int index);
 form_container_t *form_container_find_with_form(form_list_t *head, form_t *form);
 form_t *form_container_find_form_at_index(form_container_t *last, int index);
+bool form_container_mapped_at_set(form_container_t *last, int setnum);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
