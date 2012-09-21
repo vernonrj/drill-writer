@@ -52,11 +52,11 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	group_head = (groupcell_l*)malloc(sizeof(groupcell_l));
 	group_local_head = (groupcell_l*)malloc(sizeof(groupcell_l));
 
-	LIST_INIT(form_head);
-	LIST_INIT(pform_head);
-	LIST_INIT(nform_head);
-	LIST_INIT(group_head);
-	LIST_INIT(group_local_head);
+	groupcell_list_init(form_head);
+	groupcell_list_init(pform_head);
+	groupcell_list_init(nform_head);
+	groupcell_list_init(group_head);
+	groupcell_list_init(group_local_head);
 
 	sidebargroups->priv->form_head = form_head;
 	sidebargroups->priv->pform_head = pform_head;
@@ -73,23 +73,27 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 
 
 	sidebargroups->priv->global_frame = gtk_frame_new("Global groups");
+	gtk_widget_show(sidebargroups->priv->global_frame);
 	gtk_box_pack_start(GTK_BOX(sidebargroups), sidebargroups->priv->global_frame, FALSE, FALSE, 0);
 	//sidebargroups->priv->box_global = gtk_vbox_new(TRUE, 0);
 	sidebargroups->priv->box_global = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(sidebargroups->priv->global_frame), sidebargroups->priv->box_global);
 
 	sidebargroups->priv->local_frame = gtk_frame_new("Local groups");
+	gtk_widget_show(sidebargroups->priv->local_frame);
 	gtk_box_pack_start(GTK_BOX(sidebargroups), sidebargroups->priv->local_frame, FALSE, FALSE, 0);
 	//sidebargroups->priv->box_local = gtk_vbox_new(TRUE, 0);
 	sidebargroups->priv->box_local = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(sidebargroups->priv->local_frame), sidebargroups->priv->box_local);
 
 	sidebargroups->priv->form_frame = gtk_frame_new("Forms");
+	gtk_widget_show(sidebargroups->priv->form_frame);
 	gtk_box_pack_start(GTK_BOX(sidebargroups), sidebargroups->priv->form_frame, FALSE, FALSE, 0);
 	sidebargroups->priv->box_form = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(sidebargroups->priv->form_frame), sidebargroups->priv->box_form);
 
 	prev_frame = gtk_frame_new("Prev Set");
+	gtk_widget_show(prev_frame);
 	gtk_box_pack_start(GTK_BOX(sidebargroups), prev_frame, FALSE, FALSE, 0);
 	sidebargroups->priv->prev_frame = prev_frame;
 	box_prev_form = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -97,6 +101,7 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 	sidebargroups->priv->box_prev_form = box_prev_form;
 
 	next_frame = gtk_frame_new("Next Set");
+	gtk_widget_show(next_frame);
 	gtk_box_pack_start(GTK_BOX(sidebargroups), next_frame, FALSE, FALSE, 0);
 	sidebargroups->priv->next_frame = next_frame;
 	box_next_form = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -123,7 +128,7 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 {
 	groupcell_c *last;
 	groupcell_c *curr;
-	struct group_cell_container *newnode;
+	groupcell_c *newnode;
 	GtkWidget *widget;
 	form_container_t *fcont;
 	int index;
@@ -132,16 +137,25 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 	form_t *form;
 
 	if (form_r)
+	{
 		form = *form_r;
+		fcont = form_container_find_with_form(pshow->topforms, form);
+	}
 	else
+	{
 		form = NULL;
+		fcont = NULL;
+	}
 	if (group_r)
 		group = *group_r;
 	else
 		group = NULL;
+	if (!form && !group)
+	{
+		printf("Error: No form or group!\nin groups_update_append\n");
+		exit(-1);
+	}
 	// group/form needs to be added
-	fcont = form_container_find_with_form(pshow->topforms, form);
-	last = LIST_FIRST(head);
 	if (!is_this_set && fcont && form_container_find_form_at_index(fcont, pstate.setnum) != form 
 			&&form_container_mapped_at_set(fcont, pstate.setnum))
 	{
@@ -149,7 +163,8 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 	}
 	else //if (inc >= index)
 	{
-		newnode = (struct group_cell_container*)malloc(sizeof(groupcell_c));
+		last = groupcell_list_first(head);
+		newnode = (groupcell_c*)malloc(sizeof(groupcell_c));
 		widget = dr_group_cell_new();
 
 		if (group)
@@ -157,18 +172,19 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 		else
 			dr_group_cell_set_form(widget, form);
 		dr_group_cell_set_is_this_set(widget, is_this_set);
-		gtk_box_pack_start(GTK_BOX(container), widget, FALSE, FALSE, 0);
 		gtk_widget_show(widget);
+		gtk_box_pack_start(GTK_BOX(container), widget, FALSE, FALSE, 0);
 		if (last)
 		{
-			while ((curr = LIST_NEXT(last, groupcell_entries)) != NULL)
+			while ((curr = groupcell_list_next(last)) != NULL)
 				last = curr;
-			LIST_INSERT_AFTER(newnode, last, groupcell_entries);
+			groupcell_list_insert_after(head, newnode, last);
 		}
 		else
 		{
-			LIST_INSERT_HEAD(head, newnode, groupcell_entries);
+			groupcell_list_insert_head(head, newnode);
 		}
+		// end of fixme area
 		newnode->cell = widget;
 	}
 	inc++;
@@ -205,11 +221,11 @@ int dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, gro
 
 	groupcell_c *last;
 	groupcell_c *gnext;
-	last = LIST_FIRST(head_l);
+	last = groupcell_list_first(head_l);
 
 	form = form_head;
 	group = group_head;
-	while (last && (group || form))
+	while (last)
 	{
 		type = dr_group_cell_get_container_type(last->cell);
 		if (type == GROUP_CELL_TYPE_GROUP)
@@ -248,8 +264,8 @@ int dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, gro
 			gtk_widget_hide(last->cell);
 			g_object_ref(last->cell);
 			gtk_container_remove(GTK_CONTAINER(container), last->cell);
-			gnext = LIST_NEXT(last, groupcell_entries);
-			LIST_REMOVE(last, groupcell_entries);
+			gnext = groupcell_list_next(last);
+			groupcell_list_remove(head_l, last);
 			dr_group_cell_delete_from(last->cell);
 			free(last);
 			last = gnext;
@@ -258,6 +274,7 @@ int dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, gro
 		else if ((group && currgroup && currgroup != group) || (form && currform && currform != form))
 		{
 			dr_sidebar_groups_flush_local(container, head_l);
+			last = NULL;
 			form = form_head;
 			group = group_head;
 		}
@@ -267,7 +284,7 @@ int dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, gro
 			//lastcurr = last->cell;
 			//last = gnext->group_cell_container;
 			//last = dr_group_cell_get_next(lastcurr);
-			last = LIST_NEXT(last, groupcell_entries);
+			last = groupcell_list_next(last);
 			index++;
 			if (group)
 				group = group->next;
@@ -346,14 +363,15 @@ void dr_sidebar_groups_flush_local(GtkWidget *container, groupcell_l *cell_head)
 
 	//lastcurr = last;
 	//while (last)
-	while (!LIST_EMPTY(cell_head))
+	while (!groupcell_list_empty(cell_head))
 	{
-		last = LIST_FIRST(cell_head);
+		last = groupcell_list_first(cell_head);
+		groupcell_list_remove(cell_head, last);
 		gtk_widget_hide(last->cell);
 		g_object_ref(last->cell);
 		gtk_container_remove(GTK_CONTAINER(container), last->cell);
 		dr_group_cell_delete_from(last->cell);
-		//last = gnext;
+		free(last);
 	}
 	//*cell_r = last;
 	return;
@@ -392,60 +410,32 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	}
 
 	// Global Groups
-	//last = lsidebargroups->priv->group_cell;
-	/*
-	dr_sidebar_groups_update_from(lsidebargroups->priv->box_global, &lsidebargroups->priv->group_cell, &last,
-			pshow->topgroups, NULL, true);
-			*/
 	dr_sidebar_groups_update_from(lsidebargroups->priv->box_global, lsidebargroups->priv->group_head, pshow->topgroups, NULL, true);
 
 
 	// Local Groups
-	//last = lsidebargroups->priv->group_cell_local;
-	/*
-	dr_sidebar_groups_update_from(lsidebargroups->priv->box_local, &lsidebargroups->priv->group_cell_local, &last, 
-			pshow->sets->currset->groups, NULL, true);
-			*/
 	dr_sidebar_groups_update_from(lsidebargroups->priv->box_local, lsidebargroups->priv->group_local_head, pshow->sets->currset->groups, NULL, true);
 
-
 	// Forms
-	//last = lsidebargroups->priv->form_cell;
-	/*
-	dr_sidebar_groups_update_from(lsidebargroups->priv->box_form, &lsidebargroups->priv->form_cell, &last, 
-			NULL, pshow->sets->currset->forms, true);
-			*/
 	dr_sidebar_groups_update_from(lsidebargroups->priv->box_form, lsidebargroups->priv->form_head, NULL, pshow->sets->currset->forms, true);
 
-
 	// Previous Set Forms
-	//last = lsidebargroups->priv->prev_form_cell;
 	if (pshow->sets->currset->prev)
 	{
-		/*
-		dr_sidebar_groups_update_from(lsidebargroups->priv->box_prev_form, &lsidebargroups->priv->prev_form_cell, &last,
-				NULL, pshow->sets->currset->prev->forms, false);
-				*/
 		dr_sidebar_groups_update_from(lsidebargroups->priv->box_prev_form, lsidebargroups->priv->pform_head, 
 				NULL, pshow->sets->currset->prev->forms, false);
 	}
 
 	// Next Set Forms
-	//last = lsidebargroups->priv->next_form_cell;
 	if (pshow->sets->currset->next)
 	{
-		/*
-		dr_sidebar_groups_update_from(lsidebargroups->priv->box_next_form, &lsidebargroups->priv->next_form_cell, &last,
-				NULL, pshow->sets->currset->next->forms, false);
-				*/
 		dr_sidebar_groups_update_from(lsidebargroups->priv->box_next_form, lsidebargroups->priv->nform_head,
 				NULL, pshow->sets->currset->next->forms, false);
 	}
 
 
-	//if (!lsidebargroups->priv->group_cell)
-	printf("%i\n", LIST_EMPTY(lsidebargroups->priv->form_head));
-	if (LIST_EMPTY(lsidebargroups->priv->group_head))
+	printf("%i\n", groupcell_list_empty(lsidebargroups->priv->form_head));
+	if (groupcell_list_empty(lsidebargroups->priv->group_head))
 	{
 		gtk_widget_hide(lsidebargroups->priv->box_global);
 		gtk_widget_hide(lsidebargroups->priv->global_frame);
@@ -456,7 +446,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(lsidebargroups->priv->global_frame);
 	}
 
-	if (LIST_EMPTY(lsidebargroups->priv->group_local_head))
+	if (groupcell_list_empty(lsidebargroups->priv->group_local_head))
 	{
 		gtk_widget_hide(lsidebargroups->priv->local_frame);
 		gtk_widget_hide(lsidebargroups->priv->box_local);
@@ -466,7 +456,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(lsidebargroups->priv->box_local);
 		gtk_widget_show(lsidebargroups->priv->local_frame);
 	}
-	if (LIST_EMPTY(lsidebargroups->priv->form_head))
+	if (groupcell_list_empty(lsidebargroups->priv->form_head))
 	{
 		gtk_widget_hide(lsidebargroups->priv->form_frame);
 		gtk_widget_hide(lsidebargroups->priv->box_form);
@@ -476,7 +466,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(lsidebargroups->priv->box_form);
 		gtk_widget_show(lsidebargroups->priv->form_frame);
 	}
-	if (LIST_EMPTY(lsidebargroups->priv->pform_head))
+	if (groupcell_list_empty(lsidebargroups->priv->pform_head))
 	{
 		gtk_widget_hide(lsidebargroups->priv->prev_frame);
 		gtk_widget_hide(lsidebargroups->priv->box_prev_form);
@@ -486,7 +476,7 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 		gtk_widget_show(lsidebargroups->priv->prev_frame);
 		gtk_widget_show(lsidebargroups->priv->box_prev_form);
 	}
-	if (LIST_EMPTY(lsidebargroups->priv->nform_head))
+	if (groupcell_list_empty(lsidebargroups->priv->nform_head))
 	{
 		gtk_widget_hide(lsidebargroups->priv->next_frame);
 		gtk_widget_hide(lsidebargroups->priv->box_next_form);
@@ -500,5 +490,118 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 }
 
 
+void groupcell_list_init(groupcell_l *head)
+{
+	head->list_first = NULL;
+	return;
+}
+
+int groupcell_list_empty(groupcell_l *head)
+{
+	if (head->list_first == NULL)
+		return 1;
+	return 0;
+}
+
+groupcell_c *groupcell_list_first(groupcell_l *head)
+{
+	return head->list_first;
+}
+
+void groupcell_list_remove(groupcell_l *head, groupcell_c *last)
+{
+	groupcell_c *prev, *next;
+	if (!last)
+		return;
+	prev = last->prev;
+	next = last->next;
+	last->prev = NULL;
+	last->next = NULL;
+	if (prev)
+		prev->next = next;
+	if (next)
+		next->prev = prev;
+	if (head->list_first == last)
+		head->list_first = next;
+	return;
+}
+
+void groupcell_list_insert_after(groupcell_l *head, groupcell_c *curr, groupcell_c *last)
+{
+	groupcell_c *next;
+	if (!last)
+	{
+		groupcell_list_append(head, curr);
+		return;
+	}
+	next = last->next;
+	if (next)
+		next->prev = curr;
+	curr->next = next;
+	curr->prev = last;
+	last->next = curr;
+	return;
+}
+
+void groupcell_list_insert_before(groupcell_l *head, groupcell_c *curr, groupcell_c *last)
+{
+	groupcell_c *prev;
+	if (!last)
+	{
+		groupcell_list_insert_head(head, curr);
+		return;
+	}
+	prev = last->prev;
+	if (prev)
+		prev->next = curr;
+	curr->next = last;
+	curr->prev = prev;
+	last->prev = curr;
+	if (head->list_first == last)
+		head->list_first = curr;
+	return;
+}
 
 
+void groupcell_list_insert_head(groupcell_l *head, groupcell_c *curr)
+{
+	groupcell_c *next;
+	next = head->list_first;
+	if (next)
+		next->prev = curr;
+	curr->next = next;
+	curr->prev = NULL;
+	head->list_first = curr;
+	return;
+}
+
+void groupcell_list_append(groupcell_l *head, groupcell_c *curr)
+{
+	groupcell_c *last;
+	last = groupcell_list_first(head);
+	if (!last)
+	{
+		groupcell_list_insert_head(head, curr);
+		return;
+	}
+	while (last->next)
+		last = last->next;
+	last->next = curr;
+	curr->prev = last;
+	curr->next = NULL;
+	return;
+}
+
+groupcell_c *groupcell_list_next(groupcell_c *curr)
+{
+	if (!curr)
+		return NULL;
+	return curr->next;
+}
+
+groupcell_c *groupcell_list_prev(groupcell_c *curr)
+{
+	if (!curr)
+		return NULL;
+	return curr->prev;
+}
