@@ -103,6 +103,7 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 	groupcell->priv->group = NULL;
 	groupcell->priv->form = NULL;
 	dr_sidebar_update((DrSidebar*)sidebar);
+	dr_canvas_refresh(drill);
 }
 
 
@@ -551,6 +552,8 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 		mouse_currentMode = ADDFORM;
 	form = form_container_find_form_at_index(fcont, pstate.setnum);
 	form_add_to_set(form);
+	dr_sidebar_update((DrSidebar*)sidebar);
+	dr_canvas_refresh(drill);
 	return;
 }
 

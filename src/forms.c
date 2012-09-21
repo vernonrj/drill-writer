@@ -955,6 +955,7 @@ int form_container_add_set(form_list_t *head, form_container_t *last, int index)
 	int *set_index;
 	form_t **forms;
 	int excode;
+	bool setnum_broke = false;
 	if (!last)
 		return -1;
 	size = last->size;
@@ -980,9 +981,12 @@ int form_container_add_set(form_list_t *head, form_container_t *last, int index)
 	for(i=0; i<size; i++)
 	{
 		if (set_index[i] >= index)
+		{
+			setnum_broke = true;
 			break;
+		}
 	}
-	if (set_index[i] == index)
+	if (setnum_broke && set_index[i] == index)
 		return 0;
 	pivot = i;
 	for(i = size; i >= pivot; i--)

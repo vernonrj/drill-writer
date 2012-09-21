@@ -6,11 +6,6 @@ static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *klass);
 static void dr_sidebar_groups_init(DrSidebarGroups *sidebar_groups);
 
 struct _DrSidebarGroupsPrivate {
-	//GtkWidget *entry_groupname;
-	//GtkWidget *group_cell;
-	//GtkWidget *group_cell_local;
-	//GtkWidget *form_cell;
-	//GtkWidget *prev_form_cell, *next_form_cell;
 	GtkWidget *global_frame, *local_frame, *form_frame;
 	GtkWidget *prev_frame, *next_frame;
 	GtkWidget *box_global, *box_local, *box_form;
@@ -42,8 +37,6 @@ static void dr_sidebar_groups_init(DrSidebarGroups *sidebargroups)
 
 
 	sidebargroups->priv = DR_SIDEBAR_GROUPS_GET_PRIVATE(sidebargroups);
-	//sidebargroups->priv->group_cell = NULL;
-	//sidebargroups->priv->group_cell_local = NULL;
 	sidebargroups->priv->currset = pshow->sets->currset;
 
 	form_head = (groupcell_l*)malloc(sizeof(groupcell_l));
@@ -131,8 +124,6 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 	groupcell_c *newnode;
 	GtkWidget *widget;
 	form_container_t *fcont;
-	int index;
-	int inc = 0;
 	group_t *group;
 	form_t *form;
 
@@ -150,18 +141,12 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 		group = *group_r;
 	else
 		group = NULL;
-	if (!form && !group)
-	{
-		printf("Error: No form or group!\nin groups_update_append\n");
-		exit(-1);
-	}
 	// group/form needs to be added
 	if (!is_this_set && fcont && form_container_find_form_at_index(fcont, pstate.setnum) != form 
 			&&form_container_mapped_at_set(fcont, pstate.setnum))
 	{
-		index++;
 	}
-	else //if (inc >= index)
+	else
 	{
 		last = groupcell_list_first(head);
 		newnode = (groupcell_c*)malloc(sizeof(groupcell_c));
@@ -184,10 +169,8 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 		{
 			groupcell_list_insert_head(head, newnode);
 		}
-		// end of fixme area
 		newnode->cell = widget;
 	}
-	inc++;
 	if (group)
 		group = group->next;
 	else if (form)
@@ -200,14 +183,9 @@ int dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, gro
 }
 
 
-//int dr_sidebar_groups_update_from(GtkWidget *container, GtkWidget **head_r, GtkWidget **last_r, group_t *group_head, form_t *form_head, bool is_this_set)
 int dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, group_t *group_head, form_t *form_head, bool is_this_set)
 {
 	// update a list of group cells
-	//group_t *group;
-	//form_t *form;
-	//bool is_first = false;
-	//bool is_rel_first = false;
 	bool rem_group = false;
 	bool rem_form = false;
 	bool is_local = false;
@@ -281,9 +259,6 @@ int dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, gro
 		else
 		{
 			// traverse to the next node
-			//lastcurr = last->cell;
-			//last = gnext->group_cell_container;
-			//last = dr_group_cell_get_next(lastcurr);
 			last = groupcell_list_next(last);
 			index++;
 			if (group)
@@ -294,75 +269,20 @@ int dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, gro
 		}
 	}
 	// make sure if list is now empty, node is shown as empty
-	/*
-	if (index)
-		last = lastcurr;
-	else
-		last = NULL;
-		*/
 
 	while (group || form)
 	{
 		dr_sidebar_groups_update_append(container, head_l, &group, &form, is_this_set, 1);
 	}
-	/*
-	while (group || form)
-	{
-		// added a new group
-		// add another sidebar ref
-		fcont = form_container_find_with_form(pshow->topforms, form);
-		if (!is_this_set && fcont && form_container_find_form_at_index(fcont, pstate.setnum) != form 
-				&&form_container_mapped_at_set(fcont, pstate.setnum))
-		{
-			index++;
-		}
-		else if (inc >= index)
-		{
-			if (!last)
-			{
-				last = dr_group_cell_new();
-				//lsidebargroups->priv->group_cell = last;
-				head = last;
-				if (group)
-					dr_group_cell_set_group(last, group);
-				else
-					dr_group_cell_set_form(last, form);
-			}
-			else
-			{
-				last = dr_group_cell_append(last, group, form);
-				last = dr_group_cell_get_next(last);
-			}
-			dr_group_cell_set_is_this_set(last, is_this_set);
-			gtk_box_pack_start(GTK_BOX(container), last, FALSE, FALSE, 0);
-			gtk_widget_show(last);
-		}
-		inc++;
-		if (group)
-			group = group->next;
-		else if (form)
-			form = form->next;
-	}
-	*/
 
 
 	return index;
 }
 
 
-//void dr_sidebar_groups_flush_local(GtkWidget *container, GtkWidget **cell_r)
 void dr_sidebar_groups_flush_local(GtkWidget *container, groupcell_l *cell_head)
 {
-	//GtkWidget *last;
 	groupcell_c *last;
-	/*
-	if (!cell_r)
-		return;
-	last = *cell_r;
-	*/
-
-	//lastcurr = last;
-	//while (last)
 	while (!groupcell_list_empty(cell_head))
 	{
 		last = groupcell_list_first(cell_head);
@@ -373,7 +293,6 @@ void dr_sidebar_groups_flush_local(GtkWidget *container, groupcell_l *cell_head)
 		dr_group_cell_delete_from(last->cell);
 		free(last);
 	}
-	//*cell_r = last;
 	return;
 }
 
@@ -388,22 +307,17 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	if (pshow->sets->currset != lsidebargroups->priv->currset)
 	{
 		// flush local groups and forms out
-		//last = lsidebargroups->priv->group_cell_local;
 
 		// groups
-		//dr_sidebar_groups_flush_local(lsidebargroups->priv->box_local, &lsidebargroups->priv->group_cell_local);
 		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_local, lsidebargroups->priv->group_local_head);
 
 		// forms
-		//dr_sidebar_groups_flush_local(lsidebargroups->priv->box_form, &lsidebargroups->priv->form_cell);
 		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_form, lsidebargroups->priv->form_head);
 
 		// forms from previous set
-		//dr_sidebar_groups_flush_local(lsidebargroups->priv->box_prev_form, &lsidebargroups->priv->prev_form_cell);
 		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_prev_form, lsidebargroups->priv->pform_head);
 
 		// forms from next set
-		//dr_sidebar_groups_flush_local(lsidebargroups->priv->box_next_form, &lsidebargroups->priv->next_form_cell);
 		dr_sidebar_groups_flush_local(lsidebargroups->priv->box_next_form, lsidebargroups->priv->nform_head);
 
 		lsidebargroups->priv->currset = pshow->sets->currset;
@@ -434,7 +348,6 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	}
 
 
-	printf("%i\n", groupcell_list_empty(lsidebargroups->priv->form_head));
 	if (groupcell_list_empty(lsidebargroups->priv->group_head))
 	{
 		gtk_widget_hide(lsidebargroups->priv->box_global);
