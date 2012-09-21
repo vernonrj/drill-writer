@@ -36,5 +36,16 @@ G_END_DECLS
 
 GTrashStack *stack_pool;
 
+typedef struct group_cell_container groupcell_c;
+typedef struct groupcell_list_proto groupcell_l;
+struct group_cell_container
+{
+	LIST_ENTRY(group_cell_container) groupcell_entries;
+	GtkWidget *cell;
+};
+LIST_HEAD(groupcell_list_proto, group_cell_container);
+
+
+void dr_sidebar_groups_flush_local(GtkWidget *container, groupcell_l *cell_head);
 void dr_sidebar_groups_update(GtkWidget *sidebargroups);
 

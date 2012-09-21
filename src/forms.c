@@ -1017,6 +1017,7 @@ int form_container_remove_set(form_list_t *head, form_container_t *last, int ind
 	bool removed_flag = false;
 	form_t **forms;
 	int *set_index;
+	form_container_t *curr;
 
 	if (!last)
 		return -1;

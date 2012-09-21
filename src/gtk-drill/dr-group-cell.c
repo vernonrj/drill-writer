@@ -399,16 +399,68 @@ GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_t *form)
 }
 
 
-GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
+GtkWidget *dr_group_cell_add_before(GtkWidget *head_w, GtkWidget *widget, group_t *group, form_t *form)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
-	DrGroupCell *curr = (DrGroupCell*)container;
-	DrGroupCell *gnext;
-	if (!groupcell || !container)
+	DrGroupCell *head = (DrGroupCell*)head_w;
+	DrGroupCell *curr;
+	GtkWidget *last;
+	if (!groupcell)
+	{
+		last = dr_group_cell_new();
+		if (group)
+			dr_group_cell_set_group(last, group);
+		if (form)
+			dr_group_cell_set_form(last, form);
+		return last;
+	}
+	if (!IS_GROUP_CELL(groupcell))
 		return NULL;
-	g_return_val_if_fail(IS_GROUP_CELL(groupcell), NULL);
+	if (!head || head == groupcell)
+	{
+		last = dr_group_cell_new();
+		if (group)
+			dr_group_cell_set_group(last, group);
+		if (form)
+			dr_group_cell_set_form(last, form);
+		((DrGroupCell*)last)->priv->next = head;
+		return GTK_WIDGET(last);
+	}
+	curr = head;
+	while(curr && curr->priv->next != groupcell)
+		curr = curr->priv->next;
+	if (!curr)
+	{
+		printf("error! not found!\n");
+		exit(-1);
+	}
+	else
+	{
+		last = dr_group_cell_new();
+		if (group)
+			dr_group_cell_set_group(last, group);
+		if (form)
+			dr_group_cell_set_form(last, form);
+		((DrGroupCell*)last)->priv->next = groupcell;
+		curr->priv->next = (DrGroupCell*)last;
+	}
+	return last;
+}
+
+
+void dr_group_cell_delete_from(GtkWidget *widget)
+{
+	DrGroupCell *groupcell = (DrGroupCell*)widget;
+	//DrGroupCell *curr = (DrGroupCell*)container;
+	DrGroupCell *gnext;
+	if (!groupcell)// || !container)
+		return;
+	g_return_if_fail(IS_GROUP_CELL(groupcell));
+	/*
 	if (!IS_GROUP_CELL(curr))
 		return NULL;
+		*/
+	/*
 	if (container != widget)
 	{
 		while (curr->priv->next != groupcell)
@@ -416,11 +468,14 @@ GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 	}
 	else
 		curr = NULL;
+		*/
 	//gtk_widget_hide(groupcell->priv->button_add);
 
+	/*
 	if (curr != NULL)
 		curr->priv->next = groupcell->priv->next;
 	gnext = groupcell->priv->next;
+	*/
 
 	/*
 	if (false)
@@ -445,7 +500,7 @@ GtkWidget *dr_group_cell_delete_from(GtkWidget *widget, GtkWidget *container)
 		//gtk_widget_hide((GtkWidget*)groupcell);
 		gtk_widget_destroy((GtkWidget*)groupcell);
 	}
-	return GTK_WIDGET(gnext);
+	return;
 }
 
 
