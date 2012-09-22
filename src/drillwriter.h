@@ -332,6 +332,7 @@ void form_add_to_set(form_t *form);
 coord_t **form_get_coords(form_t *form);
 coord_t *form_get_coord_near(form_t *form, double x, double y);
 void form_scale_from_center(form_t *form, double s_step);
+void form_rotate_around_center(form_t *form, double s_step);
 select_t *form_flatten(form_t *form, select_t *select_head);
 form_t *form_copy(form_t *form);
 form_container_t *form_container_construct(void);

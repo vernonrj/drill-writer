@@ -529,10 +529,28 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 	double x1, y1, x2, y2;
 	double x1rel, y1rel, x2rel, y2rel;
 	double x, y;
+	double xnext, ynext, xstep, ystep;
+	int curr_step, counts;
 	int dot_num;
 	int i;
 	double slopex, slopey;
+	form_list_t *flist;
+	form_container_t *fcont;
+	bool form_animate = false;
+	form_t *next_form;
 
+	flist = pshow->topforms;
+	fcont = form_container_find_with_form(flist, form);
+	curr_step = pstate.curr_step;
+	if (form_container_contiguous(fcont, pstate.setnum))
+	{
+		// animate
+		form_animate = true;
+		next_form = form_container_find_form_at_index(fcont, (pstate.setnum+1));
+		counts = pshow->sets->currset->next->counts;
+	}
+	else
+		form_animate = false;
 	// show form being moved
 	offsetx = fldstate.mouse_clickx - fldstate.mousex;
 	offsety = fldstate.mouse_clicky - fldstate.mousey;
@@ -562,10 +580,28 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 	}
 	x = x1rel;
 	y = y1rel;
+	if (form_animate)
+	{
+		xnext = next_form->endpoints[0][0];
+		ynext = next_form->endpoints[0][1];
+		xstep = (x-xnext) / counts;
+		ystep = (y-ynext) / counts;
+		x -= (xstep*curr_step);
+		y -= (ystep*curr_step);
+	}
 	field_to_pixel(&x, &y);
 	cairo_move_to(cr, x, y);
 	x = x2rel;
 	y = y2rel;
+	if (form_animate)
+	{
+		xnext = next_form->endpoints[0][0];
+		ynext = next_form->endpoints[0][1];
+		xstep = (x-xnext) / counts;
+		ystep = (y-ynext) / counts;
+		x -= (xstep*curr_step);
+		y -= (ystep*curr_step);
+	}
 	field_to_pixel(&x, &y);
 	cairo_line_to(cr, x, y);
 

@@ -810,6 +810,39 @@ void form_scale_from_center(form_t *form, double s_step)
 }
 
 
+void form_rotate_around_center(form_t *form, double s_step)
+{
+	int i;
+	double cx, cy;
+	double distx, disty;
+	double angle, hypo;
+	if (!form)
+		return;
+	cx = pstate.center->x;
+	cy = pstate.center->y;
+	for(i=0; i<2; i++)
+	{
+		distx = cx - form->endpoints[i][0];
+		disty = cy - form->endpoints[i][1];
+		if (distx != 0 || disty != 0)
+		{
+			angle = atan(disty / distx);
+			hypo = pow(distx, 2) + pow(disty, 2);
+			hypo = sqrt(hypo);
+			if (distx < 0)
+				angle = angle + M_PI;
+			angle = angle + s_step;
+			distx = hypo*cos(angle);
+			disty = hypo*sin(angle);
+			form->endpoints[i][0] = cx - distx;
+			form->endpoints[i][1] = cy - disty;
+		}
+	}
+	form_update_line(form);
+	return;
+}
+
+
 
 select_t *form_flatten(form_t *form, select_t *select_head)
 {

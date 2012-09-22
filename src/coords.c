@@ -567,6 +567,12 @@ void coords_rot_selected_around_center(double s_step)
 	while (last != NULL)
 	{
 		// get coords for selected dot
+		if (last->form)
+		{
+			form_rotate_around_center(last->form, s_step);
+			last = last->next;
+			continue;
+		}
 		index = last->index;
 		coord = coords[index];
 		distx = cx - coord->x;
