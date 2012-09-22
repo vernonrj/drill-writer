@@ -924,6 +924,31 @@ form_container_t *form_container_destroy(form_container_t *last)
 }
 
 
+bool form_container_contiguous(form_container_t *fcont, int set_num)
+{
+	int i;
+	int size;
+	int *set_index;
+	bool found_set = false;
+	size = fcont->size;
+	set_index = fcont->set_index;
+	for (i=0; i<size; i++)
+	{
+		if (set_index[i] >= set_num)
+		{
+			found_set = true;
+			break;
+		}
+	}
+	if (found_set && set_num == set_index[i])
+	{
+		if ((i+1) < size && set_index[i+1] == set_num+1)
+			return true;
+	}
+	return false;
+}
+
+
 form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index)
 {
 	form_container_t *last;

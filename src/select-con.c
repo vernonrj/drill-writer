@@ -504,7 +504,7 @@ void select_update_center(select_t *last)
 
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset)
 {
-	form_t *formcurr, *formnext, *form;
+	form_t *formnext, *form;
 	form_t *formnext_head;
 	select_t *select;
 
@@ -526,7 +526,7 @@ select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, s
 			{
 				break;
 			}
-			formcurr = formcurr->next;
+			formnext = formnext->next;
 		}
 		if (formnext == NULL)
 			select_head = form_flatten(form, select_head);

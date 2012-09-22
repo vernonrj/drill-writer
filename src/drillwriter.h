@@ -337,6 +337,7 @@ form_t *form_copy(form_t *form);
 form_container_t *form_container_construct(void);
 form_container_t *form_container_construct_with_form(form_t *form, int index);
 form_container_t *form_container_destruct(form_container_t *last);
+bool form_container_contiguous(form_container_t *fcont, int set_num);
 form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index);
 int form_container_add_set(form_list_t *head, form_container_t *last, int index);
 int form_container_remove_set(form_list_t *head, form_container_t *last, int index);

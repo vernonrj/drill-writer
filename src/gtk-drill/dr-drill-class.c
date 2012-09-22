@@ -594,11 +594,15 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 
 int draw_forms(GtkWidget *widget)
 {
-	form_t *form;
+	form_t *form, *next_form;
+	form_list_t *flist;
+	form_container_t *fcont;
 	//fblock_t *block;
 	//farc_t *arc;
 	//select_t *select;
 	double x, y;
+	double x2, y2;
+	double xstep, ystep;
 	int i;
 	int dot_num;
 	//int *dots;
@@ -606,6 +610,9 @@ int draw_forms(GtkWidget *widget)
 	cairo_t *cr;
 	form_coord_t **fcoords;
 	coord_t *coord;
+	bool form_animate = false;
+	int counts = 1;
+	int curr_step = pstate.curr_step;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
@@ -619,8 +626,19 @@ int draw_forms(GtkWidget *widget)
 
 
 	form = pshow->sets->currset->forms;
+	flist = pshow->topforms;
 	while (form)
 	{
+		fcont = form_container_find_with_form(flist, form);
+		if (form_container_contiguous(fcont, pstate.setnum))
+		{
+			// animate
+			form_animate = true;
+			next_form = form_container_find_form_at_index(fcont, (pstate.setnum+1));
+			counts = pshow->sets->currset->next->counts;
+		}
+		else
+			form_animate = false;
 		fcoords = form->fcoords;
 		if (form_is_selected(form, pstate.select))
 		{
@@ -634,28 +652,49 @@ int draw_forms(GtkWidget *widget)
 		}
 		else
 			cr = canv_form;
-		dot_num = form->dot_num;
-		//coords = form->coords;
-		//dots = form->dots;
-		x = form->endpoints[0][0];
-		y = form->endpoints[0][1];
-		field_to_pixel(&x, &y);
-		cairo_move_to(cr, x, y);
-		x = form->endpoints[1][0];
-		y = form->endpoints[1][1];
-		field_to_pixel(&x, &y);
-		cairo_line_to(cr, x, y);
-		for(i=0; i<dot_num; i++)
+		if (form_animate || !curr_step)
 		{
-			coord = fcoords[i]->coord;
-			if (fcoords[i]->dot == -1)
+			dot_num = form->dot_num;
+			//coords = form->coords;
+			//dots = form->dots;
+			x = form->endpoints[0][0];
+			y = form->endpoints[0][1];
+			if (form_animate)
 			{
-				// hole in the form
-				x = coord->x + form->endpoints[0][0];
-				y = coord->y + form->endpoints[0][1];
-				field_to_pixel(&x, &y);
-				cairo_new_sub_path(cr);
-				cairo_arc(cr, x, y, 2*fldstate.canv_step/3, 0, 360);
+				x2 = next_form->endpoints[0][0];
+				y2 = next_form->endpoints[0][1];
+				xstep = (x-x2) / counts;
+				ystep = (y-y2) / counts;
+				x -= (xstep*curr_step);
+				y -= (ystep*curr_step);
+			}
+			field_to_pixel(&x, &y);
+			cairo_move_to(cr, x, y);
+			x = form->endpoints[1][0];
+			y = form->endpoints[1][1];
+			if (form_animate)
+			{
+				x2 = next_form->endpoints[1][0];
+				y2 = next_form->endpoints[1][1];
+				xstep = (x-x2) / counts;
+				ystep = (y-y2) / counts;
+				x -= (xstep*curr_step);
+				y -= (ystep*curr_step);
+			}
+			field_to_pixel(&x, &y);
+			cairo_line_to(cr, x, y);
+			for(i=0; i<dot_num; i++)
+			{
+				coord = fcoords[i]->coord;
+				if (fcoords[i]->dot == -1)
+				{
+					// hole in the form
+					x = coord->x + form->endpoints[0][0];
+					y = coord->y + form->endpoints[0][1];
+					field_to_pixel(&x, &y);
+					cairo_new_sub_path(cr);
+					cairo_arc(cr, x, y, 2*fldstate.canv_step/3, 0, 360);
+				}
 			}
 		}
 		form = form->next;
