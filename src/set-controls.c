@@ -6,22 +6,141 @@ set_container_t *set_container_construct(int perfs)
 {
 	// construct the set container
 	set_t *sets = 0;
+	set_t **setlist;
 	set_container_t *setCont;
 	int excode;
+	int size = 1, size_alloc = 5;
 
 	setCont = (set_container_t*)malloc(sizeof(set_container_t));
 	if (!setCont)
 		return NULL;
+
 	excode = set_construct(&sets, perfs);
 	if (excode == -1)
 		return NULL;
 	setCont->currset = sets;
 
+	setCont->size = size;
+	setCont->size_alloc = size_alloc;
+	setlist = (set_t**)malloc(size_alloc*sizeof(set_t**));
+	setCont->setlist = setlist;
+	setlist[0] = sets;
+
 	//sets->prev = setC->prevset;
-	sets->next = 0;
+	sets->next = NULL;
 	return setCont;
 }
 
+
+set_container_t *set_container_add_before(set_container_t *set_container, int setnum)
+{
+	int i;
+	int size, size_alloc;
+	set_t *newset;
+	set_t **setlist = set_container->setlist;
+	set_t **newsetlist;
+	size_alloc = set_container->size_alloc; 
+	size = set_container->size;
+	if (size+1 >= size_alloc)
+	{
+		newsetlist = (set_t**)malloc((size_alloc+5)*sizeof(set_t*));
+		for(i=0; i<size; i++)
+			newsetlist[i] = setlist[i];
+		set_container->setlist = newsetlist;
+		free(setlist);
+		set_container->size_alloc += 5;
+		setlist = newsetlist;
+	}
+
+	newset = set_construct_before(setlist[setnum], pshow->perfnum);
+	if (newset != setlist[setnum])
+	{
+		for(i=set_container->size; i>setnum; i--)
+			setlist[i] = setlist[i-1];
+		setlist[setnum] = newset;
+	}
+	set_container->size++;
+	return set_container;
+}
+
+set_container_t *set_container_add_after(set_container_t *set_container, int setnum)
+{
+	int i;
+	int size, size_alloc;
+	set_t *newset;
+	set_t **setlist = set_container->setlist;
+	set_t **newsetlist;
+	size_alloc = set_container->size_alloc; 
+	size = set_container->size;
+	if (size+1 >= size_alloc)
+	{
+		newsetlist = (set_t**)malloc((size_alloc+5)*sizeof(set_t*));
+		for(i=0; i<size; i++)
+			newsetlist[i] = setlist[i];
+		set_container->setlist = newsetlist;
+		free(setlist);
+		set_container->size_alloc += 5;
+		setlist = newsetlist;
+	}
+
+	newset = set_construct_after(setlist[setnum], pshow->perfnum);
+	if (newset != setlist[setnum])
+	{
+		for(i=set_container->size; i>setnum+1; i--)
+			setlist[i] = setlist[i-1];
+		setlist[setnum] = newset;
+	}
+	set_container->size++;
+	return set_container;
+}
+
+set_t *set_construct_before(set_t *sets, int perfs)
+{
+	set_t **newset;
+	set_t *last;
+	set_t *prev;
+	int excode;
+	// interface with set_construct
+	newset = (set_t**)malloc(sizeof(set_t*));
+	excode = set_construct(newset, perfs);
+	if (excode != -1 && sets)
+	{
+		last = *newset;
+		free(newset);
+		prev = sets->prev;
+		if (prev)
+			prev->next = last;
+		last->prev = prev;
+		last->next = sets;
+		sets->prev = last;
+		sets = last;
+	}
+	return sets;
+}
+
+set_t *set_construct_after(set_t *sets, int perfs)
+{
+	set_t **newset;
+	set_t *last;
+	set_t *next;
+	int excode;
+	// interface with set_construct
+	newset = (set_t**)malloc(sizeof(set_t*));
+	excode = set_construct(newset, perfs);
+	if (excode != -1 && sets)
+	{
+		last = *newset;
+		free(newset);
+		next = sets->next;
+		if (next)
+			next->prev = last;
+		last->next = next;
+		last->prev = sets;
+		sets->next = last;
+		sets = last;
+	}
+	return sets;
+}
 
 int set_construct(set_t **sets_r, int perfs)
 {
@@ -46,12 +165,6 @@ int set_construct(set_t **sets_r, int perfs)
 	newset->counts = 0;
 	//newset->groups = (group_t*)malloc(sizeof(group_t));
 	newset->groups = NULL;
-	// FIXME: Allocate group correctly
-	/*
-	newset->groups->selects = NULL;
-	newset->groups->forms = NULL;
-	newset->groups->next = NULL;
-	*/
 
 	// make sure not classified as midset
 	newset->midset = 0;
