@@ -34,29 +34,30 @@ GtkWidget *dr_sidebar_groups_new(void);
 G_END_DECLS
 #endif // __SIDEBAR_GROUPS_H__
 
-GTrashStack *stack_pool;
+//GTrashStack *stack_pool;
 
 typedef struct group_cell_container groupcell_c;
-//typedef struct groupcell_list_proto groupcell_l;
-typedef struct group_cell_headlist groupcell_l;
+typedef struct groupcell_list_proto groupcell_l;
+//typedef struct group_cell_headlist groupcell_l;
 struct group_cell_container
 {
-	//LIST_ENTRY(group_cell_container) groupcell_entries;
-	GtkWidget *cell;
+	LIST_ENTRY(group_cell_container) groupcell_entries;
 	groupcell_c *next;
 	groupcell_c *prev;
+	GtkWidget *cell;
 };
 
 struct group_cell_headlist
 {
 	groupcell_c *list_first;
 };
-//LIST_HEAD(groupcell_list_proto, group_cell_container);
+LIST_HEAD(groupcell_list_proto, group_cell_container);
 
 
 void dr_sidebar_groups_flush_local(GtkWidget *container, groupcell_l *cell_head);
 void dr_sidebar_groups_update(GtkWidget *sidebargroups);
 
+/*
 void groupcell_list_init(groupcell_l *head);
 int groupcell_list_empty(groupcell_l *head);
 groupcell_c *groupcell_list_first(groupcell_l *head);
@@ -68,4 +69,4 @@ void groupcell_list_append(groupcell_l *head, groupcell_c *curr);
 groupcell_c *groupcell_list_next(groupcell_c *curr);
 groupcell_c *groupcell_list_prev(groupcell_c *curr);
 
-
+*/
