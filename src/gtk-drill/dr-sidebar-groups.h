@@ -36,25 +36,27 @@ G_END_DECLS
 
 //GTrashStack *stack_pool;
 
-typedef struct group_cell_container groupcell_c;
+//typedef struct group_cell_container groupcell_c;
 typedef struct groupcell_list_proto groupcell_l;
 //typedef struct group_cell_headlist groupcell_l;
 struct group_cell_container
 {
 	LIST_ENTRY(group_cell_container) groupcell_entries;
-	groupcell_c *next;
-	groupcell_c *prev;
+	struct group_cell_container *next;
+	struct group_cell_container *prev;
 	GtkWidget *cell;
 };
 
+/*
 struct group_cell_headlist
 {
 	groupcell_c *list_first;
 };
+*/
 LIST_HEAD(groupcell_list_proto, group_cell_container);
 
 
-void dr_sidebar_groups_flush_local(GtkWidget *container, groupcell_l *cell_head);
+struct groupcell_list_proto *dr_sidebar_groups_flush_local(GtkWidget *container, struct groupcell_list_proto *cell_head);
 void dr_sidebar_groups_update(GtkWidget *sidebargroups);
 
 /*
