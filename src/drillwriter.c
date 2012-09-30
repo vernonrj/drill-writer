@@ -128,7 +128,7 @@ int show_destroy(headset_t **dshow_r)
 	while (setcurr != NULL)
 	{
 		setlast = setcurr;
-		setcurr = setcurr->next;
+		//setcurr = setcurr->next;
 		set_cldestroy(&setlast, perfnum);
 		snum = snum + 1;
 	}
@@ -238,7 +238,7 @@ int main (int argc, char *argv[])
 	//*
 	add_set();
 	currset = pshow->sets->currset;
-	prevset = currset->prev;
+	//prevset = currset->prev;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{
@@ -250,7 +250,7 @@ int main (int argc, char *argv[])
 	// add new set
 	add_set();
 	currset = pshow->sets->currset;
-	prevset = currset->prev;
+	//prevset = currset->prev;
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{

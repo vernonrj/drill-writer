@@ -216,8 +216,8 @@ struct set_proto
 	form_t *forms;
 	int counts;
 	int midset;
-	set_t *next;
-	set_t *prev;
+	//set_t *next;
+	//set_t *prev;
 };
 
 
