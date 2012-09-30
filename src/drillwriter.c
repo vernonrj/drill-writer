@@ -127,8 +127,10 @@ int show_destroy(headset_t **dshow_r)
 	snum = 0;
 	while (setcurr != NULL)
 	{
+		printf("%i\n", snum);
 		setlast = setcurr;
 		//setcurr = setcurr->next;
+		setcurr = set_get_next(pshow->sets, snum);
 		set_cldestroy(&setlast, perfnum);
 		snum = snum + 1;
 	}

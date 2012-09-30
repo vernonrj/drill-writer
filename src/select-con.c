@@ -266,7 +266,7 @@ select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double
 	*/
 	for (i=0; i<perfnum; i++)
 	{
-		coords_retrieve_midset(pshow->sets->currset, i, &x, &y);
+		coords_retrieve_midset(pstate.setnum, i, &x, &y);
 		if (select_check_dot_in_rectangle(x, y, x1, y1, x2, y2))
 		{
 			if (coords_check_managed_by_index(i) != 0x0)
@@ -606,7 +606,7 @@ select_t *select_get_in_area(double x, double y)
 	{
 		if (!coords_check_managed_by_index(i))
 		{
-			coords_retrieve_midset(pshow->sets->currset, i, &coordx, &coordy);
+			coords_retrieve_midset(pstate.setnum, i, &coordx, &coordy);
 			if (fieldrel_check_dots_within_range(x, y, coordx, coordy))
 				dot_select = select_add_index(dot_select, i, false);
 		}
@@ -624,7 +624,7 @@ select_t *select_get_in_area(double x, double y)
 		distance_min = -1;
 		while (select)
 		{
-			coords_retrieve_midset(pshow->sets->currset, select->index, &coordx, &coordy);
+			coords_retrieve_midset(pstate.setnum, select->index, &coordx, &coordy);
 			distance = pow((coordx-x),2) + pow((coordy-y),2);
 			if (distance < distance_min || distance_min == -1)
 			{
@@ -651,7 +651,7 @@ select_t *select_get_in_area(double x, double y)
 				coordy = coord->y;
 			}
 			else
-				coords_retrieve_midset(pshow->sets->currset, index, &coordx, &coordy);
+				coords_retrieve_midset(pstate.setnum, index, &coordx, &coordy);
 			distance = pow((coordx-x),2) + pow((coordy-y),2);
 			if (distance < distance_min || distance_min == -1)
 			{

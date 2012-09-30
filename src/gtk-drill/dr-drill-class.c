@@ -829,7 +829,7 @@ int draw_selected(GtkWidget *widget)
 			continue;
 		}
 
-		coords_retrieve_midset(currset, index, &x, &y);
+		coords_retrieve_midset(pstate.setnum, index, &x, &y);
 		xfield = x;
 		yfield = y;
 		field_to_pixel(&x, &y);
@@ -956,7 +956,7 @@ int draw_dots (GtkWidget *widget)
 			{
 				// performer should be drawn
 				// Get dots for current set and next set
-				coords_retrieve_midset(currset, i, &x, &y);
+				coords_retrieve_midset(pstate.setnum, i, &x, &y);
 				field_to_pixel(&x, &y);
 				// print selection if dot is selected
 				was_selected = 0;

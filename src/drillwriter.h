@@ -283,7 +283,7 @@ int coords_set_managed_by_index(int index, int state);
 int coords_track_form(int index, form_t *form);
 int coords_untrack_form(int index, form_t *form);
 int coords_retrieve(coord_t *curr, double *x, double *y);
-int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r);
+int coords_retrieve_midset(int setnum, int index, double *x_r, double *y_r);
 int coords_movexy(double xoff, double yoff);
 int coords_align_dots_to_grid(void);
 int coords_movexy_grid(double xoff, double yoff);
@@ -419,6 +419,7 @@ set_container_t *set_container_add_set_before(set_container_t *set_container, se
 set_container_t *set_container_add_before(set_container_t *set_container, int setnum);
 set_container_t *set_container_add_after(set_container_t *set_container, int setnum);
 set_container_t *set_container_add_set_after(set_container_t *set_container, set_t *newset, int setnum);
+set_container_t *set_container_destruct(set_container_t *set_container);
 set_t *set_construct_before(set_t *sets, int perfs);
 set_t *set_construct_after(set_t *sets, int perfs);
 int set_construct(set_t **sets_r, int perfs);

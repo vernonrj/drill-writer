@@ -430,7 +430,7 @@ form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, do
 				if (coords_check_managed_by_index(index) == 2)
 				{
 					// pairing endpoints together
-					coords_retrieve_midset(pshow->sets->currset, index, &coordx, &coordy);
+					coords_retrieve_midset(pstate.setnum, index, &coordx, &coordy);
 					form_set_endpoint(form, form->endpoints[0][0], form->endpoints[0][1], coordx, coordy);
 				}
 				else

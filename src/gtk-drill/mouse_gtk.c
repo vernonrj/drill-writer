@@ -23,7 +23,7 @@ int mouse_click_find_close_dot(GtkWidget *widget, GdkEventButton *event)
 	perf_cur = 0;
 	for (i=0; i<perfnum; i++)
 	{
-		coords_retrieve_midset(pshow->sets->currset, i, &workx, &worky);
+		coords_retrieve_midset(pstate.setnum, i, &workx, &worky);
 		workx = workx - coordx;
 		worky = worky - coordy;
 		distance = pow(workx, 2) + pow(worky, 2);

@@ -204,18 +204,20 @@ int coords_retrieve(coord_t *curr, double *x, double *y)
 
 
 
-int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r)
+int coords_retrieve_midset(int setnum, int index, double *x_r, double *y_r)
 {
 	// retrieve midset coordinates from set struct
+	set_t *currset;
+	set_t *nextset;
 	double xcurr, ycurr;
 	double xnext, ynext;
 	double xbias, ybias;
 	int cstep;
 	int countnum;
-	set_t *nextset;
 
+	currset = pshow->sets->setlist[setnum];
 	coords_retrieve(currset->coords[index], &xcurr, &ycurr);
-	if ((nextset = set_get_next(pshow->sets, pstate.setnum)) != NULL)
+	if ((nextset = set_get_next(pshow->sets, setnum)) != NULL)
 	{
 		// not last set,
 		// need to check to see if midset should be found

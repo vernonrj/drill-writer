@@ -108,6 +108,15 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 	return set_container;
 }
 
+
+set_container_t *set_container_destruct(set_container_t *set_container)
+{
+	int i;
+	for(i=0; i<pshow->sets->size; i++)
+		set_cldestroy(&pshow->sets->setlist[i], pshow->perfnum);
+}
+
+
 set_t *set_construct_before(set_t *sets, int perfs)
 {
 	set_t **newset;
@@ -507,9 +516,11 @@ int add_set(void)
 		return -1;
 		*/
 	set_next();
+	newcounts = pshow->sets->currset->counts;
 	if (newcounts)
 	{
 		pushCounts(&pstate.undobr, pstate.setnum, newcounts, 0);
+		pshow->sets->currset->counts = newcounts;
 	}
 	pushSetMk(&pstate.undobr);
 
