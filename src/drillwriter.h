@@ -20,7 +20,7 @@ typedef struct tempo_proto tempo_t;
 typedef struct coord_proto coord_t;
 typedef struct perf_proto perf_t;
 typedef struct set_proto set_t;
-typedef struct set_container set_container_t;
+typedef struct set_container_proto set_container_t;
 typedef struct headset_proto headset_t;
 
 // mouse mode (what executes when user clicks on field)
@@ -221,7 +221,7 @@ struct set_proto
 };
 
 
-struct set_container
+struct set_container_proto
 {
 	// node with info on the sets
 	// in a show
@@ -420,7 +420,7 @@ set_t *set_construct_after(set_t *sets, int perfs);
 int set_construct(set_t **sets_r, int perfs);
 int newset_create(set_container_t *sets);
 int set_cldestroy(set_t **setcurr_r, int perfnum);
-int set_destroy(void);
+void set_destroy(int set_index);
 void goto_set(int set_buffer);
 int isLastSet(void);
 int isFirstSet(void);

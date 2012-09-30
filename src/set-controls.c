@@ -19,6 +19,7 @@ set_container_t *set_container_construct(int perfs)
 	if (excode == -1)
 		return NULL;
 	setCont->currset = sets;
+	pstate.setnum = 0;
 
 	setCont->size = size;
 	setCont->size_alloc = size_alloc;
@@ -214,17 +215,28 @@ int set_cldestroy(set_t **setcurr_r, int perfnum)
 }
 
 
-int set_destroy(void)
+void set_destroy(int set_index)
 {
 	// destroy current set
+	int i;
 	set_t *last;
 	set_t *prevset;
 	int excode;
+	int size;
+	set_t **setlist;
 
 	last = pshow->sets->currset;
 	prevset = last->prev;
 
 	pushSetDel(&pstate.undobr, pshow->sets->currset);
+
+	pshow->sets->size--;
+	size = pshow->sets->size;
+	setlist = pshow->sets->setlist;
+	for(i=set_index; i<size; i++)
+		setlist[i] = setlist[i+1];
+	if (set_index == 0)
+		pshow->sets->firstset = pshow->sets->setlist[0];
 
 	// unlink node
 	if (prevset != NULL)
@@ -239,6 +251,7 @@ int set_destroy(void)
 			// at new last set
 			// TODO: Make more efficient
 			set_first();
+			pstate.setnum = 0;
 			set_last();
 		}
 		else
@@ -257,15 +270,15 @@ int set_destroy(void)
 		if (last == NULL)
 		{
 			// No sets now, make a new first set
-			excode = set_construct(&pshow->sets->firstset, pshow->perfnum);
-			if (excode == -1)
-				return -1;
 		}
 		else 
 			last->prev = NULL;
 		pshow->sets->currset = pshow->sets->firstset;
+		pstate.setnum = 0;
 	}
-	return 0;
+	if (!size)
+		excode = set_construct(&pshow->sets->firstset, pshow->perfnum);
+	return;
 }
 
 
@@ -374,6 +387,7 @@ void goto_set(int set_buffer)
 	set_t *curr = pshow->sets->currset;
 	set_t *last = pshow->sets->firstset;
 
+	pstate.setnum = set_buffer;
 	for (i=0; i<set_buffer && last != NULL; i++)
 	{
 		// go to current set
@@ -394,6 +408,10 @@ void goto_set(int set_buffer)
 int isLastSet(void)
 {
 	// check to see if we're at the last set
+	/*
+	set_container_t *setC = pshow->sets;
+	return (setC->set_index == setC->size-1);
+	*/
 	if (pshow->sets->currset->next == NULL)
 	{
 		// at the last set
@@ -412,6 +430,7 @@ int isLastSet(void)
 int isFirstSet(void)
 {
 	// check to see if we're at the first set
+	//return (pshow->sets->set_index == 0);
 	if (pshow->sets->currset->prev == NULL)
 	{
 		// at the first set
@@ -457,7 +476,7 @@ void delete_set(void)
 {
 	// delete a set
 	// undo chain in set_destroy
-	set_destroy();
+	set_destroy(pstate.setnum);
 }
 
 

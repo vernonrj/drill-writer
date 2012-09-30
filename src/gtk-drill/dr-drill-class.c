@@ -748,11 +748,11 @@ int draw_forms(GtkWidget *widget)
 int draw_selected(GtkWidget *widget)
 {
 	// draw selected dots, not normal dots
-	struct select_proto *select;
-	struct set_container *sets;
-	struct set_proto *currset;
-	form_t *form;
+	select_t *select;
 	select_t *form_select;
+	set_container_t *sets;
+	set_t *currset;
+	form_t *form;
 	int index;
 	double x, y;
 	double xmin = -1, xmax = -1;
@@ -898,14 +898,14 @@ int draw_dots (GtkWidget *widget)
 {
 	int i;		// loop variable
 	// set containers
-	struct set_proto *currset;	
-	struct set_proto *lastset;
+	set_t *currset;	
+	set_t *lastset;
 	// performer container
-	struct perf_proto **perf;
+	perf_t **perf;
 	// coordinates
 	double x, y;	// x and y location
 	// canvases
-	struct select_proto *selects;
+	select_t *selects;
 	int was_selected;
 
 	//if (do_dots)
