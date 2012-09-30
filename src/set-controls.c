@@ -32,12 +32,20 @@ set_container_t *set_container_construct(int perfs)
 	return setCont;
 }
 
-
 set_container_t *set_container_add_before(set_container_t *set_container, int setnum)
+{
+	set_t *newset;
+	set_t **setlist = set_container->setlist;
+	newset = set_construct_before(setlist[setnum], pshow->perfnum);
+	set_container = set_container_add_set_before(set_container, newset, setnum);
+	return set_container;
+}
+
+
+set_container_t *set_container_add_set_before(set_container_t *set_container, set_t *newset, int setnum)
 {
 	int i;
 	int size, size_alloc;
-	set_t *newset;
 	set_t **setlist = set_container->setlist;
 	set_t **newsetlist;
 	size_alloc = set_container->size_alloc; 
@@ -53,7 +61,6 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 		setlist = newsetlist;
 	}
 
-	newset = set_construct_before(setlist[setnum], pshow->perfnum);
 	if (newset != setlist[setnum])
 	{
 		for(i=set_container->size; i>setnum; i--)
@@ -66,9 +73,18 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 
 set_container_t *set_container_add_after(set_container_t *set_container, int setnum)
 {
+	set_t *newset;
+	set_t **setlist = set_container->setlist;
+	newset = set_construct_after(setlist[setnum], pshow->perfnum);
+	set_container = set_container_add_set_after(set_container, newset, setnum);
+	return set_container;
+}
+
+
+set_container_t *set_container_add_set_after(set_container_t *set_container, set_t *newset, int setnum)
+{
 	int i;
 	int size, size_alloc;
-	set_t *newset;
 	set_t **setlist = set_container->setlist;
 	set_t **newsetlist;
 	size_alloc = set_container->size_alloc; 
@@ -560,7 +576,92 @@ set_t *set_get_next(set_container_t *set_container, int index)
 
 
 
-set_t *set_get_next_count(set_container_t *set_container, int index)
+set_t *set_get_prev(set_container_t *set_container, int setnum)
+{
+	set_t *last;
+
+	// if in the middle of set,
+	// go to beginning of set
+	if (pstate.curr_step)
+		pstate.curr_step = 0;
+	else if (pstate.setnum)
+	{
+		pstate.setnum--;
+		pshow->sets->currset = pshow->sets->setlist[pstate.setnum];
+	}
+
+	/*
+	last = pshow->sets->currset;
+	if (pstate.curr_step)
+		pstate.curr_step = 0;
+	else if (last->prev != NULL)
+	{
+		// not already at first set, move backwards
+		last = last->prev;
+		pstate.setnum--;
+		if (!last->prev)
+		{
+			// first set
+			pstate.setnum = 0;
+		}
+		pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, last);
+		pshow->sets->currset = last;
+	}
+	*/
+}
+
+
+
+void set_first(void)
+{
+	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
+	pstate.curr_step = 0;
+	pstate.setnum = 0;
+	pshow->sets->currset = set_get_first(pshow->sets);
+}
+
+void set_last(void)
+{
+	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, set_get_last(pshow->sets));
+	pstate.curr_step = 0;
+	pstate.setnum = pshow->sets->size-1;
+	pshow->sets->currset = set_get_last(pshow->sets);
+}
+
+void set_prev(void)
+{
+	set_t *set;
+	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
+	if (pstate.curr_step)
+		pstate.curr_step = 0;
+	else
+	{
+		if ((set = set_get_prev(pshow->sets, pstate.setnum)) != NULL)
+		{
+			pshow->sets->currset = set;
+			pstate.setnum--;
+		}
+	}
+	return;
+
+}
+
+void set_next(void)
+{
+	set_t *set;
+	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
+	if (pstate.curr_step)
+		pstate.curr_step = 0;
+	if ((set = set_get_next(pshow->sets, pstate.setnum)) != NULL)
+	{
+		pshow->sets->currset = set;
+		pstate.setnum++;
+	}
+	return;
+}
+
+
+void set_next_count(void)
 {
 	// Go to the next count in the set
 	set_t *nextset;
@@ -598,97 +699,4 @@ void set_prev_count(void)
 	}
 	return;
 }
-
-
-
-void set_prev(void)
-{
-	set_t *last;
-
-	// if in the middle of set,
-	// go to beginning of set
-	if (pstate.curr_step)
-		pstate.curr_step = 0;
-	else if (pstate.setnum)
-	{
-		pstate.setnum--;
-		pshow->sets->currset = pshow->sets->setlist[pstate.setnum];
-	}
-
-	/*
-	last = pshow->sets->currset;
-	if (pstate.curr_step)
-		pstate.curr_step = 0;
-	else if (last->prev != NULL)
-	{
-		// not already at first set, move backwards
-		last = last->prev;
-		pstate.setnum--;
-		if (!last->prev)
-		{
-			// first set
-			pstate.setnum = 0;
-		}
-		pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, last);
-		pshow->sets->currset = last;
-	}
-	*/
-}
-
-
-
-
-
-void set_first(void)
-{
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
-	pstate.curr_step = 0;
-	pstate.setnum = 0;
-	pshow->sets->currset = set_get_first(pshow->sets);
-}
-
-void set_last(void)
-{
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, set_get_last(pshow->sets));
-	pstate.curr_step = 0;
-	pstate.setnum = pshow->sets->size-1;
-	pshow->sets->currset = set_get_last(pshow->sets);
-}
-
-void set_prev(void)
-{
-	set_t *set;
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
-	if (pstate.curr_step)
-		pstate.curr_step = 0;
-	else
-	{
-		set = set_get_prev(pshow->sets, pstate.setnum);
-		if (set)
-		{
-			pshow->sets->currset = set;
-			pstate.setnum--;
-		}
-	}
-
-}
-
-void set_next(void)
-{
-	set_t *set;
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
-	if (pstate.curr_step)
-		pstate.curr_step = 0;
-	pshow->
-}
-
-void set_next_count(void)
-{
-}
-
-void set_prev_count(void)
-{
-}
-
-
 

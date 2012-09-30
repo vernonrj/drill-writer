@@ -338,6 +338,9 @@ groupcell_l *dr_sidebar_groups_flush_local(GtkWidget *container, groupcell_l *ce
 
 void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 {
+	set_t *prevset;
+	set_t *nextset;
+	int setnum = pstate.setnum;
 	g_return_if_fail(IS_SIDEBAR_GROUPS(sidebargroups));
 	DrSidebarGroups *lsidebargroups;
 
@@ -373,17 +376,23 @@ void dr_sidebar_groups_update(GtkWidget *sidebargroups)
 	lsidebargroups->priv->form_head = *dr_sidebar_groups_update_from(lsidebargroups->priv->box_form, &lsidebargroups->priv->form_head, NULL, pshow->sets->currset->forms, true);
 
 	// Previous Set Forms
-	if (pshow->sets->currset->prev)
+	//if (pshow->sets->currset->prev)
+	if ((prevset = set_get_prev(pshow->sets, setnum)) != NULL)
 	{
+		/*
 		lsidebargroups->priv->pform_head = *dr_sidebar_groups_update_from(lsidebargroups->priv->box_prev_form, &lsidebargroups->priv->pform_head, 
 				NULL, pshow->sets->currset->prev->forms, false);
+				*/
+		lsidebargroups->priv->pform_head = *dr_sidebar_groups_update_from(lsidebargroups->priv->box_prev_form, &lsidebargroups->priv->pform_head, 
+				NULL, prevset->forms, false);
 	}
 
 	// Next Set Forms
-	if (pshow->sets->currset->next)
+	//if (pshow->sets->currset->next)
+	if ((nextset = set_get_next(pshow->sets, setnum)) != NULL)
 	{
 		lsidebargroups->priv->nform_head = *dr_sidebar_groups_update_from(lsidebargroups->priv->box_next_form, &lsidebargroups->priv->nform_head,
-				NULL, pshow->sets->currset->next->forms, false);
+				NULL, nextset->forms, false);
 	}
 
 

@@ -48,7 +48,7 @@ int perf_add(void)
 {
 	// Add a performer
 	
-	int i;
+	int i, setnum = 0;
 	int index;
 	int perfnum = pshow->perfnum;
 	int found_dot = 0;
@@ -76,6 +76,7 @@ int perf_add(void)
 		// have to make more nodes
 		// in every set
 		last = pshow->sets->firstset;
+		setnum = 0;
 		newperfs = (perf_t**)malloc((perfnum+5)*sizeof(perf_t*));
 		if (!newperfs)
 			return -1;
@@ -121,7 +122,9 @@ int perf_add(void)
 			free(last->coords);
 			last->coords = newcoords;
 			// go to next set
-			last = last->next;
+			//last = last->next;
+			last = set_get_next(pshow->sets, setnum);
+			setnum++;
 		}
 		index = perfnum;
 		pshow->perfnum = perfnum+5;
@@ -178,9 +181,9 @@ void perf_revert(headset_t *dshow, int index)
 	set_t *prevset;
 	coord_t *prevcoord;
 
-	prevset = dshow->sets->currset->prev;
+	//prevset = dshow->sets->currset->prev;
 
-	if (prevset == NULL)
+	if ((prevset = set_get_prev(pshow->sets, pstate.setnum))== NULL)
 	{
 		// first set
 		coords_set_coord(dshow, index, 0, 0);
@@ -258,7 +261,7 @@ double perf_average_stepsize_selected(headset_t *dshow)
 	double dxy;
 	// sets
 	set_t *currset = dshow->sets->currset;
-	set_t *prevset = dshow->sets->currset->prev;
+	set_t *prevset = set_get_prev(pshow->sets, pstate.setnum);
 	// selection
 	select_t *last = pstate.select;
 	// coords
@@ -312,7 +315,7 @@ int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 	double dxy;
 	// sets
 	set_t *currset = dshow->sets->currset;
-	set_t *prevset = dshow->sets->currset->prev;
+	set_t *prevset = set_get_prev(pshow->sets, pstate.setnum);
 	// selection
 	select_t *last = pstate.select;
 	// coords

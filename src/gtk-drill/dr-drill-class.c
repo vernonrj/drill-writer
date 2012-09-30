@@ -547,7 +547,8 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 		// animate
 		form_animate = true;
 		next_form = form_container_find_form_at_index(fcont, (pstate.setnum+1));
-		counts = pshow->sets->currset->next->counts;
+		//counts = pshow->sets->currset->next->counts;
+		counts = (set_get_next(pshow->sets, pstate.setnum))->counts;
 	}
 	else
 		form_animate = false;
@@ -671,7 +672,8 @@ int draw_forms(GtkWidget *widget)
 			// animate
 			form_animate = true;
 			next_form = form_container_find_form_at_index(fcont, (pstate.setnum+1));
-			counts = pshow->sets->currset->next->counts;
+			//counts = pshow->sets->currset->next->counts;
+			counts = (set_get_next(pshow->sets, pstate.setnum))->counts;
 		}
 		else
 			form_animate = false;
@@ -930,7 +932,8 @@ int draw_dots (GtkWidget *widget)
 
 		// grab sets from data structure
 		currset = pshow->sets->currset;
-		lastset = currset->next;
+		//lastset = currset->next;
+		lastset = set_get_next(pshow->sets, pstate.setnum);
 		perf = pshow->perfs;
 
 
@@ -979,10 +982,12 @@ int draw_dots (GtkWidget *widget)
 			{
 				// Go to next set
 				set_next();
-				lastset = pshow->sets->currset->next;
+				//lastset = pshow->sets->currset->next;
+				lastset = set_get_next(pshow->sets, pstate.setnum);
 			}
 		}
-		if (pshow->sets->currset->next == NULL)
+		//if (pshow->sets->currset->next == NULL)
+		if (set_get_next(pshow->sets, pstate.setnum) == NULL)
 		{
 			// At last set, playing is done
 			pstate.playing = 0;

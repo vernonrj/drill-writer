@@ -517,7 +517,8 @@ int save_file(char *filename)
 		fprintf(fp, "done\n");
 		fprintf(fp, "\n");
 		set_next();
-		if (currset->next == NULL)
+		//if (currset->next == NULL)
+		if ((currset = set_get_next(pshow->sets, pstate.setnum)) == NULL)
 			done = 1;
 		currset = pshow->sets->currset;
 	} while (done == 0);

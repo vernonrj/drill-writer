@@ -372,7 +372,8 @@ void dr_setbar_update_entries(GtkWidget *drsetbar)
 	if (pstate.curr_step)
 	{
 		// take the counts from the next set
-		sprintf(count_buf, "%i", pshow->sets->currset->next->counts);
+		//sprintf(count_buf, "%i", pshow->sets->currset->next->counts);
+		sprintf(count_buf, "%i", (set_get_next(pshow->sets, pstate.setnum))->counts);
 	}
 	else
 	{

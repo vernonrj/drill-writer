@@ -178,7 +178,8 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 	goto_set(unredo->set_num);
 	last = firstset;
 	i = 0;
-	for (i=0; last != NULL; i++, last = last->next)
+	//for (i=0; last != NULL; i++, last = last->next)
+	for (i=0; last != NULL; i++, last = set_get_next(pshow->sets, i))
 	{
 		unredo->coords[i] = last->coords[index];
 		last->coords[index] = (coord_t*)malloc(sizeof(coord_t));
@@ -307,6 +308,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 	int index;
 	double x, y;		// coords for moving dot
 	double xold, yold;
+	int setnum = 0;
 
 
 	// get operation
@@ -353,9 +355,10 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			{
 				// first set
 				set_first();
-				sourcebr->ud.set->next = dshow->sets->firstset;
+				//sourcebr->ud.set->next = dshow->sets->firstset;
+				pshow->sets = set_container_add_set_before(pshow->sets, sourcebr->ud.set, 0);
 				dshow->sets->firstset = sourcebr->ud.set;
-				dshow->sets->currset->prev = sourcebr->ud.set;
+				//dshow->sets->currset->prev = sourcebr->ud.set;
 				set_first();
 			}
 			else if (sourcebr->set_num > pstate.setnum)
@@ -363,15 +366,17 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 				// last set needs to be added
 				set_last();
 				currset = dshow->sets->currset;
-				sourcebr->ud.set->next = 0;
-				currset->next = sourcebr->ud.set;
+				//sourcebr->ud.set->next = 0;
+				//currset->next = sourcebr->ud.set;
+				pshow->sets = set_container_add_set_after(pshow->sets, sourcebr->ud.set, pstate.setnum);
 			}
 			else
 			{
 				set_prev();
 				currset = dshow->sets->currset;
-				sourcebr->ud.set->next = currset->next;
-				currset->next = sourcebr->ud.set;
+				pshow->sets = set_container_add_set_before(pshow->sets, sourcebr->ud.set, pstate.setnum);
+				//sourcebr->ud.set->next = currset->next;
+				//currset->next = sourcebr->ud.set;
 			}
 			excode = pushSetMk(&destbr);
 			if (!excode)
@@ -412,10 +417,10 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 				free(coords[index]);
 				coords[index] = sourcebr->coords[i];
 				printf("(x,y) @ %i = %.2f, %.2f\n", i, coords[index]->x, coords[index]->y);
-				i++;
-				currset = currset->next;
-				if (currset)
+				//currset = currset->next;
+				if ((currset = set_get_next(pshow->sets, i)) != NULL)
 					coords = currset->coords;
+				i++;
 			}
 			printf("ping\n");
 			free(sourcebr->coords);

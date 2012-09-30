@@ -215,11 +215,10 @@ int coords_retrieve_midset(set_t *currset, int index, double *x_r, double *y_r)
 	set_t *nextset;
 
 	coords_retrieve(currset->coords[index], &xcurr, &ycurr);
-	if (currset->next != NULL)
+	if ((nextset = set_get_next(pshow->sets, pstate.setnum)) != NULL)
 	{
 		// not last set,
 		// need to check to see if midset should be found
-		nextset = currset->next;
 		coords_retrieve(nextset->coords[index], &xnext, &ynext);
 		cstep = pstate.curr_step;
 		if (cstep != 0)

@@ -143,12 +143,14 @@ gboolean play_show (GtkWidget *widget)
 		g_timer_start(timer);
 		pstate.curr_step++;
 		do_field=0;	// don't need to redraw field
-		nextset = pshow->sets->currset->next;
+		//nextset = pshow->sets->currset->next;
+		nextset = set_get_next(pshow->sets, pstate.setnum);
 		if (pstate.curr_step >= nextset->counts)
 		{
 			// next set
 			set_next();
-			if (pshow->sets->currset->next == NULL)
+			//if (pshow->sets->currset->next == NULL)
+			if (set_get_next(pshow->sets, pstate.setnum) == NULL)
 			{
 				// last set
 				pstate.playing = 0;
@@ -191,9 +193,8 @@ void queue_show (GtkWidget *widget)//, GtkWidget *window)
 		(void)g_timeout_add_full(G_PRIORITY_HIGH, 1, (GSourceFunc)play_show, window, NULL);
 		do_field=0;	// don't need to redraw field
 		dr_canvas_refresh(drill);
-		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, 
-		//		drill->allocation.width, drill->allocation.height);
-		if (pshow->sets->currset->next != NULL)
+		//if (pshow->sets->currset->next != NULL)
+		if (set_get_next(pshow->sets, pstate.setnum) != NULL)
 			pstate.playing = 1;
 		else
 		{
@@ -213,7 +214,7 @@ void play_show_from_start (GtkWidget *widget)
 	if (!pstate.playing)
 	{
 		pshow->sets->currset = pshow->sets->firstset;
-		pshow->sets->currset->prev = 0;
+		//pshow->sets->currset->prev = 0;
 		pstate.curr_step = 0;
 		pstate.setnum=0;
 		(void)g_timeout_add_full(G_PRIORITY_HIGH, 1, (GSourceFunc)play_show, window, NULL);

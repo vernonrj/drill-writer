@@ -415,6 +415,10 @@ select_t *select_get_in_area(double x, double y);
 // set-controls.c
 // create a set with a given amount of performers
 set_container_t *set_container_construct(int perfs);
+set_container_t *set_container_add_set_before(set_container_t *set_container, set_t *newset, int setnum);
+set_container_t *set_container_add_before(set_container_t *set_container, int setnum);
+set_container_t *set_container_add_after(set_container_t *set_container, int setnum);
+set_container_t *set_container_add_set_after(set_container_t *set_container, set_t *newset, int setnum);
 set_t *set_construct_before(set_t *sets, int perfs);
 set_t *set_construct_after(set_t *sets, int perfs);
 int set_construct(set_t **sets_r, int perfs);
@@ -426,6 +430,10 @@ int isLastSet(void);
 int isFirstSet(void);
 int add_set(void);
 void delete_set(void);
+set_t *set_get_first(set_container_t *set_container);
+set_t *set_get_last(set_container_t *set_container);
+set_t *set_get_next(set_container_t *set_container, int index);
+set_t *set_get_prev(set_container_t *set_container, int setnum);
 void set_first(void);
 void set_last(void);
 void set_next(void);
