@@ -235,6 +235,7 @@ int main (int argc, char *argv[])
 	form_add_to_set(form);
 
 	// add new set
+	//*
 	add_set();
 	currset = pshow->sets->currset;
 	prevset = currset->prev;
@@ -244,6 +245,8 @@ int main (int argc, char *argv[])
 		prevcr = prevset->coords[i];
 		coords_set_coord(pshow, i, prevcr->x+4, prevcr->y);
 	}
+	//*/
+	///*
 	// add new set
 	add_set();
 	currset = pshow->sets->currset;
@@ -254,6 +257,7 @@ int main (int argc, char *argv[])
 		prevcr = prevset->coords[i];
 		coords_set_coord(pshow, i, prevcr->x, prevcr->y-10);
 	}
+	//*/
 
 	// Start at first set
 	pstate.setnum = 0;

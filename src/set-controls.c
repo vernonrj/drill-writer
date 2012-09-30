@@ -85,12 +85,9 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 	}
 
 	newset = set_construct_after(setlist[setnum], pshow->perfnum);
-	if (newset != setlist[setnum])
-	{
-		for(i=set_container->size; i>setnum+1; i--)
-			setlist[i] = setlist[i-1];
-		setlist[setnum] = newset;
-	}
+	for(i=set_container->size; i>setnum+1; i--)
+		setlist[i] = setlist[i-1];
+	setlist[setnum+1] = newset;
 	set_container->size++;
 	return set_container;
 }
@@ -283,6 +280,7 @@ void set_destroy(int set_index)
 
 
 
+// FIXME:	Deprecated
 int newset_create(set_container_t *sets)
 {
 	// make a new set at a point right after index
@@ -301,7 +299,7 @@ int newset_create(set_container_t *sets)
 	coord_t **pcoords;
 	coord_t **ncoords;
 
-	last = 0;
+	last = NULL;
 	excode = set_construct(&last, pshow->perfnum);
 	if (excode == -1)
 		return -1;
@@ -454,12 +452,15 @@ int add_set(void)
 	int newcounts = 0;
 	int excode;
 
+	pshow->sets = set_container_add_after(pshow->sets, pstate.setnum);
+	/*
 	nextset = dshow->sets->currset->next;
 	if (nextset && pstate.curr_step)
 		newcounts = nextset->counts;
 	excode = newset_create(dshow->sets);
 	if (excode == -1)
 		return -1;
+		*/
 	set_next();
 	if (newcounts)
 	{
@@ -485,7 +486,7 @@ void set_first(void)
 	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
 	pshow->sets->currset = pshow->sets->firstset;
 	pstate.curr_step = 0;
-	pstate.setnum=0;
+	pstate.setnum = 0;
 }
 
 
@@ -501,6 +502,7 @@ void set_last(void)
 		last = last->next;
 		pstate.setnum++;
 	}
+	pstate.setnum = pshow->sets->size-1;
 	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, last);
 	pshow->sets->currset = last;
 	pstate.curr_step = 0;
