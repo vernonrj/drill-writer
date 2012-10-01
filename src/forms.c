@@ -71,7 +71,6 @@ form_t *form_destruct(form_t *form)
 
 	last = form->next;
 	fcoords = form->fcoords;
-	//dots = form->dots;
 	if (form->name)
 		free(form->name);
 	dot_num = form->dot_num;
@@ -166,7 +165,6 @@ form_t *form_remove_from(form_t *curr, form_t *form_head)
 		return NULL;
 	if (!form_head || curr == form_head)
 	{
-		//return (form_destruct(curr));
 		return curr->next;
 	}
 	last = form_head;
@@ -177,7 +175,7 @@ form_t *form_remove_from(form_t *curr, form_t *form_head)
 		printf("WARNING: Form to be removed not in scope!\n");
 		return form_head;
 	}
-	last->next = curr->next;//form_destruct(curr);
+	last->next = curr->next;
 	return form_head;
 }
 
@@ -200,7 +198,6 @@ bool form_is_selected(form_t *form, select_t *select)
 
 
 
-//bool form_checkEndpoints(form_t *form, double x, double y)
 bool form_endpoint_contains_coords(form_t *form, double x, double y)
 {
 	if(!form)
@@ -238,7 +235,6 @@ bool form_endpoint_hole_contains_coords(form_t *form, double x, double y)
 bool form_contains_coords(form_t *form, double x, double y)
 {
 	int i;
-	//fline_t *line;
 	int index;
 	form_coord_t **fcoords;
 	coord_t *coord;
@@ -270,9 +266,7 @@ bool form_hole_contains_coords(form_t *form, double x, double y)
 	fcoords = form->fcoords;
 	coordx = x - form->endpoints[0][0];
 	coordy = y - form->endpoints[0][1];
-	//dots = form->dots;
 	dot_num = form->dot_num;
-	//coords = form->coords;
 	for(i=0; i<dot_num; i++)
 	{
 		coord = fcoords[i]->coord;
@@ -291,8 +285,6 @@ int form_find_index_with_coords(form_t *form, double x, double y)
 {
 	// return an index that matches (x, y)
 	int i;
-	//int *dots;
-	//double **coords;
 	int dot_num;
 	double coordx, coordy;
 	form_coord_t **fcoords;
@@ -300,10 +292,8 @@ int form_find_index_with_coords(form_t *form, double x, double y)
 	int dot;
 	if (!form)
 		return -1;
-	//dots = form->dots;
 	dot_num = form->dot_num;
 	fcoords = form->fcoords;
-	//coords = form->coords;
 	x -= form->endpoints[0][0];
 	y -= form->endpoints[0][1];
 	for(i=0; i<dot_num; i++)
@@ -402,18 +392,13 @@ form_t *form_find_with_endpoint_hole(form_t *form, double x, double y)
 form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, double y)
 {
 	int i;
-	//int *dots;
 	int dot_num;
 	int dot;
-	//double **coords;
 	form_coord_t **fcoords;
 	coord_t *coord;
-	//int manage_state = coords_check_managed_by_index(index);
 	double coordx, coordy;
 	if (!form)
 		return NULL;
-	//dots = form->dots;
-	//coords = form->coords;
 	dot_num = form->dot_num;
 	fcoords = form->fcoords;
 	x -= form->endpoints[0][0];
@@ -474,11 +459,8 @@ form_t *form_build_line(form_t *form, select_t *select_head)
 	// get endpoints, continue allocation
 	for (i=0; i<index; i++)
 	{
-		//form->coords[i][0] = form->coords[i][1] = 0;
 		if (select)
 		{
-			//coords_retrieve_midset(pshow->sets->currset, select->index, &form->coords[i][0], &form->coords[i][1]);
-			//form->dots[i] = select->index;
 			fcoords[i]->dot = select->index;
 			if (i != 0 && i != index - 1)
 				coords_set_managed_by_index(select->index, 0x1);
@@ -501,11 +483,9 @@ bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, 
 {
 	int i;
 	int index;
-	//double **coords;
 	index = form->dot_num;
 	coord_t *coord;
 	form_coord_t **fcoords;
-	//coords = form->coords;
 	fcoords = form->fcoords;
 	for (i=0; i<index; i++)
 	{
@@ -541,11 +521,8 @@ int form_update_line(form_t *form)
 				fcoord = form->fcoords[i];
 				fcoord->coord->x = i*slopex;
 				fcoord->coord->y = i*slopey;
-				//form->coords[i][0] = i*slopex;// + form->endpoints[0][0];
-				//form->coords[i][1] = i*slopey;// + form->endpoints[0][1];
 				if (fcoord->dot != -1)
 				{
-					//coords_set_coord(pshow, form->dots[i], form->coords[i][0]+endpointx, form->coords[i][1]+endpointy);
 					coords_set_coord(pshow, fcoord->dot, fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
 				}
 			}
@@ -633,13 +610,11 @@ int form_move_endpoint_grid(form_t *form, double x1, double y1, double x2, doubl
 int form_movexy(form_t *form, double xoff, double yoff)
 {
 	int i, index;
-	//int *dots;
 	int dot;
 	double endpointx, endpointy;
 	form_coord_t *fcoord;
 	if (!form)
 		return -1;
-	//dots = form->dots;
 	form->endpoints[0][0] += xoff;
 	form->endpoints[1][0] += xoff;
 	form->endpoints[0][1] += yoff;
@@ -661,13 +636,11 @@ int form_movexy(form_t *form, double xoff, double yoff)
 int form_unmanage_dot(form_t *form, int index)
 {
 	int i;
-	//int *dot;
 	int dot_num;
 	form_coord_t **fcoords;
 
 	if (!form)
 		return -1;
-	//dot = form->dots;
 	dot_num = form->dot_num;
 	fcoords = form->fcoords;
 	for(i=0; i<dot_num; i++)
@@ -690,13 +663,11 @@ select_t *form_get_contained_dots(form_t *form)
 	int i;
 	int index;
 	int dot;
-	//int *dots;
 	select_t *select = NULL;
 
 	if (!form)
 		return NULL;
 	index = form->dot_num;
-	//dots = form->dots;
 	for(i=0; i<index; i++)
 	{
 		dot = form->fcoords[i]->dot;
@@ -848,7 +819,6 @@ select_t *form_flatten(form_t *form, select_t *select_head)
 {
 	int i;
 	int dot_num;
-	//int *dots;
 	form_coord_t **fcoords;
 	select_t *last;
 	select_t *select = NULL;
@@ -875,7 +845,6 @@ select_t *form_flatten(form_t *form, select_t *select_head)
 	}
 	fcoords = form->fcoords;
 	dot_num = form->dot_num;
-	//dots = form->dots;
 	for (i=0; i<dot_num; i++)
 		if (fcoords[i]->dot != -1)
 			select_head = select_add_index(select_head, fcoords[i]->dot, false);
@@ -929,66 +898,42 @@ form_container_t *form_container_construct(void)
 	last->forms = (form_t**)malloc(pshow->sets->size_alloc*sizeof(form_t*));
 	for (i=0; i<pshow->sets->size_alloc; i++)
 		last->forms[i] = NULL;
-	//last->size = 0;
-	//last->size_alloc = 0;
 	return last;
 }
+
+
 
 form_container_t *form_container_construct_with_form(form_t *form, int index)
 {
-	//int size_alloc;
 	form_container_t *last;
 	last = form_container_construct();
-	//size_alloc = last->size_alloc = 5;
 	
-	//last->forms = (form_t**)malloc(size_alloc*sizeof(form_t*));
-	//last->set_index = (int*)malloc(size_alloc*sizeof(int));
 	last->forms[0] = form;
-	//last->set_index[0] = index;
-	//last->size = 1;
 
 	return last;
 }
-		
+
+
 
 form_container_t *form_container_destroy(form_container_t *last)
 {
 	free(last->forms);
-	//free(last->set_index);
 	LIST_REMOVE(last, formlist_entries);
 	free(last);
 	return NULL;
 }
 
 
+
 bool form_container_contiguous(form_container_t *fcont, int set_num)
 {
-	//int i;
 	int size;
-	//int *set_index;
-	//bool found_set = false;
 	size = pshow->sets->size;
 	if (set_num < size-1 && fcont->forms[set_num] && fcont->forms[set_num+1])
 		return true;
 	return false;
-	//set_index = fcont->set_index;
-	/*
-	for (i=0; i<size; i++)
-	{
-		if (set_index[i] >= set_num)
-		{
-			found_set = true;
-			break;
-		}
-	}
-	if (found_set && set_num == set_index[i])
-	{
-		if ((i+1) < size && set_index[i+1] == set_num+1)
-			return true;
-	}
-	return false;
-	*/
 }
+
 
 
 form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index)
@@ -1010,125 +955,35 @@ form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index)
 
 
 
-
-
-
 int form_container_add_set(form_list_t *head, form_container_t *last, int index)
 {
-	//int i;
-	//int pivot;
-	//int size;
-	//int size_alloc;
-	//int *set_index;
 	form_t **forms;
 	int excode;
-	//bool setnum_broke = false;
 	if (!last)
 		return -1;
-	//size = last->size;
-	//size_alloc = last->size_alloc;
 	forms = last->forms;
 	if (index > 0)
 		forms[index] = form_copy(forms[index-1]);
 	else
 		forms[index] = form_construct();
 	return 0;
-	/*
-	while (size >= size_alloc)
-	{
-		set_index = (int*)malloc((size_alloc+5)*sizeof(int));
-		forms = (form_t**)malloc((size_alloc+5)*sizeof(form_t*));
-		for (i=0; i<size; i++)
-		{
-			set_index[i] = last->set_index[i];
-			forms[i] = last->forms[i];
-		}
-		size_alloc+=5;
-		free(last->set_index);
-		free(last->forms);
-		last->set_index = set_index;
-		last->forms = forms;
-		last->size_alloc = size_alloc;
-	}
-	forms = last->forms;
-	//set_index = last->set_index;
-	for(i=0; i<size; i++)
-	{
-		if (set_index[i] >= index)
-		{
-			setnum_broke = true;
-			break;
-		}
-	}
-	if (setnum_broke && set_index[i] == index)
-		return 0;
-	pivot = i;
-	for(i = size; i >= pivot; i--)
-	{
-		set_index[i+1] = set_index[i];
-		forms[i+1] = forms[i];
-	}
-	size++;
-	last->size = size;
-	set_index[pivot] = index;
-	if (pivot > 0 && set_index[pivot] == set_index[pivot-1]+1)
-	{
-		// re-using form from previous set
-		forms[pivot] = form_copy(forms[pivot-1]);
-		excode = 0;
-	}
-	else
-	{
-		// making new form. Indicate in exit code
-		forms[pivot] = form_construct();
-		excode = 1;
-	}
-	form_add_to_set(forms[pivot]);
-	*/
 	return excode;
 }
 
 
+
 int form_container_remove_set(form_list_t *head, form_container_t *last, int index)
 {
-	//int i;
-	//int size;
-	//bool removed_flag = false;
 	form_t **forms;
-	//int *set_index;
-	//form_container_t *curr;
 
 	if (!last)
 		return -1;
-	//size = last->size;
 	forms = last->forms;
 	if (forms[index])
 	{
 		form_destruct(forms[index]);
 		forms[index] = NULL;
 	}
-	/*
-	set_index = last->set_index;
-	for(i=0; i<size; i++)
-	{
-		if (set_index[i] == index)
-		{
-			removed_flag = true;
-			form_destruct(forms[i]);
-		}
-		if (removed_flag && i < (size-1))
-		{
-			set_index[i] = set_index[i+1];
-			forms[i] = forms[i+1];
-		}
-	}
-	last->size--;
-	if (last->size <= 0)
-	{
-		last = form_container_destroy(last);
-		return 1;
-	}
-	*/
 	return 0;
 }
 
@@ -1163,36 +1018,15 @@ form_container_t *form_container_find_with_form(form_list_t *head, form_t *form)
 }
 
 
+
 form_t *form_container_find_form_at_index(form_container_t *last, int index)
 {
-	//int i;
-	//int size;
-	//int *set_index;
-
 	return last->forms[index];
-	/*
-	set_index = last->set_index;
-	size = last->size;
-	for(i=0; i<size; i++)
-		if (set_index[i] == index)
-			return last->forms[i];
-	return NULL;
-	*/
 }
+
 
 
 bool form_container_mapped_at_set(form_container_t *last, int setnum)
 {
-	//int i;
 	return (last->forms[setnum] != NULL);
-	/*
-	int *set_index;
-	if (!last)
-		return false;
-	set_index = last->set_index;
-	for(i=0; i<last->size; i++)
-		if (set_index[i] == setnum)
-			return true;
-	return false;
-	*/
 }
