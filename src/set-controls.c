@@ -93,7 +93,7 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 			{
 				x = currset->coords[i]->x;
 				y = currset->coords[i]->y;
-				if (setnum+2 < pshow->sets->size)
+				if (curr_step && setnum+2 < pshow->sets->size)
 				{
 					x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
 					y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
