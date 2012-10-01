@@ -266,9 +266,6 @@ void set_destroy(int set_index)
 	if (set_index == 0)
 		pshow->sets->firstset = pshow->sets->setlist[0];
 
-	// unlink node
-	for (i=set_index; i<size; i++)
-		setlist[i] = setlist[i+1];
 	/*
 	if (prevset != NULL)
 	{
@@ -310,7 +307,7 @@ void set_destroy(int set_index)
 	}
 	*/
 	size = --pshow->sets->size;
-	if (set_index+1 < size)
+	if (set_index >= size)
 		pstate.setnum = (size-1);
 	if (!size)
 	{
