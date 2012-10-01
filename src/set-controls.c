@@ -119,10 +119,24 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 	int size, size_alloc;
 	set_t **setlist = set_container->setlist;
 	set_t **newsetlist;
+	form_list_t *flist = pshow->topforms;
+	form_container_t *fcont = LIST_FIRST(flist);
+	form_t **newforms;
+	form_t **forms;
 	size_alloc = set_container->size_alloc; 
 	size = set_container->size;
 	if (size+1 >= size_alloc)
 	{
+		while (fcont)
+		{
+			forms = fcont->forms;
+			newforms = (form_t **)malloc((size_alloc+5)*sizeof(form_t*));
+			for (i=0; i<size; i++)
+				newforms[i] = forms[i];
+			fcont->forms = newforms;
+			free(forms);
+			fcont = LIST_NEXT(fcont, formlist_entries);
+		}
 		newsetlist = (set_t**)malloc((size_alloc+5)*sizeof(set_t*));
 		for(i=0; i<size; i++)
 			newsetlist[i] = setlist[i];
@@ -130,6 +144,14 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 		free(setlist);
 		set_container->size_alloc += 5;
 		setlist = newsetlist;
+	}
+	fcont = LIST_FIRST(flist);
+	while (fcont)
+	{
+		for (i=set_container->size; i>setnum+1; i--)
+			fcont->forms[i] = fcont->forms[i-1];
+		fcont->forms[setnum+1] = NULL;
+		fcont = LIST_NEXT(fcont, formlist_entries);
 	}
 
 	for(i=set_container->size; i>setnum+1; i--)

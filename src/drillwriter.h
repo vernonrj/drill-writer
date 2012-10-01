@@ -117,8 +117,8 @@ struct form_container_proto
 	LIST_ENTRY(form_container_proto) formlist_entries;
 	//int* set_index;
 	form_t **forms;
-	int size;
-	int size_alloc;
+	//int size;
+	//int size_alloc;
 };
 LIST_HEAD(form_list_proto, form_container_proto);
 typedef struct form_list_proto form_list_t;
