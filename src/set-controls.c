@@ -432,8 +432,10 @@ void goto_set(int set_buffer)
 
 	if (set_buffer < pshow->sets->size)
 	{
+		pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->setlist[set_buffer]);
 		pstate.setnum = set_buffer;
 		pshow->sets->currset = pshow->sets->setlist[set_buffer];
+		pstate.curr_step = 0;
 	}
 	/*
 	for (i=0; i<set_buffer && last != NULL; i++)
