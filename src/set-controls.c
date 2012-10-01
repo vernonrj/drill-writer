@@ -79,7 +79,9 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 	set_t *newset;
 	//set_t **setlist = set_container->setlist;
 	set_t *currset = set_container->setlist[setnum];
-	double x, y;
+	double x2, y2, x, y;
+	int curr_step = pstate.curr_step;
+	int counts;
 	//newset = set_construct_after(setlist[setnum], pshow->perfnum);
 	set_construct(&newset, perfnum);
 	set_container = set_container_add_set_after(set_container, newset, setnum);
@@ -89,8 +91,21 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 		{
 			if (pshow->perfs[i]->valid)
 			{
-				coords_retrieve_midset(setnum, i, &x, &y);
-				coords_set_coord(pshow, i, x, y);
+				x = currset->coords[i]->x;
+				y = currset->coords[i]->y;
+				if (setnum+2 < pshow->sets->size)
+				{
+					x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
+					y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
+					counts = currset->counts;
+					x = x + ((x2 - x) / counts * curr_step);
+					y = y + ((y2 - y) / counts * curr_step);
+					pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
+					newset->counts = curr_step;
+				}
+				//coords_set_coord(pshow, i, x, y);
+				newset->coords[i]->x = x;
+				newset->coords[i]->y = y;
 			}
 		}
 	}
