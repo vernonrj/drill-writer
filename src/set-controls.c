@@ -103,7 +103,6 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 					pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
 					newset->counts = curr_step;
 				}
-				//coords_set_coord(pshow, i, x, y);
 				newset->coords[i]->x = x;
 				newset->coords[i]->y = y;
 			}

@@ -922,9 +922,11 @@ form_t *form_copy(form_t *form)
 
 form_container_t *form_container_construct(void)
 {
+	//int i;
 	form_container_t *last;
 
 	last = (form_container_t*)malloc(sizeof(form_container_t));
+	last->forms = (form_t**)malloc(pshow->sets->size_alloc*sizeof(form_t*));
 	last->size = 0;
 	last->size_alloc = 0;
 	return last;
@@ -932,15 +934,15 @@ form_container_t *form_container_construct(void)
 
 form_container_t *form_container_construct_with_form(form_t *form, int index)
 {
-	int size_alloc;
+	//int size_alloc;
 	form_container_t *last;
 	last = form_container_construct();
-	size_alloc = last->size_alloc = 5;
+	//size_alloc = last->size_alloc = 5;
 	
-	last->forms = (form_t**)malloc(size_alloc*sizeof(form_t*));
-	last->set_index = (int*)malloc(size_alloc*sizeof(int));
+	//last->forms = (form_t**)malloc(size_alloc*sizeof(form_t*));
+	//last->set_index = (int*)malloc(size_alloc*sizeof(int));
 	last->forms[0] = form;
-	last->set_index[0] = index;
+	//last->set_index[0] = index;
 	last->size = 1;
 
 	return last;
@@ -950,7 +952,7 @@ form_container_t *form_container_construct_with_form(form_t *form, int index)
 form_container_t *form_container_destroy(form_container_t *last)
 {
 	free(last->forms);
-	free(last->set_index);
+	//free(last->set_index);
 	LIST_REMOVE(last, formlist_entries);
 	free(last);
 	return NULL;
@@ -959,12 +961,16 @@ form_container_t *form_container_destroy(form_container_t *last)
 
 bool form_container_contiguous(form_container_t *fcont, int set_num)
 {
-	int i;
+	//int i;
 	int size;
-	int *set_index;
-	bool found_set = false;
+	//int *set_index;
+	//bool found_set = false;
 	size = fcont->size;
-	set_index = fcont->set_index;
+	if (set_num < size-1 && fcont->forms[set_num] && fcont->forms[set_num+1])
+		return true;
+	return false;
+	//set_index = fcont->set_index;
+	/*
 	for (i=0; i<size; i++)
 	{
 		if (set_index[i] >= set_num)
@@ -979,6 +985,7 @@ bool form_container_contiguous(form_container_t *fcont, int set_num)
 			return true;
 	}
 	return false;
+	*/
 }
 
 
@@ -1006,18 +1013,25 @@ form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index)
 
 int form_container_add_set(form_list_t *head, form_container_t *last, int index)
 {
-	int i;
-	int pivot;
-	int size;
-	int size_alloc;
-	int *set_index;
+	//int i;
+	//int pivot;
+	//int size;
+	//int size_alloc;
+	//int *set_index;
 	form_t **forms;
 	int excode;
-	bool setnum_broke = false;
+	//bool setnum_broke = false;
 	if (!last)
 		return -1;
-	size = last->size;
-	size_alloc = last->size_alloc;
+	//size = last->size;
+	//size_alloc = last->size_alloc;
+	forms = last->forms;
+	if (index > 0)
+		forms[index] = form_copy(forms[index-1]);
+	else
+		forms[index] = form_construct();
+	return 0;
+	/*
 	while (size >= size_alloc)
 	{
 		set_index = (int*)malloc((size_alloc+5)*sizeof(int));
@@ -1035,7 +1049,7 @@ int form_container_add_set(form_list_t *head, form_container_t *last, int index)
 		last->size_alloc = size_alloc;
 	}
 	forms = last->forms;
-	set_index = last->set_index;
+	//set_index = last->set_index;
 	for(i=0; i<size; i++)
 	{
 		if (set_index[i] >= index)
@@ -1068,23 +1082,27 @@ int form_container_add_set(form_list_t *head, form_container_t *last, int index)
 		excode = 1;
 	}
 	form_add_to_set(forms[pivot]);
+	*/
 	return excode;
 }
 
 
 int form_container_remove_set(form_list_t *head, form_container_t *last, int index)
 {
-	int i;
-	int size;
-	bool removed_flag = false;
+	//int i;
+	//int size;
+	//bool removed_flag = false;
 	form_t **forms;
-	int *set_index;
+	//int *set_index;
 	//form_container_t *curr;
 
 	if (!last)
 		return -1;
-	size = last->size;
+	//size = last->size;
 	forms = last->forms;
+	if (forms[index])
+		forms[index] = form_destruct(forms[index]);
+	/*
 	set_index = last->set_index;
 	for(i=0; i<size; i++)
 	{
@@ -1105,6 +1123,7 @@ int form_container_remove_set(form_list_t *head, form_container_t *last, int ind
 		last = form_container_destroy(last);
 		return 1;
 	}
+	*/
 	return 0;
 }
 
@@ -1141,22 +1160,27 @@ form_container_t *form_container_find_with_form(form_list_t *head, form_t *form)
 
 form_t *form_container_find_form_at_index(form_container_t *last, int index)
 {
-	int i;
-	int size;
-	int *set_index;
+	//int i;
+	//int size;
+	//int *set_index;
 
+	return last->forms[index];
+	/*
 	set_index = last->set_index;
 	size = last->size;
 	for(i=0; i<size; i++)
 		if (set_index[i] == index)
 			return last->forms[i];
 	return NULL;
+	*/
 }
 
 
 bool form_container_mapped_at_set(form_container_t *last, int setnum)
 {
-	int i;
+	//int i;
+	return (last->forms[setnum] != NULL);
+	/*
 	int *set_index;
 	if (!last)
 		return false;
@@ -1165,4 +1189,5 @@ bool form_container_mapped_at_set(form_container_t *last, int setnum)
 		if (set_index[i] == setnum)
 			return true;
 	return false;
+	*/
 }
