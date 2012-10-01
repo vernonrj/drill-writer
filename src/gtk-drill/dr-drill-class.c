@@ -752,8 +752,8 @@ int draw_selected(GtkWidget *widget)
 	// draw selected dots, not normal dots
 	select_t *select;
 	select_t *form_select;
-	set_container_t *sets;
-	set_t *currset;
+	//set_container_t *sets;
+	//set_t *currset;
 	form_t *form;
 	int index;
 	double x, y;
@@ -785,8 +785,8 @@ int draw_selected(GtkWidget *widget)
 	cairo_set_source_rgba(selected_area, 0, 0, 1, 0.1);
 
 	// get set information
-	sets = pshow->sets;
-	currset = sets->currset;
+	//sets = pshow->sets;
+	//currset = sets->currset;
 	// get select information
 	select = pstate.select;
 	if ((fldstate.mouse_clicked & 0x1) == 0x1)
@@ -900,7 +900,7 @@ int draw_dots (GtkWidget *widget)
 {
 	int i;		// loop variable
 	// set containers
-	set_t *currset;	
+	//set_t *currset;	
 	set_t *lastset;
 	// performer container
 	perf_t **perf;
@@ -931,7 +931,7 @@ int draw_dots (GtkWidget *widget)
 		cairo_set_line_width(dots, 1.5);
 
 		// grab sets from data structure
-		currset = pshow->sets->currset;
+		//currset = pshow->sets->currset;
 		//lastset = currset->next;
 		lastset = set_get_next(pshow->sets, pstate.setnum);
 		perf = pshow->perfs;

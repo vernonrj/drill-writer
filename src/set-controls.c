@@ -35,8 +35,9 @@ set_container_t *set_container_construct(int perfs)
 set_container_t *set_container_add_before(set_container_t *set_container, int setnum)
 {
 	set_t *newset;
-	set_t **setlist = set_container->setlist;
-	newset = set_construct_before(setlist[setnum], pshow->perfnum);
+	//set_t **setlist = set_container->setlist;
+	//newset = set_construct_before(setlist[setnum], pshow->perfnum);
+	set_construct(&newset, pshow->perfnum);
 	set_container = set_container_add_set_before(set_container, newset, setnum);
 	return set_container;
 }
@@ -73,10 +74,27 @@ set_container_t *set_container_add_set_before(set_container_t *set_container, se
 
 set_container_t *set_container_add_after(set_container_t *set_container, int setnum)
 {
+	int i;
+	int perfnum = pshow->perfnum;
 	set_t *newset;
-	set_t **setlist = set_container->setlist;
-	newset = set_construct_after(setlist[setnum], pshow->perfnum);
+	//set_t **setlist = set_container->setlist;
+	set_t *currset = set_container->setlist[setnum];
+	double x, y;
+	//newset = set_construct_after(setlist[setnum], pshow->perfnum);
+	set_construct(&newset, perfnum);
 	set_container = set_container_add_set_after(set_container, newset, setnum);
+	if (currset)
+	{
+		for (i=0; i<perfnum; i++)
+		{
+			if (pshow->perfs[i]->valid)
+			{
+				coords_retrieve_midset(setnum, i, &x, &y);
+				coords_set_coord(pshow, i, x, y);
+			}
+		}
+	}
+
 	return set_container;
 }
 
@@ -100,7 +118,6 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 		setlist = newsetlist;
 	}
 
-	newset = set_construct_after(setlist[setnum], pshow->perfnum);
 	for(i=set_container->size; i>setnum+1; i--)
 		setlist[i] = setlist[i-1];
 	setlist[setnum+1] = newset;
@@ -114,9 +131,11 @@ set_container_t *set_container_destruct(set_container_t *set_container)
 	int i;
 	for(i=0; i<pshow->sets->size; i++)
 		set_cldestroy(&pshow->sets->setlist[i], pshow->perfnum);
+	return set_container;
 }
 
 
+/*
 set_t *set_construct_before(set_t *sets, int perfs)
 {
 	set_t **newset;
@@ -130,14 +149,6 @@ set_t *set_construct_before(set_t *sets, int perfs)
 	{
 		last = *newset;
 		free(newset);
-		/*
-		prev = sets->prev;
-		if (prev)
-			prev->next = last;
-		last->prev = prev;
-		last->next = sets;
-		sets->prev = last;
-		*/
 		sets = last;
 	}
 	return sets;
@@ -156,25 +167,18 @@ set_t *set_construct_after(set_t *sets, int perfs)
 	{
 		last = *newset;
 		free(newset);
-		/*
-		next = sets->next;
-		if (next)
-			next->prev = last;
-		last->next = next;
-		last->prev = sets;
-		sets->next = last;
-		*/
 		sets = last;
 	}
 	return sets;
 }
+*/
 
 int set_construct(set_t **sets_r, int perfs)
 {
 	// Build storage for set
 	
 	set_t *newset;
-	set_t *last;
+	//set_t *last;
 
 	newset = (set_t*) malloc(sizeof(set_t));
 	if (newset == NULL)
@@ -189,7 +193,7 @@ int set_construct(set_t **sets_r, int perfs)
 		return -1;
 	newset->name[0] = '\0';
 	newset->info[0] = '\0';
-	newset->counts = 0;
+	newset->counts = 8;
 	//newset->groups = (group_t*)malloc(sizeof(group_t));
 	newset->groups = NULL;
 
@@ -199,27 +203,22 @@ int set_construct(set_t **sets_r, int perfs)
 	newset->coords = coords_construct(perfs);
 	if (!newset->coords)
 		return -1;
+	newset->forms = NULL;
 
+	*sets_r = newset;
+	/*
 	// link
 	last = *sets_r;
 	if (last != NULL)
 	{
 		// Link previous set
-		/*
-		newset->next = last->next;
-		newset->prev = last;
-		last->next = newset;
-		*/
 		last = newset;
 	}
 	else
 	{
-		/*
-		newset->next = NULL;
-		newset->prev = NULL;
-		*/
 		*sets_r = newset;
 	}
+	*/
 
 	return 0;
 }
@@ -249,13 +248,13 @@ void set_destroy(int set_index)
 {
 	// destroy current set
 	int i;
-	set_t *last;
+	//set_t *last;
 	//set_t *prevset;
-	int excode;
+	//int excode;
 	int size;
 	set_t **setlist;
 
-	last = pshow->sets->currset;
+	//last = pshow->sets->currset;
 	setlist = pshow->sets->setlist;
 	//prevset = last->prev;
 
@@ -315,7 +314,7 @@ void set_destroy(int set_index)
 		pstate.setnum = (size-1);
 	if (!size)
 	{
-		excode = set_construct(&pshow->sets->firstset, pshow->perfnum);
+		set_construct(&pshow->sets->firstset, pshow->perfnum);
 		setlist[0] = pshow->sets->firstset;
 		pstate.setnum = 0;
 	}
@@ -427,9 +426,9 @@ int newset_create(set_container_t *sets)
 
 void goto_set(int set_buffer)
 {
-	int i = 0;
-	set_t *curr = pshow->sets->currset;
-	set_t *last = pshow->sets->firstset;
+	//int i = 0;
+	//set_t *curr = pshow->sets->currset;
+	//set_t *last = pshow->sets->firstset;
 
 	if (set_buffer < pshow->sets->size)
 	{
@@ -502,11 +501,11 @@ int add_set(void)
 {
 	// Add a set after the current one
 	headset_t *dshow = pshow;
-	set_t *nextset;
+	//set_t *nextset;
 	int newcounts = 0;
-	int excode;
+	//int excode;
 
-	pshow->sets = set_container_add_after(pshow->sets, pstate.setnum);
+	dshow->sets = set_container_add_after(dshow->sets, pstate.setnum);
 	/*
 	nextset = dshow->sets->currset->next;
 	if (nextset && pstate.curr_step)
@@ -520,7 +519,7 @@ int add_set(void)
 	if (newcounts)
 	{
 		pushCounts(&pstate.undobr, pstate.setnum, newcounts, 0);
-		pshow->sets->currset->counts = newcounts;
+		dshow->sets->currset->counts = newcounts;
 	}
 	pushSetMk(&pstate.undobr);
 
@@ -571,7 +570,7 @@ set_t *set_get_next(set_container_t *set_container, int index)
 	{
 		//pstate.setnum++;
 		//pshow->sets->currset = pshow->sets->setlist[pstate.setnum];
-		return pshow->sets->setlist[pstate.setnum];
+		return set_container->setlist[index+1];
 	}
 	return NULL;
 	/*
@@ -587,19 +586,24 @@ set_t *set_get_next(set_container_t *set_container, int index)
 
 
 
-set_t *set_get_prev(set_container_t *set_container, int setnum)
+set_t *set_get_prev(set_container_t *set_container, int index)
 {
-	set_t *last;
+	//set_t *last;
 
 	// if in the middle of set,
 	// go to beginning of set
+	if (index > 0)
+		return set_container->setlist[index-1];
+	return NULL;
+	/*
 	if (pstate.curr_step)
 		pstate.curr_step = 0;
 	else if (pstate.setnum)
 	{
 		pstate.setnum--;
-		pshow->sets->currset = pshow->sets->setlist[pstate.setnum];
+		pshow->sets->currset = pshow->sets->setlist[index-1];
 	}
+	*/
 
 	/*
 	last = pshow->sets->currset;

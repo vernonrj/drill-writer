@@ -261,7 +261,7 @@ int pushCounts(undo_t **stack_r, int set_num, int counts, int done)
 		unredo->operation = 6;		// counts changed
 		unredo->ud.counts = counts;	// store counts
 		unredo->done = done;		// finished
-		printf("push done = %i\n", done);
+		//printf("push done = %i\n", done);
 		excode = pushToStack(unredo, stack_r);	// push
 
 		return excode;
@@ -308,7 +308,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 	int index;
 	double x, y;		// coords for moving dot
 	double xold, yold;
-	int setnum = 0;
+	//int setnum = 0;
 
 
 	// get operation

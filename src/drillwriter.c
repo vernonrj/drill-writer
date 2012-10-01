@@ -253,7 +253,7 @@ int main (int argc, char *argv[])
 	// add new set
 	add_set();
 	currset = pshow->sets->currset;
-	//prevset = currset->prev;
+	prevset = set_get_prev(pshow->sets, pstate.setnum);
 	currset->counts = 8;
 	for (i=0; i<12; i++)
 	{

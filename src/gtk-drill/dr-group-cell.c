@@ -453,7 +453,7 @@ void dr_group_cell_delete_from(GtkWidget *widget)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	//DrGroupCell *curr = (DrGroupCell*)container;
-	DrGroupCell *gnext;
+	//DrGroupCell *gnext;
 	if (!groupcell)// || !container)
 		return;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
