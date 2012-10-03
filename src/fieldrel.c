@@ -327,4 +327,102 @@ int fieldrel_convert_xy_to_relation(double *x, double *y, char **buffer_r)
 	*buffer_r = buffer;
 	return 0;
 }
-	
+
+
+
+select_t *field_get_in_area(double x, double y)
+{
+	int i;
+	int min_index = -1;
+	int index;
+	form_child_t *form = pshow->sets->currset->forms;
+	form_child_t *min_form = NULL;
+	int perfnum = pshow->perfnum;
+	double coordx, coordy;
+	double distance, distance_min = -1;
+	coord_t *coord;
+	select_t *dot_select = NULL;
+	select_t *form_select = NULL;
+	select_t *select = NULL;
+	for(i=0; i<perfnum; i++)
+	{
+		if (!coords_check_managed_by_index(i))
+		{
+			coords_retrieve_midset(pstate.setnum, i, &coordx, &coordy);
+			if (fieldrel_check_dots_within_range(x, y, coordx, coordy))
+				dot_select = select_add_index(dot_select, i, false);
+		}
+	}
+	while (form)
+	{
+		form = form_find_with_coords(form, x, y);
+		form_select = select_add_form(form_select, form, false);
+		if (form)
+			form = form->next;
+	}
+	if (dot_select)
+	{
+		select = dot_select;
+		distance_min = -1;
+		while (select)
+		{
+			//coords_retrieve_midset(pstate.setnum, select->index, &coordx, &coordy);
+			coords_retrieve_midset(pstate.setnum, select_get_index(select), &coordx, &coordy);
+			distance = pow((coordx-x),2) + pow((coordy-y),2);
+			if (distance < distance_min || distance_min == -1)
+			{
+				distance_min = distance;
+				//min_index = select->index;
+				min_index = select_get_index(select);
+			}
+			//select = select->next;
+			select = select_get_next(select);
+		}
+		select = NULL;
+		dot_select = select_discard(dot_select);
+		dot_select = select_add_index(dot_select, min_index, false);
+	}
+	if (form_select)
+	{
+		select = form_select;
+		distance_min = -1;
+		while (select)
+		{
+			//index = form_find_index_with_coords(select->form, x, y);
+			index = form_find_index_with_coords(select_get_form(select), x, y);
+			if (index == -1)
+			{
+				//coord = form_get_coord_near(select->form, x, y);
+				coord = form_get_coord_near(select_get_form(select), x, y);
+				coordx = coord->x;
+				coordy = coord->y;
+			}
+			else
+				coords_retrieve_midset(pstate.setnum, index, &coordx, &coordy);
+			distance = pow((coordx-x),2) + pow((coordy-y),2);
+			if (distance < distance_min || distance_min == -1)
+			{
+				distance_min = distance;
+				//min_form = select->form;
+				min_form = select_get_form(select);
+			}
+			//select = select->next;
+			select = select_get_next(select);
+		}
+		form_select = select_discard(form_select);
+		form_select = select_add_form(form_select, min_form, false);
+	}
+
+	if (!form_select)
+		return dot_select;
+	else if (!dot_select)
+		return form_select;
+	//if (form_hole_contains_coords(form_select->form, x, y))
+	if (form_hole_contains_coords(select_get_form(form_select), x, y))
+		return dot_select;
+	else
+		return form_select;
+	return NULL;
+}
+
+

@@ -304,6 +304,9 @@ form_child_t *form_find_with_coords(form_child_t *form, double x, double y);
 form_child_t *form_find_with_hole(form_child_t *form, double x, double y);
 form_child_t *form_find_with_endpoint(form_child_t *form, double x, double y);
 form_child_t *form_find_with_endpoint_hole(form_child_t *form, double x, double y);
+select_t *form_find_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double));
+select_t *form_find_selected_with_endpoint(select_t *select, double x, double y);
+select_t *form_find_selected_with_endpoint_hole(select_t *select, double x, double y);
 form_child_t *form_add_index_to_hole_with_coords(form_child_t *form, int index, double x, double y);
 form_child_t *form_build_line(form_child_t *form, select_t *select_head);
 bool form_contained_in_rectangle(form_child_t *form, double x1, double y1, double x2, double y2);
@@ -344,6 +347,7 @@ int fieldrel_get_yardline_number(double *x, double *y);
 double fieldrel_get_side_to_side(double *x, double *y);
 double fieldrel_get_front_to_back(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r);
 int fieldrel_convert_xy_to_relation(double *x, double *y, char **buffer_r);
+select_t *field_get_in_area(double x, double y);
 
 // file-ops.c
 int open_file(char *filename);
@@ -407,12 +411,12 @@ select_t *select_all(select_t*, perf_t **perfs, int perfnum);
 int select_all_dots(void);
 void select_update_center(select_t *last);
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset);
-select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double));
-select_t *select_find_form_with_coords(select_t *select, double x, double y);
-select_t *select_find_form_with_hole(select_t *select, double x, double y);
-select_t *select_find_form_with_endpoint(select_t *select, double x, double y);
-select_t *select_find_form_with_endpoint_hole(select_t *select, double x, double y);
-select_t *select_get_in_area(double x, double y);
+//select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double));
+//select_t *select_find_form_with_coords(select_t *select, double x, double y);
+//select_t *select_find_form_with_hole(select_t *select, double x, double y);
+//select_t *select_find_form_with_endpoint(select_t *select, double x, double y);
+//select_t *select_find_form_with_endpoint_hole(select_t *select, double x, double y);
+//select_t *select_get_in_area(double x, double y);
 //void select_add_coord_to_center(coord_t *coord);
 //void select_remove_coord_from_center(coord_t *coord);
 

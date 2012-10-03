@@ -390,6 +390,44 @@ form_child_t *form_find_with_endpoint_hole(form_child_t *form, double x, double 
 }
 
 
+select_t *form_find_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double))
+{
+	// use comparison fptr to find a selected form with certain attributes
+	form_child_t *form;
+	while(select)
+	{
+		//if (!select->form)
+		if (!select_get_form(select))
+		{
+			//select = select->next;
+			select = select_get_next(select);
+			continue;
+		}
+		//form = select->form;
+		form = select_get_form(select);
+		if (fptr(form, x, y))
+			return select;
+		select = select_get_next(select);
+	}
+	return NULL;
+}
+
+
+select_t *form_find_selected_with_endpoint(select_t *select, double x, double y)
+{
+	// find and return a selected form
+	// that contains an endpoint (x, y)
+	return form_find_with_attr(select, x, y, &form_endpoint_contains_coords);
+}
+
+
+select_t *form_find_selected_with_endpoint_hole(select_t *select, double x, double y)
+{
+	// find and return a selected form
+	// that contains an endpoint hole (x, y)
+	return form_find_with_attr(select, x, y, &form_endpoint_hole_contains_coords); 
+}
+
 
 
 

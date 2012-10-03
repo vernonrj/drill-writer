@@ -84,7 +84,8 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				// move a performer
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
-				select = select_find_form_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
+				//select = select_find_form_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
+				select = form_find_selected_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
 				if ((event->state & ~GDK_SHIFT_MASK)== GDK_BUTTON_PRESS_MASK)
 				{
 					//form = select ? select->form : NULL;
@@ -100,7 +101,8 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 							else
 								form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
 							//if ((select = select_find_form_with_endpoint_hole(select->next, x, y)) != NULL)
-							if ((select = select_find_form_with_endpoint_hole(select_get_next(select), x, y)) != NULL)
+							//if ((select = select_find_form_with_endpoint_hole(select_get_next(select), x, y)) != NULL)
+							if ((select = form_find_selected_with_endpoint_hole(select_get_next(select), x, y)) != NULL)
 							{
 								//form2 = select->form;
 								form2 = select_get_form(select);
@@ -110,7 +112,8 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 							if (select)
 							{
 								//select = select_find_form_with_endpoint(select->next, fldstate.mouse_clickx, fldstate.mouse_clicky);
-								select = select_find_form_with_endpoint(select_get_next(select), fldstate.mouse_clickx, fldstate.mouse_clicky);
+								//select = select_find_form_with_endpoint(select_get_next(select), fldstate.mouse_clickx, fldstate.mouse_clicky);
+								select = form_find_selected_with_endpoint(select_get_next(select), fldstate.mouse_clickx, fldstate.mouse_clicky);
 							}
 							else
 								select = NULL;
@@ -208,7 +211,8 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				select = select_get_in_area(mouse_clickx, mouse_clicky);
+				//select = select_get_in_area(mouse_clickx, mouse_clicky);
+				select = field_get_in_area(mouse_clickx, mouse_clicky);
 				if (!select)
 				{
 					select_dots_discard();
