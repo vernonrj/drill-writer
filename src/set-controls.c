@@ -127,7 +127,7 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 	set_t **setlist = set_container->setlist;
 	set_t **newsetlist;
 	form_list_t *flist = pshow->topforms;
-	form_container_t *fcont = LIST_FIRST(flist);
+	form_t *fcont = LIST_FIRST(flist);
 	form_child_t **newforms;
 	form_child_t **forms;
 

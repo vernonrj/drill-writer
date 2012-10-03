@@ -139,7 +139,7 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 	struct group_cell_container *curr;
 	struct group_cell_container *newnode;
 	GtkWidget *widget;
-	form_container_t *fcont;
+	form_t *fcont;
 	group_t *group;
 	form_child_t *form;
 
