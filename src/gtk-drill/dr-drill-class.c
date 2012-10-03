@@ -535,7 +535,7 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	int i;
 	double slopex, slopey;
 	form_list_t *flist;
-	form_t *fcont;
+	form_parent_t *fcont;
 	bool form_animate = false;
 	form_child_t *next_form;
 
@@ -633,7 +633,7 @@ int draw_forms(GtkWidget *widget)
 {
 	form_child_t *form, *next_form;
 	form_list_t *flist;
-	form_t *fcont;
+	form_parent_t *fcont;
 	//fblock_t *block;
 	//farc_t *arc;
 	//select_t *select;

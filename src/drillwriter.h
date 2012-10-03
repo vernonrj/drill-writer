@@ -13,7 +13,7 @@
 
 typedef struct undo_proto undo_t;
 typedef struct select_proto select_t;
-typedef struct _form_t form_t;
+typedef struct _form_parent_t form_parent_t;
 typedef struct _form_child_t form_child_t;
 typedef struct group_proto group_t;
 typedef struct tempo_proto tempo_t;
@@ -110,17 +110,26 @@ struct select_proto
 
 
 
+
 // Forms
-struct _form_t
+typedef struct _form_container_t form_container_t;
+struct _form_container_t
+{
+	form_parent_t **forms;
+	int size;
+	int size_alloc;
+};
+
+struct _form_parent_t
 {
 	// container for forms
-	LIST_ENTRY(_form_t) formlist_entries;
+	LIST_ENTRY(_form_parent_t) formlist_entries;
 	//int* set_index;
 	form_child_t **forms;
 	//int size;
 	//int size_alloc;
 };
-LIST_HEAD(form_list_proto, _form_t);
+LIST_HEAD(form_list_proto, _form_parent_t);
 typedef struct form_list_proto form_list_t;
 
 typedef struct form_coord_proto
@@ -294,9 +303,9 @@ void coords_rot_selected_around_center(double s_step);
 
 // forms.c
 form_coord_t *fcoord_construct(void);
-form_child_t *form_construct();
-form_child_t *form_construct_with_size(int index);
-form_child_t *form_destruct(form_child_t *form);
+form_child_t *form_child_construct();
+form_child_t *form_child_construct_with_size(int index);
+form_child_t *form_child_destruct(form_child_t *form);
 form_child_t *form_add_hole_around_index(form_child_t *form, int index, bool after);
 form_child_t *form_remove_index(form_child_t *form, int index);
 form_child_t *form_remove_from(form_child_t *curr, form_child_t *form_head);
@@ -329,16 +338,16 @@ void form_scale_from_center(form_child_t *form, double s_step);
 void form_rotate_around_center(form_child_t *form, double s_step);
 select_t *form_flatten(form_child_t *form, select_t *select_head);
 form_child_t *form_copy(form_child_t *form);
-form_t *form_container_construct(void);
-form_t *form_container_construct_with_form(form_child_t *form, int index);
-form_t *form_container_destruct(form_t *last);
-bool form_container_contiguous(form_t *fcont, int set_num);
+form_parent_t *form_container_construct(void);
+form_parent_t *form_container_construct_with_form(form_child_t *form, int index);
+form_parent_t *form_container_destruct(form_parent_t *last);
+bool form_container_contiguous(form_parent_t *fcont, int set_num);
 form_list_t *form_container_add_form(form_list_t *head, form_child_t *form, int index);
-int form_container_add_set(form_list_t *head, form_t *last, int index);
-int form_container_remove_set(form_list_t *head, form_t *last, int index);
-form_t *form_container_find_with_form(form_list_t *head, form_child_t *form);
-form_child_t *form_container_find_form_at_index(form_t *last, int index);
-bool form_container_mapped_at_set(form_t *last, int setnum);
+int form_container_add_set(form_list_t *head, form_parent_t *last, int index);
+int form_container_remove_set(form_list_t *head, form_parent_t *last, int index);
+form_parent_t *form_container_find_with_form(form_list_t *head, form_child_t *form);
+form_child_t *form_container_find_form_at_index(form_parent_t *last, int index);
+bool form_container_mapped_at_set(form_parent_t *last, int setnum);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

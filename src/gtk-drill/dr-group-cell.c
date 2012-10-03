@@ -543,7 +543,7 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 	form_child_t *form;
 	int excode;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
-	form_t *fcont;
+	form_parent_t *fcont;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	//form = form_copy(groupcell->priv->form);
 	fcont = form_container_find_with_form(pshow->topforms, groupcell->priv->form);
@@ -560,7 +560,7 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 
 bool dr_group_cell_check_form_nonlocal(GtkWidget *widget)
 {
-	form_t *fcont;
+	form_parent_t *fcont;
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), false);
 	if (!groupcell->priv->form)
