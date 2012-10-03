@@ -257,32 +257,38 @@ int coords_movexy(double xoff, double yoff)
 	form_child_t *form = NULL;
 	int done = 0;
 	int index;
-	while(selects != NULL)
+	select_head(selects);
+	//while(selects != NULL)
+	while(!select_at_end(selects))
 	{
 		//if (selects->form)
-		if ((form = select_get_form(selects)) != NULL)
+		if ((index = select_get_form_advance(selects)) != -1)
 		{
+			form = form_container_get_form_child_at_set(pshow->topforms, index, pstate.setnum);
 			//form = selects->form;
 			form_movexy(form, xoff, yoff);
-			selects = select_get_next(selects);
+			//selects = select_get_next(selects);
 			//selects = selects->next;
-			continue;
 		}
-		index = select_get_dot(selects);
-		//coords_retrieve(coords[selects->index], &x, &y);
-		//pushPerfmv(&pstate.undobr, selects->index, x, y, done);
-		coords_retrieve(coords[index], &x, &y);
-		pushPerfmv(&pstate.undobr, index, x, y, done);
+		if ((index = select_get_dot_advance(selects)) != -1)
+		{
+			//index = select_get_dot(selects);
+			//coords_retrieve(coords[selects->index], &x, &y);
+			//pushPerfmv(&pstate.undobr, selects->index, x, y, done);
+			coords_retrieve(coords[index], &x, &y);
+			pushPerfmv(&pstate.undobr, index, x, y, done);
 
-		x = x + xoff;
-		y = y + yoff;
-		coords_set_coord(pshow, index, x, y);
-		if ((form = form_find_with_hole(pshow->sets->currset->forms, x, y)) != NULL)
-			form_add_index_to_hole_with_coords(form, index, x, y);
+			x = x + xoff;
+			y = y + yoff;
+			coords_set_coord(pshow, index, x, y);
+			if ((form = form_find_with_hole(pshow->sets->currset->forms, x, y)) != NULL)
+				form_add_index_to_hole_with_coords(form, index, x, y);
+		}
 
 		//selects = selects->next;
-		selects = select_get_next(selects);
+		//selects = select_get_next(selects);
 	}
+	select_head(selects);
 	// move center of selection
 	x = pstate.center->x;
 	y = pstate.center->y;
@@ -303,18 +309,20 @@ int coords_align_dots_to_grid(void)
 	double x, y;
 	int done = 0;
 	int index;
-	while (select != NULL)
+	select_head(select);
+	//while (select != NULL)
+	while ((index = select_get_dot_advance(select)) != -1)
 	{
 		//coords_retrieve(coords[select->index], &x, &y);
-		index = select_get_dot(select);
 		coords_retrieve(coords[index], &x, &y);
 		pushPerfmv(&pstate.undobr, index, x, y, done);
 		x = round(x);
 		y = round(y);
 		coords_set_coord(pshow, index, x, y);
 		//select = select->next;
-		select = select_get_next(select);
+		//select = select_get_next(select);
 	}
+	select_head(select);
 	// move center of selection
 	select_update_center(pstate.select);
 	return 0;
@@ -327,17 +335,18 @@ int coords_movexy_grid(double xoff, double yoff)
 	// move selected dots by xoff and yoff on 1-step intervals
 	double x, y;
 	coord_t **coords = pshow->sets->currset->coords;
-	select_t *selects = pstate.select;
+	select_t *select = pstate.select;
 	int index;
-	while(selects != NULL)
+	//while(selects != NULL)
+	while((index = select_get_dot_advance(select)) != -1)
 	{
-		index = select_get_dot(selects);
+		//index = select_get_dot(selects);
 		coords_retrieve(coords[index], &x, &y);
 		x = round(x + xoff);
 		y = round(y + yoff);
 		coords_set_coord(pshow, index, x, y);
 		//selects = selects->next;
-		selects = select_get_next(selects);
+		//selects = select_get_next(selects);
 	}
 	// move center of selection
 	x = pstate.center->x;
@@ -371,6 +380,7 @@ void coords_box_scale_form_from_center(double s_step)
 	int index;
 
 	last = pstate.select;
+	select_head(last);
 	coords = pshow->sets->currset->coords;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
@@ -379,18 +389,21 @@ void coords_box_scale_form_from_center(double s_step)
 	maxdy = 0;
 	if (last == NULL)
 		return;
-	while (last != NULL)
+	//while (last != NULL)
+	while ((index = select_get_dot_advance(last)) != -1)
 	{
 		// get maxes separately
 		//if (last->form)
+		/*
 		if (select_has_form(last))
 		{
 			//last = last->next;
 			last = select_get_next(last);
 			continue;
 		}
+		*/
 		//index = last->index;
-		index = select_get_dot(last);
+		//index = select_get_dot_advance(last);
 		coord = coords[index];
 		coords_retrieve(coord, &x, &y);
 		distx = fabs(x - cx);
@@ -404,42 +417,44 @@ void coords_box_scale_form_from_center(double s_step)
 			maxdy = disty;
 		}
 		//last = last->next;
-		last = select_get_next(last);
+		//last = select_get_next(last);
 	}
-	last = pstate.select;
 
 	// change all dots based on distance ratio
 	// stored in maxdx and maxdy
 	
-	while (last != NULL)
+	//while (last != NULL)
+	select_head(last);
+	while (!select_at_end(last))
 	{
 		// get coords for selected dot
 		//if (last->form)
-		if (select_has_form(last))
+		if ((index = select_get_form_advance(last)) != -1)
 		{
-			form_scale_from_center(select_get_form(last), s_step);
+			form_scale_from_center(form_container_get_form_child_at_set(pshow->topforms, index, pstate.setnum), s_step);
 			//last = last->next;
-			last = select_get_next(last);
-			continue;
+			//last = select_get_next(last);
 		}
 		//index = last->index;
-		index = select_get_dot(last);
-		coord = coords[index];
-		coords_retrieve(coord, &x, &y);
-		pushPerfmv(&pstate.undobr, index, x, y, 0);
-		if (maxdx != 0)
+		if ((index = select_get_dot_advance(last)) != -1)
 		{
-			x = (x - cx) / maxdx * s_step;
-			coord->x = coord->x + x;
+			coord = coords[index];
+			coords_retrieve(coord, &x, &y);
+			pushPerfmv(&pstate.undobr, index, x, y, 0);
+			if (maxdx != 0)
+			{
+				x = (x - cx) / maxdx * s_step;
+				coord->x = coord->x + x;
+			}
+			if (maxdy != 0)
+			{
+				y = (y - cy) / maxdy * s_step;
+				coord->y = coord->y + y;
+			}
+			// next dot
+			//last = last->next;
+			//last = select_get_next(last);
 		}
-		if (maxdy != 0)
-		{
-			y = (y - cy) / maxdy * s_step;
-			coord->y = coord->y + y;
-		}
-		// next dot
-		//last = last->next;
-		last = select_get_next(last);
 	}
 	undo_tclose();
 	return;
@@ -476,24 +491,32 @@ void coords_scale_form_from_center(double s_step)
 	cx = pstate.center->x;
 	cy = pstate.center->y;
 	undo_tclose();
-	while (last != NULL)
+	select_head(last);
+	//while (last != NULL)
+	while (!select_at_end(last))
 	{
 		// get coords for selected dot
 		//if (last->form)
-		if (select_has_form(last))
+		//if (select_has_form(last))
+		if ((index = select_get_form_advance(last)) != -1)
 		{
-			form_scale_from_center(select_get_form(last), s_step);
+			//form_scale_from_center(select_get_form(last), s_step);
+			form_scale_from_center(form_container_get_form_child(pshow->topforms, index), s_step);
 			//last = last->next;
-			last = select_get_next(last);
-			continue;
+			//last = select_get_next(last);
+			//continue;
 		}
-		//index = last->index;
-		index = select_get_dot(last);
-		coord = coords[index];
-		coords_scale_coords_from_center(s_step, &coord->x, &coord->y, cx, cy);
-		//last = last->next;
-		last = select_get_next(last);
+		if ((index = select_get_dot_advance(last)) != -1)
+		{
+			//index = last->index;
+			//index = select_get_dot(last);
+			coord = coords[index];
+			coords_scale_coords_from_center(s_step, &coord->x, &coord->y, cx, cy);
+			//last = last->next;
+			//last = select_get_next(last);
+		}
 	}
+	select_head(last);
 	return;
 }
 
@@ -564,38 +587,44 @@ void coords_rot_selected_around_center(double s_step)
 	cx = pstate.center->x;
 	cy = pstate.center->y;
 	undo_tclose();
-	while (last != NULL)
+	//while (last != NULL)
+	while (!select_at_end(last))
 	{
 		// get coords for selected dot
 		//if (last->form)
-		if (select_has_form(last))
+		//if (select_has_form(last))
+		if ((index = select_get_form_advance(last)) != -1)
 		{
-			form_rotate_around_center(select_get_form(last), s_step);
+			//form_rotate_around_center(select_get_form(last), s_step);
+			form_rotate_around_center(form_container_get_form_child(pshow->topforms, index), s_step);
 			//last = last->next;
-			last = select_get_next(last);
-			continue;
+			//last = select_get_next(last);
+			//continue;
 		}
-		//index = last->index;
-		index = select_get_dot(last);
-		coord = coords[index];
-		distx = cx - coord->x;
-		disty = cy - coord->y;
-		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
-		if (distx != 0 || disty != 0)
+		if ((index = select_get_dot_advance(last)) != -1)
 		{
-			angle = atan(disty / distx);
-			hypo = pow(distx, 2) + pow(disty, 2);
-			hypo = sqrt(hypo);
-			if (distx < 0)
-				angle = angle + M_PI;
-			angle = angle + s_step;
-			distx = hypo*cos(angle);
-			disty = hypo*sin(angle);
-			coord->x = cx - distx;
-			coord->y = cy - disty;
+			//index = last->index;
+			//index = select_get_dot(last);
+			coord = coords[index];
+			distx = cx - coord->x;
+			disty = cy - coord->y;
+			pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
+			if (distx != 0 || disty != 0)
+			{
+				angle = atan(disty / distx);
+				hypo = pow(distx, 2) + pow(disty, 2);
+				hypo = sqrt(hypo);
+				if (distx < 0)
+					angle = angle + M_PI;
+				angle = angle + s_step;
+				distx = hypo*cos(angle);
+				disty = hypo*sin(angle);
+				coord->x = cx - distx;
+				coord->y = cy - disty;
+			}
+			//last = last->next;
+			//last = select_get_next(last);
 		}
-		//last = last->next;
-		last = select_get_next(last);
 	}
 	return;
 }

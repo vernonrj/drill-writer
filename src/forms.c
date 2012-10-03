@@ -17,14 +17,14 @@ form_coord_t *fcoord_construct(void)
 }
 
 
-form_child_t *form_child_construct(void)
+form_child_t *form_child_construct(form_parent_t *parent)
 {
-	return form_child_construct_with_size(3);
+	return form_child_construct_with_size(parent, 3);
 }
 
 
 
-form_child_t *form_child_construct_with_size(int index)
+form_child_t *form_child_construct_with_size(form_parent_t *parent, int index)
 {
 	int i;
 	form_child_t *form;
@@ -38,6 +38,7 @@ form_child_t *form_child_construct_with_size(int index)
 	form->type = 0;
 	form->name = (char*)malloc(sizeof(char));
 	form->name[0] = '\0';
+	form->parent = parent;
 	for (i=0; i<2; i++)
 		form->endpoints[i][0] = form->endpoints[i][1] = 0;
 	form->dot_num = index;
@@ -1121,7 +1122,11 @@ form_container_t *form_container_realloc(form_container_t *fcont, size_t size_al
 	forms = (form_parent_t**)malloc(size_alloc*sizeof(form_parent_t*));
 	size = fcont->size;
 	for (i = 0; i < size; i++)
+	{
 		forms[i] = fcont->forms[i];
+		if (forms[i])
+			forms[i]->index = i;
+	}
 	free(fcont->forms);
 	fcont->forms = forms;
 	fcont->size_alloc = size_alloc;
@@ -1141,9 +1146,27 @@ form_container_t *form_container_insert_head(form_container_t *fcont, form_paren
 	if (size+1 >= fcont->size_alloc)
 		fcont = form_container_realloc(fcont, fcont->size_alloc+5);
 	for (i=size-1; i>=0; i--)
+	{
 		forms[i+1] = forms[i];
+		if (forms[i+1])
+			forms[i+1]->index = i+1;
+	}
 	forms[0] = last;
 	fcont->size++;
 	return fcont;
 }
 
+form_parent_t *form_container_get_form_parent(form_container_t *fcont, int index)
+{
+	return fcont->forms[index];
+}
+
+form_child_t *form_container_get_form_child_at_set(form_container_t *fcont, int index, int setnum)
+{
+	return form_container_get_form_parent(fcont, index)->forms[setnum];
+}
+
+form_child_t *form_container_get_form_child(form_container_t *fcont, int index)
+{
+	return form_container_get_form_parent(fcont, index)->forms[pstate.setnum];
+}

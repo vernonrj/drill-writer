@@ -1,534 +1,448 @@
+// Use a bitfield for selection purposes
+// Using a bitfield has many advantages over a standard linked list
+// 	+ Fewer allocs
+// 		+ allocs only needed at beginning, not needed when new index added
+// 	+ much quicker comparison between selections (ie what is in selection group A that's in group B also?)
+// 	+ All actions are algorithmically faster with the bitfield,
+// 		and should be real-world faster too
+// 	Action		Bitfield	List
+// 	- Adding	O(1)		O(n)
+// 	- Removing	O(1)		O(n)
+// 	- Checking	O(1)		O(n)
+// 	- Increm.	O(logn)		O(n)
+// 	- Compare	O(logn)		O(n)
+//
+// This also encapsulates select_proto, so future improvements should be easier.
+#include <stdio.h>
+#include <stdlib.h>
 #include "drillwriter.h"
 
-// selection LLL node
+
+
+// internal functions
+unsigned char bitfield_or(unsigned char index, unsigned char modifier);	// unconditionally add everything in modifier to index
+unsigned char bitfield_xor(unsigned char index, unsigned char modifier);	// add modifier to index, drop anything that exists in both
+unsigned char bitfield_mask(unsigned char index, unsigned char modifier);	// remove anything in modifier from index
+int bitfield_map(unsigned char *bitfield, unsigned char *modifier, size_t size, unsigned char (*fptr)(unsigned char, unsigned char)); // execute any of the logic functions on the entire field
+int bitfield_check(unsigned char *bitfield, size_t size_alloc, int x);	// check field for existance of x
+int bitfield_encode(unsigned char *index, size_t size_alloc, int x, unsigned char (*fptr)(unsigned char, unsigned char));
+int bitfield_decode(unsigned char *index, size_t size_alloc, int min_bit);
+
 struct select_proto
 {
-	// node with selection information
-	// can contain a single dot, or an entire form
-	// (not both)
-	int index;		// performer 
-	form_child_t *form;		// form
-
-	select_t *next;
+	int dot_index;
+	int form_index;
+	unsigned char *dotfield;	// field for dots
+	unsigned char *formfield;	// field for forms
+	size_t dot_alloc;		// allocation size of dotfield
+	size_t form_alloc;		// allocation size of formfield
 };
 
 
-
-select_t *select_construct(void)
+int select_get_dot_advance(select_t *select)
 {
-	select_t *select;
-	select = (select_t*)malloc(sizeof(select_t));
-	if (!select)
-		return NULL;
-	select->index = -1;
-	//select->index = index;
-	select->form = NULL;
-	select->next = NULL;
-	return select;
-}
-
-
-select_t *select_construct_with_index(int index)
-{
-	select_t *select;
-	select = select_construct();
-	if (select)
-		select->index = index;
-	return select;
-}
-
-
-int select_has_next(select_t *select)
-{
-	if (!select)
+	int dot_index = select->dot_index;
+	if (select->dot_index == -1)
 		return -1;
-	return (select->next != NULL);
+	dot_index = select_get_dot(select);
+	select->dot_index = dot_index + 1;
+	return dot_index;
 }
 
 
-select_t *select_get_next(select_t *select)
+int select_get_form_advance(select_t *select)
 {
-	if (!select)
-		return NULL;
-	return select->next;
-}
-
-
-void select_set_next(select_t *select, select_t *last)
-{
-	select->next = last;
-	return;
-}
-
-
-int select_has_index(select_t *select)
-{
-	if (!select)
+	int form_index = select->form_index;
+	if (form_index == -1)
 		return -1;
-	return (select->index != -1);
+	form_index = select_get_form(select);
+	select->form_index = form_index + 1;
+	return form_index;
 }
 
-int select_get_dot(select_t *select)
+int select_head(select_t *select)
 {
-	if (!select)
-		return -1;
-	return select->index;
+	select_head_dot(select);
+	select_head_form(select);
+	return 0;
 }
 
-
-int select_has_form(select_t *select)
+int select_head_dot(select_t *select)
 {
-	if (!select)
-		return -1;
-	return (select->form != NULL);
-}
-
-form_child_t *select_get_form(select_t *select)
-{
-	if (!select)
-		return NULL;
-	return select->form;
+	select->dot_index = 0;
+	return 0;
 }
 
 
-bool select_check_index_selected(int index, select_t *selects)
+int select_head_form(select_t *select)
 {
-	// check to see if dot is in list of selects
-	select_t *last = selects;
-	while (last)
+	select->form_index = 0;
+	return 0;
+}
+
+
+bool select_at_dot_end(select_t *select)
+{
+	return (select->dot_index != -1);
+}
+
+
+bool select_at_form_end(select_t *select)
+{
+	return (select->form_index != -1);
+}
+
+
+bool select_at_end(select_t *select)
+{
+	return (select_at_dot_end(select) && select_at_form_end(select));
+}
+
+bool select_dot_empty(select_t *select)
+{
+	int i;
+	int dot_alloc = select->dot_alloc;
+	for (i=0; i<dot_alloc; i++)
 	{
-		if (index == last->index)
+		if (select->dotfield[i] != 0)
 			return true;
-		last = last->next;
-	}	
+	}
 	return false;
 }
 
 
-
-
-
-
-select_t *select_add_index(select_t *psel, int index, bool toggle)
+bool select_form_empty(select_t *select)
 {
-	// add a selection if it's not selected;
-	// remove a selection if it is selected and toggle is TRUE
-	
-	select_t *selects;
-	select_t *last;
-	select_t *curr;
-	int matched = 0;
-	int loop_done = 0;
+	int i;
+	int form_alloc = select->form_alloc;
+	for (i=0; i<form_alloc; i++)
+	{
+		if (select->formfield[i] != 0)
+			return true;
+	}
+	return false;
+}
 
-	if (!psel)
-	{
-		// no selection yet
-		curr = select_construct_with_index(index);
-		psel = curr;
-		// update selection center
-		//add_sel_center(pshow->sets->currset->coords[index]);
-	}
-	else
-	{
-		// have some selections; 
-		// add inorder or remove if already selected
-		last = psel;
-		selects = 0;
-		while (loop_done == 0)
-		{
-			// check for grouping
-			if (!last->form && last->index == index)
-			{
-				// found a match, remove if toggle enabled
-				if (toggle && selects == NULL)
-				{
-					// match is first node
-					psel = last->next;
-					free(last);
-				}
-				else if (toggle)
-				{
-					// match is not first node, remove
-					selects->next = last->next;
-					free(last);
-				}
-				loop_done = 1;
-				matched = 1;
-			}
-			else if (last->index > index)
-			{
-				// no match found
-				// exit to create new node
-				loop_done = 1;
-				matched = 0;
-			}
-			else
-			{
-				// continue searching
-				selects = last;
-				last = last->next;
-				if (last == NULL)
-					loop_done = 1;
-			}
-		}
-		if (matched == 0)
-		{
-			// create a new node
-			curr = select_construct_with_index(index);
-			if (selects == NULL)
-			{
-				// insert at beginning
-				curr->next = pstate.select;
-				psel = curr;
-			}
-			else
-			{
-				// insert in the middle
-				curr->next = selects->next;
-				selects->next = curr;
-			}
-		}
-	}
-	return psel;
+bool select_empty(select_t *select)
+{
+	return select_dot_empty && select_form_empty(select);
 }
 
 
-
-void select_dots_add_index(int index)
+int select_get_dot(select_t *select)
 {
-	// wrapper to add a dot to global selection
-	pstate.select = select_add_index(pstate.select, index, true);
-	//update_sel_center(pstate.select);
-	select_update_center(pstate.select);
+	// get the next dot >= min_bit
+	return bitfield_decode(select->dotfield, select->dot_alloc, select->dot_index);
+}
+
+int select_get_form(select_t *select)
+{
+	// get the next form >= min_bit
+	return bitfield_decode(select->formfield, select->form_alloc, select->form_index);
+}
+
+int select_check_dot(select_t *select, int x)
+{
+	// check if dot x exists in select
+	return bitfield_check(select->dotfield, select->dot_alloc, x);
+}
+
+int select_check_form(select_t *select, int x)
+{
+	// check if form x exists in select
+	return bitfield_check(select->formfield, select->form_alloc, x);
+}
+
+int select_add_dot(select_t *select, int x)
+{
+	// add dot x to select
+	return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_or);
+}
+
+int select_add_form(select_t *select, int x)
+{
+	// add form x to select
+	return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_or);
+}
+
+int select_toggle_dot(select_t *select, int x)
+{
+	// toggle dot x in select
+	return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_xor);
+}
+
+int select_toggle_form(select_t *select, int x)
+{
+	// toggle form x in select
+	return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_xor);
+}
+
+int select_remove_dot(select_t *select, int x)
+{
+	// remove dot x from select
+	return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_mask);
+}
+
+int select_remove_form(select_t *select, int x)
+{
+	// remove form x from select
+	return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_mask);
+}
+
+int select_add_multiple_dots(select_t *select, select_t *modifier)
+{
+	// add all dots from modifier to select
+	return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_or);
+}
+
+
+int select_add_multiple_forms(select_t *select, select_t *modifier)
+{
+	// add all forms from modifier to select
+	return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_or);
+}
+
+
+int select_toggle_multiple_dots(select_t *select, select_t *modifier)
+{
+	// toggle all dots from modifier in select
+	return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_xor);
+}
+
+
+int select_toggle_multiple_forms(select_t *select, select_t *modifier)
+{
+	// toggle all forms from modifier in select
+	return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_xor);
+}
+
+
+int select_remove_multiple_dots(select_t *select, select_t *modifier)
+{
+	// remove all dots in modifier from select
+	return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_mask);
+}
+
+
+int select_remove_multiple_forms(select_t *select, select_t *modifier)
+{
+	// remove all forms in modifier from select
+	return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_mask);
+}
+
+void select_clear_dots(select_t *select)
+{
+	// remove all dots from select
+	int i;
+	unsigned char *dotfield;
+	size_t dot_alloc;
+
+	if (!select)
+		return;
+	dotfield = select->dotfield;
+	dot_alloc = select->dot_alloc;
+	for (i=0; i<dot_alloc; i++)
+		dotfield[i] = 0x0;
+	select->dot_index = 0;
+	return;
+}
+
+void select_clear_forms(select_t *select)
+{
+	// remove all dots from select
+	int i;
+	unsigned char *formfield;
+	size_t form_alloc;
+
+	if (!select)
+		return;
+	formfield = select->formfield;
+	form_alloc = select->form_alloc;
+	for (i=0; i<form_alloc; i++)
+		formfield[i] = 0x0;
+	select->form_index = 0;
+
 	return;
 }
 
 
 
-select_t *select_add_group(select_t *select, group_t *group)
+
+void select_clear(select_t *select)
 {
-	select_t *group_selects;
-	if (!group)
-		return select;
-	group_selects = group->selects;
-	while (group_selects)
+	// remove all dots and forms from select
+	int i;
+	unsigned char *dotfield;
+	unsigned char *formfield;
+	size_t dot_alloc;
+	size_t form_alloc;
+
+	if (!select)
+		return;
+	dotfield = select->dotfield;
+	formfield = select->formfield;
+	dot_alloc = select->dot_alloc;
+	form_alloc = select->form_alloc;
+	for (i=0; i<dot_alloc; i++)
+		dotfield[i] = 0x0;
+	for (i=0; i<form_alloc; i++)
+		formfield[i] = 0x0;
+	select->dot_index = 0;
+	select->form_index = 0;
+
+	return;
+}
+
+
+select_t *select_init(size_t dot_size, size_t form_size)
+{
+	// initialize memory
+	select_t *select;
+	size_t dot_alloc = dot_size/8+1;
+	size_t form_alloc = form_size/8+1;
+
+	select = (select_t*)malloc(sizeof(select_t));
+	if (select == NULL)
 	{
-		select = select_add_index(select, group_selects->index, false);
-		group_selects = group_selects->next;
+		printf("ERROR: Allocation\n");
+		exit(EXIT_FAILURE);
 	}
+
+	if (!dot_alloc)
+		dot_alloc++;
+	if (!form_alloc)
+		form_alloc++;
+	select->dotfield = (unsigned char*)malloc(dot_alloc*sizeof(unsigned char));
+	select->formfield = (unsigned char*)malloc(form_alloc*sizeof(unsigned char));
+	select->dot_alloc = dot_alloc;
+	select->form_alloc = form_alloc;
+	select_clear(select);
+
 	return select;
 }
-	
 
 
-select_t *select_add_form(select_t *selects, form_child_t *form, bool toggle)
+select_t *select_destroy(select_t *select)
 {
-	// add group to selection
-	select_t *last;
-	select_t *curr;
-	if (!form)
-		return selects;
-	last = selects;
-	curr = NULL;
-	while (last)
-	{
-		if (last->form && last->form == form)
-			return selects;
-		curr = last;
-		last = last->next;
-	}
-	if (curr == NULL)
-	{
-		selects = select_add_index(selects, -1, false);
-		selects->form = form;
-		return selects;
-	}
-	last = NULL;
-	last = select_add_index(last, -1, toggle);
-	last->form = form;
-	curr->next = last;
-	return selects;
-}
-
-
-
-void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle)
-{
-	// add multiple nodes
-	select_t *mainlist, *modifier;
-	mainlist = *mainlist_r;
-	modifier = *modifier_r;
-	select_t *last = modifier;
-
-	while (last)
-	{
-		mainlist = select_add_index(mainlist, last->index, toggle);
-		last = last->next;
-		free(modifier);
-		modifier = last;
-	}
-	*mainlist_r = mainlist;
-	*modifier_r = modifier;
-	return;
-}
-
-
-
-
-
-
-select_t *select_drop_multiple(select_t *mainlist, select_t *modifier)
-{
-	// return mainlist's original entries.
-	// Drop everything else
-	select_t *last = mainlist;
-	select_t *inc = modifier;
-
-	select_t *newlist = NULL;
-
-	if (!mainlist)
+	if (!select)
 		return NULL;
-	if (!modifier)
-	{
-		while (last)
-		{
-			newlist = select_add_index(newlist, last->index, false);
-			if (last->form)
-				newlist->form = last->form;
-			last = last->next;
-		}
-	}
 
+	free(select->formfield);
+	free(select->dotfield);
+	free(select);
 
-
-	while (last && inc)
-	{
-		while (inc->next && inc->index < last->index)
-			inc = inc->next;
-		if (last->index != inc->index)
-			newlist = select_add_index(newlist, last->index, false);
-		last = last->next;
-	}
-	return newlist;
+	return NULL;
 }
 
 
-
-
-select_t *select_discard(select_t *psel)
+int select_update_center(select_t *select)
 {
-	// remove all selections from selection list
-	select_t *selects;
-	select_t *last;
-	if (psel != NULL)
-	{
-		selects = psel;
-		last = psel;
-		while (selects != NULL)
-		{
-			// remove
-			last = selects->next;
-			free(selects);
-			selects = last;
-		}
-		psel = 0;
-	}
-	return psel;
+	return 0;
+}
+
+// internal functions
+
+unsigned char bitfield_or(unsigned char bitfield, unsigned char modifier)
+{	// return the inclusive or of two bytes
+	return (bitfield | modifier);
 }
 
 
-
-void select_dots_discard(void)
-{
-	// remove all dot selections from state
-	pstate.select = select_discard(pstate.select);
-	pstate.selnum = 0;
-	select_update_center(pstate.select);
-	return;
+unsigned char bitfield_xor(unsigned char bitfield, unsigned char modifier)
+{	// return the exclusive or of two bytes
+	return (bitfield ^ modifier);
 }
 
 
-
-select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle)
-{
-	// push an item from the modifier to the mainlist
-	select_t *modifier;
-	select_t *last;
-
-	modifier = *modifier_r;
-
-	if (modifier)
-	{
-		if (modifier->form)
-			last = select_add_form(mainlist, modifier->form, toggle);
-		else
-			last = select_add_index(mainlist, modifier->index, toggle);
-		*modifier_r = modifier->next;
-		free(modifier);
-		return last;
-	}
-	else
-		return mainlist;
+unsigned char bitfield_mask(unsigned char bitfield, unsigned char modifier)
+{	// remove any bit from field that exists in modifier
+	return (bitfield & (~modifier));
 }
 
 
-void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle)
+int bitfield_map(unsigned char *bitfield, unsigned char *modifier, size_t size, unsigned char (*fptr)(unsigned char, unsigned char))
 {
-	select_t *mainlist, *modifier;
-	mainlist = *mainlist_r;
-	modifier = *modifier_r;
-
-	while (modifier)
-		mainlist = select_push(mainlist, &modifier, toggle);
-	*modifier_r = modifier;
-	*mainlist_r = mainlist;
-	return;
-}
-
-
-
-
-int select_all_dots(void)
-{
-	pstate.select = select_all(pstate.select, pshow->perfs, pshow->perfnum);
+	// execute any field logic function on the entire field
+	int i;
+	for (i=0; i<size; i++)
+		bitfield[i] = fptr (bitfield[i], modifier[i]);
 	return 0;
 }
 
 
 
-select_t *select_all(select_t *selects, perf_t **perfs, int perfnum)
+int bitfield_check(unsigned char *bitfield, size_t size_alloc, int x)
 {
-	// select all dots
-	int i;
-	//int perfnum;
-	//perf_t **perfs;
-	//select_discard(pstate.select);
-	selects = select_discard(selects);
-	//perfnum = pshow->perfnum;
-	//perfs = pshow->perfs;
-	for (i=0; i<perfnum; i++)
-	{
-		if (perfs[i]->valid != 0)
-		{
-			// performer is valid. Add
-			selects = select_add_index(selects, i, true);
-		}
-	}
-	select_update_center(selects);
-	return selects;
-}
-
-
-
-void select_update_center(select_t *last)
-{
-	// update the center of the form based on dot selection
+	// check field for existence of x
 	int index;
-	int selnum = 0;
-	double cx, cy;
-	//select_t *last;
-	coord_t **coords;
-	coord_t *coord;
-	form_child_t *form = NULL;
-	double minx, miny, maxx, maxy;
-	double x, y;
+	unsigned char coded;
 
-	cx = 0;
-	cy = 0;
-	minx = miny = -1;
-	maxx = maxy = -1;
-	//last = pstate.select;
-	coords = pshow->sets->currset->coords;
-	while (last)
-	{
-		// get coordinates for selected dot
-		index = last->index;
-		if (!form && !last->form)
-		{
-			coord = coords[index];
-			x = coord->x;
-			y = coord->y;
-		}
-		else if (!form)
-		{
-			form = last->form;
-			x = form->endpoints[0][0];
-			y = form->endpoints[0][1];
-		}
-		else
-		{
-			x = form->endpoints[1][0];
-			y = form->endpoints[1][1];
-			form = NULL;
-		}
-		if (x > maxx)
-			maxx = x;
-		if (x < minx || minx == -1)
-			minx = x;
-		if (y > maxy)
-			maxy = y;
-		if (y < miny || miny == -1)
-			miny = y;
-		//cx = cx + coord->x;
-		//cy = cy + coord->y;
-		if (!form)
-		{
-			selnum++;
-			last = last->next;
-		}
-	}
-	if (!selnum)
-	{
-		cx = 0;
-		cy = 0;
-	}
-	else
-	{
-		cx = (maxx - minx) / 2 + minx;
-		cy = (maxy - miny) / 2 + miny;
-	}
-	// store
-	pstate.center->x = cx;
-	pstate.center->y = cy;
-	pstate.selnum = selnum;
+	index = x >> 3;
+	if (index >= size_alloc)
+		return -1;
 
-	return;
+	x = x & 0x7;
+	coded = 1 << x;
+
+	return ((bitfield[index] & coded) != 0x0);
 }
 
-select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset)
+
+
+int bitfield_encode(unsigned char *bitfield, size_t size_alloc, int x, unsigned char (*fptr)(unsigned char, unsigned char))
 {
-	form_child_t *formnext, *form;
-	form_child_t *formnext_head;
-	select_t *select;
+	// encode x into field using function provided by fptr
+	int index;		// character array offset
+	unsigned char coded;	// encoded number
 
-	select = select_head;
+	index = x >> 3;
+	if (index >= size_alloc)
+		return -1;
 
-	formnext_head = nextset->forms;
-	while (select)
-	{
-		if (!select->form)
-		{
-			select = select->next;
-			continue;
-		}
-		form = select->form;
-		formnext = formnext_head;
-		while (formnext)
-		{
-			if (form == formnext)
-			{
-				break;
-			}
-			formnext = formnext->next;
-		}
-		if (formnext == NULL)
-			select_head = form_flatten(form, select_head);
-		select = select->next;
-	}
-	return select_head;
+	x = x & 0x7;
+	coded = 1 << x;
+
+	bitfield[index] = fptr (bitfield[index], coded);
+
+	return 0;
 }
 
 
 
+int bitfield_decode(unsigned char *bitfield, size_t size_alloc, int min_bit)
+{
+	// mask everything < min_bit
+	// decode next smallest number
+	// return -1 if no number
+	
+	int index;		// character array offset
+	unsigned char coded;	// encoded number
+	int x;			// masked number
+	int dec_out = 0;	// fully decoded relative minimum
 
+	index = min_bit >> 3;
+	if (index >= size_alloc)
+		return -1;
 
+	coded = (1 << (min_bit & 0x7)) - 1;
+	do
+	{
+		x = bitfield[index] & ~coded;
+		if (!x)
+		{
+			index++;
+			coded = 0;
+			if (index >= size_alloc)
+				return -1;
+		}
+	} while (!x);
+	x = x & (~x+1);		// get encoded relative minimum
+
+	// decode
+	dec_out = 8*index;
+	dec_out += (((x & 0xAA) != 0x0) << 0);
+	dec_out += (((x & 0xCC) != 0x0) << 1);
+	dec_out += (((x & 0xF0) != 0x0) << 2);
+
+	return dec_out;
+}

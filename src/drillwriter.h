@@ -110,6 +110,7 @@ struct _form_parent_t
 	//LIST_ENTRY(_form_parent_t) formlist_entries;
 	//int* set_index;
 	form_child_t **forms;
+	int index;
 	//int size;
 	//int size_alloc;
 };
@@ -142,6 +143,7 @@ struct  _form_child_t // form_child_t
 	double endpoints[2][2];	
 	form_coord_t **fcoords;	// coord data
 	form_child_t *next;
+	form_parent_t *parent;
 };
 
 
@@ -287,8 +289,8 @@ void coords_rot_selected_around_center(double s_step);
 
 // forms.c
 form_coord_t *fcoord_construct(void);
-form_child_t *form_child_construct();
-form_child_t *form_child_construct_with_size(int index);
+form_child_t *form_child_construct(form_parent_t*);
+form_child_t *form_child_construct_with_size(form_parent_t*, int index);
 form_child_t *form_child_destruct(form_child_t *form);
 form_child_t *form_add_hole_around_index(form_child_t *form, int index, bool after);
 form_child_t *form_remove_index(form_child_t *form, int index);
@@ -339,6 +341,9 @@ form_container_t *form_container_construct(void);
 form_container_t *form_container_destruct(form_container_t *fcont);
 form_container_t *form_container_realloc(form_container_t *fcont, size_t size_alloc);
 form_container_t *form_container_insert_head(form_container_t *fcont, form_parent_t *last);
+form_parent_t *form_container_get_form_parent(form_container_t *fcont, int index);
+form_child_t *form_container_get_form_child_at_set(form_container_t *fcont, int index, int setnum);
+form_child_t *form_container_get_form_child(form_container_t *fcont, int index);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);
@@ -387,6 +392,7 @@ int perf_max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 
 // select-con.c
 // Selection control functions
+/*
 select_t *select_construct(void);
 select_t *select_construct_with_index(int index);
 int select_has_next(select_t *select);
@@ -411,6 +417,43 @@ select_t *select_all(select_t*, perf_t **perfs, int perfnum);
 int select_all_dots(void);
 void select_update_center(select_t *last);
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset);
+*/
+
+int select_get_dot_advance(select_t *select);
+int select_get_form_advance(select_t *select);
+int select_head(select_t *select);
+int select_head_dot(select_t *select);
+int select_head_form(select_t *select);
+bool select_at_dot_end(select_t *select);
+bool select_at_form_end(select_t *select);
+bool select_at_end(select_t *select);
+bool select_dot_empty(select_t *select);
+bool select_form_empty(select_t *select);
+bool select_empty(select_t *select);
+void select_clear_dots(select_t *select);
+void select_clear_forms(select_t *select);
+void select_clear(select_t *select);
+int select_get_dot(select_t *select);
+int select_get_form(select_t *select);
+int select_check_dot(select_t *select, int x);
+int select_check_form(select_t *select, int x);
+int select_add_dot(select_t *select, int x);
+int select_add_form(select_t *select, int x);
+int select_toggle_dot(select_t *select, int x);
+int select_toggle_form(select_t *select, int x);
+int select_remove_dot(select_t *select, int x);
+int select_remove_form(select_t *select, int x);
+int select_add_multiple_dots(select_t *select, select_t *modifier);
+int select_add_multiple_forms(select_t *select, select_t *modifier);
+int select_toggle_multiple_dots(select_t *select, select_t *modifier);
+int select_toggle_multiple_forms(select_t *select, select_t *modifier);
+int select_remove_multiple_dots(select_t *select, select_t *modifier);
+int select_remove_multiple_forms(select_t *select, select_t *modifier);
+select_t *select_init(size_t size, size_t form_size);
+select_t *select_destroy(select_t *select);
+int select_update_center(select_t *select);
+
+
 
 // set-controls.c
 // create a set with a given amount of performers
