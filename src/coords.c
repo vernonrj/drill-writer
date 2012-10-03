@@ -268,7 +268,7 @@ int coords_movexy(double xoff, double yoff)
 			//selects = selects->next;
 			continue;
 		}
-		index = select_get_index(selects);
+		index = select_get_dot(selects);
 		//coords_retrieve(coords[selects->index], &x, &y);
 		//pushPerfmv(&pstate.undobr, selects->index, x, y, done);
 		coords_retrieve(coords[index], &x, &y);
@@ -306,7 +306,7 @@ int coords_align_dots_to_grid(void)
 	while (select != NULL)
 	{
 		//coords_retrieve(coords[select->index], &x, &y);
-		index = select_get_index(select);
+		index = select_get_dot(select);
 		coords_retrieve(coords[index], &x, &y);
 		pushPerfmv(&pstate.undobr, index, x, y, done);
 		x = round(x);
@@ -331,7 +331,7 @@ int coords_movexy_grid(double xoff, double yoff)
 	int index;
 	while(selects != NULL)
 	{
-		index = select_get_index(selects);
+		index = select_get_dot(selects);
 		coords_retrieve(coords[index], &x, &y);
 		x = round(x + xoff);
 		y = round(y + yoff);
@@ -390,7 +390,7 @@ void coords_box_scale_form_from_center(double s_step)
 			continue;
 		}
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		coord = coords[index];
 		coords_retrieve(coord, &x, &y);
 		distx = fabs(x - cx);
@@ -423,7 +423,7 @@ void coords_box_scale_form_from_center(double s_step)
 			continue;
 		}
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		coord = coords[index];
 		coords_retrieve(coord, &x, &y);
 		pushPerfmv(&pstate.undobr, index, x, y, 0);
@@ -488,7 +488,7 @@ void coords_scale_form_from_center(double s_step)
 			continue;
 		}
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		coord = coords[index];
 		coords_scale_coords_from_center(s_step, &coord->x, &coord->y, cx, cy);
 		//last = last->next;
@@ -576,7 +576,7 @@ void coords_rot_selected_around_center(double s_step)
 			continue;
 		}
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		coord = coords[index];
 		distx = cx - coord->x;
 		disty = cy - coord->y;

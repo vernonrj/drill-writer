@@ -68,7 +68,7 @@ int select_has_index(select_t *select)
 	return (select->index != -1);
 }
 
-int select_get_index(select_t *select)
+int select_get_dot(select_t *select)
 {
 	if (!select)
 		return -1;
@@ -106,45 +106,6 @@ bool select_check_index_selected(int index, select_t *selects)
 
 
 
-bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2)
-{
-	//double xmin, xmax, ymin, ymax;
-	bool chkx, chky;
-	if (x1 < x2)
-	{
-		if (x < x2 && x1 <= x)
-			chkx = true;
-		else
-			chkx = false;
-	}
-	else if (x2 < x1)
-	{
-		if (x <= x1 && x2 < x)
-			chkx = true;
-		else
-			chkx = false;
-	}
-	else
-		chkx = false;
-
-	if (y1 < y2)
-	{
-		if (y < y2 && y1 <= y)
-			chky = true;
-		else
-			chky = false;
-	}
-	else if (y2 < y1)
-	{
-		if (y <= y1 && y2 < y)
-			chky = true;
-		else
-			chky = false;
-	}
-	else
-		chky = false;
-	return (chkx && chky);
-}
 
 
 
@@ -313,39 +274,6 @@ void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool togg
 
 
 
-select_t *select_add_in_rectangle(select_t *select, double x1, double y1, double x2, double y2, bool toggle)
-{
-	int i;
-	int perfnum = pshow->perfnum;
-	double x, y;
-
-	/*
-	while (group)
-	{
-		if (group->forms && form_contained_in_rectangle(group->forms, x1, y1, x2, y2))
-		{
-			select = select_add_group(select, group, true);
-		}
-		group = group->next;
-	}
-	*/
-	for (i=0; i<perfnum; i++)
-	{
-		coords_retrieve_midset(pstate.setnum, i, &x, &y);
-		if (select_check_dot_in_rectangle(x, y, x1, y1, x2, y2))
-		{
-			if (coords_check_managed_by_index(i) != 0x0)
-			{
-				select = select_add_form(select, 
-						form_find_form_with_index(pshow->sets->currset->forms, i), 
-						toggle);
-			}
-			else if (!select_check_index_selected(i, select) && pshow->perfs[i]->valid)
-				select = select_add_index(select, i, true);
-		}
-	}
-	return select;
-}
 
 
 

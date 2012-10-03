@@ -367,13 +367,13 @@ select_t *field_get_in_area(double x, double y)
 		while (select)
 		{
 			//coords_retrieve_midset(pstate.setnum, select->index, &coordx, &coordy);
-			coords_retrieve_midset(pstate.setnum, select_get_index(select), &coordx, &coordy);
+			coords_retrieve_midset(pstate.setnum, select_get_dot(select), &coordx, &coordy);
 			distance = pow((coordx-x),2) + pow((coordy-y),2);
 			if (distance < distance_min || distance_min == -1)
 			{
 				distance_min = distance;
 				//min_index = select->index;
-				min_index = select_get_index(select);
+				min_index = select_get_dot(select);
 			}
 			//select = select->next;
 			select = select_get_next(select);
@@ -425,4 +425,67 @@ select_t *field_get_in_area(double x, double y)
 	return NULL;
 }
 
+bool field_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2)
+{
+	//double xmin, xmax, ymin, ymax;
+	bool chkx, chky;
+	if (x1 < x2)
+	{
+		if (x < x2 && x1 <= x)
+			chkx = true;
+		else
+			chkx = false;
+	}
+	else if (x2 < x1)
+	{
+		if (x <= x1 && x2 < x)
+			chkx = true;
+		else
+			chkx = false;
+	}
+	else
+		chkx = false;
+
+	if (y1 < y2)
+	{
+		if (y < y2 && y1 <= y)
+			chky = true;
+		else
+			chky = false;
+	}
+	else if (y2 < y1)
+	{
+		if (y <= y1 && y2 < y)
+			chky = true;
+		else
+			chky = false;
+	}
+	else
+		chky = false;
+	return (chkx && chky);
+}
+
+select_t *field_select_in_rectangle(select_t *select, double x1, double y1, double x2, double y2, bool toggle)
+{
+	int i;
+	int perfnum = pshow->perfnum;
+	double x, y;
+
+	for (i=0; i<perfnum; i++)
+	{
+		coords_retrieve_midset(pstate.setnum, i, &x, &y);
+		if (field_check_dot_in_rectangle(x, y, x1, y1, x2, y2))
+		{
+			if (coords_check_managed_by_index(i) != 0x0)
+			{
+				select = select_add_form(select, 
+						form_find_form_with_index(pshow->sets->currset->forms, i), 
+						toggle);
+			}
+			else if (!select_check_index_selected(i, select) && pshow->perfs[i]->valid)
+				select = select_add_index(select, i, true);
+		}
+	}
+	return select;
+}
 

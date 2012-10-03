@@ -227,7 +227,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						select_dots_add_index(select->index);
 						*/
 					if (!select_get_form(select))
-						select_dots_add_index(select_get_index(select));
+						select_dots_add_index(select_get_dot(select));
 				}
 				else if ((event->state & ~GDK_SHIFT_MASK)== 0)
 				{
@@ -243,11 +243,11 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						select_update_center(pstate.select);
 					}
 					//else if (!select->form && isSelected(select->index) != 1) 
-					else if (!select_get_form(select) && isSelected(select_get_index(select)) != 1) 
+					else if (!select_get_form(select) && isSelected(select_get_dot(select)) != 1) 
 					{
 						// dot is not selected
 						//index = select->index;
-						index = select_get_index(select);
+						index = select_get_dot(select);
 						select_dots_discard();
 						mouse_discarded = 1;
 						if (index != -1)
@@ -316,7 +316,7 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	{
 		// click drag
 		// get what's currently in selection rectangle
-		new_select = select_add_in_rectangle(new_select, fldstate.mouse_clickx, fldstate.mouse_clicky,
+		new_select = field_select_in_rectangle(new_select, fldstate.mouse_clickx, fldstate.mouse_clicky,
 				coordx, coordy, false);
 		// then find what's been added, what's gone
 		select_added = select_drop_multiple(new_select, fldstate.mouse_selection);

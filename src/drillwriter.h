@@ -348,6 +348,8 @@ double fieldrel_get_side_to_side(double *x, double *y);
 double fieldrel_get_front_to_back(double *x, double *y, char **inorout_r, char **frontback_r, char **hashorside_r);
 int fieldrel_convert_xy_to_relation(double *x, double *y, char **buffer_r);
 select_t *field_get_in_area(double x, double y);
+bool field_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
+select_t *field_select_in_rectangle(select_t*, double, double, double, double, bool);
 
 // file-ops.c
 int open_file(char *filename);
@@ -391,17 +393,15 @@ int select_has_next(select_t *select);
 select_t *select_get_next(select_t *select);
 void select_set_next(select_t *select, select_t *last);
 int select_has_index(select_t *select);
-int select_get_index(select_t *select);
+int select_get_dot(select_t *select);
 int select_has_form(select_t *select);
 form_child_t *select_get_form(select_t *select);
 bool select_check_index_selected(int index, select_t *selects);
-bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
 select_t *select_add_index(select_t*, int index, bool toggle);
 void select_dots_add_index(int index);
 select_t *select_add_group(select_t *select, group_t *group);
 select_t *select_add_form(select_t*, form_child_t*, bool);
 void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle);
-select_t *select_add_in_rectangle(select_t*, double, double, double, double, bool);
 select_t *select_drop_multiple(select_t *mainlist, select_t *modifier);
 select_t *select_discard(select_t*);
 void select_dots_discard(void);
@@ -411,14 +411,6 @@ select_t *select_all(select_t*, perf_t **perfs, int perfnum);
 int select_all_dots(void);
 void select_update_center(select_t *last);
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset);
-//select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double));
-//select_t *select_find_form_with_coords(select_t *select, double x, double y);
-//select_t *select_find_form_with_hole(select_t *select, double x, double y);
-//select_t *select_find_form_with_endpoint(select_t *select, double x, double y);
-//select_t *select_find_form_with_endpoint_hole(select_t *select, double x, double y);
-//select_t *select_get_in_area(double x, double y);
-//void select_add_coord_to_center(coord_t *coord);
-//void select_remove_coord_from_center(coord_t *coord);
 
 // set-controls.c
 // create a set with a given amount of performers

@@ -505,16 +505,16 @@ form_child_t *form_build_line(form_child_t *form, select_t *select_head)
 		if (select)
 		{
 			//fcoords[i]->dot = select->index;
-			fcoords[i]->dot = select_get_index(select);
+			fcoords[i]->dot = select_get_dot(select);
 			if (i != 0 && i != index - 1)
 			{
 				//coords_set_managed_by_index(select->index, 0x1);
-				coords_set_managed_by_index(select_get_index(select), 0x1);
+				coords_set_managed_by_index(select_get_dot(select), 0x1);
 			}
 			else
 			{
 				//coords_set_managed_by_index(select->index, 0x2);
-				coords_set_managed_by_index(select_get_index(select), 0x2);
+				coords_set_managed_by_index(select_get_dot(select), 0x2);
 			}
 			//select = select->next;
 			select = select_get_next(select);
@@ -541,7 +541,7 @@ bool form_contained_in_rectangle(form_child_t *form, double x1, double y1, doubl
 	for (i=0; i<index; i++)
 	{
 		coord = fcoords[i]->coord;
-		if (select_check_dot_in_rectangle(coord->x, coord->y, x1, y1, x2, y2))
+		if (field_check_dot_in_rectangle(coord->x, coord->y, x1, y1, x2, y2))
 			return true;
 	}
 	return false;

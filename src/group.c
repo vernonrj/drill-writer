@@ -35,8 +35,8 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 	{
 		// merge selection and group selects in order
 		//if (scurr->index < glast->index)
-		sindex = select_get_index(scurr);
-		gindex = select_get_index(glast);
+		sindex = select_get_dot(scurr);
+		gindex = select_get_dot(glast);
 		if (sindex < gindex)
 		{
 			// selection goes next
@@ -63,14 +63,14 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 	{
 		//select_new = select_add_index(select_new, scurr->index, false);
 		//scurr = scurr->next;
-		select_new = select_add_index(select_new, select_get_index(scurr), false);
+		select_new = select_add_index(select_new, select_get_dot(scurr), false);
 		scurr = select_get_next(scurr);
 	}
 	while (glast)
 	{
 		//select_new = select_add_index(select_new, glast->index, false);
 		//glast = glast->next;
-		select_new = select_add_index(select_new, select_get_index(glast), false);
+		select_new = select_add_index(select_new, select_get_dot(glast), false);
 		glast = select_get_next(glast);
 	}
 	// add new selection to group

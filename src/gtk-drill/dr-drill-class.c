@@ -814,7 +814,7 @@ int draw_selected(GtkWidget *widget)
 		{
 			//index = select->index;
 			//form = select->form;
-			index = select_get_index(select);
+			index = select_get_dot(select);
 			form = select_get_form(select);
 			if (form)
 			{
@@ -828,7 +828,7 @@ int draw_selected(GtkWidget *widget)
 		if (form_select)
 		{
 			//index = form_select->index;
-			index = select_get_index(form_select);
+			index = select_get_dot(form_select);
 		}
 
 		if (index == -1)
@@ -980,7 +980,7 @@ int draw_dots (GtkWidget *widget)
 				{
 					// check to see if dot is selected
 					//if (selects->index == i)
-					if (select_get_index(selects) == i)
+					if (select_get_dot(selects) == i)
 					{
 						// dot is selected
 						//selects = selects->next;

@@ -213,12 +213,12 @@ int isSelected(int index)
 		if (form_select)
 		{
 			//index_selected = form_select->index;
-			index_selected = select_get_index(form_select);
+			index_selected = select_get_dot(form_select);
 		}
 		else
 		{
 			//index_selected = select->index;
-			index_selected = select_get_index(select);
+			index_selected = select_get_dot(select);
 		}
 
 		if (index == -1)

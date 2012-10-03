@@ -155,7 +155,7 @@ void perf_revert_selected(headset_t *dshow)
 	{
 		// set dots as invalid
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		coord = dshow->sets->currset->coords[index];
 		//if (last->next)
 		if (select_has_next(last))
@@ -217,7 +217,7 @@ void perf_delete_selected(void)
 	{
 		// set dots as invalid
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		perf = perfs[index];
 		//if (last->next)
 		if (select_has_next(last))
@@ -288,7 +288,7 @@ double perf_average_stepsize_selected(headset_t *dshow)
 			continue;
 		}
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		x = coords[index]->x;
 		y = coords[index]->y;
 		xpr = pcoords[index]->x;
@@ -348,7 +348,7 @@ int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 			continue;
 		}
 		//index = last->index;
-		index = select_get_index(last);
+		index = select_get_dot(last);
 		x = coords[index]->x;
 		y = coords[index]->y;
 		xpr = pcoords[index]->x;
