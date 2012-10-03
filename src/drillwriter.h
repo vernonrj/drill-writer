@@ -123,14 +123,14 @@ struct _form_container_t
 struct _form_parent_t
 {
 	// container for forms
-	LIST_ENTRY(_form_parent_t) formlist_entries;
+	//LIST_ENTRY(_form_parent_t) formlist_entries;
 	//int* set_index;
 	form_child_t **forms;
 	//int size;
 	//int size_alloc;
 };
-LIST_HEAD(form_list_proto, _form_parent_t);
-typedef struct form_list_proto form_list_t;
+//LIST_HEAD(form_list_proto, _form_parent_t);
+//typedef struct form_list_proto form_list_t;
 
 typedef struct form_coord_proto
 {
@@ -262,7 +262,7 @@ struct headset_proto
 	// Toplevel groups
 	group_t *topgroups;
 	// full forms
-	form_list_t *topforms;
+	form_container_t *topforms;
 };
 
 // main show container
@@ -341,13 +341,17 @@ form_child_t *form_copy(form_child_t *form);
 form_parent_t *form_parent_construct(void);
 form_parent_t *form_parent_construct_with_form(form_child_t *form, int index);
 form_parent_t *form_parent_destruct(form_parent_t *last);
-bool form_parent_contiguous(form_parent_t *fcont, int set_num);
-form_list_t *form_parent_add_form(form_list_t *head, form_child_t *form, int index);
-int form_parent_add_set(form_list_t *head, form_parent_t *last, int index);
-int form_parent_remove_set(form_list_t *head, form_parent_t *last, int index);
-form_parent_t *form_parent_find_with_form(form_list_t *head, form_child_t *form);
+bool form_parent_contiguous(form_parent_t *fparent, int set_num);
+form_container_t *form_parent_add_form(form_container_t *head, form_child_t *form, int index);
+int form_parent_add_set(form_container_t *head, form_parent_t *last, int index);
+int form_parent_remove_set(form_container_t *head, form_parent_t *last, int index);
+form_parent_t *form_parent_find_with_form(form_container_t *head, form_child_t *form);
 form_child_t *form_parent_find_form_at_index(form_parent_t *last, int index);
 bool form_parent_mapped_at_set(form_parent_t *last, int setnum);
+form_container_t *form_container_construct(void);
+form_container_t *form_container_destruct(form_container_t *fcont);
+form_container_t *form_container_realloc(form_container_t *fcont, size_t size_alloc);
+form_container_t *form_container_insert_head(form_container_t *fcont, form_parent_t *last);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

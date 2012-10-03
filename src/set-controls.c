@@ -122,12 +122,12 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 set_container_t *set_container_add_set_after(set_container_t *set_container, set_t *newset, int setnum)
 {
 	// insert newset after setnum
-	int i;
+	int i, j = 0;
 	int size, size_alloc;
 	set_t **setlist = set_container->setlist;
 	set_t **newsetlist;
-	form_list_t *flist = pshow->topforms;
-	form_parent_t *fcont = LIST_FIRST(flist);
+	form_container_t *fcont = pshow->topforms;
+	form_parent_t *fparent = fcont->forms[0];
 	form_child_t **newforms;
 	form_child_t **forms;
 
@@ -135,15 +135,17 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 	size = set_container->size;
 	if (size+1 >= size_alloc)
 	{
-		while (fcont)
+		//while (fparent)
+		for (i=0; i<fcont->size; i++)
 		{
-			forms = fcont->forms;
+			fparent = fcont->forms[i];
+			forms = fparent->forms;
 			newforms = (form_child_t **)malloc((size_alloc+5)*sizeof(form_child_t*));
-			for (i=0; i<size; i++)
-				newforms[i] = forms[i];
-			fcont->forms = newforms;
+			for (j=0; j<size; j++)
+				newforms[j] = forms[j];
+			fparent->forms = newforms;
 			free(forms);
-			fcont = LIST_NEXT(fcont, formlist_entries);
+			//fparent = LIST_NEXT(fparent, formlist_entries);
 		}
 		newsetlist = (set_t**)malloc((size_alloc+5)*sizeof(set_t*));
 		for(i=0; i<size; i++)
@@ -153,13 +155,15 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 		set_container->size_alloc += 5;
 		setlist = newsetlist;
 	}
-	fcont = LIST_FIRST(flist);
-	while (fcont)
+	//fparent = LIST_FIRST(flist);
+	//while (fparent)
+	for (i=0; i<fcont->size; i++)
 	{
-		for (i=set_container->size; i>setnum+1; i--)
-			fcont->forms[i] = fcont->forms[i-1];
-		fcont->forms[setnum+1] = NULL;
-		fcont = LIST_NEXT(fcont, formlist_entries);
+		fparent = fcont->forms[i];
+		for (j=set_container->size; j>setnum+1; j--)
+			fparent->forms[j] = fparent->forms[j-1];
+		fparent->forms[setnum+1] = NULL;
+		//fparent = LIST_NEXT(fparent, formlist_entries);
 	}
 
 	for(i=set_container->size; i>setnum+1; i--)

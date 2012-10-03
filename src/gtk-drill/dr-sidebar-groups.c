@@ -139,7 +139,7 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 	struct group_cell_container *curr;
 	struct group_cell_container *newnode;
 	GtkWidget *widget;
-	form_parent_t *fcont;
+	form_parent_t *fparent;
 	group_t *group;
 	form_child_t *form;
 
@@ -147,20 +147,20 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 	if (form_r)
 	{
 		form = *form_r;
-		fcont = form_parent_find_with_form(pshow->topforms, form);
+		fparent = form_parent_find_with_form(pshow->topforms, form);
 	}
 	else
 	{
 		form = NULL;
-		fcont = NULL;
+		fparent = NULL;
 	}
 	if (group_r)
 		group = *group_r;
 	else
 		group = NULL;
 	// group/form needs to be added
-	if (!is_this_set && fcont && form_parent_find_form_at_index(fcont, pstate.setnum) != form 
-			&&form_parent_mapped_at_set(fcont, pstate.setnum))
+	if (!is_this_set && fparent && form_parent_find_form_at_index(fparent, pstate.setnum) != form 
+			&&form_parent_mapped_at_set(fparent, pstate.setnum))
 	{
 	}
 	else

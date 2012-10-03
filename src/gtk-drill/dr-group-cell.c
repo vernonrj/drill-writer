@@ -543,14 +543,14 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 	form_child_t *form;
 	int excode;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
-	form_parent_t *fcont;
+	form_parent_t *fparent;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	//form = form_copy(groupcell->priv->form);
-	fcont = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
-	excode = form_parent_add_set(pshow->topforms, fcont, pstate.setnum);
+	fparent = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
+	excode = form_parent_add_set(pshow->topforms, fparent, pstate.setnum);
 	if (excode == 1)
 		mouse_currentMode = ADDFORM;
-	form = form_parent_find_form_at_index(fcont, pstate.setnum);
+	form = form_parent_find_form_at_index(fparent, pstate.setnum);
 	form_add_to_set(form);
 	dr_sidebar_update((DrSidebar*)sidebar);
 	dr_canvas_refresh(drill);
@@ -560,14 +560,14 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 
 bool dr_group_cell_check_form_nonlocal(GtkWidget *widget)
 {
-	form_parent_t *fcont;
+	form_parent_t *fparent;
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), false);
 	if (!groupcell->priv->form)
 		return false;
-	fcont = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
-	if (!fcont)
+	fparent = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
+	if (!fparent)
 		return false;
-	return form_parent_mapped_at_set(fcont, pstate.setnum);
+	return form_parent_mapped_at_set(fparent, pstate.setnum);
 }
 
