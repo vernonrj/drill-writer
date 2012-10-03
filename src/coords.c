@@ -256,25 +256,32 @@ int coords_movexy(double xoff, double yoff)
 	//select_t *group_selects = NULL;
 	form_child_t *form = NULL;
 	int done = 0;
+	int index;
 	while(selects != NULL)
 	{
-		if (selects->form)
+		//if (selects->form)
+		if ((form = select_get_form(selects)) != NULL)
 		{
-			form = selects->form;
+			//form = selects->form;
 			form_movexy(form, xoff, yoff);
-			selects = selects->next;
+			selects = select_get_next(selects);
+			//selects = selects->next;
 			continue;
 		}
-		coords_retrieve(coords[selects->index], &x, &y);
-		pushPerfmv(&pstate.undobr, selects->index, x, y, done);
+		index = select_get_index(selects);
+		//coords_retrieve(coords[selects->index], &x, &y);
+		//pushPerfmv(&pstate.undobr, selects->index, x, y, done);
+		coords_retrieve(coords[index], &x, &y);
+		pushPerfmv(&pstate.undobr, index, x, y, done);
 
 		x = x + xoff;
 		y = y + yoff;
-		coords_set_coord(pshow, selects->index, x, y);
+		coords_set_coord(pshow, index, x, y);
 		if ((form = form_find_with_hole(pshow->sets->currset->forms, x, y)) != NULL)
-			form_add_index_to_hole_with_coords(form, selects->index, x, y);
+			form_add_index_to_hole_with_coords(form, index, x, y);
 
-		selects = selects->next;
+		//selects = selects->next;
+		selects = select_get_next(selects);
 	}
 	// move center of selection
 	x = pstate.center->x;
@@ -295,14 +302,18 @@ int coords_align_dots_to_grid(void)
 	select_t *select = pstate.select;
 	double x, y;
 	int done = 0;
+	int index;
 	while (select != NULL)
 	{
-		coords_retrieve(coords[select->index], &x, &y);
-		pushPerfmv(&pstate.undobr, select->index, x, y, done);
+		//coords_retrieve(coords[select->index], &x, &y);
+		index = select_get_index(select);
+		coords_retrieve(coords[index], &x, &y);
+		pushPerfmv(&pstate.undobr, index, x, y, done);
 		x = round(x);
 		y = round(y);
-		coords_set_coord(pshow, select->index, x, y);
-		select = select->next;
+		coords_set_coord(pshow, index, x, y);
+		//select = select->next;
+		select = select_get_next(select);
 	}
 	// move center of selection
 	select_update_center(pstate.select);
@@ -317,13 +328,16 @@ int coords_movexy_grid(double xoff, double yoff)
 	double x, y;
 	coord_t **coords = pshow->sets->currset->coords;
 	select_t *selects = pstate.select;
+	int index;
 	while(selects != NULL)
 	{
-		coords_retrieve(coords[selects->index], &x, &y);
+		index = select_get_index(selects);
+		coords_retrieve(coords[index], &x, &y);
 		x = round(x + xoff);
 		y = round(y + yoff);
-		coords_set_coord(pshow, selects->index, x, y);
-		selects = selects->next;
+		coords_set_coord(pshow, index, x, y);
+		//selects = selects->next;
+		selects = select_get_next(selects);
 	}
 	// move center of selection
 	x = pstate.center->x;
@@ -368,12 +382,15 @@ void coords_box_scale_form_from_center(double s_step)
 	while (last != NULL)
 	{
 		// get maxes separately
-		if (last->form)
+		//if (last->form)
+		if (select_has_form(last))
 		{
-			last = last->next;
+			//last = last->next;
+			last = select_get_next(last);
 			continue;
 		}
-		index = last->index;
+		//index = last->index;
+		index = select_get_index(last);
 		coord = coords[index];
 		coords_retrieve(coord, &x, &y);
 		distx = fabs(x - cx);
@@ -386,7 +403,8 @@ void coords_box_scale_form_from_center(double s_step)
 		{
 			maxdy = disty;
 		}
-		last = last->next;
+		//last = last->next;
+		last = select_get_next(last);
 	}
 	last = pstate.select;
 
@@ -396,13 +414,16 @@ void coords_box_scale_form_from_center(double s_step)
 	while (last != NULL)
 	{
 		// get coords for selected dot
-		if (last->form)
+		//if (last->form)
+		if (select_has_form(last))
 		{
-			form_scale_from_center(last->form, s_step);
-			last = last->next;
+			form_scale_from_center(select_get_form(last), s_step);
+			//last = last->next;
+			last = select_get_next(last);
 			continue;
 		}
-		index = last->index;
+		//index = last->index;
+		index = select_get_index(last);
 		coord = coords[index];
 		coords_retrieve(coord, &x, &y);
 		pushPerfmv(&pstate.undobr, index, x, y, 0);
@@ -417,7 +438,8 @@ void coords_box_scale_form_from_center(double s_step)
 			coord->y = coord->y + y;
 		}
 		// next dot
-		last = last->next;
+		//last = last->next;
+		last = select_get_next(last);
 	}
 	undo_tclose();
 	return;
@@ -457,43 +479,20 @@ void coords_scale_form_from_center(double s_step)
 	while (last != NULL)
 	{
 		// get coords for selected dot
-		if (last->form)
+		//if (last->form)
+		if (select_has_form(last))
 		{
-			form_scale_from_center(last->form, s_step);
-			last = last->next;
+			form_scale_from_center(select_get_form(last), s_step);
+			//last = last->next;
+			last = select_get_next(last);
 			continue;
 		}
-		index = last->index;
+		//index = last->index;
+		index = select_get_index(last);
 		coord = coords[index];
 		coords_scale_coords_from_center(s_step, &coord->x, &coord->y, cx, cy);
-		/*
-		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 0);
-		distx = cx - coord->x;
-		disty = cy - coord->y;
-		signx = distx < 0;
-		signy = disty < 0;
-		angle = atan(disty / distx);
-		if (angle < 0)
-			angle = -1 * angle;
-		hypo = powf(distx, 2) + powf(disty, 2);
-		hypo = sqrtf(hypo);
-		// don't contract if too close to center
-		if (s_step > 0 || hypo > -1 * s_step)
-		{
-			// expand or contract
-			distx = (hypo+s_step)*cos(angle);
-			disty = (hypo+s_step)*sin(angle);
-			if (signx)
-				distx = -1 * distx;
-			if (signy)
-				disty = -1 * disty;
-			// return to cartesian space
-			coord->x = cx - distx;
-			coord->y = cy - disty;
-			// expand next dot
-		}
-		*/
-		last = last->next;
+		//last = last->next;
+		last = select_get_next(last);
 	}
 	return;
 }
@@ -568,13 +567,16 @@ void coords_rot_selected_around_center(double s_step)
 	while (last != NULL)
 	{
 		// get coords for selected dot
-		if (last->form)
+		//if (last->form)
+		if (select_has_form(last))
 		{
-			form_rotate_around_center(last->form, s_step);
-			last = last->next;
+			form_rotate_around_center(select_get_form(last), s_step);
+			//last = last->next;
+			last = select_get_next(last);
 			continue;
 		}
-		index = last->index;
+		//index = last->index;
+		index = select_get_index(last);
 		coord = coords[index];
 		distx = cx - coord->x;
 		disty = cy - coord->y;
@@ -592,7 +594,8 @@ void coords_rot_selected_around_center(double s_step)
 			coord->x = cx - distx;
 			coord->y = cy - disty;
 		}
-		last = last->next;
+		//last = last->next;
+		last = select_get_next(last);
 	}
 	return;
 }

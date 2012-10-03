@@ -812,8 +812,10 @@ int draw_selected(GtkWidget *widget)
 	{
 		if (!form_select)
 		{
-			index = select->index;
-			form = select->form;
+			//index = select->index;
+			//form = select->form;
+			index = select_get_index(select);
+			form = select_get_form(select);
 			if (form)
 			{
 				form_select = form_get_contained_dots(form);
@@ -824,12 +826,16 @@ int draw_selected(GtkWidget *widget)
 			}
 		}
 		if (form_select)
-			index = form_select->index;
+		{
+			//index = form_select->index;
+			index = select_get_index(form_select);
+		}
 
 		if (index == -1)
 		{
 			form_select = NULL;
-			select = select->next;
+			//select = select->next;
+			select = select_get_next(select);
 			continue;
 		}
 
@@ -839,9 +845,15 @@ int draw_selected(GtkWidget *widget)
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
 		if (form_select)
-			form_select = form_select->next;
+		{
+			//form_select = form_select->next;
+			form_select = select_get_next(form_select);
+		}
 		if (!form_select)
-			select = select->next;
+		{
+			//select = select->next;
+			select = select_get_next(select);
+		}
 
 		if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed_by_index(index))
 		{
@@ -967,10 +979,12 @@ int draw_dots (GtkWidget *widget)
 				if (selects)
 				{
 					// check to see if dot is selected
-					if (selects->index == i)
+					//if (selects->index == i)
+					if (select_get_index(selects) == i)
 					{
 						// dot is selected
-						selects = selects->next;
+						//selects = selects->next;
+						selects = select_get_next(selects);
 						was_selected = 1;
 					}
 				}

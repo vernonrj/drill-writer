@@ -184,14 +184,18 @@ bool form_is_selected(form_child_t *form, select_t *select)
 {
 	while (select)
 	{
-		if (!select->form)
+		//if (!select->form)
+		if (!select_has_form(select))
 		{
-			select = select->next;
+			//select = select->next;
+			select = select_get_next(select);
 			continue;
 		}
-		if (select->form == form)
+		//if (select->form == form)
+		if (select_get_form(select) == form)
 			return true;
-		select = select->next;
+		//select = select->next;
+		select = select_get_next(select);
 	}
 	return false;
 }
@@ -449,7 +453,8 @@ form_child_t *form_build_line(form_child_t *form, select_t *select_head)
 	while (select)
 	{
 		index++;
-		select = select->next;
+		//select = select->next;
+		select = select_get_next(select);
 	}
 	form = form_child_construct_with_size(index);
 	fcoords = form->fcoords;
@@ -461,12 +466,20 @@ form_child_t *form_build_line(form_child_t *form, select_t *select_head)
 	{
 		if (select)
 		{
-			fcoords[i]->dot = select->index;
+			//fcoords[i]->dot = select->index;
+			fcoords[i]->dot = select_get_index(select);
 			if (i != 0 && i != index - 1)
-				coords_set_managed_by_index(select->index, 0x1);
+			{
+				//coords_set_managed_by_index(select->index, 0x1);
+				coords_set_managed_by_index(select_get_index(select), 0x1);
+			}
 			else
-				coords_set_managed_by_index(select->index, 0x2);
-			select = select->next;
+			{
+				//coords_set_managed_by_index(select->index, 0x2);
+				coords_set_managed_by_index(select_get_index(select), 0x2);
+			}
+			//select = select->next;
+			select = select_get_next(select);
 		}
 		else
 		{
@@ -827,21 +840,28 @@ select_t *form_flatten(form_child_t *form, select_t *select_head)
 	if (!select_head)
 		return NULL;
 	last = select_head;
+	/*
 	if (select_head->form == form)
 		select_head = select_head->next;
+		*/
+	if (select_get_form(select_head) == form)
+		select_head = select_get_next(select_head);
 	else
 	{
-		while (last && last->form != form)
+		//while (last && last->form != form)
+		while (last && select_get_form(last) != form)
 		{
 			select = last;
-			last = last->next;
+			//last = last->next;
+			last = select_get_next(last);
 		}
 		if (!last)
 		{
 			printf("WARNING: selection not in scope!\n");
 			return NULL;
 		}
-		select->next = last->next;
+		//select->next = last->next;
+		select_set_next(select, select_get_next(last));
 	}
 	fcoords = form->fcoords;
 	dot_num = form->dot_num;

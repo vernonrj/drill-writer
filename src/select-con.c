@@ -1,5 +1,18 @@
 #include "drillwriter.h"
 
+// selection LLL node
+struct select_proto
+{
+	// node with selection information
+	// can contain a single dot, or an entire form
+	// (not both)
+	int index;		// performer 
+	form_child_t *form;		// form
+
+	select_t *next;
+};
+
+
 
 select_t *select_construct(void)
 {
@@ -24,6 +37,58 @@ select_t *select_construct_with_index(int index)
 	return select;
 }
 
+
+int select_has_next(select_t *select)
+{
+	if (!select)
+		return -1;
+	return (select->next != NULL);
+}
+
+
+select_t *select_get_next(select_t *select)
+{
+	if (!select)
+		return NULL;
+	return select->next;
+}
+
+
+void select_set_next(select_t *select, select_t *last)
+{
+	select->next = last;
+	return;
+}
+
+
+int select_has_index(select_t *select)
+{
+	if (!select)
+		return -1;
+	return (select->index != -1);
+}
+
+int select_get_index(select_t *select)
+{
+	if (!select)
+		return -1;
+	return select->index;
+}
+
+
+int select_has_form(select_t *select)
+{
+	if (!select)
+		return -1;
+	return (select->form != NULL);
+}
+
+form_child_t *select_get_form(select_t *select)
+{
+	if (!select)
+		return NULL;
+	return select->form;
+}
 
 
 bool select_check_index_selected(int index, select_t *selects)

@@ -147,7 +147,8 @@ int show_destroy(headset_t **dshow_r)
 	select = pstate.select;
 	while (select != NULL)
 	{
-		sellast = select->next;
+		//sellast = select->next;
+		sellast = select_get_next(select);
 		free(select);
 		select = sellast;
 	}

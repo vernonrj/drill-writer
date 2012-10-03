@@ -95,22 +95,6 @@ struct undo_proto
 };
 
 /* Selection / Groups / Forms */
-// selection LLL node
-struct select_proto
-{
-	// node with selection information
-	// can contain a single dot, or an entire form
-	// (not both)
-	int index;		// performer 
-	form_child_t *form;		// form
-
-	select_t *next;
-};
-
-
-
-
-
 // Forms
 typedef struct _form_container_t form_container_t;
 struct _form_container_t
@@ -399,6 +383,13 @@ int perf_max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
 // Selection control functions
 select_t *select_construct(void);
 select_t *select_construct_with_index(int index);
+int select_has_next(select_t *select);
+select_t *select_get_next(select_t *select);
+void select_set_next(select_t *select, select_t *last);
+int select_has_index(select_t *select);
+int select_get_index(select_t *select);
+int select_has_form(select_t *select);
+form_child_t *select_get_form(select_t *select);
 bool select_check_index_selected(int index, select_t *selects);
 bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, double x2, double y2);
 select_t *select_add_index(select_t*, int index, bool toggle);

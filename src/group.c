@@ -25,6 +25,7 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 	select_t *scurr = newsels;
 	select_t *glast;
 	select_t *select_new = NULL;
+	int sindex, gindex;
 
 	if (!group)
 		group = group_construct();
@@ -33,34 +34,44 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 	while (scurr && glast)
 	{
 		// merge selection and group selects in order
-		if (scurr->index < glast->index)
+		//if (scurr->index < glast->index)
+		sindex = select_get_index(scurr);
+		gindex = select_get_index(glast);
+		if (sindex < gindex)
 		{
 			// selection goes next
-			select_new = select_add_index(select_new, scurr->index, false);
-			scurr = scurr->next;
+			select_new = select_add_index(select_new, sindex, false);
+			//scurr = scurr->next;
+			scurr = select_get_next(scurr);
 		}
-		else if (scurr->index > glast->index)
+		else if (sindex > gindex)
 		{
 			// group goes next
-			select_new = select_add_index(select_new, glast->index, false);
-			glast = glast->next;
+			select_new = select_add_index(select_new, gindex, false);
+			//glast = glast->next;
+			glast = select_get_next(glast);
 		}
 		else
 		{
 			// duplicate
-			scurr = scurr->next;
+			//scurr = scurr->next;
+			scurr = select_get_next(scurr);
 		}
 	}
 	// clean up
 	while (scurr)
 	{
-		select_new = select_add_index(select_new, scurr->index, false);
-		scurr = scurr->next;
+		//select_new = select_add_index(select_new, scurr->index, false);
+		//scurr = scurr->next;
+		select_new = select_add_index(select_new, select_get_index(scurr), false);
+		scurr = select_get_next(scurr);
 	}
 	while (glast)
 	{
-		select_new = select_add_index(select_new, glast->index, false);
-		glast = glast->next;
+		//select_new = select_add_index(select_new, glast->index, false);
+		//glast = glast->next;
+		select_new = select_add_index(select_new, select_get_index(glast), false);
+		glast = select_get_next(glast);
 	}
 	// add new selection to group
 	select_discard(group->selects);

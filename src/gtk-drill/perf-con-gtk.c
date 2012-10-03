@@ -204,12 +204,22 @@ int isSelected(int index)
 	select = pstate.select;
 	while (select != NULL)
 	{
+		/*
 		if (!form_select && select->form)
 			form_select = form_get_contained_dots(select->form);
+			*/
+		if (!form_select && select_has_form(select))
+			form_select = form_get_contained_dots(select_get_form(select));
 		if (form_select)
-			index_selected = form_select->index;
+		{
+			//index_selected = form_select->index;
+			index_selected = select_get_index(form_select);
+		}
 		else
-			index_selected = select->index;
+		{
+			//index_selected = select->index;
+			index_selected = select_get_index(select);
+		}
 
 		if (index == -1)
 		{
@@ -222,9 +232,15 @@ int isSelected(int index)
 			break;
 		}
 		if (form_select)
-			form_select = form_select->next;
+		{
+			//form_select = form_select->next;
+			form_select = select_get_next(form_select);
+		}
 		if (!form_select)
-			select = select->next;
+		{
+			//select = select->next;
+			select = select_get_next(select);
+		}
 	}
 	return isin;
 }
