@@ -210,7 +210,7 @@ int main (int argc, char *argv[])
 	for(i=0; i<6; i++)
 		select = select_add_index(select, i, false);
 	form = form_build_line(NULL, select);
-	pshow->topforms = form_container_add_form(pshow->topforms, form, pstate.setnum);
+	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
 	free(form->name);
 	form->name = (char*)malloc(6*sizeof(char));
 	snprintf(form->name, 6, "Form1");
@@ -228,7 +228,7 @@ int main (int argc, char *argv[])
 	for(i=6; i<12; i++)
 		select = select_add_index(select, i, false);
 	form = form_build_line(NULL, select);
-	pshow->topforms = form_container_add_form(pshow->topforms, form, pstate.setnum);
+	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
 	free(form->name);
 	form->name = (char*)malloc(6*sizeof(char));
 	snprintf(form->name, 6, "Form2");

@@ -540,13 +540,13 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	form_child_t *next_form;
 
 	flist = pshow->topforms;
-	fcont = form_container_find_with_form(flist, form);
+	fcont = form_parent_find_with_form(flist, form);
 	curr_step = pstate.curr_step;
-	if (form_container_contiguous(fcont, pstate.setnum))
+	if (form_parent_contiguous(fcont, pstate.setnum))
 	{
 		// animate
 		form_animate = true;
-		next_form = form_container_find_form_at_index(fcont, (pstate.setnum+1));
+		next_form = form_parent_find_form_at_index(fcont, (pstate.setnum+1));
 		//counts = pshow->sets->currset->next->counts;
 		counts = (set_get_next(pshow->sets, pstate.setnum))->counts;
 	}
@@ -666,12 +666,12 @@ int draw_forms(GtkWidget *widget)
 	flist = pshow->topforms;
 	while (form)
 	{
-		fcont = form_container_find_with_form(flist, form);
-		if (form_container_contiguous(fcont, pstate.setnum))
+		fcont = form_parent_find_with_form(flist, form);
+		if (form_parent_contiguous(fcont, pstate.setnum))
 		{
 			// animate
 			form_animate = true;
-			next_form = form_container_find_form_at_index(fcont, (pstate.setnum+1));
+			next_form = form_parent_find_form_at_index(fcont, (pstate.setnum+1));
 			//counts = pshow->sets->currset->next->counts;
 			counts = (set_get_next(pshow->sets, pstate.setnum))->counts;
 		}

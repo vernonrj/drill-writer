@@ -147,7 +147,7 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 	if (form_r)
 	{
 		form = *form_r;
-		fcont = form_container_find_with_form(pshow->topforms, form);
+		fcont = form_parent_find_with_form(pshow->topforms, form);
 	}
 	else
 	{
@@ -159,8 +159,8 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 	else
 		group = NULL;
 	// group/form needs to be added
-	if (!is_this_set && fcont && form_container_find_form_at_index(fcont, pstate.setnum) != form 
-			&&form_container_mapped_at_set(fcont, pstate.setnum))
+	if (!is_this_set && fcont && form_parent_find_form_at_index(fcont, pstate.setnum) != form 
+			&&form_parent_mapped_at_set(fcont, pstate.setnum))
 	{
 	}
 	else

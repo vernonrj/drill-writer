@@ -338,16 +338,16 @@ void form_scale_from_center(form_child_t *form, double s_step);
 void form_rotate_around_center(form_child_t *form, double s_step);
 select_t *form_flatten(form_child_t *form, select_t *select_head);
 form_child_t *form_copy(form_child_t *form);
-form_parent_t *form_container_construct(void);
-form_parent_t *form_container_construct_with_form(form_child_t *form, int index);
-form_parent_t *form_container_destruct(form_parent_t *last);
-bool form_container_contiguous(form_parent_t *fcont, int set_num);
-form_list_t *form_container_add_form(form_list_t *head, form_child_t *form, int index);
-int form_container_add_set(form_list_t *head, form_parent_t *last, int index);
-int form_container_remove_set(form_list_t *head, form_parent_t *last, int index);
-form_parent_t *form_container_find_with_form(form_list_t *head, form_child_t *form);
-form_child_t *form_container_find_form_at_index(form_parent_t *last, int index);
-bool form_container_mapped_at_set(form_parent_t *last, int setnum);
+form_parent_t *form_parent_construct(void);
+form_parent_t *form_parent_construct_with_form(form_child_t *form, int index);
+form_parent_t *form_parent_destruct(form_parent_t *last);
+bool form_parent_contiguous(form_parent_t *fcont, int set_num);
+form_list_t *form_parent_add_form(form_list_t *head, form_child_t *form, int index);
+int form_parent_add_set(form_list_t *head, form_parent_t *last, int index);
+int form_parent_remove_set(form_list_t *head, form_parent_t *last, int index);
+form_parent_t *form_parent_find_with_form(form_list_t *head, form_child_t *form);
+form_child_t *form_parent_find_form_at_index(form_parent_t *last, int index);
+bool form_parent_mapped_at_set(form_parent_t *last, int setnum);
 
 // fieldrel.c
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2);

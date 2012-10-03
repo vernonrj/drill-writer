@@ -45,7 +45,7 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 	//form_add_to_set(form);
 	select_dots_discard();
 	pstate.select = select_add_form(pstate.select, form, false);
-	pshow->topforms = form_container_add_form(pshow->topforms, form, pstate.setnum);
+	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
 	mouse_currentMode = ADDFORM;
 	return;
 }
@@ -88,7 +88,7 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 	{
 		// form
 		pshow->sets->currset->forms = form_remove_from(groupcell->priv->form, pshow->sets->currset->forms);
-		form_container_remove_set(pshow->topforms, form_container_find_with_form(pshow->topforms, groupcell->priv->form), pstate.setnum);
+		form_parent_remove_set(pshow->topforms, form_parent_find_with_form(pshow->topforms, groupcell->priv->form), pstate.setnum);
 	}
 	else if (groupcell->priv->group && groupcell->priv->group->local)
 	{
@@ -546,11 +546,11 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 	form_parent_t *fcont;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	//form = form_copy(groupcell->priv->form);
-	fcont = form_container_find_with_form(pshow->topforms, groupcell->priv->form);
-	excode = form_container_add_set(pshow->topforms, fcont, pstate.setnum);
+	fcont = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
+	excode = form_parent_add_set(pshow->topforms, fcont, pstate.setnum);
 	if (excode == 1)
 		mouse_currentMode = ADDFORM;
-	form = form_container_find_form_at_index(fcont, pstate.setnum);
+	form = form_parent_find_form_at_index(fcont, pstate.setnum);
 	form_add_to_set(form);
 	dr_sidebar_update((DrSidebar*)sidebar);
 	dr_canvas_refresh(drill);
@@ -565,9 +565,9 @@ bool dr_group_cell_check_form_nonlocal(GtkWidget *widget)
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), false);
 	if (!groupcell->priv->form)
 		return false;
-	fcont = form_container_find_with_form(pshow->topforms, groupcell->priv->form);
+	fcont = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
 	if (!fcont)
 		return false;
-	return form_container_mapped_at_set(fcont, pstate.setnum);
+	return form_parent_mapped_at_set(fcont, pstate.setnum);
 }
 
