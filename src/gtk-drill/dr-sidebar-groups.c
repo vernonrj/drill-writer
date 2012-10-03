@@ -132,7 +132,7 @@ GtkWidget *dr_sidebar_groups_new(void)
 
 
 	
-groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, group_t **group_r, form_t **form_r, bool is_this_set,
+groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *head, group_t **group_r, form_child_t **form_r, bool is_this_set,
 		bool position)
 {
 	struct group_cell_container *last;
@@ -141,7 +141,7 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 	GtkWidget *widget;
 	form_container_t *fcont;
 	group_t *group;
-	form_t *form;
+	form_child_t *form;
 
 
 	if (form_r)
@@ -215,7 +215,7 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 }
 
 
-groupcell_l *dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, group_t *group_head, form_t *form_head, bool is_this_set)
+groupcell_l *dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *head_l, group_t *group_head, form_child_t *form_head, bool is_this_set)
 {
 	// update a list of group cells
 	bool rem_group = false;
@@ -225,8 +225,8 @@ groupcell_l *dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *he
 	int index = 0;
 	int type;
 	group_t *currgroup;
-	form_t *currform;
-	form_t *form;
+	form_child_t *currform;
+	form_child_t *form;
 	group_t *group;
 
 	struct group_cell_container *last;

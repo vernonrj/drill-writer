@@ -135,13 +135,13 @@ int coords_set_managed_by_index(int index, int state)
 
 
 
-int coords_track_form(int index, form_t *form)
+int coords_track_form(int index, form_child_t *form)
 {
 	int i;
 	coord_t *coord;
 	int form_num = 0;
 	int form_alloc = 0;
-	form_t **form_list = NULL;
+	form_child_t **form_list = NULL;
 	coord = pshow->sets->currset->coords[index];
 	if ((coord->form_alloc-coord->form_num) == 0)
 	{
@@ -155,7 +155,7 @@ int coords_track_form(int index, form_t *form)
 					return 0;
 		}
 		form_alloc++;
-		coord->forms = (form_t**)malloc((form_alloc)*sizeof(form_t*));
+		coord->forms = (form_child_t**)malloc((form_alloc)*sizeof(form_child_t*));
 		for(i=0; i<form_num; i++)
 			coord->forms[i] = form_list[i];
 	}
@@ -167,7 +167,7 @@ int coords_track_form(int index, form_t *form)
 
 
 
-int coords_untrack_form(int index, form_t *form)
+int coords_untrack_form(int index, form_child_t *form)
 {
 	int i;
 	coord_t *coord = pshow->sets->currset->coords[index];
@@ -254,7 +254,7 @@ int coords_movexy(double xoff, double yoff)
 	coord_t **coords = pshow->sets->currset->coords;
 	select_t *selects = pstate.select;
 	//select_t *group_selects = NULL;
-	form_t *form = NULL;
+	form_child_t *form = NULL;
 	int done = 0;
 	while(selects != NULL)
 	{

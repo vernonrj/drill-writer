@@ -136,7 +136,7 @@ int select_all_gtk (GtkWidget *widget)
 }
 
 
-int select_form_gtk(GtkWidget *widget, form_t *form)
+int select_form_gtk(GtkWidget *widget, form_child_t *form)
 {
 	//select_t *select = group->selects;
 	pstate.select = select_add_form(pstate.select, form, false);
@@ -233,10 +233,10 @@ int isSelected(int index)
 
 
 
-form_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event)
+form_child_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
-	form_t *form = pshow->sets->currset->forms;
+	form_child_t *form = pshow->sets->currset->forms;
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
@@ -245,10 +245,10 @@ form_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event)
 }
 
 
-form_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
+form_child_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
-	form_t *form = pshow->sets->currset->forms;
+	form_child_t *form = pshow->sets->currset->forms;
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
@@ -263,7 +263,7 @@ form_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
 
 
 
-form_t *check_endpoints(double coordx, double coordy, form_t *form)
+form_child_t *check_endpoints(double coordx, double coordy, form_child_t *form)
 {
 
 	while (form)

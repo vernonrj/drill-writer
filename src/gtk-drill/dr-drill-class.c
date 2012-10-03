@@ -523,7 +523,7 @@ int field_to_pixel(double *x_r, double *y_r)
 
 
 
-cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
+cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 {
 	double offsetx, offsety;
 	double x1, y1, x2, y2;
@@ -537,7 +537,7 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 	form_list_t *flist;
 	form_container_t *fcont;
 	bool form_animate = false;
-	form_t *next_form;
+	form_child_t *next_form;
 
 	flist = pshow->topforms;
 	fcont = form_container_find_with_form(flist, form);
@@ -631,7 +631,7 @@ cairo_t *draw_selected_form(cairo_t *cr, form_t *form)
 
 int draw_forms(GtkWidget *widget)
 {
-	form_t *form, *next_form;
+	form_child_t *form, *next_form;
 	form_list_t *flist;
 	form_container_t *fcont;
 	//fblock_t *block;
@@ -754,7 +754,7 @@ int draw_selected(GtkWidget *widget)
 	select_t *form_select;
 	//set_container_t *sets;
 	//set_t *currset;
-	form_t *form;
+	form_child_t *form;
 	int index;
 	double x, y;
 	double xmin = -1, xmax = -1;

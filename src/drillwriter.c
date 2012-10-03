@@ -184,7 +184,7 @@ int main (int argc, char *argv[])
 	coord_t *prevcr;
 	int excode;
 	int i;		// loop vars
-	form_t *form = NULL;
+	form_child_t *form = NULL;
 	select_t *select = NULL;
 
 	mouse_currentMode = SELECTONE;

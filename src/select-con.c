@@ -195,7 +195,7 @@ select_t *select_add_group(select_t *select, group_t *group)
 	
 
 
-select_t *select_add_form(select_t *selects, form_t *form, bool toggle)
+select_t *select_add_form(select_t *selects, form_child_t *form, bool toggle)
 {
 	// add group to selection
 	select_t *last;
@@ -436,7 +436,7 @@ void select_update_center(select_t *last)
 	//select_t *last;
 	coord_t **coords;
 	coord_t *coord;
-	form_t *form = NULL;
+	form_child_t *form = NULL;
 	double minx, miny, maxx, maxy;
 	double x, y;
 
@@ -504,8 +504,8 @@ void select_update_center(select_t *last)
 
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset)
 {
-	form_t *formnext, *form;
-	form_t *formnext_head;
+	form_child_t *formnext, *form;
+	form_child_t *formnext_head;
 	select_t *select;
 
 	select = select_head;
@@ -535,10 +535,10 @@ select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, s
 	return select_head;
 }
 
-select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_t*,double,double))
+select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double))
 {
 	// use comparison fptr to find a selected form with certain attributes
-	form_t *form;
+	form_child_t *form;
 	while(select)
 	{
 		if (!select->form)
@@ -593,8 +593,8 @@ select_t *select_get_in_area(double x, double y)
 	int i;
 	int min_index = -1;
 	int index;
-	form_t *form = pshow->sets->currset->forms;
-	form_t *min_form = NULL;
+	form_child_t *form = pshow->sets->currset->forms;
+	form_child_t *min_form = NULL;
 	int perfnum = pshow->perfnum;
 	double coordx, coordy;
 	double distance, distance_min = -1;

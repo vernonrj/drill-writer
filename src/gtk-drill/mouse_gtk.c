@@ -68,10 +68,10 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	// handle un-click events on canvas
 	double x, y;
 	int index;
-	form_t *form2;
+	form_child_t *form2;
 	select_t *select;
 	//double x1, y1;
-	form_t *form;
+	form_child_t *form;
 	form = pshow->sets->currset->forms;
 	x = event->x;
 	y = event->y;

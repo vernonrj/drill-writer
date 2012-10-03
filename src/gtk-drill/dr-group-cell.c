@@ -16,7 +16,7 @@ struct _DrGroupCellPrivate {
 	GtkWidget *expander;
 	GtkWidget *expander_box;
 	group_t *group;
-	form_t *form;
+	form_child_t *form;
 	int type;
 	bool this_set;
 	gulong button_del_id;
@@ -38,7 +38,7 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	form_t *form = NULL;
+	form_child_t *form = NULL;
 	form = form_build_line(form, groupcell->priv->group->selects);
 	form->name = (char*)malloc(10*sizeof(char));
 	snprintf(form->name, 10, "New Form");
@@ -330,7 +330,7 @@ void dr_group_cell_set_group(GtkWidget *groupcell_widget, group_t *group)
 }
 
 
-form_t *dr_group_cell_get_form(GtkWidget *widget)
+form_child_t *dr_group_cell_get_form(GtkWidget *widget)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), NULL);
@@ -338,7 +338,7 @@ form_t *dr_group_cell_get_form(GtkWidget *widget)
 }
 
 
-void dr_group_cell_set_form(GtkWidget *groupcell_widget, form_t *form)
+void dr_group_cell_set_form(GtkWidget *groupcell_widget, form_child_t *form)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
@@ -378,7 +378,7 @@ GtkWidget *dr_group_cell_add(GtkWidget *groupcell_widget, group_t *group)
 	return last;
 }
 
-GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_t *form)
+GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_child_t *form)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	GtkWidget *last;
@@ -400,7 +400,7 @@ GtkWidget *dr_group_cell_append(GtkWidget *widget, group_t *group, form_t *form)
 }
 
 
-GtkWidget *dr_group_cell_add_before(GtkWidget *head_w, GtkWidget *widget, group_t *group, form_t *form)
+GtkWidget *dr_group_cell_add_before(GtkWidget *head_w, GtkWidget *widget, group_t *group, form_child_t *form)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)widget;
 	DrGroupCell *head = (DrGroupCell*)head_w;
@@ -540,7 +540,7 @@ bool dr_group_cell_get_is_this_set(GtkWidget *widget)
 
 void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 {
-	form_t *form;
+	form_child_t *form;
 	int excode;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	form_container_t *fcont;

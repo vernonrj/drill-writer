@@ -14,7 +14,7 @@
 typedef struct undo_proto undo_t;
 typedef struct select_proto select_t;
 typedef struct form_container_proto form_container_t;
-typedef struct form_proto form_t;
+typedef struct _form_child_t form_child_t;
 typedef struct group_proto group_t;
 typedef struct tempo_proto tempo_t;
 typedef struct coord_proto coord_t;
@@ -102,7 +102,7 @@ struct select_proto
 	// can contain a single dot, or an entire form
 	// (not both)
 	int index;		// performer 
-	form_t *form;		// form
+	form_child_t *form;		// form
 
 	select_t *next;
 };
@@ -116,7 +116,7 @@ struct form_container_proto
 	// container for forms
 	LIST_ENTRY(form_container_proto) formlist_entries;
 	//int* set_index;
-	form_t **forms;
+	form_child_t **forms;
 	//int size;
 	//int size_alloc;
 };
@@ -130,12 +130,12 @@ typedef struct form_coord_proto
 	int dot;		// performer
 	int form_num;		// number of mapped forms (>=1)
 	int form_alloc;		// memory allocated for forms
-	form_t **forms;		// forms this dot is mapped to
+	form_child_t **forms;		// forms this dot is mapped to
 	int *dot_type;		// types for forms
 	coord_t *coord;		// coordinate
 } form_coord_t;
 
-struct  form_proto // form_t
+struct  _form_child_t // form_child_t
 {
 	char *name;		// name of form
 	// form type:
@@ -148,7 +148,7 @@ struct  form_proto // form_t
 	int dot_num;		// number of dots
 	double endpoints[2][2];	
 	form_coord_t **fcoords;	// coord data
-	form_t *next;
+	form_child_t *next;
 };
 
 
@@ -189,7 +189,7 @@ struct coord_proto
 
 	int form_num;
 	int form_alloc;
-	form_t **forms;
+	form_child_t **forms;
 };
 
 
@@ -213,7 +213,7 @@ struct set_proto
 	char *info;	// set info
 	coord_t **coords;
 	group_t *groups;
-	form_t *forms;
+	form_child_t *forms;
 	int counts;
 	int midset;
 	//set_t *next;
@@ -280,8 +280,8 @@ int coords_check_managed(coord_t *coord);
 int coords_set_managed(coord_t *coord, int state);
 int coords_check_managed_by_index(int index);
 int coords_set_managed_by_index(int index, int state);
-int coords_track_form(int index, form_t *form);
-int coords_untrack_form(int index, form_t *form);
+int coords_track_form(int index, form_child_t *form);
+int coords_untrack_form(int index, form_child_t *form);
 int coords_retrieve(coord_t *curr, double *x, double *y);
 int coords_retrieve_midset(int setnum, int index, double *x_r, double *y_r);
 int coords_movexy(double xoff, double yoff);
@@ -294,50 +294,50 @@ void coords_rot_selected_around_center(double s_step);
 
 // forms.c
 form_coord_t *fcoord_construct(void);
-form_t *form_construct();
-form_t *form_construct_with_size(int index);
-form_t *form_destruct(form_t *form);
-form_t *form_add_hole_around_index(form_t *form, int index, bool after);
-form_t *form_remove_index(form_t *form, int index);
-form_t *form_remove_from(form_t *curr, form_t *form_head);
-bool form_is_selected(form_t *form, select_t *select);
-bool form_endpoint_contains_coords(form_t *form, double x, double y);
-bool form_endpoint_hole_contains_coords(form_t *form, double x, double y);
-bool form_contains_coords(form_t *form, double x, double y);
-bool form_hole_contains_coords(form_t *form, double x, double y);
-int form_find_index_with_coords(form_t *form, double x, double y);
-form_t *form_find_form_with_index(form_t *form, int index);
-form_t *form_find_with_coords(form_t *form, double x, double y);
-form_t *form_find_with_hole(form_t *form, double x, double y);
-form_t *form_find_with_endpoint(form_t *form, double x, double y);
-form_t *form_find_with_endpoint_hole(form_t *form, double x, double y);
-form_t *form_add_index_to_hole_with_coords(form_t *form, int index, double x, double y);
-form_t *form_build_line(form_t *form, select_t *select_head);
-bool form_contained_in_rectangle(form_t *form, double x1, double y1, double x2, double y2);
-int form_update_line(form_t *form);
-int form_set_endpoint(form_t *form, double x1, double y1, double x2, double y2);
-int form_set_endpoint_grid(form_t *form, double x1, double y1, double x2, double y2);
-int form_move_endpoint(form_t *form, double x1, double y1, double x2, double y2);
-int form_move_endpoint_grid(form_t *form, double x1, double y1, double x2, double y2);
-int form_movexy(form_t *form, double x, double y);
-int form_unmanage_dot(form_t *form, int index);
-select_t *form_get_contained_dots(form_t *form);
-void form_add_to_set(form_t *form);
-coord_t **form_get_coords(form_t *form);
-coord_t *form_get_coord_near(form_t *form, double x, double y);
-void form_scale_from_center(form_t *form, double s_step);
-void form_rotate_around_center(form_t *form, double s_step);
-select_t *form_flatten(form_t *form, select_t *select_head);
-form_t *form_copy(form_t *form);
+form_child_t *form_construct();
+form_child_t *form_construct_with_size(int index);
+form_child_t *form_destruct(form_child_t *form);
+form_child_t *form_add_hole_around_index(form_child_t *form, int index, bool after);
+form_child_t *form_remove_index(form_child_t *form, int index);
+form_child_t *form_remove_from(form_child_t *curr, form_child_t *form_head);
+bool form_is_selected(form_child_t *form, select_t *select);
+bool form_endpoint_contains_coords(form_child_t *form, double x, double y);
+bool form_endpoint_hole_contains_coords(form_child_t *form, double x, double y);
+bool form_contains_coords(form_child_t *form, double x, double y);
+bool form_hole_contains_coords(form_child_t *form, double x, double y);
+int form_find_index_with_coords(form_child_t *form, double x, double y);
+form_child_t *form_find_form_with_index(form_child_t *form, int index);
+form_child_t *form_find_with_coords(form_child_t *form, double x, double y);
+form_child_t *form_find_with_hole(form_child_t *form, double x, double y);
+form_child_t *form_find_with_endpoint(form_child_t *form, double x, double y);
+form_child_t *form_find_with_endpoint_hole(form_child_t *form, double x, double y);
+form_child_t *form_add_index_to_hole_with_coords(form_child_t *form, int index, double x, double y);
+form_child_t *form_build_line(form_child_t *form, select_t *select_head);
+bool form_contained_in_rectangle(form_child_t *form, double x1, double y1, double x2, double y2);
+int form_update_line(form_child_t *form);
+int form_set_endpoint(form_child_t *form, double x1, double y1, double x2, double y2);
+int form_set_endpoint_grid(form_child_t *form, double x1, double y1, double x2, double y2);
+int form_move_endpoint(form_child_t *form, double x1, double y1, double x2, double y2);
+int form_move_endpoint_grid(form_child_t *form, double x1, double y1, double x2, double y2);
+int form_movexy(form_child_t *form, double x, double y);
+int form_unmanage_dot(form_child_t *form, int index);
+select_t *form_get_contained_dots(form_child_t *form);
+void form_add_to_set(form_child_t *form);
+coord_t **form_get_coords(form_child_t *form);
+coord_t *form_get_coord_near(form_child_t *form, double x, double y);
+void form_scale_from_center(form_child_t *form, double s_step);
+void form_rotate_around_center(form_child_t *form, double s_step);
+select_t *form_flatten(form_child_t *form, select_t *select_head);
+form_child_t *form_copy(form_child_t *form);
 form_container_t *form_container_construct(void);
-form_container_t *form_container_construct_with_form(form_t *form, int index);
+form_container_t *form_container_construct_with_form(form_child_t *form, int index);
 form_container_t *form_container_destruct(form_container_t *last);
 bool form_container_contiguous(form_container_t *fcont, int set_num);
-form_list_t *form_container_add_form(form_list_t *head, form_t *form, int index);
+form_list_t *form_container_add_form(form_list_t *head, form_child_t *form, int index);
 int form_container_add_set(form_list_t *head, form_container_t *last, int index);
 int form_container_remove_set(form_list_t *head, form_container_t *last, int index);
-form_container_t *form_container_find_with_form(form_list_t *head, form_t *form);
-form_t *form_container_find_form_at_index(form_container_t *last, int index);
+form_container_t *form_container_find_with_form(form_list_t *head, form_child_t *form);
+form_child_t *form_container_find_form_at_index(form_container_t *last, int index);
 bool form_container_mapped_at_set(form_container_t *last, int setnum);
 
 // fieldrel.c
@@ -391,7 +391,7 @@ bool select_check_dot_in_rectangle(double x, double y, double x1, double y1, dou
 select_t *select_add_index(select_t*, int index, bool toggle);
 void select_dots_add_index(int index);
 select_t *select_add_group(select_t *select, group_t *group);
-select_t *select_add_form(select_t*, form_t*, bool);
+select_t *select_add_form(select_t*, form_child_t*, bool);
 void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle);
 select_t *select_add_in_rectangle(select_t*, double, double, double, double, bool);
 select_t *select_drop_multiple(select_t *mainlist, select_t *modifier);
@@ -403,7 +403,7 @@ select_t *select_all(select_t*, perf_t **perfs, int perfnum);
 int select_all_dots(void);
 void select_update_center(select_t *last);
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset);
-select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_t*,double,double));
+select_t *select_find_form_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double));
 select_t *select_find_form_with_coords(select_t *select, double x, double y);
 select_t *select_find_form_with_hole(select_t *select, double x, double y);
 select_t *select_find_form_with_endpoint(select_t *select, double x, double y);

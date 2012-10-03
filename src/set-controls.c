@@ -128,8 +128,8 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 	set_t **newsetlist;
 	form_list_t *flist = pshow->topforms;
 	form_container_t *fcont = LIST_FIRST(flist);
-	form_t **newforms;
-	form_t **forms;
+	form_child_t **newforms;
+	form_child_t **forms;
 
 	size_alloc = set_container->size_alloc; 
 	size = set_container->size;
@@ -138,7 +138,7 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 		while (fcont)
 		{
 			forms = fcont->forms;
-			newforms = (form_t **)malloc((size_alloc+5)*sizeof(form_t*));
+			newforms = (form_child_t **)malloc((size_alloc+5)*sizeof(form_child_t*));
 			for (i=0; i<size; i++)
 				newforms[i] = forms[i];
 			fcont->forms = newforms;
