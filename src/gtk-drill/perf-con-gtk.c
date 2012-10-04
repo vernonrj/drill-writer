@@ -139,7 +139,7 @@ int select_all_gtk (GtkWidget *widget)
 int select_form_gtk(GtkWidget *widget, form_child_t *form)
 {
 	//select_t *select = group->selects;
-	pstate.select = select_add_form(pstate.select, form, false);
+	select_add_form(pstate.select, form->parent->index);
 	/*
 	while (select)
 	{
@@ -154,7 +154,8 @@ int select_form_gtk(GtkWidget *widget, form_child_t *form)
 
 int select_group_gtk(GtkWidget *widget, group_t *group)
 {
-	pstate.select = select_add_group(pstate.select, group);
+	//pstate.select = select_add_group(pstate.select, group);
+	select_add_multiple_dots(pstate.select, group->selects);
 	dr_canvas_refresh(drill);
 	return 0;
 }
@@ -192,22 +193,28 @@ int select_mode_gtk (GtkWidget *widget)
 
 
 
-int isSelected(int index)
+int isSelected(int dot)
 {
 	// check to see if a dot is in selected dots
 	struct select_proto *select;
-	//group_t *group = NULL;
-	int isin = 0;
-	int index_selected;
 	select_t *form_select = NULL;
+	//group_t *group = NULL;
+	int index;
 
 	select = pstate.select;
+	if (select_check_dot(select, dot))
+		return 1;
+	select_head(select);
+	while ((index = select_get_form_advance(select)) != -1)
+	{
+		form_select = form_get_contained_dots(form_container_get_form_child(pshow->topforms, index));
+		if (select_check_dot(form_select, dot))
+			return 1;
+	}
+	
+	/*
 	while (select != NULL)
 	{
-		/*
-		if (!form_select && select->form)
-			form_select = form_get_contained_dots(select->form);
-			*/
 		if (!form_select && select_has_form(select))
 			form_select = form_get_contained_dots(select_get_form(select));
 		if (form_select)
@@ -242,7 +249,8 @@ int isSelected(int index)
 			select = select_get_next(select);
 		}
 	}
-	return isin;
+	*/
+	return 0;
 }
 
 

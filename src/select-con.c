@@ -125,7 +125,7 @@ bool select_form_empty(select_t *select)
 
 bool select_empty(select_t *select)
 {
-	return select_dot_empty && select_form_empty(select);
+	return (select_dot_empty(select) && select_form_empty(select));
 }
 
 
@@ -189,6 +189,17 @@ int select_remove_form(select_t *select, int x)
 	return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_mask);
 }
 
+int select_add_multiple(select_t *select, select_t *modifier)
+{
+	// add everything from modifier to select
+	int dot_alloc = (select->dot_alloc > modifier->dot_alloc ? modifier->dot_alloc : select->dot_alloc);
+	int form_alloc = (select->form_alloc > modifier->form_alloc ? modifier->form_alloc : select->form_alloc);
+	bitfield_map(select->dotfield, modifier->dotfield, dot_alloc, &bitfield_or);
+	bitfield_map(select->formfield, modifier->formfield, form_alloc, &bitfield_or);
+	return 0;
+}
+
+
 int select_add_multiple_dots(select_t *select, select_t *modifier)
 {
 	// add all dots from modifier to select
@@ -216,6 +227,15 @@ int select_toggle_multiple_forms(select_t *select, select_t *modifier)
 	return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_xor);
 }
 
+
+int select_remove_multiple(select_t *select, select_t *modifier)
+{
+	int dot_alloc = (select->dot_alloc > modifier->dot_alloc ? modifier->dot_alloc : select->dot_alloc);
+	int form_alloc = (select->form_alloc > modifier->form_alloc ? modifier->form_alloc : select->form_alloc);
+	bitfield_map(select->dotfield, modifier->dotfield, dot_alloc, &bitfield_mask);
+	bitfield_map(select->formfield, modifier->formfield, form_alloc, &bitfield_mask);
+	return 0;
+}
 
 int select_remove_multiple_dots(select_t *select, select_t *modifier)
 {
@@ -339,6 +359,22 @@ int select_update_center(select_t *select)
 {
 	return 0;
 }
+
+void select_all_dots(void)
+{
+	int i;
+	perf_t **perfs = pshow->perfs;
+	int perfnum = pshow->perfnum;
+	select_t *select = pstate.select;
+
+	for (i=0; i<perfnum; i++)
+	{
+		if (perfs[i]->valid)
+			select_add_dot(select, i);
+	}
+	return;
+}
+	
 
 // internal functions
 

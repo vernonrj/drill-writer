@@ -70,6 +70,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	int index;
 	form_child_t *form2;
 	select_t *select;
+	select_t *form_select;
 	//double x1, y1;
 	form_child_t *form;
 	form = pshow->sets->currset->forms;
@@ -81,15 +82,19 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 		switch(mouse_currentMode)
 		{
 			case SELECTONE:
+				select = pstate.select;
+				form_select = select_init(pshow->perfnum, pshow->topforms->size);
+				select_add_multiple_forms(form_select, select);
 				// move a performer
 				mouse_clickx = x - mouse_clickx;
 				mouse_clicky = y - mouse_clicky;
 				//select = select_find_form_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
-				select = form_find_selected_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
+				form = form_find_selected_with_endpoint(form_select, fldstate.mouse_clickx, fldstate.mouse_clicky);
+				select_remove_form(form_select, form->parent->index);
 				if ((event->state & ~GDK_SHIFT_MASK)== GDK_BUTTON_PRESS_MASK)
 				{
 					//form = select ? select->form : NULL;
-					form = select ? select_get_form(select) : NULL;
+					//form = select ? select_get_form(select) : NULL;
 					// regular click
 					// move dots
 					if(!mouse_discarded && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
@@ -102,23 +107,23 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 								form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
 							//if ((select = select_find_form_with_endpoint_hole(select->next, x, y)) != NULL)
 							//if ((select = select_find_form_with_endpoint_hole(select_get_next(select), x, y)) != NULL)
-							if ((select = form_find_selected_with_endpoint_hole(select_get_next(select), x, y)) != NULL)
+							if ((form2 = form_find_selected_with_endpoint_hole(form_select, x, y)) != NULL)
 							{
+								select_remove_form(form_select, form2->parent->index);
 								//form2 = select->form;
-								form2 = select_get_form(select);
+								//form2 = select_get_form(select);
 								index = form_find_index_with_coords(form, x, y);
 								form_add_index_to_hole_with_coords(form2, index, x, y);
 							}
-							if (select)
+							//if (select)
+							if ((form = form_find_selected_with_endpoint(form_select, fldstate.mouse_clickx, fldstate.mouse_clicky)) != NULL)
 							{
 								//select = select_find_form_with_endpoint(select->next, fldstate.mouse_clickx, fldstate.mouse_clicky);
 								//select = select_find_form_with_endpoint(select_get_next(select), fldstate.mouse_clickx, fldstate.mouse_clicky);
-								select = form_find_selected_with_endpoint(select_get_next(select), fldstate.mouse_clickx, fldstate.mouse_clicky);
+								select_remove_form(form_select, form->parent->index);
 							}
-							else
-								select = NULL;
 							//form = select ? select->form : NULL;
-							form = select ? select_get_form(select) : NULL;
+							//form = select ? select_get_form(select) : NULL;
 						}
 						select_update_center(pstate.select);
 						dr_canvas_refresh(drill);
@@ -137,7 +142,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 			case ADDFORM:
 				// add a form
 				//form = pstate.select->form;
-				form = select_get_form(pstate.select);
+				form = form_container_get_form_child(pshow->topforms, select_get_form(pstate.select));
 				form_set_endpoint(form, 0, 0, x, y);
 				form_set_endpoint(form, 0, 0, fldstate.mouse_clickx, fldstate.mouse_clicky);
 				form_add_to_set(form);
@@ -215,7 +220,8 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				select = field_get_in_area(mouse_clickx, mouse_clicky);
 				if (!select)
 				{
-					select_dots_discard();
+					//select_dots_discard();
+					select_clear(pstate.select);
 					mouse_discarded = 1;
 					break;
 				}
@@ -226,20 +232,28 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 					if (!select->form)
 						select_dots_add_index(select->index);
 						*/
+					/*
 					if (!select_get_form(select))
+					{
 						select_dots_add_index(select_get_dot(select));
+					}
+					*/
+					select_add_multiple_dots(pstate.select, select);
+					select_add_multiple_forms(pstate.select, select);
 				}
 				else if ((event->state & ~GDK_SHIFT_MASK)== 0)
 				{
 					// regular click
 					//if (select->form && !form_is_selected(select->form, pstate.select))
-					if (select_get_form(select) && !form_is_selected(select_get_form(select), pstate.select))
+					//if (select_get_form(select) && !form_is_selected(select_get_form(select), pstate.select))
+					if (select_get_form(select) && !select_check_form(pstate.select, select_get_form(select)))
 					{
 						// select form with ability to scale form
-						select_dots_discard();
+						//select_dots_discard();
+						select_clear(pstate.select);
 						mouse_discarded = 1;
 						//pstate.select = select_add_form(pstate.select, select->form, false);
-						pstate.select = select_add_form(pstate.select, select_get_form(select), false);
+						select_add_form(pstate.select, select_get_form(select));
 						select_update_center(pstate.select);
 					}
 					//else if (!select->form && isSelected(select->index) != 1) 
@@ -248,11 +262,13 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						// dot is not selected
 						//index = select->index;
 						index = select_get_dot(select);
-						select_dots_discard();
+						//select_dots_discard();
+						select_clear(pstate.select);
 						mouse_discarded = 1;
 						if (index != -1)
 						{
-							select_dots_add_index(index);
+							//select_dots_add_index(index);
+							select_add_dot(pstate.select, index);
 						}
 					}
 					else
@@ -319,8 +335,10 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 		new_select = field_select_in_rectangle(new_select, fldstate.mouse_clickx, fldstate.mouse_clicky,
 				coordx, coordy, false);
 		// then find what's been added, what's gone
-		select_added = select_drop_multiple(new_select, fldstate.mouse_selection);
-		select_omitted = select_drop_multiple(fldstate.mouse_selection, new_select);
+		select_add_multiple(select_added, new_select);
+		select_add_multiple(select_omitted, fldstate.mouse_selection);
+		select_remove_multiple(select_added, fldstate.mouse_selection);
+		select_remove_multiple(select_omitted, new_select);
 
 		// Store new set
 		fldstate.mouse_selection = select_discard(fldstate.mouse_selection);

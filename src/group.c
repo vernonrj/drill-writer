@@ -8,7 +8,7 @@ group_t *group_construct(void)
 	group = (group_t*)malloc(sizeof(group_t));
 	if (!group)
 		return NULL;
-	group->selects = NULL;
+	group->selects = select_init(pshow->perfnum, pshow->topforms->size);
 	group->next = NULL;
 	group->name = (char*)malloc(10*sizeof(char));
 	group->local = false;
@@ -22,15 +22,16 @@ group_t *group_construct(void)
 group_t *group_add_selects(group_t *group, select_t *newsels)
 {
 	// add selects to group
-	select_t *scurr = newsels;
-	select_t *glast;
-	select_t *select_new = NULL;
-	int sindex, gindex;
+	//select_t *scurr = newsels;
+	//select_t *glast;
+	//select_t *select_new = NULL;
+	//int sindex, gindex;
 
 	if (!group)
 		group = group_construct();
-	glast = group->selects;
+	select_add_multiple_dots(group->selects, newsels);
 
+	/*
 	while (scurr && glast)
 	{
 		// merge selection and group selects in order
@@ -76,6 +77,7 @@ group_t *group_add_selects(group_t *group, select_t *newsels)
 	// add new selection to group
 	select_discard(group->selects);
 	group->selects = select_new;
+	*/
 	return group;
 }
 
@@ -84,7 +86,8 @@ group_t *group_remove_selects(group_t *group, select_t *select)
 {
 	if (!group || !select)
 		return group;
-	group->selects = select_drop_multiple(group->selects, select);
+	//group->selects = select_drop_multiple(group->selects, select);
+	select_remove_multiple_dots(group->selects, select);
 	return group;
 }
 

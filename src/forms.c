@@ -428,6 +428,7 @@ form_child_t *form_find_with_attr(select_t *select, double x, double y, bool (*f
 			return form;
 		//select = select_get_next(select);
 	}
+	select_head(select);
 	return NULL;
 }
 
@@ -515,35 +516,42 @@ form_child_t *form_build_line(form_parent_t *form_parent, select_t *select)
 		//select = select->next;
 		//select = select_get_next(select);
 	}
-	form = form_child_construct_with_size(size);
+	form = form_child_construct_with_size(form_parent, size);
 	fcoords = form->fcoords;
 	form->type = 1;
 
-	select = select_head;
+	//select = select_head;
 	// get endpoints, continue allocation
-	for (i=0; i<size; i++)
+	//for (i=0; i<size; i++)
+	i = 0;
+	while ((index = select_get_dot_advance(select)) != -1)
 	{
+		/*
 		if (select)
 		{
-			//fcoords[i]->dot = select->index;
-			fcoords[i]->dot = select_get_dot(select);
-			if (i != 0 && i != size - 1)
-			{
-				//coords_set_managed_by_index(select->index, 0x1);
-				coords_set_managed_by_index(select_get_dot(select), 0x1);
-			}
-			else
-			{
-				//coords_set_managed_by_index(select->index, 0x2);
-				coords_set_managed_by_index(select_get_dot(select), 0x2);
-			}
-			//select = select->next;
-			select = select_get_next(select);
+		*/
+		//fcoords[i]->dot = select->index;
+		fcoords[i]->dot = index;
+		if (i != 0 && i != size - 1)
+		{
+			//coords_set_managed_by_index(select->index, 0x1);
+			coords_set_managed_by_index(index, 0x1);
+		}
+		else
+		{
+			//coords_set_managed_by_index(select->index, 0x2);
+			coords_set_managed_by_index(index, 0x2);
+		}
+		//select = select->next;
+		//select = select_get_next(select);
+		i++;
+		/*
 		}
 		else
 		{
 			fcoords[i]->dot = -1;
 		}
+		*/
 	}
 	form_update_line(form);
 	return form;
@@ -733,18 +741,20 @@ int form_unmanage_dot(form_child_t *form, int index)
 select_t *form_get_contained_dots(form_child_t *form)
 {
 	int i;
-	int index;
+	int dot_num;
 	int dot;
-	select_t *select = NULL;
+	//select_t *select = NULL;
+	select_t *select;
 
 	if (!form)
 		return NULL;
-	index = form->dot_num;
-	for(i=0; i<index; i++)
+	select = select_init(pshow->perfnum, pshow->perfnum); 
+	dot_num = form->dot_num;
+	for(i=0; i<dot_num; i++)
 	{
 		dot = form->fcoords[i]->dot;
 		if (dot != -1)
-			select = select_add_index(select, dot, false);
+			select_add_dot(select, dot);
 	}
 	return select;
 }
@@ -887,61 +897,60 @@ void form_rotate_around_center(form_child_t *form, double s_step)
 
 
 
-select_t *form_flatten(form_child_t *form, select_t *select_head)
+select_t *form_flatten(form_child_t *form, select_t *select)
 {
 	int i;
 	int dot_num;
 	form_coord_t **fcoords;
-	select_t *last;
-	select_t *select = NULL;
-	if (!form)
-		return select;
-	if (!select_head)
+	if (!form || !select)
 		return NULL;
-	last = select_head;
 	/*
 	if (select_head->form == form)
 		select_head = select_head->next;
 		*/
-	if (select_get_form(select_head) == form)
-		select_head = select_get_next(select_head);
+	select_head(select);
+	if (select_get_form(select) == form->parent->index)
+		select_get_form_advance(select);
 	else
 	{
 		//while (last && last->form != form)
-		while (last && select_get_form(last) != form)
+		while (form_container_get_form_child(pshow->topforms, select_get_form(select)) != form)
 		{
-			select = last;
 			//last = last->next;
-			last = select_get_next(last);
+			select_get_form_advance(select);
 		}
+		/*
 		if (!last)
 		{
 			printf("WARNING: selection not in scope!\n");
 			return NULL;
 		}
+		*/
 		//select->next = last->next;
-		select_set_next(select, select_get_next(last));
+		//select_set_next(select, select_get_next(last));
+		fcoords = form->fcoords;
+		dot_num = form->dot_num;
+		for (i=0; i<dot_num; i++)
+			if (fcoords[i]->dot != -1)
+				select_add_dot(select, fcoords[i]->dot);
 	}
-	fcoords = form->fcoords;
-	dot_num = form->dot_num;
-	for (i=0; i<dot_num; i++)
-		if (fcoords[i]->dot != -1)
-			select_head = select_add_index(select_head, fcoords[i]->dot, false);
-	free(last);
-	return select_head;
+	//free(last);
+	select_head(select);
+	return select;
 }
 
 
-form_child_t *form_copy(form_child_t *form)
+form_child_t *form_copy(form_child_t *form, int dot_num)
 {
 	int i;
-	int dot_num;
 	int size;
 	int index;
 	int type;
 	form_child_t *newform;
-	dot_num = form->dot_num;
-	newform = form_child_construct_with_size(dot_num);
+	form_parent_t *parent = form->parent;
+
+	//dot_num = form->dot_num;
+	newform = form_child_construct_with_size(parent, dot_num);
 	newform->type = form->type;
 	size = strlen(form->name)+1;
 	newform->name = (char*)malloc(size*sizeof(char));
@@ -1044,7 +1053,7 @@ int form_parent_add_set(form_container_t *head, form_parent_t *last, int index)
 		return -1;
 	forms = last->forms;
 	if (index > 0)
-		forms[index] = form_copy(forms[index-1]);
+		forms[index] = form_copy(forms[index-1], index);
 	else
 		forms[index] = form_child_construct(last);
 	return 0;

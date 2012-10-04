@@ -326,7 +326,7 @@ coord_t *form_get_coord_near(form_child_t *form, double x, double y);
 void form_scale_from_center(form_child_t *form, double s_step);
 void form_rotate_around_center(form_child_t *form, double s_step);
 select_t *form_flatten(form_child_t *form, select_t *select_head);
-form_child_t *form_copy(form_child_t *form);
+form_child_t *form_copy(form_child_t *form, int dot_num);
 form_parent_t *form_parent_construct(void);
 form_parent_t *form_parent_construct_with_form(form_child_t *form, int index);
 form_parent_t *form_parent_destruct(form_parent_t *last);
@@ -443,15 +443,18 @@ int select_toggle_dot(select_t *select, int x);
 int select_toggle_form(select_t *select, int x);
 int select_remove_dot(select_t *select, int x);
 int select_remove_form(select_t *select, int x);
+int select_add_multiple(select_t *select, select_t *modifier);
 int select_add_multiple_dots(select_t *select, select_t *modifier);
 int select_add_multiple_forms(select_t *select, select_t *modifier);
 int select_toggle_multiple_dots(select_t *select, select_t *modifier);
 int select_toggle_multiple_forms(select_t *select, select_t *modifier);
+int select_remove_multiple(select_t *select, select_t *modifier);
 int select_remove_multiple_dots(select_t *select, select_t *modifier);
 int select_remove_multiple_forms(select_t *select, select_t *modifier);
 select_t *select_init(size_t size, size_t form_size);
 select_t *select_destroy(select_t *select);
 int select_update_center(select_t *select);
+void select_all_dots(void);
 
 
 

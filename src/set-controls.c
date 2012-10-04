@@ -276,7 +276,7 @@ void goto_set(int set_buffer)
 
 	if (set_buffer < pshow->sets->size)
 	{
-		pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->setlist[set_buffer]);
+		//select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->setlist[set_buffer]);
 		pstate.setnum = set_buffer;
 		pshow->sets->currset = pshow->sets->setlist[set_buffer];
 		pstate.curr_step = 0;
@@ -374,7 +374,7 @@ set_t *set_get_prev(set_container_t *set_container, int index)
 
 void set_first(void)
 {
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
+	//pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
 	pstate.curr_step = 0;
 	pstate.setnum = 0;
 	pshow->sets->currset = set_get_first(pshow->sets);
@@ -384,7 +384,7 @@ void set_first(void)
 
 void set_last(void)
 {
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, set_get_last(pshow->sets));
+	//pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, set_get_last(pshow->sets));
 	pstate.curr_step = 0;
 	pstate.setnum = pshow->sets->size-1;
 	pshow->sets->currset = set_get_last(pshow->sets);
@@ -395,7 +395,7 @@ void set_last(void)
 void set_prev(void)
 {
 	set_t *set;
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
+	//pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
 	if (pstate.curr_step)
 		pstate.curr_step = 0;
 	else
@@ -415,7 +415,7 @@ void set_prev(void)
 void set_next(void)
 {
 	set_t *set;
-	pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
+	//pstate.select = select_update_scope_set1_set2(pstate.select, pshow->sets->currset, pshow->sets->firstset);
 	if (pstate.curr_step)
 		pstate.curr_step = 0;
 	if ((set = set_get_next(pshow->sets, pstate.setnum)) != NULL)
