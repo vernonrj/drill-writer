@@ -78,7 +78,10 @@ form_child_t *form_child_destruct(form_child_t *form)
 	for (i=0; i<dot_num; i++)
 	{
 		if (is_selected)
-			select_add_index(pstate.select, fcoords[i]->dot, false);
+		{
+			//select_add_index(pstate.select, fcoords[i]->dot, false);
+			select_add_dot(pstate.select, fcoords[i]->dot);
+		}
 		coords_set_managed_by_index(fcoords[i]->dot, 0);
 		free(form->fcoords[i]->forms);
 		free(form->fcoords[i]->dot_type);
@@ -183,8 +186,12 @@ form_child_t *form_remove_from(form_child_t *curr, form_child_t *form_head)
 
 bool form_is_selected(form_child_t *form, select_t *select)
 {
-	while (select)
+	int index;
+	select_head(select);
+	//while (select)
+	while ((index = select_get_form_advance(select)) != -1)
 	{
+		/*
 		//if (!select->form)
 		if (!select_has_form(select))
 		{
@@ -192,12 +199,17 @@ bool form_is_selected(form_child_t *form, select_t *select)
 			select = select_get_next(select);
 			continue;
 		}
+		*/
 		//if (select->form == form)
-		if (select_get_form(select) == form)
+		if (form_container_get_form_child(pshow->topforms, select_get_form(select)) == form)
+		{
+			select_head(select);
 			return true;
+		}
 		//select = select->next;
-		select = select_get_next(select);
+		//select = select_get_next(select);
 	}
+	select_head(select);
 	return false;
 }
 
@@ -391,12 +403,16 @@ form_child_t *form_find_with_endpoint_hole(form_child_t *form, double x, double 
 }
 
 
-select_t *form_find_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double))
+form_child_t *form_find_with_attr(select_t *select, double x, double y, bool (*fptr)(form_child_t*,double,double))
 {
 	// use comparison fptr to find a selected form with certain attributes
+	int index;
 	form_child_t *form;
-	while(select)
+	//while(select)
+	select_head(select);
+	while((index = select_get_form_advance(select)) != -1)
 	{
+		/*
 		//if (!select->form)
 		if (!select_get_form(select))
 		{
@@ -404,17 +420,19 @@ select_t *form_find_with_attr(select_t *select, double x, double y, bool (*fptr)
 			select = select_get_next(select);
 			continue;
 		}
+		*/
 		//form = select->form;
-		form = select_get_form(select);
+		//form = select_get_form(select);
+		form = form_container_get_form_child(pshow->topforms, index);
 		if (fptr(form, x, y))
-			return select;
-		select = select_get_next(select);
+			return form;
+		//select = select_get_next(select);
 	}
 	return NULL;
 }
 
 
-select_t *form_find_selected_with_endpoint(select_t *select, double x, double y)
+form_child_t *form_find_selected_with_endpoint(select_t *select, double x, double y)
 {
 	// find and return a selected form
 	// that contains an endpoint (x, y)
@@ -422,7 +440,7 @@ select_t *form_find_selected_with_endpoint(select_t *select, double x, double y)
 }
 
 
-select_t *form_find_selected_with_endpoint_hole(select_t *select, double x, double y)
+form_child_t *form_find_selected_with_endpoint_hole(select_t *select, double x, double y)
 {
 	// find and return a selected form
 	// that contains an endpoint hole (x, y)
@@ -477,37 +495,39 @@ form_child_t *form_add_index_to_hole_with_coords(form_child_t *form, int index, 
 
 
 
-form_child_t *form_build_line(form_child_t *form, select_t *select_head)
+form_child_t *form_build_line(form_parent_t *form_parent, select_t *select)
 {
 	// build a line
 	
 	int i;
 	int index = 0;
-	select_t *select;
+	int size = 0;
 	form_coord_t **fcoords;
+	form_child_t *form;
 
 	// get number of selects
 	// for allocation purposes
-	select = select_head;
-	while (select)
+	select_head(select);
+	//while (select)
+	while ((index = select_get_dot_advance(select)) != -1)
 	{
-		index++;
+		size++;
 		//select = select->next;
-		select = select_get_next(select);
+		//select = select_get_next(select);
 	}
-	form = form_child_construct_with_size(index);
+	form = form_child_construct_with_size(size);
 	fcoords = form->fcoords;
 	form->type = 1;
 
 	select = select_head;
 	// get endpoints, continue allocation
-	for (i=0; i<index; i++)
+	for (i=0; i<size; i++)
 	{
 		if (select)
 		{
 			//fcoords[i]->dot = select->index;
 			fcoords[i]->dot = select_get_dot(select);
-			if (i != 0 && i != index - 1)
+			if (i != 0 && i != size - 1)
 			{
 				//coords_set_managed_by_index(select->index, 0x1);
 				coords_set_managed_by_index(select_get_dot(select), 0x1);
@@ -1026,7 +1046,7 @@ int form_parent_add_set(form_container_t *head, form_parent_t *last, int index)
 	if (index > 0)
 		forms[index] = form_copy(forms[index-1]);
 	else
-		forms[index] = form_child_construct();
+		forms[index] = form_child_construct(last);
 	return 0;
 	return excode;
 }

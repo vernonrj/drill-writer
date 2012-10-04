@@ -131,8 +131,10 @@ int perf_add(void)
 	}
 	printf("performer created at %i\n", index);
 	pshow->perfs[index]->valid = 1;
-	select_dots_discard();
-	select_dots_add_index(index);
+	//select_dots_discard();
+	//select_dots_add_index(index);
+	select_clear(pstate.select);
+	select_add_dot(pstate.select, index);
 	pushPerfMk(&pstate.undobr, index, 1);
 	return index;
 }
@@ -148,17 +150,20 @@ void perf_revert_selected(headset_t *dshow)
 	// coords
 	coord_t *coord;
 	// finished
-	int done;
+	//int done;
 	last = pstate.select;
+	select_head(last);
 	undo_tclose();
-	while (last)
+	while ((index = select_get_dot_advance(last)) != -1)
 	{
 		// set dots as invalid
 		//index = last->index;
-		index = select_get_dot(last);
+		//index = select_get_dot(last);
 		coord = dshow->sets->currset->coords[index];
 		//if (last->next)
-		if (select_has_next(last))
+		//if (select_has_next(last))
+		/*
+		if (!select_at_dot_end(last))
 		{
 			// more to delete
 			done = 0;
@@ -168,12 +173,14 @@ void perf_revert_selected(headset_t *dshow)
 			// no more to delete
 			done = 1;
 		}
-		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, done);
+		*/
+		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 1);
 		perf_revert(dshow, index);
 		// go to next performer
 		//last = last->next;
-		last = select_get_next(last);
+		//last = select_get_next(last);
 	}
+	select_head(last);
 	return;
 }
 	
@@ -209,17 +216,19 @@ void perf_delete_selected(void)
 	select_t *last;
 	perf_t *perf;
 	perf_t **perfs;
-	int done;
+	//int done;
 
 	last = pstate.select;
 	perfs = pshow->perfs;
-	while (last)
+	//while (last)
+	while ((index = select_get_dot_advance(last)) != -1)
 	{
 		// set dots as invalid
 		//index = last->index;
-		index = select_get_dot(last);
+		//index = select_get_dot(last);
 		perf = perfs[index];
 		//if (last->next)
+		/*
 		if (select_has_next(last))
 		{
 			// more to delete
@@ -230,16 +239,18 @@ void perf_delete_selected(void)
 			// no more to delete
 			done = 1;
 		}
-		pushPerfDel(&pstate.undobr, &perf, pshow->sets->firstset, done);
+		*/
+		pushPerfDel(&pstate.undobr, &perf, pshow->sets->firstset, 1);
 		// TODO: eventually have to unlink perf struct for undo
 		pshow->perfs[index] = perf;
 		perf_delete(perf);
 		perfs[index]->valid = 0;
 		// go to next performer
 		//last = last->next;
-		last = select_get_next(last);
+		//last = select_get_next(last);
 	}
-	select_dots_discard();
+	//select_dots_discard();
+	select_clear(pstate.select);
 	return;
 }
 
@@ -278,17 +289,21 @@ double perf_average_stepsize_selected(headset_t *dshow)
 		return 0;
 	pcoords = prevset->coords;
 	sCounts = currset->counts;
-	while (last != NULL)
+	select_head(last);
+	//while (last != NULL)
+	while ((index = select_get_dot_advance(last)) != -1)
 	{
 		//if (last->form)
+		/*
 		if (select_has_form(last))
 		{
 			//last = last->next;
 			last = select_get_next(last);
 			continue;
 		}
+		*/
 		//index = last->index;
-		index = select_get_dot(last);
+		//index = select_get_dot(last);
 		x = coords[index]->x;
 		y = coords[index]->y;
 		xpr = pcoords[index]->x;
@@ -301,8 +316,9 @@ double perf_average_stepsize_selected(headset_t *dshow)
 		stepsize = stepsize + dxy;
 		count++;
 		//last = last->next;
-		last = select_get_next(last);
+		//last = select_get_next(last);
 	}
+	select_head(last);
 	if (count == 0)
 		return 0;
 	stepsize = stepsize / count;
@@ -338,8 +354,11 @@ int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 		return 0;
 	pcoords = prevset->coords;
 	sCounts = currset->counts;
-	while (last != NULL)
+	select_head(last);
+	//while (last != NULL)
+	while ((index = select_get_dot_advance(last)) != -1)
 	{
+		/*
 		//if (last->form)
 		if (select_has_form(last))
 		{
@@ -347,8 +366,9 @@ int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 			last = select_get_next(last);
 			continue;
 		}
+		*/
 		//index = last->index;
-		index = select_get_dot(last);
+		//index = select_get_dot(last);
 		x = coords[index]->x;
 		y = coords[index]->y;
 		xpr = pcoords[index]->x;
@@ -364,9 +384,8 @@ int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 			largest = index;
 		}
 		//last = last->next;
-		last = select_get_next(last);
+		//last = select_get_next(last);
 	}
 	*stepsize_r = stepsize;
 	return largest;
 }
-	

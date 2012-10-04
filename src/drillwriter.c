@@ -108,8 +108,8 @@ int show_destroy(headset_t **dshow_r)
 	set_t *setcurr;
 	set_t *setlast;
 	// selects
-	select_t *select;
-	select_t *sellast;
+	//select_t *select;
+	//select_t *sellast;
 	// tempo
 	tempo_t *tcurr;
 	tempo_t *tlast;
@@ -144,6 +144,8 @@ int show_destroy(headset_t **dshow_r)
 	}
 	free(perfs);
 	// delete selects
+	pstate.select = select_destroy(pstate.select);
+	/*
 	select = pstate.select;
 	while (select != NULL)
 	{
@@ -152,6 +154,7 @@ int show_destroy(headset_t **dshow_r)
 		free(select);
 		select = sellast;
 	}
+	*/
 	// delete undo
 	undo_destroy(&pstate.undobr, dshow);
 	undo_destroy(&pstate.redobr, dshow);
@@ -202,6 +205,8 @@ int main (int argc, char *argv[])
 	}
 	currset = pshow->sets->firstset;
 	currset->counts = 0;
+	select = select_init(pshow->perfnum, pshow->perfnum);
+
 	coords_set_coord(pshow, 0, 32, 53);
 	coords_set_coord(pshow, 1, 36, 53);
 	coords_set_coord(pshow, 2, 40, 53);
@@ -209,7 +214,10 @@ int main (int argc, char *argv[])
 	coords_set_coord(pshow, 4, 38, 49);
 	coords_set_coord(pshow, 5, 36, 45);
 	for(i=0; i<6; i++)
-		select = select_add_index(select, i, false);
+	{
+		//select = select_add_index(select, i, false);
+		select_add_dot(select, i);
+	}
 	form = form_build_line(NULL, select);
 	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
 	free(form->name);
@@ -225,10 +233,15 @@ int main (int argc, char *argv[])
 	coords_set_coord(pshow, 9, 34, 66);
 	coords_set_coord(pshow, 10, 38, 66);
 	coords_set_coord(pshow, 11, 36, 62);
-	select = select_discard(select);
+	//select = select_discard(select);
+	select_clear(select);
 	for(i=6; i<12; i++)
-		select = select_add_index(select, i, false);
+	{
+		//select = select_add_index(select, i, false);
+		select_add_dot(select, i);
+	}
 	form = form_build_line(NULL, select);
+	free(select);
 	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
 	free(form->name);
 	form->name = (char*)malloc(6*sizeof(char));
