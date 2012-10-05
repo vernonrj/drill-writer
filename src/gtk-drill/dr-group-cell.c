@@ -39,13 +39,14 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	form_child_t *form = NULL;
-	form = form_build_line(form, groupcell->priv->group->selects);
+	form_parent_t *parent_form = NULL;
+	form = form_build_line(parent_form, groupcell->priv->group->selects);
 	form->name = (char*)malloc(10*sizeof(char));
 	snprintf(form->name, 10, "New Form");
 	//form_add_to_set(form);
-	select_dots_discard();
-	pstate.select = select_add_form(pstate.select, form, false);
+	select_clear(pstate.select);
 	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
+	select_add_form(pstate.select, form->parent->index);
 	mouse_currentMode = ADDFORM;
 	return;
 }
@@ -67,7 +68,7 @@ static void select_add_to_group_cell(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	select_add_multiple(&groupcell->priv->group->selects, &pstate.select, false);
+	select_add_multiple(groupcell->priv->group->selects, pstate.select);
 	return;
 }
 

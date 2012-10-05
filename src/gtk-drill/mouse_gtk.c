@@ -90,7 +90,8 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				mouse_clicky = y - mouse_clicky;
 				//select = select_find_form_with_endpoint(pstate.select, fldstate.mouse_clickx, fldstate.mouse_clicky);
 				form = form_find_selected_with_endpoint(form_select, fldstate.mouse_clickx, fldstate.mouse_clicky);
-				select_remove_form(form_select, form->parent->index);
+				if (form)
+					select_remove_form(form_select, form->parent->index);
 				if ((event->state & ~GDK_SHIFT_MASK)== GDK_BUTTON_PRESS_MASK)
 				{
 					//form = select ? select->form : NULL;
@@ -341,22 +342,28 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 		select_remove_multiple(select_omitted, new_select);
 
 		// Store new set
-		fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
-		select_push_all(&fldstate.mouse_selection, &new_select, false);
+		//fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
+		//select_push_all(&fldstate.mouse_selection, &new_select, false);
+		select_clear(fldstate.mouse_selection);
+		select_add_multiple(fldstate.mouse_selection, new_select);
 		select_update_center(fldstate.mouse_selection);
 
 		// add new dots
 		if (event->state == (GDK_BUTTON_PRESS_MASK | GDK_CONTROL_MASK))
 		{
-			select_push_all(&pstate.select, &select_added, true);
-			select_add_multiple(&pstate.select, &select_omitted, true);
+			//select_push_all(&pstate.select, &select_added, true);
+			//select_add_multiple(&pstate.select, &select_omitted, true);
+			select_add_multiple(pstate.select, select_added);
+			select_add_multiple(pstate.select, select_omitted);
 		}
 		else if (event->state == GDK_BUTTON_PRESS_MASK)
 		{
 			// normal or shift-clicked
-			select_push_all(&pstate.select, &select_added, false);
+			//select_push_all(&pstate.select, &select_added, false);
+			//pstate.select = select_drop_multiple(pstate.select, select_omitted);
+			select_add_multiple(pstate.select, select_added);
 			// drop ommitted dots
-			pstate.select = select_drop_multiple(pstate.select, select_omitted);
+			select_remove_multiple(pstate.select, select_omitted);
 		}
 	}
 	else

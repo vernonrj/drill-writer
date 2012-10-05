@@ -201,7 +201,7 @@ bool form_is_selected(form_child_t *form, select_t *select)
 		}
 		*/
 		//if (select->form == form)
-		if (form_container_get_form_child(pshow->topforms, select_get_form(select)) == form)
+		if (form_container_get_form_child(pshow->topforms, index) == form)
 		{
 			select_head(select);
 			return true;
@@ -1036,6 +1036,7 @@ form_container_t *form_parent_add_form(form_container_t *head, form_child_t *for
 	}
 	
 	last = form_parent_construct_with_form(form, index);
+	form->parent = last;
 	form_container_insert_head(head, last);
 
 	//LIST_INSERT_HEAD(head, last, formlist_entries);
@@ -1180,6 +1181,7 @@ form_container_t *form_container_insert_head(form_container_t *fcont, form_paren
 		if (forms[i+1])
 			forms[i+1]->index = i+1;
 	}
+	last->index = 0;
 	forms[0] = last;
 	fcont->size++;
 	return fcont;

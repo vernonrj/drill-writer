@@ -73,7 +73,7 @@ int show_construct(headset_t **dshow_r, int perfs)
 	// Construct selection moments
 	pstate.center = coord_construct();
 	// Set the selection to "none"
-	pstate.select = 0;
+	pstate.select = select_init(dshow->perfnum, 0);
 	// Initialize toplevel groups to NULL
 	dshow->topgroups = NULL;
 	dshow->topforms = NULL;

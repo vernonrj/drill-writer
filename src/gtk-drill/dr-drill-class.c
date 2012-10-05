@@ -808,34 +808,36 @@ int draw_selected(GtkWidget *widget)
 		sel_ymin = sel_ymax = 0;
 	}
 	form_select = NULL;
-	while (select != NULL)
+	select_head(select);
+	while (!select_at_end(select))
 	{
-		if (!form_select)
+		//if (!form_select)
+		if (!form_select && select_at_dot_end(select))
 		{
 			//index = select->index;
 			//form = select->form;
-			index = select_get_dot(select);
-			form = select_get_form(select);
-			if (form)
+			//index = select_get_dot(select);
+			//form = select_get_form(select);
+			//if (form)
+			if ((index = select_get_form_advance(select)) != -1)
 			{
+				form = form_container_get_form_child(pshow->topforms, index);
 				form_select = form_get_contained_dots(form);
-				/*
-				if ((fldstate.mouse_clicked & 0x2) == 0x2)
-					canv_form_select = draw_selected_form(canv_form_select, form);
-					*/
+				select_head(form_select);
 			}
 		}
 		if (form_select)
 		{
 			//index = form_select->index;
-			index = select_get_dot(form_select);
+			index = select_get_dot_advance(form_select);
 		}
+		else
+			index = select_get_dot_advance(select);
 
-		if (index == -1)
+		if (index == -1 && form_select != NULL)
 		{
-			form_select = NULL;
+			form_select = select_destroy(form_select);
 			//select = select->next;
-			select = select_get_next(select);
 			continue;
 		}
 
@@ -844,6 +846,7 @@ int draw_selected(GtkWidget *widget)
 		yfield = y;
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
+		/*
 		if (form_select)
 		{
 			//form_select = form_select->next;
@@ -854,6 +857,7 @@ int draw_selected(GtkWidget *widget)
 			//select = select->next;
 			select = select_get_next(select);
 		}
+		*/
 
 		if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed_by_index(index))
 		{
@@ -963,6 +967,7 @@ int draw_dots (GtkWidget *widget)
 			cairo_set_source_rgb(dots, 0, 0, 0);
 		// get first selected dot
 		selects = pstate.select;
+		select_head(selects);
 		// draw performers at certain point
 		for (i=0; i<pshow->perfnum; i++)
 		{	// Draw performers only if they have valid dots
@@ -975,6 +980,8 @@ int draw_dots (GtkWidget *widget)
 				coords_retrieve_midset(pstate.setnum, i, &x, &y);
 				field_to_pixel(&x, &y);
 				// print selection if dot is selected
+				was_selected = select_check_dot(selects, i);
+				/*
 				was_selected = 0;
 				if (selects)
 				{
@@ -988,6 +995,7 @@ int draw_dots (GtkWidget *widget)
 						was_selected = 1;
 					}
 				}
+				*/
 				if (was_selected == 0)
 				{
 					drawing_method(dots, x, y);

@@ -358,9 +358,11 @@ select_t *field_get_in_area(double x, double y)
 	while (form)
 	{
 		form = form_find_with_coords(form, x, y);
-		select_add_form(select, form->parent->index);
 		if (form)
+		{
+			select_add_form(select, form->parent->index);
 			form = form->next;
+		}
 	}
 	//if (dot_select)
 	if (!select_dot_empty(select))
@@ -420,7 +422,8 @@ select_t *field_get_in_area(double x, double y)
 		//form_select = select_discard(form_select);
 		//form_select = select_add_form(form_select, min_form, false);
 		select_clear_forms(select);
-		select_add_form(select, min_form->parent->index);
+		if (min_form)
+			select_add_form(select, min_form->parent->index);
 	}
 
 	/*
@@ -433,7 +436,7 @@ select_t *field_get_in_area(double x, double y)
 	select_head(select);
 	if (select_form_empty(select) || select_dot_empty(select))
 		return select;
-	else if (form_hole_contains_coords(form_container_get_form_child(pshow->topforms, select_get_form(select)), x, y))
+	else if ((index = select_get_form_advance(select)) != -1 && form_hole_contains_coords(form_container_get_form_child(pshow->topforms, index), x, y))
 	{
 		select_clear_forms(select);
 		return select;
