@@ -45,7 +45,10 @@ int select_get_dot_advance(select_t *select)
 	if (select->dot_index == -1)
 		return -1;
 	dot_index = select_get_dot(select);
-	select->dot_index = dot_index + 1;
+	if (dot_index != -1)
+		select->dot_index = dot_index + 1;
+	else
+		select->dot_index = dot_index;
 	return dot_index;
 }
 
@@ -56,7 +59,10 @@ int select_get_form_advance(select_t *select)
 	if (form_index == -1)
 		return -1;
 	form_index = select_get_form(select);
-	select->form_index = form_index + 1;
+	if (form_index != -1)
+		select->form_index = form_index + 1;
+	else
+		select->form_index = form_index;
 	return form_index;
 }
 
@@ -83,13 +89,13 @@ int select_head_form(select_t *select)
 
 bool select_at_dot_end(select_t *select)
 {
-	return (select->dot_index != -1);
+	return (select->dot_index == -1);
 }
 
 
 bool select_at_form_end(select_t *select)
 {
-	return (select->form_index != -1);
+	return (select->form_index == -1);
 }
 
 

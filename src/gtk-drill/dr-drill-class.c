@@ -825,39 +825,32 @@ int draw_selected(GtkWidget *widget)
 				form_select = form_get_contained_dots(form);
 				select_head(form_select);
 			}
+			else
+				break;
 		}
 		if (form_select)
 		{
-			//index = form_select->index;
+			if (select_at_dot_end(form_select) || select_dot_empty(form_select))
+			{
+				form_select = select_destroy(form_select);
+				continue;
+			}
 			index = select_get_dot_advance(form_select);
 		}
 		else
-			index = select_get_dot_advance(select);
-
-		if (index == -1 && form_select != NULL)
 		{
-			form_select = select_destroy(form_select);
-			//select = select->next;
-			continue;
+			if (select_at_dot_end(select))
+				continue;
+			index = select_get_dot_advance(select);
 		}
+		if (index == -1)
+			continue;
 
 		coords_retrieve_midset(pstate.setnum, index, &x, &y);
 		xfield = x;
 		yfield = y;
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
-		/*
-		if (form_select)
-		{
-			//form_select = form_select->next;
-			form_select = select_get_next(form_select);
-		}
-		if (!form_select)
-		{
-			//select = select->next;
-			select = select_get_next(select);
-		}
-		*/
 
 		if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed_by_index(index))
 		{
