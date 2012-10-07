@@ -1041,7 +1041,7 @@ void draw_field (GtkWidget *widget)
 		fldstate.fieldx = 0;
 		fldstate.fieldy = 0;
 		fldstate.mouse_clicked = 0;
-		fldstate.mouse_selection = NULL;
+		fldstate.mouse_selection = select_create();
 	}
 
 	// create the surface

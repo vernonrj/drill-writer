@@ -305,11 +305,13 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	double coordx, coordy;
 	gchar *buffer;
 	int excode;
-	select_t *new_select = NULL;
+	select_t *new_select = select_create();
 	select_t *select_added = select_create();
 	select_t *select_omitted = select_create();
 	//select_t *last;
 
+	if (!fldstate.mouse_selection)
+		fldstate.mouse_selection = select_create();
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
@@ -363,6 +365,7 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	excode = fieldrel_convert_xy_to_relation(&coordx, &coordy, &buffer);
 	select_added = select_destroy(select_added);
 	select_omitted = select_destroy(select_omitted);
+	new_select = select_destroy(new_select);
 	if (excode == -1)
 		return FALSE;
 
