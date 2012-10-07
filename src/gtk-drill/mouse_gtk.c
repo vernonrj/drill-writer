@@ -69,8 +69,8 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	double x, y;
 	int index;
 	form_child_t *form2;
-	select_t *select;
-	select_t *form_select;
+	select_t *select = pstate.select;
+	select_t *form_select = select_create();
 	//double x1, y1;
 	form_child_t *form;
 	form = pshow->sets->currset->forms;
@@ -82,8 +82,6 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 		switch(mouse_currentMode)
 		{
 			case SELECTONE:
-				select = pstate.select;
-				form_select = select_init(pshow->perfnum, pshow->topforms->size);
 				select_add_multiple_forms(form_select, select);
 				// move a performer
 				mouse_clickx = x - mouse_clickx;
@@ -166,6 +164,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	}
 
 	fldstate.mouse_clicked = 0;
+	select_destroy(form_select);
 	dr_canvas_refresh(drill);
 	return TRUE;
 }
@@ -219,7 +218,7 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				// select 1 performer
 				//select = select_get_in_area(mouse_clickx, mouse_clicky);
 				select = field_get_in_area(mouse_clickx, mouse_clicky);
-				if (!select)
+				if (select_empty(select))
 				{
 					//select_dots_discard();
 					select_clear(pstate.select);
@@ -245,30 +244,22 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				else if ((event->state & ~GDK_SHIFT_MASK)== 0)
 				{
 					// regular click
-					//if (select->form && !form_is_selected(select->form, pstate.select))
-					//if (select_get_form(select) && !form_is_selected(select_get_form(select), pstate.select))
-					if (select_get_form(select) && !select_check_form(pstate.select, select_get_form(select)))
+					index = select_get_form(select);
+					if (!select_form_empty(select) && !select_check_form(pstate.select, index))
 					{
 						// select form with ability to scale form
-						//select_dots_discard();
 						select_clear(pstate.select);
 						mouse_discarded = 1;
-						//pstate.select = select_add_form(pstate.select, select->form, false);
 						select_add_form(pstate.select, select_get_form(select));
 						select_update_center(pstate.select);
 					}
-					//else if (!select->form && isSelected(select->index) != 1) 
-					else if (!select_get_form(select) && isSelected(select_get_dot(select)) != 1) 
+					else if (select_form_empty(select) && isSelected(select_get_dot(select)) != 1) 
 					{
 						// dot is not selected
-						//index = select->index;
-						index = select_get_dot(select);
-						//select_dots_discard();
 						select_clear(pstate.select);
 						mouse_discarded = 1;
-						if (index != -1)
+						if ((index = select_get_dot(select))!= -1)
 						{
-							//select_dots_add_index(index);
 							select_add_dot(pstate.select, index);
 						}
 					}
@@ -314,11 +305,9 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	double coordx, coordy;
 	gchar *buffer;
 	int excode;
-	select_t *new_select;
-	new_select = NULL;
-	select_t *select_added;
-	select_added = NULL;
-	select_t *select_omitted = NULL;
+	select_t *new_select = NULL;
+	select_t *select_added = select_create();
+	select_t *select_omitted = select_create();
 	//select_t *last;
 
 	coordx = event->x;
@@ -372,6 +361,8 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	fldstate.mousey = coordy;
 	// store mouse event
 	excode = fieldrel_convert_xy_to_relation(&coordx, &coordy, &buffer);
+	select_added = select_destroy(select_added);
+	select_omitted = select_destroy(select_omitted);
 	if (excode == -1)
 		return FALSE;
 

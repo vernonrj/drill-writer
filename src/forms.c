@@ -748,7 +748,7 @@ select_t *form_get_contained_dots(form_child_t *form)
 
 	if (!form)
 		return NULL;
-	select = select_init(pshow->perfnum, pshow->perfnum); 
+	select = select_create();
 	dot_num = form->dot_num;
 	for(i=0; i<dot_num; i++)
 	{

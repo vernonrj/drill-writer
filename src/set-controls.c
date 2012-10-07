@@ -157,13 +157,16 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 	}
 	//fparent = LIST_FIRST(flist);
 	//while (fparent)
-	for (i=0; i<fcont->size; i++)
+	if (fcont)
 	{
-		fparent = fcont->forms[i];
-		for (j=set_container->size; j>setnum+1; j--)
-			fparent->forms[j] = fparent->forms[j-1];
-		fparent->forms[setnum+1] = NULL;
-		//fparent = LIST_NEXT(fparent, formlist_entries);
+		for (i=0; i<fcont->size; i++)
+		{
+			fparent = fcont->forms[i];
+			for (j=set_container->size; j>setnum+1; j--)
+				fparent->forms[j] = fparent->forms[j-1];
+			fparent->forms[setnum+1] = NULL;
+			//fparent = LIST_NEXT(fparent, formlist_entries);
+		}
 	}
 
 	for(i=set_container->size; i>setnum+1; i--)

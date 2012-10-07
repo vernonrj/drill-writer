@@ -8,7 +8,7 @@ group_t *group_construct(void)
 	group = (group_t*)malloc(sizeof(group_t));
 	if (!group)
 		return NULL;
-	group->selects = select_init(pshow->perfnum, pshow->topforms->size);
+	group->selects = select_create();
 	group->next = NULL;
 	group->name = (char*)malloc(10*sizeof(char));
 	group->local = false;

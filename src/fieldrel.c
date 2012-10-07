@@ -345,7 +345,8 @@ select_t *field_get_in_area(double x, double y)
 	//select_t *dot_select = NULL;
 	//select_t *form_select = NULL;
 	//select_t *select = NULL;
-	select_t *select = select_init(pshow->perfnum, pshow->perfnum);
+	select_t *select = select_create();
+
 	for(i=0; i<perfnum; i++)
 	{
 		if (!coords_check_managed_by_index(i))

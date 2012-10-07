@@ -73,7 +73,7 @@ int show_construct(headset_t **dshow_r, int perfs)
 	// Construct selection moments
 	pstate.center = coord_construct();
 	// Set the selection to "none"
-	pstate.select = select_init(dshow->perfnum, 0);
+	pstate.select = select_create_with_size(dshow->perfnum, 0);
 	// Initialize toplevel groups to NULL
 	dshow->topgroups = NULL;
 	dshow->topforms = NULL;
@@ -205,7 +205,6 @@ int main (int argc, char *argv[])
 	}
 	currset = pshow->sets->firstset;
 	currset->counts = 0;
-	select = select_init(pshow->perfnum, pshow->perfnum);
 
 	coords_set_coord(pshow, 0, 32, 53);
 	coords_set_coord(pshow, 1, 36, 53);
@@ -213,9 +212,10 @@ int main (int argc, char *argv[])
 	coords_set_coord(pshow, 3, 34, 49);
 	coords_set_coord(pshow, 4, 38, 49);
 	coords_set_coord(pshow, 5, 36, 45);
+	/*
+	select = select_create();
 	for(i=0; i<6; i++)
 	{
-		//select = select_add_index(select, i, false);
 		select_add_dot(select, i);
 	}
 	form = form_build_line(NULL, select);
@@ -226,6 +226,7 @@ int main (int argc, char *argv[])
 	form_set_endpoint(form, 0, 0, 32, 53);
 	form_set_endpoint(form, 0, 0, 50, 53);
 	form_add_to_set(form);
+	*/
 
 	coords_set_coord(pshow, 6, 32, 70);
 	coords_set_coord(pshow, 7, 36, 70);
@@ -233,7 +234,8 @@ int main (int argc, char *argv[])
 	coords_set_coord(pshow, 9, 34, 66);
 	coords_set_coord(pshow, 10, 38, 66);
 	coords_set_coord(pshow, 11, 36, 62);
-	//select = select_discard(select);
+
+	/*
 	select_clear(select);
 	for(i=6; i<12; i++)
 	{
@@ -249,6 +251,7 @@ int main (int argc, char *argv[])
 	form_set_endpoint(form, 0, 0, 20, 70);
 	form_set_endpoint(form, 0, 0, 36, 62);
 	form_add_to_set(form);
+	*/
 
 	// add new set
 	//*

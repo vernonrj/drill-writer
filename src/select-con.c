@@ -105,9 +105,9 @@ bool select_dot_empty(select_t *select)
 	for (i=0; i<dot_alloc; i++)
 	{
 		if (select->dotfield[i] != 0)
-			return true;
+			return false;
 	}
-	return false;
+	return true;
 }
 
 
@@ -118,9 +118,9 @@ bool select_form_empty(select_t *select)
 	for (i=0; i<form_alloc; i++)
 	{
 		if (select->formfield[i] != 0)
-			return true;
+			return false;
 	}
-	return false;
+	return true;
 }
 
 bool select_empty(select_t *select)
@@ -314,12 +314,11 @@ void select_clear(select_t *select)
 }
 
 
-select_t *select_init(size_t dot_size, size_t form_size)
+select_t *select_create_with_size(size_t dot_size, size_t form_size)
 {
-	// initialize memory
+	// create and initialize memory
+	// with a specified size
 	select_t *select;
-	size_t dot_alloc = dot_size/8+1;
-	size_t form_alloc = form_size/8+1;
 
 	select = (select_t*)malloc(sizeof(select_t));
 	if (select == NULL)
@@ -328,17 +327,47 @@ select_t *select_init(size_t dot_size, size_t form_size)
 		exit(EXIT_FAILURE);
 	}
 
-	if (!dot_alloc)
-		dot_alloc++;
-	if (!form_alloc)
-		form_alloc++;
-	select->dotfield = (unsigned char*)malloc(dot_alloc*sizeof(unsigned char));
-	select->formfield = (unsigned char*)malloc(form_alloc*sizeof(unsigned char));
-	select->dot_alloc = dot_alloc;
-	select->form_alloc = form_alloc;
-	select_clear(select);
+	select_init_with_size(select, dot_size, form_size);
 
 	return select;
+}
+
+
+select_t *select_create(void)
+{
+	// create and initialize memory with default size
+	int dot_size;
+	int form_size;
+
+	dot_size = pshow->perfnum;
+	form_size = pshow->topforms ? pshow->topforms->size : 0;
+
+	return select_create_with_size(dot_size, form_size);
+}
+
+
+int select_init_with_size(select_t *select, int dot_alloc, int form_alloc)
+{
+	int dot_size = dot_alloc/8 + 1;
+	int form_size = form_alloc/8 + 1;
+	if (!select)
+		return -1;
+
+	select->dotfield = (unsigned char*)malloc(dot_size*sizeof(unsigned char));
+	select->formfield = (unsigned char*)malloc(form_size*sizeof(unsigned char));
+	select->dot_alloc = dot_size;
+	select->form_alloc = form_size;
+	select_clear(select);
+	return 0;
+}
+
+
+int select_init(select_t *select)
+{
+	if (!select)
+		return -1;
+	select_init_with_size(select, pshow->perfnum, pshow->topforms->size);
+	return 0;
 }
 
 
