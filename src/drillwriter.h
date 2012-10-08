@@ -446,6 +446,7 @@ int select_remove_form(select_t *select, int x);
 int select_add_multiple(select_t *select, select_t *modifier);
 int select_add_multiple_dots(select_t *select, select_t *modifier);
 int select_add_multiple_forms(select_t *select, select_t *modifier);
+int select_toggle_multiple(select_t *select, select_t *modifier);
 int select_toggle_multiple_dots(select_t *select, select_t *modifier);
 int select_toggle_multiple_forms(select_t *select, select_t *modifier);
 int select_remove_multiple(select_t *select, select_t *modifier);

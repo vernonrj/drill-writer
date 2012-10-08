@@ -218,13 +218,6 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				// select 1 performer
 				//select = select_get_in_area(mouse_clickx, mouse_clicky);
 				select = field_get_in_area(mouse_clickx, mouse_clicky);
-				if (select_empty(select))
-				{
-					//select_dots_discard();
-					select_clear(pstate.select);
-					mouse_discarded = 1;
-					break;
-				}
 				if (event->state == GDK_CONTROL_MASK)
 				{
 					// ctrl-click
@@ -238,12 +231,19 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						select_dots_add_index(select_get_dot(select));
 					}
 					*/
-					select_add_multiple_dots(pstate.select, select);
-					select_add_multiple_forms(pstate.select, select);
+					select_toggle_multiple_dots(pstate.select, select);
+					select_toggle_multiple_forms(pstate.select, select);
 				}
 				else if ((event->state & ~GDK_SHIFT_MASK)== 0)
 				{
 					// regular click
+					if (select_empty(select))
+					{
+						//select_dots_discard();
+						select_clear(pstate.select);
+						mouse_discarded = 1;
+						break;
+					}
 					index = select_get_form(select);
 					if (!select_form_empty(select) && !select_check_form(pstate.select, index))
 					{
@@ -344,8 +344,8 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 		{
 			//select_push_all(&pstate.select, &select_added, true);
 			//select_add_multiple(&pstate.select, &select_omitted, true);
-			select_add_multiple(pstate.select, select_added);
-			select_add_multiple(pstate.select, select_omitted);
+			select_toggle_multiple(pstate.select, select_added);
+			select_toggle_multiple(pstate.select, select_omitted);
 		}
 		else if (event->state == GDK_BUTTON_PRESS_MASK)
 		{

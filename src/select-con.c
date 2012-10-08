@@ -220,6 +220,16 @@ int select_add_multiple_forms(select_t *select, select_t *modifier)
 }
 
 
+int select_toggle_multiple(select_t *select, select_t *modifier)
+{
+	// toggle everything from modifier to select
+	int dot_alloc = (select->dot_alloc > modifier->dot_alloc ? modifier->dot_alloc : select->dot_alloc);
+	int form_alloc = (select->form_alloc > modifier->form_alloc ? modifier->form_alloc : select->form_alloc);
+	bitfield_map(select->dotfield, modifier->dotfield, dot_alloc, &bitfield_or);
+	bitfield_map(select->formfield, modifier->formfield, form_alloc, &bitfield_or);
+	return 0;
+}
+
 int select_toggle_multiple_dots(select_t *select, select_t *modifier)
 {
 	// toggle all dots from modifier in select
