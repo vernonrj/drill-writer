@@ -1082,13 +1082,17 @@ int form_parent_remove_set(form_container_t *head, form_parent_t *last, int inde
 
 form_parent_t *form_parent_find_with_form(form_container_t *head, form_child_t *form)
 {
-	int i, j;
-	form_child_t **forms;
-	int size;
-	form_parent_t *last;
-	bool found_form = false;
+	//int i, j;
+	//form_child_t **forms;
+	//int size;
+	//form_parent_t *last;
+	//bool found_form = false;
 
+	if (!form)
+		return NULL;
+	return form->parent;
 	//last = LIST_FIRST(head);
+	/*
 	last = head->forms[0];
 	for(i=0; i<head->size; i++)
 	{
@@ -1108,6 +1112,7 @@ form_parent_t *form_parent_find_with_form(form_container_t *head, form_child_t *
 		//last = LIST_NEXT(last, formlist_entries);
 	}
 	return last;
+	*/
 }
 
 

@@ -212,7 +212,7 @@ int main (int argc, char *argv[])
 	coords_set_coord(pshow, 3, 34, 49);
 	coords_set_coord(pshow, 4, 38, 49);
 	coords_set_coord(pshow, 5, 36, 45);
-	/*
+	//*
 	select = select_create();
 	for(i=0; i<6; i++)
 	{
@@ -226,7 +226,7 @@ int main (int argc, char *argv[])
 	form_set_endpoint(form, 0, 0, 32, 53);
 	form_set_endpoint(form, 0, 0, 50, 53);
 	form_add_to_set(form);
-	*/
+	//*/
 
 	coords_set_coord(pshow, 6, 32, 70);
 	coords_set_coord(pshow, 7, 36, 70);
@@ -235,7 +235,7 @@ int main (int argc, char *argv[])
 	coords_set_coord(pshow, 10, 38, 66);
 	coords_set_coord(pshow, 11, 36, 62);
 
-	/*
+	//*
 	select_clear(select);
 	for(i=6; i<12; i++)
 	{
@@ -251,7 +251,7 @@ int main (int argc, char *argv[])
 	form_set_endpoint(form, 0, 0, 20, 70);
 	form_set_endpoint(form, 0, 0, 36, 62);
 	form_add_to_set(form);
-	*/
+	//*/
 
 	// add new set
 	//*
