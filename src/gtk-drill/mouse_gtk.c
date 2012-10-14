@@ -231,8 +231,9 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 						select_dots_add_index(select_get_dot(select));
 					}
 					*/
-					select_toggle_multiple_dots(pstate.select, select);
-					select_toggle_multiple_forms(pstate.select, select);
+					//select_toggle_multiple_dots(pstate.select, select);
+					//select_toggle_multiple_forms(pstate.select, select);
+					select_toggle_multiple(pstate.select, select);
 				}
 				else if ((event->state & ~GDK_SHIFT_MASK)== 0)
 				{

@@ -516,6 +516,7 @@ form_child_t *form_build_line(form_parent_t *form_parent, select_t *select)
 		//select = select->next;
 		//select = select_get_next(select);
 	}
+	select_head(select);
 	form = form_child_construct_with_size(form_parent, size);
 	fcoords = form->fcoords;
 	form->type = 1;
