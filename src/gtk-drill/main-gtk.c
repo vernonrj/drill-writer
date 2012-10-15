@@ -453,7 +453,6 @@ int buildIfacegtk(void)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_add_events (window, GDK_BUTTON_PRESS_MASK);
 	gtk_window_set_title(GTK_WINDOW(window), "Drill-Writer Pre-Alpha");
-	gtk_window_set_default_size(GTK_WINDOW(window), 1000, 700);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	// Might need these in the future
 	//gtk_widget_set_app_paintable(window, TRUE);
@@ -542,18 +541,19 @@ int buildIfacegtk(void)
 
 	sidebar = dr_sidebar_new();
 	gtk_paned_add1(GTK_PANED(hpaned), sidebar);
-	gtk_widget_set_size_request(sidebar, 180, 486);
+	//gtk_widget_set_size_request(sidebar, 180, 486);
 
 
 	// get and pack canvas
 	drill = gtk_drill_new();
-	//gtk_widget_set_size_request(drill, 800, 400);
-	gtk_widget_set_size_request(drill, 660, 360);
+	//gtk_widget_set_size_request(drill, 660, 360);
+	gtk_widget_set_size_request(drill, 460, 100);
 	//mybox = gtk_hbox_new(FALSE, 0);
 	mybox = gtk_table_new(2, 2, FALSE);
 	//gtk_box_pack_start(GTK_BOX(mybox), (GtkWidget*)drill, TRUE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(mybox), (GtkWidget*)drill, 0, 1, 0, 1, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 	gtk_paned_add2(GTK_PANED(hpaned), mybox);
+	//gtk_widget_set_size_request(mybox, 460, 150);
 	// draw the field the first time
 	do_field = 1;
 	do_dots = 1;
@@ -619,6 +619,7 @@ int buildIfacegtk(void)
 	gtk_adjustment_configure(vscroll, 0.0, 0.0, hsc_height, hsc_height/ 10, hsc_height / 10 * 9, hsc_height);
 	//gtk_adjustment_configure(hscroll, 0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
 	//gtk_adjustment_configure(vscroll, 0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
+	gtk_window_set_default_size(GTK_WINDOW(window), 800, 400);
 
 	return 0;
 }
