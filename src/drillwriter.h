@@ -326,7 +326,7 @@ coord_t *form_get_coord_near(form_child_t *form, double x, double y);
 void form_scale_from_center(form_child_t *form, double s_step);
 void form_rotate_around_center(form_child_t *form, double s_step);
 select_t *form_flatten(form_child_t *form, select_t *select_head);
-form_child_t *form_copy(form_child_t *form, int dot_num);
+form_child_t *form_copy(form_child_t *form);
 form_parent_t *form_parent_construct(void);
 form_parent_t *form_parent_construct_with_form(form_child_t *form, int index);
 form_parent_t *form_parent_destruct(form_parent_t *last);

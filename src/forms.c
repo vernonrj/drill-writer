@@ -905,43 +905,19 @@ select_t *form_flatten(form_child_t *form, select_t *select)
 	form_coord_t **fcoords;
 	if (!form || !select)
 		return NULL;
-	/*
-	if (select_head->form == form)
-		select_head = select_head->next;
-		*/
 	select_head(select);
-	if (select_get_form(select) == form->parent->index)
-		select_get_form_advance(select);
-	else
-	{
-		//while (last && last->form != form)
-		while (form_container_get_form_child(pshow->topforms, select_get_form(select)) != form)
-		{
-			//last = last->next;
-			select_get_form_advance(select);
-		}
-		/*
-		if (!last)
-		{
-			printf("WARNING: selection not in scope!\n");
-			return NULL;
-		}
-		*/
-		//select->next = last->next;
-		//select_set_next(select, select_get_next(last));
-		fcoords = form->fcoords;
-		dot_num = form->dot_num;
-		for (i=0; i<dot_num; i++)
-			if (fcoords[i]->dot != -1)
-				select_add_dot(select, fcoords[i]->dot);
-	}
-	//free(last);
+	select_remove_form(select, form->parent->index);
+	fcoords = form->fcoords;
+	dot_num = form->dot_num;
+	for (i=0; i<dot_num; i++)
+		if (fcoords[i]->dot != -1)
+			select_add_dot(select, fcoords[i]->dot);
 	select_head(select);
 	return select;
 }
 
 
-form_child_t *form_copy(form_child_t *form, int dot_num)
+form_child_t *form_copy(form_child_t *form)
 {
 	int i;
 	int size;
@@ -949,6 +925,7 @@ form_child_t *form_copy(form_child_t *form, int dot_num)
 	int type;
 	form_child_t *newform;
 	form_parent_t *parent = form->parent;
+	int dot_num = form->dot_num;
 
 	//dot_num = form->dot_num;
 	newform = form_child_construct_with_size(parent, dot_num);
@@ -1055,7 +1032,7 @@ int form_parent_add_set(form_container_t *head, form_parent_t *last, int index)
 		return -1;
 	forms = last->forms;
 	if (index > 0)
-		forms[index] = form_copy(forms[index-1], index);
+		forms[index] = form_copy(forms[index-1]);
 	else
 		forms[index] = form_child_construct(last);
 	return 0;
