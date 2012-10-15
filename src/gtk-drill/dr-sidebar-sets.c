@@ -6,7 +6,8 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebar_sets);
 
 struct _DrSidebarSetsPrivate {
 	GtkWidget *entry_setname;
-	GtkWidget *button_addSet;
+	GtkWidget *button_addSetBefore;
+	GtkWidget *button_addSetAfter;
 	GtkWidget *button_delSet;
 	GtkWidget *mediabar;
 };
@@ -29,6 +30,7 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 	GtkWidget *label;
 	GtkWidget *namebox;
 	GtkWidget *mediabar;
+	GtkWidget *box_add_set;
 
 	char setname_buf[20];
 
@@ -55,12 +57,24 @@ static void dr_sidebar_sets_init(DrSidebarSets *sidebarsets)
 	gtk_widget_show(entry_setname);
 	sidebarsets->priv->entry_setname = entry_setname;
 
-	// add set button
-	sidebarsets->priv->button_addSet = gtk_button_new_with_label("Add Set");
-	gtk_box_pack_start(GTK_BOX(sidebarsets), sidebarsets->priv->button_addSet, FALSE, FALSE, 0);
-	g_signal_connect(sidebarsets->priv->button_addSet, "clicked",
-			G_CALLBACK(add_set_gtk), NULL);
-	gtk_widget_show(sidebarsets->priv->button_addSet);
+	box_add_set = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start(GTK_BOX(sidebarsets), box_add_set, FALSE, FALSE, 0);
+	gtk_widget_show(box_add_set);
+
+	// add set before button
+	sidebarsets->priv->button_addSetBefore = gtk_button_new_with_label("Add Before");
+	gtk_box_pack_start(GTK_BOX(box_add_set), sidebarsets->priv->button_addSetBefore, FALSE, FALSE, 0);
+	g_signal_connect(sidebarsets->priv->button_addSetBefore, "clicked",
+			G_CALLBACK(add_set_before_gtk), NULL);
+	gtk_widget_show(sidebarsets->priv->button_addSetBefore);
+
+	// add set after button
+	sidebarsets->priv->button_addSetAfter = gtk_button_new_with_label("Add After");
+	gtk_box_pack_start(GTK_BOX(box_add_set), sidebarsets->priv->button_addSetAfter, FALSE, FALSE, 0);
+	g_signal_connect(sidebarsets->priv->button_addSetAfter, "clicked",
+			G_CALLBACK(add_set_after_gtk), NULL);
+	gtk_widget_show(sidebarsets->priv->button_addSetAfter);
+
 
 	// delete set button
 	sidebarsets->priv->button_delSet = gtk_button_new_with_label("Delete Set");

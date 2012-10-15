@@ -144,7 +144,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				form = form_container_get_form_child(pshow->topforms, select_get_form(pstate.select));
 				form_set_endpoint(form, 0, 0, x, y);
 				form_set_endpoint(form, 0, 0, fldstate.mouse_clickx, fldstate.mouse_clicky);
-				form_add_to_set(form);
+				form_add_to_current_set(form);
 				form_update_line(form);
 				mouse_currentMode = SELECTONE;
 				select_update_center(pstate.select);

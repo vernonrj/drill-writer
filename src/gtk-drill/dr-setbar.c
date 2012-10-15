@@ -167,7 +167,8 @@ void add_set_gtk(GtkWidget *widget)
 	// add a set from a Gtk entry
 	if (!pstate.playing)
 	{
-		add_set();
+		//add_set();
+		set_add_after_current();
 		dr_canvas_refresh(drill);
 		//gtk_widget_queue_draw_area(window, drill->allocation.x, drill->allocation.y, drill->allocation.width, drill->allocation.height);
 	}

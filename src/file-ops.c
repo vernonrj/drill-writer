@@ -366,7 +366,8 @@ int open_file(char *filename)
 			if (atoi(data) != 0)
 			{
 				// need a new set
-				add_set();
+				//add_set();
+				set_add_after_current();
 				currset = pshow->sets->currset;
 			}
 		}

@@ -36,9 +36,56 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 {
 	// add a new set before setnum
 	set_t *newset;
+	int i;
+	int perfnum = pshow->perfnum;
+	set_t *currset = set_container->setlist[setnum];
+	double x2, y2, x, y;
+	int curr_step = pstate.curr_step;
+	int counts;
+	form_child_t *form;
+	int newsetnum;
 
 	set_construct(&newset, pshow->perfnum);
-	set_container = set_container_add_set_before(set_container, newset, setnum);
+	form = currset->forms;
+	if (curr_step)
+	{
+		set_container = set_container_add_set_after(set_container, newset, setnum);
+		newsetnum = setnum+1;
+	}
+	else
+	{
+		set_container = set_container_add_set_before(set_container, newset, setnum);
+		if (currset)
+		{
+			for (i=0; i<perfnum; i++)
+			{
+				if (pshow->perfs[i]->valid)
+				{
+					x = currset->coords[i]->x;
+					y = currset->coords[i]->y;
+					if (curr_step && setnum+2 < pshow->sets->size)
+					{
+						x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
+						y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
+						counts = currset->counts;
+						x = x + ((x2 - x) / counts * curr_step);
+						y = y + ((y2 - y) / counts * curr_step);
+						pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
+						newset->counts = curr_step;
+					}
+					newset->coords[i]->x = x;
+					newset->coords[i]->y = y;
+				}
+			}
+		}
+		newsetnum = setnum-1;
+	}
+	while (form)
+	{
+		form_parent_copy_to(form->parent, setnum, newsetnum);
+		form_add_to_set(form, newsetnum);
+		form = form->next;
+	}
 	return set_container;
 }
 
@@ -89,6 +136,8 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 	double x2, y2, x, y;
 	int curr_step = pstate.curr_step;
 	int counts;
+	form_child_t *form = currset->forms;
+	form_child_t *newform;
 
 	set_construct(&newset, perfnum);
 	set_container = set_container_add_set_after(set_container, newset, setnum);
@@ -114,6 +163,13 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 				newset->coords[i]->y = y;
 			}
 		}
+	}
+	while (form)
+	{
+		form_parent_copy_to(form->parent, setnum, setnum+1);
+		newform = form->parent->forms[setnum+1]; 
+		form_add_to_set(newform, setnum+1);
+		form = form->next;
 	}
 
 	return set_container;
@@ -353,10 +409,12 @@ int set_add_after_current(void)
 }
 
 
+/*
 int add_set(void)
 {
 	return set_add_after_current();
 }
+*/
 
 
 

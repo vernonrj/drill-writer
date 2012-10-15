@@ -225,7 +225,7 @@ int main (int argc, char *argv[])
 	snprintf(form->name, 6, "Form1");
 	form_set_endpoint(form, 0, 0, 32, 53);
 	form_set_endpoint(form, 0, 0, 50, 53);
-	form_add_to_set(form);
+	form_add_to_current_set(form);
 	//*/
 
 	coords_set_coord(pshow, 6, 32, 70);
@@ -250,14 +250,21 @@ int main (int argc, char *argv[])
 	snprintf(form->name, 6, "Form2");
 	form_set_endpoint(form, 0, 0, 20, 70);
 	form_set_endpoint(form, 0, 0, 36, 62);
-	form_add_to_set(form);
+	form_add_to_current_set(form);
 	//*/
 
 	// add new set
 	//*
-	add_set();
+	//add_set();
+	set_add_after_current();
 	currset = pshow->sets->currset;
-	//prevset = currset->prev;
+	form = currset->forms;
+	while (form)
+	{
+		form_movexy(form, 4, 0);
+		form = form->next;
+	}
+	/*
 	prevset = set_get_prev(pshow->sets, pstate.setnum);
 	currset->counts = 8;
 	for (i=0; i<12; i++)
@@ -265,11 +272,19 @@ int main (int argc, char *argv[])
 		prevcr = prevset->coords[i];
 		coords_set_coord(pshow, i, prevcr->x+4, prevcr->y);
 	}
-	//*/
+	*/
 	///*
 	// add new set
-	add_set();
+	//add_set();
+	set_add_after_current();
 	currset = pshow->sets->currset;
+	form = currset->forms;
+	while (form)
+	{
+		form_movexy(form, 0, -10);
+		form = form->next;
+	}
+	/*
 	prevset = set_get_prev(pshow->sets, pstate.setnum);
 	currset->counts = 8;
 	for (i=0; i<12; i++)
@@ -277,7 +292,7 @@ int main (int argc, char *argv[])
 		prevcr = prevset->coords[i];
 		coords_set_coord(pshow, i, prevcr->x, prevcr->y-10);
 	}
-	//*/
+	*/
 
 	// Start at first set
 	pstate.setnum = 0;

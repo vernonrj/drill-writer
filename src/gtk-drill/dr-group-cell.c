@@ -43,7 +43,7 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 	form = form_build_line(parent_form, groupcell->priv->group->selects);
 	form->name = (char*)malloc(10*sizeof(char));
 	snprintf(form->name, 10, "New Form");
-	//form_add_to_set(form);
+	//form_add_to_current_set(form);
 	select_clear(pstate.select);
 	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
 	select_add_form(pstate.select, form->parent->index);
@@ -552,7 +552,7 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 	if (excode == 1)
 		mouse_currentMode = ADDFORM;
 	form = form_parent_find_form_at_index(fparent, pstate.setnum);
-	form_add_to_set(form);
+	form_add_to_current_set(form);
 	dr_sidebar_update((DrSidebar*)sidebar);
 	dr_canvas_refresh(drill);
 	return;

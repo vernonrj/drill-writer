@@ -761,13 +761,13 @@ select_t *form_get_contained_dots(form_child_t *form)
 }
 
 
-void form_add_to_set(form_child_t *form)
+void form_add_to_set(form_child_t *form, int setnum)
 {
-	form_child_t *setform = pshow->sets->currset->forms;
+	form_child_t *setform = pshow->sets->setlist[setnum]->forms;
 	form_child_t *curr = NULL;
 	if (!setform)
 	{
-		pshow->sets->currset->forms = form;
+		pshow->sets->setlist[setnum]->forms = form;
 		return;
 	}
 	while (setform)
@@ -778,6 +778,12 @@ void form_add_to_set(form_child_t *form)
 		setform = setform->next;
 	}
 	curr->next = form;
+	return;
+}
+
+void form_add_to_current_set(form_child_t *form)
+{
+	form_add_to_set(form, pstate.setnum);
 	return;
 }
 
@@ -1037,6 +1043,18 @@ int form_parent_add_set(form_container_t *head, form_parent_t *last, int index)
 		forms[index] = form_child_construct(last);
 	return 0;
 	return excode;
+}
+
+
+
+int form_parent_copy_to(form_parent_t *last, int index, int transpose)
+{
+	form_child_t **forms;
+	if (!last)
+		return -1;
+	forms = last->forms;
+	forms[transpose] = form_copy(forms[index]);
+	return 0;
 }
 
 
