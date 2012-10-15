@@ -138,6 +138,29 @@ GtkWidget *dr_setbar_new(void)
 	return GTK_WIDGET(g_object_new(dr_setbar_get_type(), NULL));
 }
 
+void add_set_before_gtk(GtkWidget *widget)
+{
+	// add a set from a Gtk entry
+	if (!pstate.playing)
+	{
+		set_add_before_current();
+		dr_canvas_refresh(drill);
+	}
+	return;
+}
+
+
+void add_set_after_gtk(GtkWidget *widget)
+{
+	// add a set from a Gtk entry
+	if (!pstate.playing)
+	{
+		set_add_after_current();
+		dr_canvas_refresh(drill);
+	}
+	return;
+}
+
 
 void add_set_gtk(GtkWidget *widget)
 {

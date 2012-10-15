@@ -70,6 +70,8 @@ set_container_t *set_container_add_set_before(set_container_t *set_container, se
 		for(i=set_container->size; i>setnum; i--)
 			setlist[i] = setlist[i-1];
 		setlist[setnum] = newset;
+		if (setnum == 0)
+			pshow->sets->firstset = newset;
 	}
 	set_container->size++;
 	return set_container;
@@ -306,7 +308,30 @@ int isFirstSet(void)
 
 
 
-int add_set(void)
+int set_add_before_current(void)
+{
+	// add a set before the current set
+	// Add a set after the current one
+	headset_t *dshow = pshow;
+	int newcounts = 0;
+
+	dshow->sets = set_container_add_before(dshow->sets, pstate.setnum);
+	//set_next();
+	newcounts = pshow->sets->currset->counts;
+	if (newcounts)
+	{
+		pushCounts(&pstate.undobr, pstate.setnum, newcounts, 0);
+		dshow->sets->currset->counts = newcounts;
+	}
+	else
+		dshow->sets->currset->counts = 8;
+	pushSetMk(&pstate.undobr);
+
+	return 0;
+}
+	
+
+int set_add_after_current(void)
 {
 	// Add a set after the current one
 	headset_t *dshow = pshow;
@@ -320,10 +345,19 @@ int add_set(void)
 		pushCounts(&pstate.undobr, pstate.setnum, newcounts, 0);
 		dshow->sets->currset->counts = newcounts;
 	}
+	else
+		dshow->sets->currset->counts = 8;
 	pushSetMk(&pstate.undobr);
 
 	return 0;
 }
+
+
+int add_set(void)
+{
+	return set_add_after_current();
+}
+
 
 
 

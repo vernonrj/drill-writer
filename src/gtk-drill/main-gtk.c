@@ -29,7 +29,9 @@ static const gchar *ui_info =
 "			<menuitem name='UndoProc' action='UndoProcAction'/>"
 "			<menuitem name='RedoProc' action='RedoProcAction'/>"
 "			<menuitem name='SelectAll' action='SelectAllAction'/>"
-"			<menuitem name='AddSet' action='AddSetAction'/>"
+//"			<menuitem name='AddSet' action='AddSetAction'/>"
+"			<menuitem name='AddSetBefore' action='AddSetBeforeAction'/>"
+"			<menuitem name='AddSetAfter' action='AddSetAfterAction'/>"
 "			<menuitem name='DelSet' action='DelSetAction'/>"
 "			<menuitem name='GroupAdd' action='GroupAddAction'/>"
 "			<menuitem name='SelectMode' action='SelectModeAction'/>"
@@ -264,10 +266,20 @@ int buildIfacegtk(void)
 		"_Selectmode", "Escape",
 		"Go to selection mode",
 		G_CALLBACK (select_mode_gtk) },
+	{ "AddSetBeforeAction", NULL,
+		"_Add Set Before", NULL,
+		"Add a set before the current set",
+		G_CALLBACK (add_set_before_gtk) },
+	{ "AddSetAfterAction", NULL,
+		"_Add Set After", NULL,
+		"Add a set after the current set",
+		G_CALLBACK (add_set_after_gtk) },
+	/*
 	{ "AddSetAction", NULL,
 		"_Add Set", NULL,
 		"Add a set to the show",
 		G_CALLBACK (add_set_gtk) },
+		*/
 	{ "DelSetAction", NULL,
 		"_Delete Set", NULL,
 		"Delete a set from the show",

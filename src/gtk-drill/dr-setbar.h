@@ -37,6 +37,8 @@ G_END_DECLS
 
 
 // set-controls-gtk.c
+void add_set_before_gtk(GtkWidget *widget);
+void add_set_after_gtk(GtkWidget *widget);
 void add_set_gtk(GtkWidget *widget);
 void delete_set_gtk(GtkWidget *widget);
 void set_first_gtk(GtkWidget *widget);

@@ -216,23 +216,10 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 		{
 			case SELECTONE:
 				// select 1 performer
-				//select = select_get_in_area(mouse_clickx, mouse_clicky);
 				select = field_get_in_area(mouse_clickx, mouse_clicky);
 				if (event->state == GDK_CONTROL_MASK)
 				{
 					// ctrl-click
-					/*
-					if (!select->form)
-						select_dots_add_index(select->index);
-						*/
-					/*
-					if (!select_get_form(select))
-					{
-						select_dots_add_index(select_get_dot(select));
-					}
-					*/
-					//select_toggle_multiple_dots(pstate.select, select);
-					//select_toggle_multiple_forms(pstate.select, select);
 					select_toggle_multiple(pstate.select, select);
 				}
 				else if ((event->state & ~GDK_SHIFT_MASK)== 0)
@@ -277,17 +264,9 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				coordx = event->x;
 				coordy = event->y;
 				pixel_to_field(&coordx, &coordy);
-				/*
-				// Adjust for various canvas offsets
-				coordx = round((coordx-fldstate.xo2)/fldstate.canv_step);
-				//coordy = (coordy-yo2-25)/step;
-				coordy = round((coordy-fldstate.yo2)/fldstate.canv_step);
-				*/
 				index = perf_add();
 				coords_set_coord(pshow, index, coordx, coordy);
-				//dr_canvas_refresh(drill);
 				dr_canvas_refresh(drill);
-				//mouse_currentMode = SELECTONE;
 				break;
 			case ADDFORM:
 				break;
@@ -309,7 +288,6 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 	select_t *new_select = select_create();
 	select_t *select_added = select_create();
 	select_t *select_omitted = select_create();
-	//select_t *last;
 
 	if (!fldstate.mouse_selection)
 		fldstate.mouse_selection = select_create();
@@ -334,8 +312,6 @@ gboolean mouse_xy_movement(GtkWidget *widget, GdkEventMotion *event)
 		select_remove_multiple(select_omitted, new_select);
 
 		// Store new set
-		//fldstate.mouse_selection = select_discard(fldstate.mouse_selection);
-		//select_push_all(&fldstate.mouse_selection, &new_select, false);
 		select_clear(fldstate.mouse_selection);
 		select_add_multiple(fldstate.mouse_selection, new_select);
 		select_update_center(fldstate.mouse_selection);

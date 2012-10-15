@@ -479,6 +479,8 @@ void set_destroy(int set_index);
 void goto_set(int set_buffer);
 int isLastSet(void);
 int isFirstSet(void);
+int set_add_before_current(void);
+int set_add_after_current(void);
 int add_set(void);
 void delete_set(void);
 set_t *set_get_first(set_container_t *set_container);
