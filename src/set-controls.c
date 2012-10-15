@@ -78,7 +78,8 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 				}
 			}
 		}
-		newsetnum = setnum-1;
+		newsetnum = setnum;
+		setnum = setnum+1;
 	}
 	while (form)
 	{
@@ -368,19 +369,18 @@ int set_add_before_current(void)
 {
 	// add a set before the current set
 	// Add a set after the current one
-	headset_t *dshow = pshow;
 	int newcounts = 0;
 
-	dshow->sets = set_container_add_before(dshow->sets, pstate.setnum);
+	pshow->sets = set_container_add_before(pshow->sets, pstate.setnum);
 	//set_next();
 	newcounts = pshow->sets->currset->counts;
 	if (newcounts)
 	{
 		pushCounts(&pstate.undobr, pstate.setnum, newcounts, 0);
-		dshow->sets->currset->counts = newcounts;
+		pshow->sets->currset->counts = newcounts;
 	}
 	else
-		dshow->sets->currset->counts = 8;
+		pshow->sets->currset->counts = 8;
 	pushSetMk(&pstate.undobr);
 
 	return 0;
