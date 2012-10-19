@@ -36,55 +36,52 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 {
 	// add a new set before setnum
 	set_t *newset;
+	set_t *nextset;
 	int i;
 	int perfnum = pshow->perfnum;
-	set_t *currset = set_container->currset;
-	double x2, y2, x, y;
+	set_t *currset = set_container->setlist[setnum];
+	double xnew, ynew, x2, y2, x, y;
 	int curr_step = pstate.curr_step;
 	int counts;
-	form_child_t *form, *newform;
+	form_child_t *form = currset->forms, *newform;
 	int newsetnum;
 
-	set_construct(&newset, pshow->perfnum);
-	form = currset->forms;
-	/*
 	if (curr_step)
+		nextset = set_container->setlist[setnum+1];
+	set_construct(&newset, pshow->perfnum);
+	set_container = set_container_add_set_before(set_container, newset, setnum);
+	if (currset)
 	{
-		set_container = set_container_add_set_after(set_container, newset, setnum);
-		newsetnum = setnum+1;
-	}
-	else
-	*/
-	{
-		set_container = set_container_add_set_before(set_container, newset, setnum);
-		if (currset)
+		for (i=0; i<perfnum; i++)
 		{
-			for (i=0; i<perfnum; i++)
+			if (pshow->perfs[i]->valid)
 			{
-				if (pshow->perfs[i]->valid)
+				x = currset->coords[i]->x;
+				y = currset->coords[i]->y;
+				if (curr_step && setnum+1 < pshow->sets->size)
 				{
-					x = currset->coords[i]->x;
-					y = currset->coords[i]->y;
-					/*
-					if (curr_step && setnum+2 < pshow->sets->size)
-					{
-						x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
-						y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
-						counts = currset->counts;
-						x = x + ((x2 - x) / counts * curr_step);
-						y = y + ((y2 - y) / counts * curr_step);
-						pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
-						newset->counts = curr_step;
-					}
-					*/
-					newset->coords[i]->x = x;
-					newset->coords[i]->y = y;
+					x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
+					y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
+					counts = nextset->counts;
+					xnew = x + ((x2 - x) / counts * curr_step);
+					ynew = y + ((y2 - y) / counts * curr_step);
+					currset->coords[i]->x = xnew;
+					currset->coords[i]->y = ynew;
+					//pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
+					//newset->counts = curr_step;
 				}
+				newset->coords[i]->x = x;
+				newset->coords[i]->y = y;
 			}
 		}
-		newsetnum = setnum;
-		setnum = setnum+1;
 	}
+	if (curr_step)
+	{
+		currset->counts = curr_step;
+		nextset->counts = nextset->counts - curr_step;
+	}
+	newsetnum = setnum;
+	setnum = setnum+1;
 	while (form)
 	{
 		form_parent_copy_to(form->parent, setnum, newsetnum);
@@ -103,7 +100,7 @@ set_container_t *set_container_add_set_before(set_container_t *set_container, se
 {
 	// insert newset before setnum
 	int i, j;
-	int size, size_alloc, formparent_size;
+	int size, size_alloc;
 	set_t **setlist = set_container->setlist;
 	set_t **newsetlist;
 	form_container_t *fcont = pshow->topforms;
@@ -166,12 +163,15 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 	int perfnum = pshow->perfnum;
 	set_t *newset;
 	set_t *currset = set_container->setlist[setnum];
+	set_t *nextset;
 	double x2, y2, x, y;
 	int curr_step = pstate.curr_step;
 	int counts;
 	form_child_t *form = currset->forms;
 	form_child_t *newform;
 
+	if (curr_step)
+		nextset = set_container->setlist[setnum+1];
 	set_construct(&newset, perfnum);
 	set_container = set_container_add_set_after(set_container, newset, setnum);
 	if (currset)
@@ -186,16 +186,21 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 				{
 					x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
 					y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
-					counts = currset->counts;
+					counts = nextset->counts;
 					x = x + ((x2 - x) / counts * curr_step);
 					y = y + ((y2 - y) / counts * curr_step);
-					pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
-					newset->counts = curr_step;
+					//pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
+					//newset->counts = curr_step;
 				}
 				newset->coords[i]->x = x;
 				newset->coords[i]->y = y;
 			}
 		}
+	}
+	if (curr_step)
+	{
+		newset->counts = curr_step;
+		nextset->counts = nextset->counts - curr_step;
 	}
 	while (form)
 	{
