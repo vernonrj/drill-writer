@@ -761,13 +761,13 @@ select_t *form_get_contained_dots(form_child_t *form)
 }
 
 
-void form_add_to_set(form_child_t *form, int setnum)
+void form_add_to_set(form_child_t *form, set_t *currset)
 {
-	form_child_t *setform = pshow->sets->setlist[setnum]->forms;
+	form_child_t *setform = currset->forms;
 	form_child_t *curr = NULL;
 	if (!setform)
 	{
-		pshow->sets->setlist[setnum]->forms = form;
+		currset->forms = form;
 		return;
 	}
 	while (setform)
@@ -783,7 +783,7 @@ void form_add_to_set(form_child_t *form, int setnum)
 
 void form_add_to_current_set(form_child_t *form)
 {
-	form_add_to_set(form, pstate.setnum);
+	form_add_to_set(form, pshow->sets->currset);
 	return;
 }
 
@@ -986,6 +986,22 @@ form_parent_t *form_parent_construct_with_form(form_child_t *form, int index)
 }
 
 
+form_parent_t *form_parent_realloc(form_parent_t *form, int size, int size_realloc)
+{
+	int i;
+	int newsize = (size < size_realloc ? size : size_realloc);
+	form_parent_t *newform_parent;
+
+	newform_parent = (form_parent_t*)malloc(size_realloc*sizeof(form_parent_t));
+	for (i=0; i<newsize; i++)
+		newform_parent->forms[i] = form->forms[i];
+	free(form);
+	return newform_parent;
+}
+
+
+
+
 
 form_parent_t *form_parent_destruct(form_parent_t *last)
 {
@@ -1163,6 +1179,34 @@ form_container_t *form_container_realloc(form_container_t *fcont, size_t size_al
 	fcont->size_alloc = size_alloc;
 	return fcont;
 }
+
+
+void form_container_resize_parents(form_container_t *fcont, size_t oldsize, size_t newsize)
+{
+	int i;
+	int parentnum = fcont->size;
+	form_parent_t **parent = fcont->forms, **newparent;
+	newparent = (form_parent_t**)malloc(newsize*sizeof(form_parent_t*));
+	for (i=0; i < parentnum; i++)
+		newparent[i] = form_parent_realloc(parent[i], oldsize, newsize);
+	return;
+}
+
+
+void form_container_move_children_including(form_container_t *fcont, int setnum)
+{
+	int i, j;
+	form_parent_t *parent;
+	for(i=0; i<fcont->size; i++)
+	{
+		parent = fcont->forms[i];
+		for (j=pshow->sets->size; j>=setnum; j--)
+			parent->forms[i+1] = parent->forms[i];
+	}
+	return;
+}
+
+
 
 
 form_container_t *form_container_insert_head(form_container_t *fcont, form_parent_t *last)

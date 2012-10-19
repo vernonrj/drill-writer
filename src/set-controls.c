@@ -38,21 +38,23 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 	set_t *newset;
 	int i;
 	int perfnum = pshow->perfnum;
-	set_t *currset = set_container->setlist[setnum];
+	set_t *currset = set_container->currset;
 	double x2, y2, x, y;
 	int curr_step = pstate.curr_step;
 	int counts;
-	form_child_t *form;
+	form_child_t *form, *newform;
 	int newsetnum;
 
 	set_construct(&newset, pshow->perfnum);
 	form = currset->forms;
+	/*
 	if (curr_step)
 	{
 		set_container = set_container_add_set_after(set_container, newset, setnum);
 		newsetnum = setnum+1;
 	}
 	else
+	*/
 	{
 		set_container = set_container_add_set_before(set_container, newset, setnum);
 		if (currset)
@@ -63,6 +65,7 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 				{
 					x = currset->coords[i]->x;
 					y = currset->coords[i]->y;
+					/*
 					if (curr_step && setnum+2 < pshow->sets->size)
 					{
 						x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
@@ -73,6 +76,7 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 						pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
 						newset->counts = curr_step;
 					}
+					*/
 					newset->coords[i]->x = x;
 					newset->coords[i]->y = y;
 				}
@@ -84,7 +88,10 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 	while (form)
 	{
 		form_parent_copy_to(form->parent, setnum, newsetnum);
-		form_add_to_set(form, newsetnum);
+		//form_parent_copy_to(form->parent, setnum, setnum-1);
+		newform = form->parent->forms[newsetnum]; 
+		//form_add_to_set(newform, newsetnum);
+		form_add_to_set(newform, newset);
 		form = form->next;
 	}
 	return set_container;
@@ -95,15 +102,29 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 set_container_t *set_container_add_set_before(set_container_t *set_container, set_t *newset, int setnum)
 {
 	// insert newset before setnum
-	int i;
-	int size, size_alloc;
+	int i, j;
+	int size, size_alloc, formparent_size;
 	set_t **setlist = set_container->setlist;
 	set_t **newsetlist;
+	form_container_t *fcont = pshow->topforms;
+	form_parent_t *fparent = fcont->forms[0];
+	form_child_t **newforms;
+	form_child_t **forms;
 
 	size_alloc = set_container->size_alloc; 
 	size = set_container->size;
 	if (size+1 >= size_alloc)
 	{
+		for (i=0; i<fcont->size; i++)
+		{
+			fparent = fcont->forms[i];
+			forms = fparent->forms;
+			newforms = (form_child_t**)malloc((size_alloc+5)*sizeof(form_child_t*));
+			for (j=0; j<size; j++)
+				newforms[j] = forms[j];
+			fparent->forms = newforms;
+			free(forms);
+		}
 		newsetlist = (set_t**)malloc((size_alloc+5)*sizeof(set_t*));
 		for(i=0; i<size; i++)
 			newsetlist[i] = setlist[i];
@@ -112,9 +133,20 @@ set_container_t *set_container_add_set_before(set_container_t *set_container, se
 		set_container->size_alloc += 5;
 		setlist = newsetlist;
 	}
+	if (fcont)
+	{
+		for (i=0; i<fcont->size; i++)
+		{
+			fparent = fcont->forms[i];
+			for (j=set_container->size; j>setnum; j--)
+				fparent->forms[j] = fparent->forms[j-1];
+			fparent->forms[setnum] = NULL;
+		}
+	}
 
 	if (newset != setlist[setnum])
 	{
+		//form_container_move_children_including(pshow->topforms, setnum);
 		for(i=set_container->size; i>setnum; i--)
 			setlist[i] = setlist[i-1];
 		setlist[setnum] = newset;
@@ -169,7 +201,8 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 	{
 		form_parent_copy_to(form->parent, setnum, setnum+1);
 		newform = form->parent->forms[setnum+1]; 
-		form_add_to_set(newform, setnum+1);
+		//form_add_to_set(newform, setnum+1);
+		form_add_to_set(newform, newset);
 		form = form->next;
 	}
 
