@@ -1,4 +1,6 @@
 #include "drillwriter.h"
+#include "forms/dr_forms.h"
+#include "selection/selectcon.h"
 
 
 coord_t **coords_construct(int perfs)

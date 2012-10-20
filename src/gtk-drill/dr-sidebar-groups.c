@@ -1,4 +1,5 @@
 #include "drillwriter-gtk.h"
+#include "../forms/dr_forms.h"
 //#include "dr-sidebar-groups.h"
 
 

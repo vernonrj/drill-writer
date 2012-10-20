@@ -1,4 +1,6 @@
 #include "drillwriter.h"
+#include "forms/dr_forms.h"
+#include "selection/selectcon.h"
 
 
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2)

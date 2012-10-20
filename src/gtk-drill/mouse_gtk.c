@@ -1,4 +1,6 @@
 #include "drillwriter-gtk.h"
+#include "../forms/dr_forms.h"
+#include "../selection/selectcon.h"
 
 
 

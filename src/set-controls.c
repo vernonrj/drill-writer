@@ -1,5 +1,6 @@
 // Functions that change sets go here
 #include "drillwriter.h"
+#include "forms/dr_forms.h"
 
 
 set_container_t *set_container_construct(int perfs)

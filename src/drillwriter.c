@@ -3,6 +3,8 @@
 #include <stdlib.h>
 
 #include "drillwriter.h"		// header file, with most global variables
+#include "forms/dr_forms.h"
+#include "selection/selectcon.h"
 
 int show_construct(headset_t **dshow_r, int perfs)
 {
