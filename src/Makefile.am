@@ -7,6 +7,7 @@
 ## to provide a way for the user to supply additional arguments.
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
+SELECTION_DIR = selection
 
 ## Define an executable target "drillwriter", which will be installed into the
 
@@ -24,13 +25,13 @@ bin_PROGRAMS = drillwriter
 
 ## included in distribution archives of the project.
 
-drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h bsd-queue.h \
-		      coords.c fieldrel.c file-ops.c \
+drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h bsd-queue.h selection/selectcon.h \
+		      selection/selectcon.c coords.c fieldrel.c file-ops.c \
 		      drillwriter.c perf-con.c forms.c group.c\
-		      select-con.c set-controls.c tempo.c undo.c \
+		      set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/perf-con-gtk.c \
-		      gtk-drill/mouse_gtk.c \ gtk-drill/dr-zoom-gtk.c \
+		      gtk-drill/mouse_gtk.c gtk-drill/dr-zoom-gtk.c \
 		      gtk-drill/dr-drill-class.h gtk-drill/dr-drill-class.c \
 		      gtk-drill/dr-setbar.h gtk-drill/dr-setbar.c \
 		      gtk-drill/dr-media.h gtk-drill/dr-media.c \

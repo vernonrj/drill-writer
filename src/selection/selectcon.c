@@ -15,7 +15,8 @@
 // This also encapsulates select_proto, so future improvements should be easier.
 #include <stdio.h>
 #include <stdlib.h>
-#include "drillwriter.h"
+#include <stdbool.h>
+#include "selectcon.h"
 
 
 
@@ -37,7 +38,6 @@ struct select_proto
 	size_t dot_alloc;		// allocation size of dotfield
 	size_t form_alloc;		// allocation size of formfield
 };
-
 
 int select_get_dot_advance(select_t *select)
 {
@@ -349,17 +349,6 @@ select_t *select_create_with_size(size_t dot_size, size_t form_size)
 }
 
 
-select_t *select_create(void)
-{
-	// create and initialize memory with default size
-	int dot_size;
-	int form_size;
-
-	dot_size = pshow->perfnum;
-	form_size = pshow->topforms ? pshow->topforms->size : 0;
-
-	return select_create_with_size(dot_size, form_size);
-}
 
 
 int select_init_with_size(select_t *select, int dot_alloc, int form_alloc)
@@ -378,13 +367,6 @@ int select_init_with_size(select_t *select, int dot_alloc, int form_alloc)
 }
 
 
-int select_init(select_t *select)
-{
-	if (!select)
-		return -1;
-	select_init_with_size(select, pshow->perfnum, pshow->topforms->size);
-	return 0;
-}
 
 
 select_t *select_destroy(select_t *select)
@@ -405,20 +387,6 @@ int select_update_center(select_t *select)
 	return 0;
 }
 
-void select_all_dots(void)
-{
-	int i;
-	perf_t **perfs = pshow->perfs;
-	int perfnum = pshow->perfnum;
-	select_t *select = pstate.select;
-
-	for (i=0; i<perfnum; i++)
-	{
-		if (perfs[i]->valid)
-			select_add_dot(select, i);
-	}
-	return;
-}
 	
 
 // internal functions
