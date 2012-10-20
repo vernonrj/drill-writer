@@ -123,9 +123,6 @@ void select_update_center(select_t *last);
 select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset);
 */
 
-select_t *select_create(void);
-int select_init(select_t *select);
-void select_all_dots(void);
 
 
 

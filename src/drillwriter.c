@@ -322,39 +322,3 @@ int main (int argc, char *argv[])
 }
 
 
-select_t *select_create(void)
-{
-	// create and initialize memory with default size
-	int dot_size;
-	int form_size;
-
-	dot_size = pshow->perfnum;
-	form_size = pshow->topforms ? pshow->topforms->size : 0;
-
-	return select_create_with_size(dot_size, form_size);
-}
-
-
-int select_init(select_t *select)
-{
-	if (!select)
-		return -1;
-	select_init_with_size(select, pshow->perfnum, pshow->topforms->size);
-	return 0;
-}
-
-void select_all_dots(void)
-{
-	int i;
-	perf_t **perfs = pshow->perfs;
-	int perfnum = pshow->perfnum;
-	select_t *select = pstate.select;
-
-	for (i=0; i<perfnum; i++)
-	{
-		if (perfs[i]->valid)
-			select_add_dot(select, i);
-	}
-	return;
-}
-

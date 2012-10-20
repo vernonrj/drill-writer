@@ -1,5 +1,9 @@
 typedef struct select_proto select_t;
 
+select_t *select_create(void);
+int select_init(select_t *select);
+void select_all_dots(void);
+
 int select_get_dot_advance(select_t *select);
 int select_get_form_advance(select_t *select);
 int select_head(select_t *select);

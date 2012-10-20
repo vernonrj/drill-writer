@@ -263,7 +263,6 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
-SELECTION_DIR = selection
 drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h bsd-queue.h dr_select.h \
 		      dr_forms.h dr_fieldrel.h \
 		      selection/dr_select.c coords.c relations/dr_fieldrel.c file-ops.c \

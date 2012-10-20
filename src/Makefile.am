@@ -7,7 +7,6 @@
 ## to provide a way for the user to supply additional arguments.
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
-SELECTION_DIR = selection
 
 ## Define an executable target "drillwriter", which will be installed into the
 
