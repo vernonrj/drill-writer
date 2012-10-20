@@ -660,12 +660,26 @@ int form_set_endpoint_grid(form_child_t *form, double x1, double y1, double x2, 
 
 int form_move_endpoint(form_child_t *form, double x1, double y1, double x2, double y2)
 {
+	int i;
+	double *endpoint;
 	while (form)
 	{
 		if (form_endpoint_contains_coords(form, x1, y1))
 		{
-			form_set_endpoint(form, x1, y1, x2, y2);
-			return 0;
+			for (i=0; i<2; i++)
+			{
+				endpoint = form->endpoints[i];
+				if (fieldrel_check_dots_within_range(endpoint[0], 
+							endpoint[1], x1, y1))
+				{
+					endpoint[0] += (x2-x1);
+					endpoint[1] += (y2-y1);
+					form_update_line(form);
+					return 0;
+				}
+			}
+			//form_set_endpoint(form, x1, y1, x2, y2);
+			//return 0;
 		}
 		form = form->next;
 	}
