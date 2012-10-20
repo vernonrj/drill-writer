@@ -180,8 +180,7 @@ int show_destroy(headset_t **dshow_r)
 }
 
 
-#ifndef USE_GTK
-int main (int argc, char *argv[])
+int drillwriter_main (int argc, char *argv[])
 {
 	// specific set
 	set_t *currset;
@@ -301,24 +300,12 @@ int main (int argc, char *argv[])
 	pshow->sets->currset = pshow->sets->firstset;
 
 	perf_cur = 0;
-	undo_destroy(&pstate.undobr, pshow);
+	//undo_destroy(&pstate.undobr, pshow);
 
-	///*
-	// Start up gtk
-	startTk(argc, argv);
-	// Create gtk interface
-	buildIfacegtk();
-	//printf("%s\n", perf_buf_x);
-
-
-	// Run Main Loop
-	runTk();
-	// */
 	
 	//menuIface();
-	show_destroy(&pshow);
+	//show_destroy(&pshow);
 
 	return 0;
 }
 
-#endif

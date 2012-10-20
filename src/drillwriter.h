@@ -72,7 +72,7 @@ void group_add_global(group_t *group);
 // drillwriter.c
 int show_construct(struct headset_proto **dshow_r, int perfs);
 int show_destroy(struct headset_proto **dshow_r);
-int main (int argc, char *argv[]);
+int drillwriter_main (int argc, char *argv[]);
 
 // perf-con.c
 // create container for performers
@@ -85,38 +85,6 @@ void perf_delete_selected(void);
 void perf_delete(perf_t *perf);
 double perf_average_stepsize_selected(struct headset_proto *dshow);
 int perf_max_stepsize_selected(struct headset_proto *dshow, double *stepsize_r);
-
-
-
-// select-con.c
-// Selection control functions
-/*
-select_t *select_construct(void);
-select_t *select_construct_with_index(int index);
-int select_has_next(select_t *select);
-select_t *select_get_next(select_t *select);
-void select_set_next(select_t *select, select_t *last);
-int select_has_index(select_t *select);
-int select_get_dot(select_t *select);
-int select_has_form(select_t *select);
-form_child_t *select_get_form(select_t *select);
-bool select_check_index_selected(int index, select_t *selects);
-select_t *select_add_index(select_t*, int index, bool toggle);
-void select_dots_add_index(int index);
-select_t *select_add_group(select_t *select, group_t *group);
-select_t *select_add_form(select_t*, form_child_t*, bool);
-void select_add_multiple(select_t **mainlist_r, select_t **modifier_r, bool toggle);
-select_t *select_drop_multiple(select_t *mainlist, select_t *modifier);
-select_t *select_discard(select_t*);
-void select_dots_discard(void);
-select_t *select_push(select_t *mainlist, select_t **modifier_r, bool toggle);
-void select_push_all(select_t **mainlist_r, select_t **modifier_r, bool toggle);
-select_t *select_all(select_t*, perf_t **perfs, int perfnum);
-int select_all_dots(void);
-void select_update_center(select_t *last);
-select_t *select_update_scope_set1_set2(select_t *select_head, set_t *currset, set_t *nextset);
-*/
-
 
 
 
