@@ -1,6 +1,7 @@
-#include "dr_forms.h"
+#include "../dr_forms.h"
 #include "../drillwriter.h"
-#include "../selection/selectcon.h"
+#include "../dr_select.h"
+#include "../dr_fieldrel.h"
 
 
 form_coord_t *fcoord_construct(void)

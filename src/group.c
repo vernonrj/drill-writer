@@ -1,5 +1,5 @@
 #include "drillwriter.h"
-#include "selection/selectcon.h"
+#include "dr_select.h"
 
 
 group_t *group_construct(void)

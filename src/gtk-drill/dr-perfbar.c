@@ -1,5 +1,6 @@
 #include "drillwriter-gtk.h"
 #include "dr-setbar.h"
+#include "../dr_fieldrel.h"
 
 
 static void dr_perfbar_class_init(DrPerfbarClass *klass);

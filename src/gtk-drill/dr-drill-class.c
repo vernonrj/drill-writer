@@ -3,8 +3,9 @@
 //#include "drill.h"
 #include "drillwriter-gtk.h"
 #include "dr-drill-class.h"
-#include "../forms/dr_forms.h"
-#include "../selection/selectcon.h"
+#include "../dr_forms.h"
+#include "../dr_select.h"
+#include "../dr_fieldrel.h"
 
 static void gtk_drill_get_preferred_width(GtkWidget *widget, gint *minimal_width, gint *natural_width);
 static void gtk_drill_get_preferred_height(GtkWidget *widget, gint *minimal_height, gint *natural_height);

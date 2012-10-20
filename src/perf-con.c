@@ -1,6 +1,6 @@
 // Functions that manipulate performers go here
 #include "drillwriter.h"
-#include "selection/selectcon.h"
+#include "dr_select.h"
 
 // performer storage
 perf_t *perf_construct(void)

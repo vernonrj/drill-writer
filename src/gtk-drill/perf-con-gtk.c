@@ -1,6 +1,6 @@
 #include "drillwriter-gtk.h"
-#include "../forms/dr_forms.h"
-#include "../selection/selectcon.h"
+#include "../dr_forms.h"
+#include "../dr_select.h"
 void view_stepsize_gtk(GtkWidget *widget)
 {
 	// view the stepsize of selected dots
