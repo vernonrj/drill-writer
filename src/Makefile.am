@@ -14,6 +14,10 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 bin_PROGRAMS = drillwriter
 
+lib_LTLIBRARIES = libdrillselect-@DRILLSELECT_VERSION@.la
+libdrillselect_@DRILLSELECT_VERSION@_la_SOURCES = select-con/select-con.h select-con/select-con.c
+libdrillselect_@DRILLSELECT_VERSION@_la_LDFLAGS = -version-info $(DRILLSELECT_SO_VERSION)
+
 ## Define the list of source files for the "drillwriter" target. The file extension
 
 ## .cc is recognized by Automake, and causes it to produce rules which invoke
@@ -27,7 +31,7 @@ bin_PROGRAMS = drillwriter
 drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h bsd-queue.h \
 		      coords.c fieldrel.c file-ops.c \
 		      drillwriter.c perf-con.c forms.c group.c\
-		      select-con.c set-controls.c tempo.c undo.c \
+		      set-controls.c tempo.c undo.c \
 		      gtk-drill/file-ops-gtk.c gtk-drill/coords-gtk.c\
 		      gtk-drill/main-gtk.c gtk-drill/perf-con-gtk.c \
 		      gtk-drill/mouse_gtk.c \ gtk-drill/dr-zoom-gtk.c \
