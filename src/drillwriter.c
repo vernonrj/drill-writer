@@ -180,7 +180,7 @@ int show_destroy(headset_t **dshow_r)
 }
 
 
-
+#ifndef USE_GTK
 int main (int argc, char *argv[])
 {
 	// specific set
@@ -321,4 +321,4 @@ int main (int argc, char *argv[])
 	return 0;
 }
 
-
+#endif

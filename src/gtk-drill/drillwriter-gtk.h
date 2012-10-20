@@ -1,12 +1,6 @@
 #include "drillwriter.h"		// field class
-#include "dr-media.h"		// mediabar class
 #include "dr-drill-class.h"
-#include "dr-setbar.h"		// setbar class
-#include "dr-perfbar.h"
-#include "dr-sidebar.h"
-#include "dr-sidebar-sets.h"
-#include "dr-sidebar-groups.h"
-#include "dr-group-cell.h"
+#include "../structures.h"
 
 #include <gtk-3.0/gtk/gtk.h>
 #include <glib.h>
@@ -115,10 +109,6 @@ void func_relative(void);
 void show_gen(struct tempo_proto **stempo_r);
 
 // main-gtk.c
-int startTk(int argc, char *argv[]);
-int runTk(void);
-//static void not_implemented ();
-//static void quit_action ();
 void button_upifCh(GtkWidget *button, char *newinfo);
 void entry_upifCh(GtkWidget *entry, char *newinfo);
 int buildIfacegtk(void);

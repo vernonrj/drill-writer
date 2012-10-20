@@ -1,6 +1,6 @@
 //#include <gtk/gtk.h>
-#include "dr-setbar.h"
 #include "drillwriter-gtk.h"
+#include "dr-setbar.h"
 
 static void dr_setbar_class_init(DrSetbarClass *klass);
 static void dr_setbar_init(DrSetbar *setbar);

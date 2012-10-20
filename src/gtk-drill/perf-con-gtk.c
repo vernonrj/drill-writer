@@ -1,4 +1,5 @@
 #include "drillwriter-gtk.h"
+#include "dr-sidebar.h"
 #include "../dr_forms.h"
 #include "../dr_select.h"
 void view_stepsize_gtk(GtkWidget *widget)

@@ -1,5 +1,7 @@
 #include "drillwriter-gtk.h"
 #include "dr-sidebar-sets.h"
+#include "dr-setbar.h"
+#include "dr-media.h"
 
 static void dr_sidebar_sets_class_init(DrSidebarSetsClass *klass);
 static void dr_sidebar_sets_init(DrSidebarSets *sidebar_sets);

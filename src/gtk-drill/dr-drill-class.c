@@ -1,8 +1,9 @@
 // drill.c
 
-//#include "drill.h"
 #include "drillwriter-gtk.h"
 #include "dr-drill-class.h"
+#include "dr-sidebar.h"
+#include "dr-perfbar.h"
 #include "../dr_forms.h"
 #include "../dr_select.h"
 #include "../dr_fieldrel.h"

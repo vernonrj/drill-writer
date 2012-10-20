@@ -1,7 +1,5 @@
 /* drill.h */
 //TODO: add copy for dots
-// TODO: encapsulate all set structs & info into a "class"
-// TODO: free gtk widgets
 
 #include <string.h>
 #include <stdbool.h>
@@ -14,7 +12,7 @@
 #include "structures.h"
 //#include "forms/dr_forms.h"
 
-
+#define USE_GTK 1
 
 int do_field;			// whether or not to redraw field
 int do_dots;
@@ -26,10 +24,6 @@ int perf_cur;	// current selected performer
 
 
 // Functions
-// gtk functions
-int startTk(int argc, char *argv[]);
-int buildIfacegtk(void);
-int runTk(void);
 // c++ functions
 //int menuIface(void);
 

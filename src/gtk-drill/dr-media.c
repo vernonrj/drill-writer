@@ -2,6 +2,7 @@
 //#include "drill.h"
 #include "drillwriter-gtk.h"
 #include "dr-media.h"
+#include "dr-setbar.h"
 
 static void dr_mediabar_class_init(DrMediabarClass *klass);
 static void dr_mediabar_init(DrMediabar *mediabar);

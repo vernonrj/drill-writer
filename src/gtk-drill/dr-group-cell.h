@@ -3,6 +3,7 @@
 #define __DR_GROUP_CELL_H__
 
 #include <gtk-3.0/gtk/gtk.h>
+#include "../structures.h"
 
 G_BEGIN_DECLS
 

@@ -1,7 +1,9 @@
 #include "drillwriter-gtk.h"
+#include "dr-group-cell.h"
+#include "dr-sidebar.h"
+#include "dr-sidebar-groups.h"
 #include "../dr_forms.h"
 #include "../dr_select.h"
-//#include "dr-sidebar-groups.h"
 
 
 

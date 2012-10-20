@@ -1,5 +1,6 @@
 #include "drillwriter-gtk.h"
 #include "dr-setbar.h"
+#include "dr-perfbar.h"
 #include "../dr_fieldrel.h"
 
 

@@ -1,6 +1,18 @@
 #include "drillwriter-gtk.h"
-/* TODO:	Make scrollbar its own class
- * 		Scrolling and zooming are handled in a class
+#include "dr-media.h"		// mediabar class
+#include "dr-drill-class.h"
+#include "dr-setbar.h"		// setbar class
+#include "dr-perfbar.h"
+#include "dr-sidebar.h"
+#include "dr-sidebar-sets.h"
+#include "dr-sidebar-groups.h"
+#include "dr-group-cell.h"
+#include "../structures.h"
+#include "../dr_forms.h"
+#include "../dr_select.h"
+// TODO: free gtk widgets
+/* 
+ * 
  * TODO:	When in a form, endpoints are black, dynamic dots are grayed out
  * TODO:	Groups and forms will be separate entities.
  * TODO:	Groups can be nested (subgroups, subforms). Accessed on group sidebar
@@ -95,21 +107,7 @@ static const gchar *ui_info =
 "	</menubar>"
 "</ui>";
 
-int startTk(int argc, char *argv[])
-{
-	// Start Toolkit of choice
-	// gtk
-	gtk_init(&argc, &argv);
-	return 0;
-}
 
-
-int runTk(void)
-{
-	// run selected toolkit
-	gtk_main();
-	return 0;
-}
 
 
 static void not_implemented ()
@@ -667,5 +665,146 @@ void do_redo_gtk(GtkWidget *widget)
 	lheight = fldstate.height+2*fldstate.canv_step;
 	gtk_widget_queue_draw_area(window, 0, 0, lwidth, lheight);
 	return;
+}
+
+
+int main (int argc, char *argv[])
+{
+	// specific set
+	set_t *currset;
+	set_t *prevset;
+	// coords
+	coord_t *prevcr;
+	int excode;
+	int i;		// loop vars
+	form_child_t *form = NULL;
+	select_t *select = NULL;
+
+	mouse_currentMode = SELECTONE;
+	// set show as uninitialized
+	pshow = 0;
+
+	// Make a show with 21 performers
+	pshow = 0;
+	excode = show_construct(&pshow, 21);
+	if (excode == -1)
+	{
+		printf("Allocation error\n");
+		return -1;
+	}
+	currset = pshow->sets->firstset;
+	currset->counts = 0;
+
+	coords_set_coord(pshow, 0, 32, 53);
+	coords_set_coord(pshow, 1, 36, 53);
+	coords_set_coord(pshow, 2, 40, 53);
+	coords_set_coord(pshow, 3, 34, 49);
+	coords_set_coord(pshow, 4, 38, 49);
+	coords_set_coord(pshow, 5, 36, 45);
+	//*
+	select = select_create();
+	for(i=0; i<6; i++)
+	{
+		select_add_dot(select, i);
+	}
+	form = form_build_line(NULL, select);
+	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
+	free(form->name);
+	form->name = (char*)malloc(6*sizeof(char));
+	snprintf(form->name, 6, "Form1");
+	form_set_endpoint(form, 0, 0, 32, 53);
+	form_set_endpoint(form, 0, 0, 50, 53);
+	form_add_to_current_set(form);
+	//*/
+
+	coords_set_coord(pshow, 6, 32, 70);
+	coords_set_coord(pshow, 7, 36, 70);
+	coords_set_coord(pshow, 8, 40, 70);
+	coords_set_coord(pshow, 9, 34, 66);
+	coords_set_coord(pshow, 10, 38, 66);
+	coords_set_coord(pshow, 11, 36, 62);
+
+	//*
+	select_clear(select);
+	for(i=6; i<12; i++)
+	{
+		//select = select_add_index(select, i, false);
+		select_add_dot(select, i);
+	}
+	form = form_build_line(NULL, select);
+	free(select);
+	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
+	free(form->name);
+	form->name = (char*)malloc(6*sizeof(char));
+	snprintf(form->name, 6, "Form2");
+	form_set_endpoint(form, 0, 0, 20, 70);
+	form_set_endpoint(form, 0, 0, 36, 62);
+	form_add_to_current_set(form);
+	//*/
+
+	// add new set
+	//*
+	//add_set();
+	set_add_after_current();
+	currset = pshow->sets->currset;
+	form = currset->forms;
+	while (form)
+	{
+		form_movexy(form, 4, 0);
+		form = form->next;
+	}
+	/*
+	prevset = set_get_prev(pshow->sets, pstate.setnum);
+	currset->counts = 8;
+	for (i=0; i<12; i++)
+	{
+		prevcr = prevset->coords[i];
+		coords_set_coord(pshow, i, prevcr->x+4, prevcr->y);
+	}
+	*/
+	///*
+	// add new set
+	//add_set();
+	set_add_after_current();
+	currset = pshow->sets->currset;
+	form = currset->forms;
+	while (form)
+	{
+		form_movexy(form, 0, -10);
+		form = form->next;
+	}
+	/*
+	prevset = set_get_prev(pshow->sets, pstate.setnum);
+	currset->counts = 8;
+	for (i=0; i<12; i++)
+	{
+		prevcr = prevset->coords[i];
+		coords_set_coord(pshow, i, prevcr->x, prevcr->y-10);
+	}
+	*/
+
+	// Start at first set
+	pstate.setnum = 0;
+	pshow->sets->currset = pshow->sets->firstset;
+
+	perf_cur = 0;
+	undo_destroy(&pstate.undobr, pshow);
+
+	///*
+	// Start up gtk
+	gtk_init(&argc, &argv);
+	// Create gtk interface
+	buildIfacegtk();
+	//printf("%s\n", perf_buf_x);
+
+
+	// Run Main Loop
+	gtk_main();
+	// */
+	
+	//menuIface();
+	show_destroy(&pshow);
+
+	return 0;
 }
 

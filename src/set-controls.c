@@ -234,16 +234,19 @@ set_container_t *set_container_add_set_after(set_container_t *set_container, set
 	if (size+1 >= size_alloc)
 	{
 		//while (fparent)
-		for (i=0; i<fcont->size; i++)
+		if (fcont)
 		{
-			fparent = fcont->forms[i];
-			forms = fparent->forms;
-			newforms = (form_child_t **)malloc((size_alloc+5)*sizeof(form_child_t*));
-			for (j=0; j<size; j++)
-				newforms[j] = forms[j];
-			fparent->forms = newforms;
-			free(forms);
-			//fparent = LIST_NEXT(fparent, formlist_entries);
+			for (i=0; i<fcont->size; i++)
+			{
+				fparent = fcont->forms[i];
+				forms = fparent->forms;
+				newforms = (form_child_t **)malloc((size_alloc+5)*sizeof(form_child_t*));
+				for (j=0; j<size; j++)
+					newforms[j] = forms[j];
+				fparent->forms = newforms;
+				free(forms);
+				//fparent = LIST_NEXT(fparent, formlist_entries);
+			}
 		}
 		newsetlist = (set_t**)malloc((size_alloc+5)*sizeof(set_t*));
 		for(i=0; i<size; i++)
