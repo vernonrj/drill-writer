@@ -14,6 +14,11 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
+LT_INIT([disable-static])
+
+AC_SUBST([DRILLSELECT_SO_VERSION], [1:0:1])
+AC_SUBST([DRILLSELECT_API_VERSION], [1.0])
+
 #AM_PATH_GTK_2_0([2.24.0],,AC_MSG_ERROR([Gtk+-2.24.0 or higher required.]))
 AM_PATH_GTK_3_0([3.4.0],,AC_MSG_ERROR([Gtk+-3.4.0 or higher required.]))
 AC_CHECK_HEADERS([math.h])
