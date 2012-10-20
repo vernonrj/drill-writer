@@ -47,6 +47,7 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 	select_clear(pstate.select);
 	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
 	select_add_form(pstate.select, form->parent->index);
+	select_head(pstate.select);
 	mouse_currentMode = ADDFORM;
 	return;
 }

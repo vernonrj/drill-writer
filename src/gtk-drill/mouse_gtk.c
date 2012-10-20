@@ -93,22 +93,32 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				{
 					// regular click
 					// move dots
+
 					if (!mouse_discarded && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
-					{
+					{	
+						// move forms
 						while (form && form_endpoint_contains_coords(form, fldstate.mouse_clickx, fldstate.mouse_clicky))
 						{
 							if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+							{
+								// Move on a 1-step grid
 								form_move_endpoint_grid(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+							}
 							else
+							{
+								// move off of the grid
 								form_move_endpoint(form, fldstate.mouse_clickx, fldstate.mouse_clicky, x, y);
+							}
 							if ((form2 = form_find_selected_with_endpoint_hole(form_select, x, y)) != NULL)
 							{
+								// Move dot into endpoint hole
 								select_remove_form(form_select, form2->parent->index);
 								index = form_find_index_with_coords(form, x, y);
 								form_add_index_to_hole_with_coords(form2, index, x, y);
 							}
 							if ((form = form_find_selected_with_endpoint(form_select, fldstate.mouse_clickx, fldstate.mouse_clicky)) != NULL)
 							{
+								// remove form from checking
 								select_remove_form(form_select, form->parent->index);
 							}
 						}
@@ -117,6 +127,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 					}
 					else if ((mouse_clickx != 0 || mouse_clicky != 0) && !mouse_discarded)
 					{
+						// move a selected dot 
 						if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
 							coords_movexy_grid(mouse_clickx, mouse_clicky);
 						else
@@ -128,6 +139,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 				break;
 			case ADDFORM:
 				// add a form
+				select_head(pstate.select);
 				form = form_container_get_form_child(pshow->topforms, select_get_form(pstate.select));
 				form_set_endpoint(form, 0, 0, x, y);
 				form_set_endpoint(form, 0, 0, fldstate.mouse_clickx, fldstate.mouse_clicky);
