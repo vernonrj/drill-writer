@@ -1,9 +1,12 @@
 typedef struct select_proto select_t;
 
+// convenience functions
 select_t *select_create(void);
 int select_init(select_t *select);
 void select_all_dots(void);
 
+// basic external functions
+// These don't interact with other structures
 int select_get_dot_advance(select_t *select);
 int select_get_form_advance(select_t *select);
 int select_head(select_t *select);
