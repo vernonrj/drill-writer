@@ -14,9 +14,9 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 bin_PROGRAMS = drillwriter
 
-lib_LTLIBRARIES = libdrillselect-@DRILLSELECT_API_VERSION@.la
-libdrillselect_@DRILLSELECT_API_VERSION@_la_SOURCES = select-con/select-con.h select-con/select-con.c
-libdrillselect_@DRILLSELECT_API_VERSION@_la_LDFLAGS = -version-info $(DRILLSELECT_SO_VERSION)
+lib_LTLIBRARIES = libdrillselect-@DRILLSELECT_VERSION@.la
+libdrillselect_@DRILLSELECT_VERSION@_la_SOURCES = select-con/select-con.h select-con/select-con.c
+libdrillselect_@DRILLSELECT_VERSION@_la_LDFLAGS = -version-info $(DRILLSELECT_SO_VERSION)
 
 ## Define the list of source files for the "drillwriter" target. The file extension
 
@@ -50,7 +50,7 @@ drillwriter_SOURCES = drillwriter.h gtk-drill/drillwriter_gtk.h bsd-queue.h \
 ## Define an independent executable script for inclusion in the distribution
 
 ## archive. It will not be installed on an end user's system, however.
-drillwriter_LDFLAGS = $(GTK_LIBS) -lm -Wall -L. -ldrillselect-@DRILLSELECT_API_VERSION@
+drillwriter_LDFLAGS = $(GTK_LIBS) -lm -Wall
 drillwriter_CFLAGS = $(GTK_CFLAGS) -Wall
 
 dist_noinst_SCRIPTS = autogen.sh

@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <math.h>
 #include "bsd-queue.h"
-#include "select-con/select-con.h"
 
 typedef struct undo_proto undo_t;
 typedef struct select_proto select_t;
