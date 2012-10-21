@@ -129,7 +129,7 @@ int show_destroy(headset_t **dshow_r)
 	snum = 0;
 	while (setcurr != NULL)
 	{
-		printf("%i\n", snum);
+		//printf("%i\n", snum);
 		setlast = setcurr;
 		//setcurr = setcurr->next;
 		setcurr = set_get_next(pshow->sets, snum);
@@ -199,101 +199,107 @@ int drillwriter_main (int argc, char *argv[])
 	// Make a show with 21 performers
 	pshow = 0;
 	excode = show_construct(&pshow, 21);
+
 	if (excode == -1)
 	{
 		printf("Allocation error\n");
 		return -1;
 	}
-	currset = pshow->sets->firstset;
-	currset->counts = 0;
+	if (argc > 1)
+		open_file(argv[1]);
+	else
+	{
+		currset = pshow->sets->firstset;
+		currset->counts = 0;
 
-	coords_set_coord(pshow, 0, 32, 53);
-	coords_set_coord(pshow, 1, 36, 53);
-	coords_set_coord(pshow, 2, 40, 53);
-	coords_set_coord(pshow, 3, 34, 49);
-	coords_set_coord(pshow, 4, 38, 49);
-	coords_set_coord(pshow, 5, 36, 45);
-	//*
-	select = select_create();
-	for(i=0; i<6; i++)
-	{
-		select_add_dot(select, i);
-	}
-	form = form_build_line(NULL, select);
-	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
-	free(form->name);
-	form->name = (char*)malloc(6*sizeof(char));
-	snprintf(form->name, 6, "Form1");
-	form_set_endpoint(form, 0, 0, 32, 53);
-	form_set_endpoint(form, 0, 0, 50, 53);
-	form_add_to_current_set(form);
-	//*/
+		coords_set_coord(pshow, 0, 32, 53);
+		coords_set_coord(pshow, 1, 36, 53);
+		coords_set_coord(pshow, 2, 40, 53);
+		coords_set_coord(pshow, 3, 34, 49);
+		coords_set_coord(pshow, 4, 38, 49);
+		coords_set_coord(pshow, 5, 36, 45);
+		//*
+		select = select_create();
+		for(i=0; i<6; i++)
+		{
+			select_add_dot(select, i);
+		}
+		form = form_build_line(NULL, select);
+		pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
+		free(form->name);
+		form->name = (char*)malloc(6*sizeof(char));
+		snprintf(form->name, 6, "Form1");
+		form_set_endpoint(form, 0, 0, 32, 53);
+		form_set_endpoint(form, 0, 0, 50, 53);
+		form_add_to_current_set(form);
+		//*/
 
-	coords_set_coord(pshow, 6, 32, 70);
-	coords_set_coord(pshow, 7, 36, 70);
-	coords_set_coord(pshow, 8, 40, 70);
-	coords_set_coord(pshow, 9, 34, 66);
-	coords_set_coord(pshow, 10, 38, 66);
-	coords_set_coord(pshow, 11, 36, 62);
+		coords_set_coord(pshow, 6, 32, 70);
+		coords_set_coord(pshow, 7, 36, 70);
+		coords_set_coord(pshow, 8, 40, 70);
+		coords_set_coord(pshow, 9, 34, 66);
+		coords_set_coord(pshow, 10, 38, 66);
+		coords_set_coord(pshow, 11, 36, 62);
 
-	//*
-	select_clear(select);
-	for(i=6; i<12; i++)
-	{
-		//select = select_add_index(select, i, false);
-		select_add_dot(select, i);
-	}
-	form = form_build_line(NULL, select);
-	free(select);
-	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
-	free(form->name);
-	form->name = (char*)malloc(6*sizeof(char));
-	snprintf(form->name, 6, "Form2");
-	form_set_endpoint(form, 0, 0, 20, 70);
-	form_set_endpoint(form, 0, 0, 36, 62);
-	form_add_to_current_set(form);
-	//*/
+		//*
+		select_clear(select);
+		for(i=6; i<12; i++)
+		{
+			//select = select_add_index(select, i, false);
+			select_add_dot(select, i);
+		}
+		form = form_build_line(NULL, select);
+		free(select);
+		pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
+		free(form->name);
+		form->name = (char*)malloc(6*sizeof(char));
+		snprintf(form->name, 6, "Form2");
+		form_set_endpoint(form, 0, 0, 20, 70);
+		form_set_endpoint(form, 0, 0, 36, 62);
+		form_add_to_current_set(form);
+		//*/
 
-	// add new set
-	//*
-	//add_set();
-	set_add_after_current();
-	currset = pshow->sets->currset;
-	form = currset->forms;
-	while (form)
-	{
-		form_movexy(form, 4, 0);
-		form = form->next;
+		// add new set
+		//*
+		//add_set();
+		set_add_after_current();
+		currset = pshow->sets->currset;
+		form = currset->forms;
+		while (form)
+		{
+			form_movexy(form, 4, 0);
+			form = form->next;
+		}
+		/*
+		prevset = set_get_prev(pshow->sets, pstate.setnum);
+		currset->counts = 8;
+		for (i=0; i<12; i++)
+		{
+			prevcr = prevset->coords[i];
+			coords_set_coord(pshow, i, prevcr->x+4, prevcr->y);
+		}
+		*/
+		///*
+		// add new set
+		//add_set();
+		set_add_after_current();
+		currset = pshow->sets->currset;
+		form = currset->forms;
+		while (form)
+		{
+			form_movexy(form, 0, -10);
+			form = form->next;
+		}
+		/*
+		prevset = set_get_prev(pshow->sets, pstate.setnum);
+		currset->counts = 8;
+		for (i=0; i<12; i++)
+		{
+			prevcr = prevset->coords[i];
+			coords_set_coord(pshow, i, prevcr->x, prevcr->y-10);
+		}
+		*/
 	}
-	/*
-	prevset = set_get_prev(pshow->sets, pstate.setnum);
-	currset->counts = 8;
-	for (i=0; i<12; i++)
-	{
-		prevcr = prevset->coords[i];
-		coords_set_coord(pshow, i, prevcr->x+4, prevcr->y);
-	}
-	*/
-	///*
-	// add new set
-	//add_set();
-	set_add_after_current();
-	currset = pshow->sets->currset;
-	form = currset->forms;
-	while (form)
-	{
-		form_movexy(form, 0, -10);
-		form = form->next;
-	}
-	/*
-	prevset = set_get_prev(pshow->sets, pstate.setnum);
-	currset->counts = 8;
-	for (i=0; i<12; i++)
-	{
-		prevcr = prevset->coords[i];
-		coords_set_coord(pshow, i, prevcr->x, prevcr->y-10);
-	}
-	*/
 
 	// Start at first set
 	pstate.setnum = 0;
