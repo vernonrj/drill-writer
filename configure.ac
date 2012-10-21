@@ -5,7 +5,7 @@ AC_PREREQ([2.64])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 # Automake
-AM_INIT_AUTOMAKE([1.11 -Wall no-define silent-rules])
+AM_INIT_AUTOMAKE([1.11 -Wall no-define silent-rules subdir-objects])
 AM_SILENT_RULES([yes])
 # Use a C compiler
 #AC_PROG_CC

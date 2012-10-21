@@ -347,9 +347,11 @@ int set_cldestroy(set_t **setcurr_r, int perfnum)
 void set_destroy(int set_index)
 {
 	// destroy current set
-	int i;
+	int i, j;
 	int size;
 	set_t **setlist;
+	form_container_t *fcont = pshow->topforms;
+	form_parent_t *fparent = (fcont ? fcont->forms[0] : NULL);
 
 	setlist = pshow->sets->setlist;
 
@@ -358,6 +360,16 @@ void set_destroy(int set_index)
 	size = pshow->sets->size;
 	for(i=set_index; i<size; i++)
 		setlist[i] = setlist[i+1];
+	if (fcont)
+	{
+		for (i=0; i<fcont->size; i++)
+		{
+			fparent = fcont->forms[i];
+			for (j=set_index; j < fcont->size-1; j++)
+				fparent->forms[j] = fparent->forms[j+1];
+			fparent->forms[fcont->size-1] = NULL;
+		}
+	}
 	if (set_index == 0)
 		pshow->sets->firstset = pshow->sets->setlist[0];
 
@@ -370,6 +382,7 @@ void set_destroy(int set_index)
 		setlist[0] = pshow->sets->firstset;
 		pstate.setnum = 0;
 	}
+	pshow->sets->currset = pshow->sets->setlist[pstate.setnum];
 	return;
 }
 
