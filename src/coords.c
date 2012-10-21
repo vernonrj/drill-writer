@@ -585,6 +585,7 @@ void coords_rot_selected_around_center(double s_step)
 	// index
 	int index;
 	last = pstate.select;
+	select_head(last);
 	coords = pshow->sets->currset->coords;
 	cx = pstate.center->x;
 	cy = pstate.center->y;
@@ -628,5 +629,6 @@ void coords_rot_selected_around_center(double s_step)
 			//last = select_get_next(last);
 		}
 	}
+	select_head(last);
 	return;
 }
