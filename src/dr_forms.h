@@ -88,6 +88,7 @@ int form_move_endpoint(form_child_t *form, double x1, double y1, double x2, doub
 int form_move_endpoint_grid(form_child_t *form, double x1, double y1, double x2, double y2);
 int form_movexy(form_child_t *form, double x, double y);
 int form_unmanage_dot(form_child_t *form, int index);
+int form_get_dimensions(form_child_t *form, double *xmin, double *ymin, double *xmax, double *ymax);
 select_t *form_get_contained_dots(form_child_t *form);
 void form_add_to_set(form_child_t *form, set_t *currset);
 void form_add_to_current_set(form_child_t *form);

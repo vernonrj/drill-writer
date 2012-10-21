@@ -755,6 +755,18 @@ int form_unmanage_dot(form_child_t *form, int index)
 }
 
 
+int form_get_dimensions(form_child_t *form, double *xmin, double *ymin, double *xmax, double *ymax)
+{
+	double endx0 = form->endpoints[0][0], endx1 = form->endpoints[1][0], 
+	       endy0 = form->endpoints[0][1], endy1 = form->endpoints[1][1];
+	*xmin = (endx0 < endx1 ? endx0 : endx1);
+	*xmax = (endx0 > endx1 ? endx0 : endx1);
+	*ymin = (endy0 < endy1 ? endy0 : endy1);
+	*ymax = (endy0 > endy1 ? endy0 : endy1);
+
+	return 0;
+}
+
 
 select_t *form_get_contained_dots(form_child_t *form)
 {

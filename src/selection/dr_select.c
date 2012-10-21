@@ -19,6 +19,7 @@
 #include "../dr_select.h"
 #include "../structures.h"
 #include "../dr_forms.h"
+#include "../drillwriter.h"	// coords structure
 
 
 
@@ -41,6 +42,45 @@ struct select_proto
 	size_t form_alloc;		// allocation size of formfield
 };
 
+
+
+int select_update_center(select_t *select)
+{
+	int index;
+	double x, y, minx = -1, miny = -1, maxx = 0, maxy = 0;
+	int setnum = pstate.setnum;
+	double formxmin, formxmax, formymin, formymax;
+	form_child_t *form;
+
+	select_head(select);
+	while ((index = select_get_dot_advance(select)) != -1)
+	{
+		coords_retrieve_midset(setnum, index, &x, &y);
+		if (minx == -1 || x < minx)
+			minx = x;
+		if (x > maxx)
+			maxx = x;
+		if (miny == -1 || y < miny)
+			miny = y;
+		if (y > maxy)
+			maxy = y;
+	}
+	while ((index = select_get_form_advance(select)) != -1)
+	{
+		form = form_container_get_form_child(pshow->topforms, index);
+		form_get_dimensions(form, &formxmin, &formymin, &formxmax, &formymax);
+		minx = (formxmin < minx || minx == -1 ? formxmin : minx);
+		maxx = (formxmax > maxx ? formxmax : maxx);
+		miny = (formymin < miny || miny == -1 ? formymin : miny);
+		maxy = (formymax > maxy ? formymax : maxy);
+	}
+	pstate.center->x = ((maxx - minx) / 2) + minx;
+	pstate.center->y = ((maxy - miny) / 2) + miny;
+	select_head(select);
+	return 0;
+}
+
+	
 
 
 select_t *select_create(void)
@@ -425,12 +465,6 @@ select_t *select_destroy(select_t *select)
 }
 
 
-int select_update_center(select_t *select)
-{
-	return 0;
-}
-
-	
 
 // internal functions
 
