@@ -1036,6 +1036,8 @@ void draw_field (GtkWidget *widget)
 	cairo_text_extents_t te;
 
 	def_canvas(widget);	// Refresh dimensions and such
+	if (fldstate.canv_step == 0)
+		return;
 	// Set up to redraw the field
 
 	if (pstate.first_time)

@@ -541,51 +541,43 @@ int buildIfacegtk(void)
 	*/
 	setbar = dr_setbar_new();
 	gtk_box_pack_start(GTK_BOX(box0), setbar, FALSE, FALSE, 0);
-	//gtk_widget_show(setbar);
 
 	// make the sidebar pane
-	//hpaned = gtk_hpaned_new();
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(box0), hpaned, TRUE, TRUE, 0);
 
 
 	sidebar = dr_sidebar_new();
 	gtk_paned_add1(GTK_PANED(hpaned), sidebar);
-	//gtk_widget_set_size_request(sidebar, 180, 486);
 
 
 	// get and pack canvas
 	drill = gtk_drill_new();
-	//gtk_widget_set_size_request(drill, 660, 360);
 	gtk_widget_set_size_request(drill, 460, 100);
-	//mybox = gtk_hbox_new(FALSE, 0);
-	mybox = gtk_table_new(2, 2, FALSE);
-	//gtk_box_pack_start(GTK_BOX(mybox), (GtkWidget*)drill, TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(mybox), (GtkWidget*)drill, 0, 1, 0, 1, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
+	gtk_widget_set_hexpand(GTK_WIDGET(drill), TRUE);
+	gtk_widget_set_vexpand(GTK_WIDGET(drill), TRUE);
+	mybox = gtk_grid_new();
 	gtk_paned_add2(GTK_PANED(hpaned), mybox);
-	//gtk_widget_set_size_request(mybox, 460, 150);
+	gtk_grid_attach(GTK_GRID(mybox), (GtkWidget*)drill, 0, 0, 2, 2);
+	gtk_widget_show(mybox);
 	// draw the field the first time
 	do_field = 1;
 	do_dots = 1;
 	do_selected = 1;
 	gtk_widget_show(drill);
-	gtk_widget_show(mybox);
 
 	// create field canvas scroll container
 	gtk_widget_get_allocation(drill, &allc);
 	hsc_width = allc.width;
 	hsc_height = allc.height;
-	//hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.width, drill->allocation.width / 10, drill->allocation.width / 10 * 9, drill->allocation.width);
-	//vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, drill->allocation.height, drill->allocation.height / 10, drill->allocation.height / 10 * 9, drill->allocation.height);
 	hscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, hsc_width, hsc_width / 10, hsc_width / 10 * 9, hsc_width);
 	vscroll = (GtkAdjustment*)gtk_adjustment_new(0.0, 0.0, hsc_height, hsc_height/ 10, hsc_height / 10 * 9, hsc_height);
-	//hscrollbar = gtk_hscrollbar_new(hscroll);
-	//vscrollbar = gtk_vscrollbar_new(vscroll);
 	hscrollbar = gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, hscroll);
 	vscrollbar = gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, vscroll);
-	//gtk_box_pack_start(GTK_BOX(mybox), vscrollbar, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(mybox), vscrollbar, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK|GTK_FILL, 0, 0);
-	gtk_table_attach(GTK_TABLE(mybox), hscrollbar, 0, 1, 1, 2, GTK_SHRINK|GTK_FILL, GTK_SHRINK, 0, 0);
+	//gtk_table_attach(GTK_TABLE(mybox), vscrollbar, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK|GTK_FILL, 0, 0);
+	//gtk_table_attach(GTK_TABLE(mybox), hscrollbar, 0, 1, 1, 2, GTK_SHRINK|GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(mybox), vscrollbar, 2, 0, 1, 2);
+	gtk_grid_attach(GTK_GRID(mybox), hscrollbar, 0, 2, 2, 1);
 	gtk_widget_show(vscrollbar);
 	gtk_widget_show(hscrollbar);
 	//vscroll->value = 10.0;
