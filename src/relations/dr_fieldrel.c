@@ -358,6 +358,8 @@ select_t *field_get_in_area(double x, double y)
 				select_add_dot(select, i);
 		}
 	}
+	form_find_with_coords(select, pstate.setnum, x, y);
+	/*
 	while (form)
 	{
 		form = form_find_with_coords(form, x, y);
@@ -367,6 +369,7 @@ select_t *field_get_in_area(double x, double y)
 			form = form->next;
 		}
 	}
+	*/
 	//if (dot_select)
 	if (!select_dot_empty(select))
 	{

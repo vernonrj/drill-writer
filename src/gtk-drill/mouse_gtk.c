@@ -71,6 +71,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	// handle un-click events on canvas
 	double x, y;
 	int index;
+	int form_index;
 	form_child_t *form2;
 	select_t *select = pstate.select;
 	select_t *form_select = select_create();
@@ -116,7 +117,7 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 							{
 								// Move dot into endpoint hole
 								select_remove_form(form_select, form2->parent->index);
-								index = form_find_index_with_coords(form, x, y);
+								index = form_find_index_with_coords(form2, x, y);
 								form_add_index_to_hole_with_coords(form2, index, x, y);
 							}
 							if ((form = form_find_selected_with_endpoint(form_select, fldstate.mouse_clickx, fldstate.mouse_clicky)) != NULL)
@@ -158,11 +159,19 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 	else if (event->button == 3)
 	{
 		// right-click
-		form = form_find_with_coords(pshow->sets->currset->forms, x, y);
-		index = form_find_index_with_coords(form, x, y);
-		printf("%i\n", index);
-		if (index != -1)
-			form_unmanage_dot(form, index);
+		if ((form_find_with_coords(form_select, pstate.setnum, x, y)))
+		{
+			select_head(form_select);
+			//form = form_find_with_coords(pshow->sets->currset->forms, x, y);
+			while ((form_index = select_get_form_advance(form_select)) != -1)
+			{
+				form = form_container_get_form_child(pshow->topforms, form_index);
+				index = form_find_index_with_coords(form, x, y);
+				//printf("%i\n", index);
+				if (index != -1)
+					form_unmanage_dot(form, index);
+			}
+		}
 	}
 
 	fldstate.mouse_clicked = 0;

@@ -351,15 +351,20 @@ form_child_t *form_find_form_with_index(form_child_t *form, int index)
 
 
 
-form_child_t *form_find_with_coords(form_child_t *form, double x, double y)
+bool form_find_with_coords(select_t *select, int set_index, double x, double y)
 {
+	bool found_form = false;
+	form_child_t *form = pshow->sets->setlist[set_index]->forms;
 	while (form)
 	{
 		if (form_contains_coords(form, x, y))
-			return form;
+		{
+			select_add_form(select, form->parent->index);
+			found_form = true;
+		}
 		form = form->next;
 	}
-	return NULL;
+	return found_form;
 }
 
 
