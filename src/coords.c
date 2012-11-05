@@ -257,6 +257,8 @@ int coords_movexy(double xoff, double yoff)
 	select_t *selects = pstate.select;
 	//select_t *group_selects = NULL;
 	form_child_t *form = NULL;
+	int form_index;
+	select_t *form_select = select_create();
 	int done = 0;
 	int index;
 	select_head(selects);
@@ -283,8 +285,15 @@ int coords_movexy(double xoff, double yoff)
 			x = x + xoff;
 			y = y + yoff;
 			coords_set_coord(pshow, index, x, y);
-			if ((form = form_find_with_hole(pshow->sets->currset->forms, x, y)) != NULL)
-				form_add_index_to_hole_with_coords(form, index, x, y);
+			if (form_find_with_hole(form_select, pstate.setnum, x, y))
+			{
+				//if ((form = form_find_with_hole(pshow->sets->currset->forms, x, y)) != NULL)
+				while ((form_index = select_get_form_advance(form_select)) != -1)
+				{
+					form = form_container_get_form_child(pshow->topforms, form_index);
+					form_add_index_to_hole_with_coords(form, index, x, y);
+				}
+			}
 		}
 
 		//selects = selects->next;
