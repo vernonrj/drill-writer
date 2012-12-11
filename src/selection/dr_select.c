@@ -22,6 +22,7 @@
 //#include "../drillwriter.h"	// coords structure
 #include "../coords.h"
 
+typedef struct stepfield_structure stepfield_t;
 
 
 // internal functions
@@ -33,17 +34,165 @@ int bitfield_check(unsigned char *bitfield, size_t size_alloc, int x);	// check 
 int bitfield_encode(unsigned char *index, size_t size_alloc, int x, unsigned char (*fptr)(unsigned char, unsigned char));
 int bitfield_decode(unsigned char *index, size_t size_alloc, int min_bit);
 
+
+struct stepfield_structure
+{
+	// Step-through bitfield
+	// bitfield that lets you walk through 
+	// set bits like a linked list
+	int index;
+	unsigned char *field;	
+	size_t fieldsize;
+};
+
 struct select_proto
 {
-	int dot_index;
-	int form_index;
-	unsigned char *dotfield;	// field for dots
-	unsigned char *formfield;	// field for forms
-	size_t dot_alloc;		// allocation size of dotfield
-	size_t form_alloc;		// allocation size of formfield
+	//int dot_index;
+	//int form_index;
+	//unsigned char *dotfield;	// field for dots
+	//unsigned char *formfield;	// field for forms
+	//size_t dot_alloc;		// allocation size of dotfield
+	//size_t form_alloc;		// allocation size of formfield
+	stepfield_t *dotfield;
+	stepfield_t *formfield;
 };
 
 
+bool stepfield_is_empty(stepfield_t *stepfield)
+{
+	int i;
+	int fieldsize = stepfield->fieldsize;
+	for (i=0; i<fieldsize; i++)
+	{
+		if (stepfield->field[i] != 0)
+			return false;
+	}
+	return true;
+}
+
+
+bool stepfield_at_end(stepfield_t *stepfield)
+{
+	return (stepfield->index == -1);
+}
+
+
+int stepfield_check(stepfield_t *stepfield, int x)
+{
+	return bitfield_check(stepfield->field, stepfield->fieldsize, x);
+}
+
+void stepfield_head(stepfield_t *stepfield)
+{
+	stepfield->index = 0;
+}
+
+int stepfield_retrieve(stepfield_t *stepfield)
+{
+	return bitfield_decode(stepfield->field, stepfield->fieldsize, 
+			stepfield->index);
+}
+
+int stepfield_retrieve_and_step(stepfield_t *stepfield)
+{
+	int index = stepfield->index;
+	if (stepfield->index == -1)
+		return -1;
+	index = stepfield_retrieve(stepfield);
+	stepfield->index = (index != -1 ? index+1 : index);
+	return index;
+	/*
+	if (index != -1)
+		stepfield->index = index + 1;
+	else
+		stepfield->index = index;
+	return index;
+	*/
+}
+
+int stepfield_add(stepfield_t *stepfield, int x)
+{
+	return bitfield_encode(stepfield->field, 
+			stepfield->fieldsize, x, &bitfield_or);
+}
+
+
+int stepfield_toggle(stepfield_t *stepfield, int x)
+{
+	return bitfield_encode(stepfield->field, 
+			stepfield->fieldsize, x, &bitfield_xor);
+}
+
+int stepfield_remove(stepfield_t *stepfield, int x)
+{
+	return bitfield_encode(stepfield->field, 
+			stepfield->fieldsize, x, &bitfield_mask);
+}
+
+int stepfield_merge_left(stepfield_t *stepfield, stepfield_t *additions)
+{
+	int fieldsize = (stepfield->fieldsize > additions->fieldsize ? 
+			additions->fieldsize 
+			: stepfield->fieldsize);
+	bitfield_map(stepfield->field, 
+			additions->field, fieldsize, &bitfield_or);
+	return 0;
+}
+
+int stepfield_toggle_left(stepfield_t *stepfield, stepfield_t *modifier)
+{
+	int fieldsize = (stepfield->fieldsize > modifier->fieldsize ? 
+			modifier->fieldsize 
+			: stepfield->fieldsize);
+	return bitfield_map(stepfield->field, modifier->field, 
+			fieldsize, &bitfield_xor);
+}
+
+
+int stepfield_mask_left(stepfield_t *stepfield, stepfield_t *modifier)
+{
+	int fieldsize = (stepfield->fieldsize > modifier->fieldsize ? 
+			modifier->fieldsize 
+			: stepfield->fieldsize);
+	return bitfield_map(stepfield->field, modifier->field, 
+			fieldsize, &bitfield_mask);
+}
+
+void stepfield_clear(stepfield_t *stepfield)
+{
+	int i;
+	unsigned char *field;
+	size_t fieldsize;
+
+	field = stepfield->field;
+	fieldsize = stepfield->fieldsize;
+	for (i=0; i<fieldsize; i++)
+		field[i] = 0x0;
+	stepfield->index = 0;
+	return;
+}
+
+stepfield_t *stepfield_create(int size)
+{
+	stepfield_t *stepfield;
+	size_t alloc_size;
+
+	stepfield = (stepfield_t*)malloc(sizeof(stepfield_t));
+	if (stepfield == NULL)
+	{
+		printf("ERROR: Allocation\n");
+		exit(EXIT_FAILURE);
+	}
+
+	alloc_size = size/8 + 1;
+
+	stepfield->field = (unsigned char*)malloc(
+			alloc_size*sizeof(unsigned char));
+	stepfield->fieldsize = alloc_size;
+	stepfield_clear(stepfield);
+
+	return stepfield;
+}
 
 int select_update_center(select_t *select)
 {
@@ -126,6 +275,8 @@ void select_all_dots(void)
 
 int select_get_dot_advance(select_t *select)
 {
+	return stepfield_retrieve_and_step(select->dotfield);
+	/*
 	int dot_index = select->dot_index;
 	if (select->dot_index == -1)
 		return -1;
@@ -135,11 +286,14 @@ int select_get_dot_advance(select_t *select)
 	else
 		select->dot_index = dot_index;
 	return dot_index;
+	*/
 }
 
 
 int select_get_form_advance(select_t *select)
 {
+	return stepfield_retrieve_and_step(select->formfield);
+	/*
 	int form_index = select->form_index;
 	if (form_index == -1)
 		return -1;
@@ -149,6 +303,7 @@ int select_get_form_advance(select_t *select)
 	else
 		select->form_index = form_index;
 	return form_index;
+	*/
 }
 
 int select_head(select_t *select)
@@ -160,27 +315,31 @@ int select_head(select_t *select)
 
 int select_head_dot(select_t *select)
 {
-	select->dot_index = 0;
+	stepfield_head(select->dotfield);
+	//select->dot_index = 0;
 	return 0;
 }
 
 
 int select_head_form(select_t *select)
 {
-	select->form_index = 0;
+	stepfield_head(select->formfield);
+	//select->form_index = 0;
 	return 0;
 }
 
 
 bool select_at_dot_end(select_t *select)
 {
-	return (select->dot_index == -1);
+	return stepfield_at_end(select->dotfield);
+	//return (select->dot_index == -1);
 }
 
 
 bool select_at_form_end(select_t *select)
 {
-	return (select->form_index == -1);
+	return stepfield_at_end(select->formfield);
+	//return (select->form_index == -1);
 }
 
 
@@ -191,6 +350,8 @@ bool select_at_end(select_t *select)
 
 bool select_dot_empty(select_t *select)
 {
+	return stepfield_is_empty(select->dotfield);
+	/*
 	int i;
 	int dot_alloc = select->dot_alloc;
 	for (i=0; i<dot_alloc; i++)
@@ -199,11 +360,14 @@ bool select_dot_empty(select_t *select)
 			return false;
 	}
 	return true;
+	*/
 }
 
 
 bool select_form_empty(select_t *select)
 {
+	return stepfield_is_empty(select->formfield);
+	/*
 	int i;
 	int form_alloc = select->form_alloc;
 	for (i=0; i<form_alloc; i++)
@@ -212,6 +376,7 @@ bool select_form_empty(select_t *select)
 			return false;
 	}
 	return true;
+	*/
 }
 
 bool select_empty(select_t *select)
@@ -223,137 +388,169 @@ bool select_empty(select_t *select)
 int select_get_dot(select_t *select)
 {
 	// get the next dot >= min_bit
-	return bitfield_decode(select->dotfield, select->dot_alloc, select->dot_index);
+	//return bitfield_decode(select->dotfield, select->dot_alloc, select->dot_index);
+	return stepfield_retrieve(select->dotfield);
 }
 
 int select_get_form(select_t *select)
 {
 	// get the next form >= min_bit
-	return bitfield_decode(select->formfield, select->form_alloc, select->form_index);
+	//return bitfield_decode(select->formfield, select->form_alloc, select->form_index);
+	return stepfield_retrieve(select->formfield);
 }
 
 int select_check_dot(select_t *select, int x)
 {
 	// check if dot x exists in select
-	return bitfield_check(select->dotfield, select->dot_alloc, x);
+	//return bitfield_check(select->dotfield, select->dot_alloc, x);
+	return stepfield_check(select->dotfield, x);
 }
 
 int select_check_form(select_t *select, int x)
 {
 	// check if form x exists in select
-	return bitfield_check(select->formfield, select->form_alloc, x);
+	//return bitfield_check(select->formfield, select->form_alloc, x);
+	return stepfield_check(select->formfield, x);
 }
 
 int select_add_dot(select_t *select, int x)
 {
 	// add dot x to select
-	return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_or);
+	//return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_or);
+	return stepfield_add(select->dotfield, x);
 }
 
 int select_add_form(select_t *select, int x)
 {
 	// add form x to select
-	return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_or);
+	//return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_or);
+	return stepfield_add(select->formfield, x);
 }
 
 int select_toggle_dot(select_t *select, int x)
 {
 	// toggle dot x in select
-	return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_xor);
+	//return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_xor);
+	return stepfield_toggle(select->dotfield, x);
 }
 
 int select_toggle_form(select_t *select, int x)
 {
 	// toggle form x in select
-	return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_xor);
+	//return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_xor);
+	return stepfield_toggle(select->formfield, x);
 }
 
 int select_remove_dot(select_t *select, int x)
 {
 	// remove dot x from select
-	return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_mask);
+	//return bitfield_encode(select->dotfield, select->dot_alloc, x, &bitfield_mask);
+	return stepfield_remove(select->dotfield, x);
 }
 
 int select_remove_form(select_t *select, int x)
 {
 	// remove form x from select
-	return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_mask);
+	//return bitfield_encode(select->formfield, select->form_alloc, x, &bitfield_mask);
+	return stepfield_remove(select->formfield, x);
 }
 
 int select_add_multiple(select_t *select, select_t *modifier)
 {
 	// add everything from modifier to select
+	stepfield_merge_left(select->dotfield, modifier->dotfield);
+	return stepfield_merge_left(select->formfield, modifier->formfield);
+	/*
 	int dot_alloc = (select->dot_alloc > modifier->dot_alloc ? modifier->dot_alloc : select->dot_alloc);
 	int form_alloc = (select->form_alloc > modifier->form_alloc ? modifier->form_alloc : select->form_alloc);
 	bitfield_map(select->dotfield, modifier->dotfield, dot_alloc, &bitfield_or);
 	bitfield_map(select->formfield, modifier->formfield, form_alloc, &bitfield_or);
 	return 0;
+	*/
 }
 
 
 int select_add_multiple_dots(select_t *select, select_t *modifier)
 {
 	// add all dots from modifier to select
-	return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_or);
+	//return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_or);
+	return stepfield_merge_left(select->dotfield, modifier->dotfield);
 }
 
 
 int select_add_multiple_forms(select_t *select, select_t *modifier)
 {
 	// add all forms from modifier to select
-	return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_or);
+	//return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_or);
+	return stepfield_merge_left(select->formfield, modifier->formfield);
 }
 
 
 int select_toggle_multiple(select_t *select, select_t *modifier)
 {
+	/*
 	// toggle everything from modifier to select
 	int dot_alloc = (select->dot_alloc > modifier->dot_alloc ? modifier->dot_alloc : select->dot_alloc);
 	int form_alloc = (select->form_alloc > modifier->form_alloc ? modifier->form_alloc : select->form_alloc);
 	bitfield_map(select->dotfield, modifier->dotfield, dot_alloc, &bitfield_or);
 	bitfield_map(select->formfield, modifier->formfield, form_alloc, &bitfield_or);
 	return 0;
+	*/
+	select_toggle_multiple_dots(select, modifier);
+	select_toggle_multiple_forms(select, modifier);
+	return 0;
 }
 
 int select_toggle_multiple_dots(select_t *select, select_t *modifier)
 {
 	// toggle all dots from modifier in select
-	return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_xor);
+	//return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_xor);
+	return stepfield_toggle_left(select->dotfield, modifier->dotfield);
 }
 
 
 int select_toggle_multiple_forms(select_t *select, select_t *modifier)
 {
 	// toggle all forms from modifier in select
-	return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_xor);
+	//return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_xor);
+	return stepfield_toggle_left(select->formfield, modifier->formfield);
 }
 
 
 int select_remove_multiple(select_t *select, select_t *modifier)
 {
+	select_remove_multiple_dots(select, modifier);
+	select_remove_multiple_forms(select, modifier);
+	return 0;
+	/*
 	int dot_alloc = (select->dot_alloc > modifier->dot_alloc ? modifier->dot_alloc : select->dot_alloc);
 	int form_alloc = (select->form_alloc > modifier->form_alloc ? modifier->form_alloc : select->form_alloc);
 	bitfield_map(select->dotfield, modifier->dotfield, dot_alloc, &bitfield_mask);
 	bitfield_map(select->formfield, modifier->formfield, form_alloc, &bitfield_mask);
 	return 0;
+	*/
 }
 
 int select_remove_multiple_dots(select_t *select, select_t *modifier)
 {
 	// remove all dots in modifier from select
-	return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_mask);
+	//return bitfield_map(select->dotfield, modifier->dotfield, select->dot_alloc, &bitfield_mask);
+	return stepfield_mask_left(select->dotfield, modifier->dotfield);
 }
 
 
 int select_remove_multiple_forms(select_t *select, select_t *modifier)
 {
 	// remove all forms in modifier from select
-	return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_mask);
+	//return bitfield_map(select->formfield, modifier->formfield, select->form_alloc, &bitfield_mask);
+	return stepfield_mask_left(select->formfield, modifier->formfield);
 }
 
 void select_clear_dots(select_t *select)
 {
 	// remove all dots from select
+	return stepfield_clear(select->dotfield);
+	/*
 	int i;
 	unsigned char *dotfield;
 	size_t dot_alloc;
@@ -366,11 +563,14 @@ void select_clear_dots(select_t *select)
 		dotfield[i] = 0x0;
 	select->dot_index = 0;
 	return;
+	*/
 }
 
 void select_clear_forms(select_t *select)
 {
 	// remove all dots from select
+	return stepfield_clear(select->formfield);
+	/*
 	int i;
 	unsigned char *formfield;
 	size_t form_alloc;
@@ -384,6 +584,7 @@ void select_clear_forms(select_t *select)
 	select->form_index = 0;
 
 	return;
+	*/
 }
 
 
@@ -392,6 +593,10 @@ void select_clear_forms(select_t *select)
 void select_clear(select_t *select)
 {
 	// remove all dots and forms from select
+	select_clear_dots(select);
+	select_clear_forms(select);
+	return;
+	/*
 	int i;
 	unsigned char *dotfield;
 	unsigned char *formfield;
@@ -412,6 +617,7 @@ void select_clear(select_t *select)
 	select->form_index = 0;
 
 	return;
+	*/
 }
 
 
@@ -428,7 +634,9 @@ select_t *select_create_with_size(size_t dot_size, size_t form_size)
 		exit(EXIT_FAILURE);
 	}
 
-	select_init_with_size(select, dot_size, form_size);
+	select->dotfield = stepfield_create(dot_size);
+	select->formfield = stepfield_create(form_size);
+	//select_init_with_size(select, dot_size, form_size);
 
 	return select;
 }
@@ -438,6 +646,10 @@ select_t *select_create_with_size(size_t dot_size, size_t form_size)
 
 int select_init_with_size(select_t *select, int dot_alloc, int form_alloc)
 {
+	select->dotfield = stepfield_create(dot_alloc);
+	select->formfield = stepfield_create(form_alloc);
+	return 0;
+	/*
 	int dot_size = dot_alloc/8 + 1;
 	int form_size = form_alloc/8 + 1;
 	if (!select)
@@ -449,6 +661,7 @@ int select_init_with_size(select_t *select, int dot_alloc, int form_alloc)
 	select->form_alloc = form_size;
 	select_clear(select);
 	return 0;
+	*/
 }
 
 
