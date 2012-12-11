@@ -217,6 +217,8 @@ int drillwriter_main (int argc, char *argv[])
 		//coords_set_coord(pshow, 4, 38, 49);
 		//coords_set_coord(pshow, 5, 36, 45);
 
+		for (i=0; i<12; i++)
+			perf_set_valid(pshow->perfs[i]);
 
 		coords_set(currset->coords[0], 32, 53);
 		coords_set(currset->coords[1], 36, 53);

@@ -435,11 +435,12 @@ int open_file(char *filename)
 				y = atof(data);
 				//printf("(x,y) = %i %.2f %.2f\n", cnum, x, y);
 				//printf("valid = %i\n", perfs[i]->valid);
-				if (perfs[i]->valid != 0)
-				{
+				//if (perfs[i]->valid != 0)
+				//{
 					//coords_set_coord(pshow, cnum, x, y);
 					coords_set(pshow->sets->currset->coords[cnum], x, y);
-				}
+				//}
+				perf_set_valid(pshow->perfs[i]);
 				i++;
 			} while (i < perfnum);
 		}
