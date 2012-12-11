@@ -1,6 +1,7 @@
 // Functions that change sets go here
 #include "drillwriter.h"
 #include "dr_forms.h"
+#include "coords.h"
 
 
 set_container_t *set_container_construct(int perfs)
@@ -57,22 +58,24 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 		{
 			if (pshow->perfs[i]->valid)
 			{
-				x = currset->coords[i]->x;
-				y = currset->coords[i]->y;
+				coords_retrieve(currset->coords[i], &x, &y);
+				//x = currset->coords[i]->x;
+				//y = currset->coords[i]->y;
 				if (curr_step && setnum+1 < pshow->sets->size)
 				{
-					x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
-					y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
+					coords_retrieve(pshow->sets->setlist[setnum+2]->coords[i], &x2, &y2);
+					//x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
+					//y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
 					counts = nextset->counts;
 					xnew = x + ((x2 - x) / counts * curr_step);
 					ynew = y + ((y2 - y) / counts * curr_step);
-					currset->coords[i]->x = xnew;
-					currset->coords[i]->y = ynew;
-					//pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
-					//newset->counts = curr_step;
+					coords_set(currset->coords[i], xnew, ynew);
+					//currset->coords[i]->x = xnew;
+					//currset->coords[i]->y = ynew;
 				}
-				newset->coords[i]->x = x;
-				newset->coords[i]->y = y;
+				coords_set(newset->coords[i], x, y);
+				//newset->coords[i]->x = x;
+				//newset->coords[i]->y = y;
 			}
 		}
 	}
@@ -181,20 +184,23 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 		{
 			if (pshow->perfs[i]->valid)
 			{
-				x = currset->coords[i]->x;
-				y = currset->coords[i]->y;
+				coords_retrieve(currset->coords[i], &x, &y);
+				//x = currset->coords[i]->x;
+				//y = currset->coords[i]->y;
 				if (curr_step && setnum+2 < pshow->sets->size)
 				{
-					x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
-					y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
+					coords_retrieve(pshow->sets->setlist[setnum+2]->coords[i], &x2, &y2);
+					//x2 = pshow->sets->setlist[setnum+2]->coords[i]->x;
+					//y2 = pshow->sets->setlist[setnum+2]->coords[i]->y;
 					counts = nextset->counts;
 					x = x + ((x2 - x) / counts * curr_step);
 					y = y + ((y2 - y) / counts * curr_step);
 					//pshow->sets->setlist[setnum+2]->counts = counts - curr_step;
 					//newset->counts = curr_step;
 				}
-				newset->coords[i]->x = x;
-				newset->coords[i]->y = y;
+				coords_set(newset->coords[i], x, y);
+				//newset->coords[i]->x = x;
+				//newset->coords[i]->y = y;
 			}
 		}
 	}

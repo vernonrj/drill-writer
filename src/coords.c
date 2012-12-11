@@ -1,6 +1,22 @@
+#include "coords.h"
 #include "drillwriter.h"
 #include "dr_forms.h"
 #include "dr_select.h"
+
+struct coord_proto
+{
+	// stores dot for one performer on one set
+	int type;	// manual/managed/endpoint (0/1/2)
+	// location info
+	double x;
+	double y;
+
+	/*
+	int form_num;
+	int form_alloc;
+	form_child_t **forms;
+	*/
+};
 
 
 coord_t **coords_construct(int perfs)

@@ -1,6 +1,7 @@
 #include "../drillwriter.h"
 #include "../dr_forms.h"
 #include "../dr_select.h"
+#include "../coords.h"
 
 void fieldrel_get_midpoint(double x1, double y1, double x2, double y2,
 		double *mx, double *my)
@@ -429,8 +430,9 @@ select_t *field_get_in_area(double x, double y)
 			{
 				//coord = form_get_coord_near(select->form, x, y);
 				coord = form_get_coord_near(selected_form, x, y);
-				coordx = coord->x;
-				coordy = coord->y;
+				coords_retrieve(coord, &coordx, &coordy);
+				//coordx = coord->x;
+				//coordy = coord->y;
 			}
 			else
 				coords_retrieve_midset(pstate.setnum, form_index, &coordx, &coordy);

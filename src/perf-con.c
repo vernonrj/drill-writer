@@ -1,6 +1,7 @@
 // Functions that manipulate performers go here
 #include "drillwriter.h"
 #include "dr_select.h"
+#include "coords.h"
 
 // performer storage
 perf_t *perf_construct(void)
@@ -123,12 +124,15 @@ int perf_add(void)
 			for (i=perfnum; i<perfnum+5; i++)
 			{
 				// copy the rest
+				newcoords[i] = coord_construct_with_data(0, 0);
+				/*
 				newcoords[i] = (coord_t*)
 					malloc(sizeof(coord_t));
 				if (newcoords[i] == NULL)
 					return -1;
 				newcoords[i]->x = 0;
 				newcoords[i]->y = 0;
+				*/
 			}
 			// hook up new coords
 			free(last->coords);
@@ -161,6 +165,7 @@ void perf_revert_selected(headset_t *dshow)
 	select_t *last;
 	// coords
 	coord_t *coord;
+	double coordx, coordy;
 	// finished
 	//int done;
 	last = pstate.select;
@@ -186,7 +191,8 @@ void perf_revert_selected(headset_t *dshow)
 			done = 1;
 		}
 		*/
-		pushPerfmv(&pstate.undobr, index, coord->x, coord->y, 1);
+		coords_retrieve(coord, &coordx, &coordy);
+		pushPerfmv(&pstate.undobr, index, coordx, coordy, 1);
 		perf_revert(dshow, index);
 		// go to next performer
 		//last = last->next;
@@ -202,6 +208,7 @@ void perf_revert(headset_t *dshow, int index)
 	// revert a performer's dot to the dot at the previous set
 	set_t *prevset;
 	coord_t *prevcoord;
+	double coordx, coordy;
 
 	//prevset = dshow->sets->currset->prev;
 
@@ -216,7 +223,8 @@ void perf_revert(headset_t *dshow, int index)
 		// not first set; use previous dots
 		prevcoord = prevset->coords[index];
 		//coords_set_coord(dshow, index, prevcoord->x, prevcoord->y);
-		coords_set(pshow->sets->currset->coords[index], prevcoord->x, prevcoord->y);
+		coords_retrieve(prevcoord, &coordx, &coordy);
+		coords_set(pshow->sets->currset->coords[index], coordx, coordy);
 	}
 	return;
 }
@@ -318,10 +326,12 @@ double perf_average_stepsize_selected(headset_t *dshow)
 		*/
 		//index = last->index;
 		//index = select_get_dot(last);
-		x = coords[index]->x;
-		y = coords[index]->y;
-		xpr = pcoords[index]->x;
-		ypr = pcoords[index]->y;
+		coords_retrieve(coords[index], &x, &y);
+		//x = coords[index]->x;
+		//y = coords[index]->y;
+		coords_retrieve(pcoords[index], &xpr, &ypr);
+		//xpr = pcoords[index]->x;
+		//ypr = pcoords[index]->y;
 		dx = x - xpr;
 		dy = y - ypr;
 		dxy = sqrt(powf(dx,2)+powf(dy,2));
@@ -383,10 +393,12 @@ int perf_max_stepsize_selected(headset_t *dshow, double *stepsize_r)
 		*/
 		//index = last->index;
 		//index = select_get_dot(last);
-		x = coords[index]->x;
-		y = coords[index]->y;
-		xpr = pcoords[index]->x;
-		ypr = pcoords[index]->y;
+		coords_retrieve(coords[index], &x, &y);
+		//x = coords[index]->x;
+		//y = coords[index]->y;
+		coords_retrieve(pcoords[index], &xpr, &ypr);
+		//xpr = pcoords[index]->x;
+		//ypr = pcoords[index]->y;
 		dx = x - xpr;
 		dy = y - ypr;
 		dxy = sqrt(powf(dx,2)+powf(dy,2));

@@ -7,6 +7,7 @@
 #include "../dr_forms.h"
 #include "../dr_select.h"
 #include "../dr_fieldrel.h"
+#include "../coords.h"
 
 static void gtk_drill_get_preferred_width(GtkWidget *widget, gint *minimal_width, gint *natural_width);
 static void gtk_drill_get_preferred_height(GtkWidget *widget, gint *minimal_height, gint *natural_height);
@@ -657,6 +658,7 @@ int draw_forms(GtkWidget *widget)
 	bool form_animate = false;
 	int counts = 1;
 	int curr_step = pstate.curr_step;
+	double coordx, coordy;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
@@ -735,8 +737,9 @@ int draw_forms(GtkWidget *widget)
 				if (fcoords[i]->dot == -1)
 				{
 					// hole in the form
-					x = coord->x + form->endpoints[0][0];
-					y = coord->y + form->endpoints[0][1];
+					coords_retrieve(coord, &coordx, &coordy);
+					x = coordx + form->endpoints[0][0];
+					y = coordy + form->endpoints[0][1];
 					field_to_pixel(&x, &y);
 					cairo_new_sub_path(cr);
 					cairo_arc(cr, x, y, 2*fldstate.canv_step/3, 0, 360);

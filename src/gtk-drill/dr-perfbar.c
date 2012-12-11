@@ -2,6 +2,7 @@
 #include "dr-setbar.h"
 #include "dr-perfbar.h"
 #include "../dr_fieldrel.h"
+#include "../coords.h"
 
 
 static void dr_perfbar_class_init(DrPerfbarClass *klass);
@@ -239,8 +240,9 @@ int update_entries(void)
 	aperfbar = (DrPerfbar*)perfbar;
 
 	// Update all the entries
-	cx = pstate.center->x;
-	cy = pstate.center->y;
+	coords_retrieve(pstate.center, &cx, &cy);
+	//cx = pstate.center->x;
+	//cy = pstate.center->y;
 	ssStep = fieldrel_get_side_to_side(&cx, &cy);
 	sprintf(ss_buf, "%.2f", ssStep);
 	yardRel = fieldrel_check_is_inside_yard(&cx, &cy, &fieldSide);
@@ -283,8 +285,10 @@ int update_entries(void)
 	// side-to-side relations
 	sprintf(perf_buf, "%i", perf_cur);
 	//retr_coord(pshow->sets->currset->coords[perf_cur], &x, &y);
-	sprintf(perf_buf_x, "%g", pstate.center->x);
-	sprintf(perf_buf_y, "%g", pstate.center->y);
+	//sprintf(perf_buf_x, "%g", pstate.center->x);
+	//sprintf(perf_buf_y, "%g", pstate.center->y);
+	sprintf(perf_buf_x, "%g", cx);
+	sprintf(perf_buf_y, "%g", cy);
 	// Now Update entries with new data
 	//gtk_entry_set_text(GTK_ENTRY (entry_sets), set_buf);
 	//gtk_entry_set_text(GTK_ENTRY (entry_tempo), tempo_buf);

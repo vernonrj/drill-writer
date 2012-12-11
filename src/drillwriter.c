@@ -5,6 +5,7 @@
 #include "drillwriter.h"		// header file, with most global variables
 #include "dr_forms.h"
 #include "dr_select.h"
+#include "coords.h"
 
 int show_construct(headset_t **dshow_r, int perfs)
 {

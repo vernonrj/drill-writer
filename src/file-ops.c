@@ -1,5 +1,6 @@
 // Functions that manipulate files go here
 #include "drillwriter.h"
+#include "coords.h"
 
 int file_getline(FILE *fp, char **buffer_r);
 int file_getValidLine(FILE *fp, char **buffer_r);
@@ -476,6 +477,7 @@ int save_file(char *filename)
 	// loop var
 	int i;
 	int done;
+	double coordx, coordy;
 
 	// open file
 	set_first();
@@ -517,7 +519,11 @@ int save_file(char *filename)
 		for(i=0; i<pshow->perfnum; i++)
 		{
 			if (perfs[i]->valid)
-				fprintf(fp, "%i: %f %f\n", i, coords[i]->x, coords[i]->y);
+			{
+				coords_retrieve(coords[i], &coordx, &coordy);
+				//fprintf(fp, "%i: %f %f\n", i, coords[i]->x, coords[i]->y);
+				fprintf(fp, "%i: %f %f\n", i, coordx, coordy);
+			}
 		}
 		fprintf(fp, "done\n");
 		fprintf(fp, "\n");

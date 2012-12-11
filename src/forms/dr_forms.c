@@ -2,6 +2,7 @@
 #include "../drillwriter.h"
 #include "../dr_select.h"
 #include "../dr_fieldrel.h"
+#include "../coords.h"
 
 
 form_coord_t *fcoord_construct(void)
@@ -258,8 +259,8 @@ bool form_contains_coords(form_child_t *form, double x, double y)
 {
 	int i;
 	int index;
+	double coordx, coordy;
 	form_coord_t **fcoords;
-	coord_t *coord;
 	if (!form)
 		return false;
 	index = form->dot_num;
@@ -268,8 +269,10 @@ bool form_contains_coords(form_child_t *form, double x, double y)
 	y -= form->endpoints[0][1];
 	for (i=0; i<index; i++)
 	{
-		coord = fcoords[i]->coord;
-		if (fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		coords_retrieve(fcoords[i]->coord, &coordx, &coordy);
+		//coord = fcoords[i]->coord;
+		//if (fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		if (fieldrel_check_dots_within_range(coordx, coordy, x, y))
 			return true;
 	}
 	return false;
@@ -282,17 +285,18 @@ bool form_hole_contains_coords(form_child_t *form, double x, double y)
 	int i;
 	double coordx, coordy;
 	int dot_num;
-	coord_t *coord;
 	form_coord_t **fcoords;
 
 	fcoords = form->fcoords;
-	coordx = x - form->endpoints[0][0];
-	coordy = y - form->endpoints[0][1];
+	x = x - form->endpoints[0][0];
+	y = y - form->endpoints[0][1];
 	dot_num = form->dot_num;
 	for(i=0; i<dot_num; i++)
 	{
-		coord = fcoords[i]->coord;
-		if (fcoords[i]->dot == -1 && fieldrel_check_dots_within_range(coord->x, coord->y, coordx, coordy))
+		coords_retrieve(fcoords[i]->coord, &coordx, &coordy);
+		//coord = fcoords[i]->coord;
+		//if (fcoords[i]->dot == -1 && fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		if (fcoords[i]->dot == -1 && fieldrel_check_dots_within_range(coordx, coordy, x, y))
 			return true;
 	}
 	return false;
@@ -310,7 +314,6 @@ int form_find_index_with_coords(form_child_t *form, double x, double y)
 	int dot_num;
 	double coordx, coordy;
 	form_coord_t **fcoords;
-	coord_t *coord;
 	int dot;
 	if (!form)
 		return -1;
@@ -321,9 +324,10 @@ int form_find_index_with_coords(form_child_t *form, double x, double y)
 	for(i=0; i<dot_num; i++)
 	{
 		dot = fcoords[i]->dot;
-		coord = fcoords[i]->coord;
-		coordx = coord->x;
-		coordy = coord->y;
+		//coord = fcoords[i]->coord;
+		//coordx = coord->x;
+		//coordy = coord->y;
+		coords_retrieve(fcoords[i]->coord, &coordx, &coordy);
 		if (fieldrel_check_dots_within_range(coordx, coordy, x, y))
 			return dot;
 	}
@@ -472,7 +476,6 @@ form_child_t *form_add_index_to_hole_with_coords(form_child_t *form, int index, 
 	int dot_num;
 	int dot;
 	form_coord_t **fcoords;
-	coord_t *coord;
 	double coordx, coordy;
 	coord_t **coords = pshow->sets->currset->coords;
 	if (!form)
@@ -484,8 +487,10 @@ form_child_t *form_add_index_to_hole_with_coords(form_child_t *form, int index, 
 	for(i=0; i<dot_num; i++)
 	{
 		dot = fcoords[i]->dot;
-		coord = fcoords[i]->coord;
-		if (dot == -1 && fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		coords_retrieve(fcoords[i]->coord, &coordx, &coordy);
+		//coord = fcoords[i]->coord;
+		//if (dot == -1 && fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		if (dot == -1 && fieldrel_check_dots_within_range(coordx, coordy, x, y))
 		{
 			fcoords[i]->dot = index;
 			if (i == 0 || i == dot_num - 1)
@@ -570,14 +575,17 @@ bool form_contained_in_rectangle(form_child_t *form, double x1, double y1, doubl
 {
 	int i;
 	int index;
+	double coordx, coordy;
+
 	index = form->dot_num;
-	coord_t *coord;
 	form_coord_t **fcoords;
 	fcoords = form->fcoords;
 	for (i=0; i<index; i++)
 	{
-		coord = fcoords[i]->coord;
-		if (field_check_dot_in_rectangle(coord->x, coord->y, x1, y1, x2, y2))
+		coords_retrieve(fcoords[i]->coord, &coordx, &coordy);
+		//coord = fcoords[i]->coord;
+		//if (field_check_dot_in_rectangle(coord->x, coord->y, x1, y1, x2, y2))
+		if (field_check_dot_in_rectangle(coordx, coordy, x1, y1, x2, y2))
 			return true;
 	}
 	return false;
@@ -593,6 +601,7 @@ int form_update_line(form_child_t *form)
 	int index;
 	double slopex, slopey;
 	double endpointx, endpointy;
+	double coordx, coordy;
 	form_coord_t *fcoord;
 	switch(form->type)
 	{
@@ -606,12 +615,15 @@ int form_update_line(form_child_t *form)
 			for(i=0; i<index; i++)
 			{
 				fcoord = form->fcoords[i];
-				fcoord->coord->x = i*slopex;
-				fcoord->coord->y = i*slopey;
+				coordx = i*slopex;
+				coordy = i*slopey;
+				coords_set(fcoord->coord, coordx, coordy);
+				//fcoord->coord->x = i*slopex;
+				//fcoord->coord->y = i*slopey;
 				if (fcoord->dot != -1)
 				{
 					//coords_set_coord(pshow, fcoord->dot, fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
-					coords_set(pshow->sets->currset->coords[fcoord->dot], fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+					coords_set(pshow->sets->currset->coords[fcoord->dot], coordx+endpointx, coordy+endpointy);
 				}
 			}
 			break;
@@ -714,7 +726,9 @@ int form_movexy(form_child_t *form, double xoff, double yoff)
 	int i, index;
 	int dot;
 	double endpointx, endpointy;
+	double coordx, coordy;
 	form_coord_t *fcoord;
+
 	if (!form)
 		return -1;
 	form->endpoints[0][0] += xoff;
@@ -728,10 +742,11 @@ int form_movexy(form_child_t *form, double xoff, double yoff)
 	{
 		fcoord = form->fcoords[i];
 		dot = fcoord->dot;
+		coords_retrieve(fcoord->coord, &coordx, &coordy);
 		if (dot != -1)
 		{
-			//coords_set_coord(pshow, dot, fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
-			coords_set(pshow->sets->currset->coords[dot], fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+			//coords_set(pshow->sets->currset->coords[dot], fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+			coords_set(pshow->sets->currset->coords[dot], coordx+endpointx, coordy+endpointy);
 		}
 	}
 	return 0;
@@ -830,6 +845,8 @@ coord_t **form_get_coords(form_child_t *form)
 	int i;
 	int dot_num;
 	coord_t **coords;
+	double coordx, coordy;
+
 	if (!form)
 		return NULL;
 	dot_num = form->dot_num;
@@ -838,12 +855,20 @@ coord_t **form_get_coords(form_child_t *form)
 		return NULL;
 	for(i=0; i<dot_num; i++)
 	{
-		coords[i]->x = form->fcoords[i]->coord->x;
-		coords[i]->y = form->fcoords[i]->coord->y;
+		coords_retrieve(form->fcoords[i]->coord, &coordx, &coordy);
+		coords_set(coords[i], coordx, coordy);
+		//coords[i]->x = form->fcoords[i]->coord->x;
+		//coords[i]->y = form->fcoords[i]->coord->y;
 		if (form->fcoords[i]->dot == -1)
-			coords[i]->type = 0;
+		{
+			//coords[i]->type = 0;
+			coords_set_managed(coords[i], 0);
+		}
 		else
-			coords[i]->type = 1;
+		{
+			//coords[i]->type = 1;
+			coords_set_managed(coords[i], 1);
+		}
 	}
 	return coords;
 }	
@@ -859,6 +884,8 @@ coord_t *form_get_coord_near(form_child_t *form, double x, double y)
 	int dot_num;
 	coord_t *coord;
 	form_coord_t **fcoords;
+	double coordx, coordy;
+
 	if (!form)
 		return NULL;
 	dot_num = form->dot_num;
@@ -871,9 +898,11 @@ coord_t *form_get_coord_near(form_child_t *form, double x, double y)
 	for(i=0; i<dot_num; i++)
 	{
 		coord = fcoords[i]->coord;
-		if (fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		coords_retrieve(coord, &coordx, &coordy);
+		//if (fieldrel_check_dots_within_range(coord->x, coord->y, x, y))
+		if (fieldrel_check_dots_within_range(coordx, coordy, x, y))
 		{
-			distance = pow(coord->x,2) + pow(coord->y,2);
+			distance = pow(coordx,2) + pow(coordy,2);
 			if (distance < min_distance || min_distance == -1)
 			{
 				min_index = i;
@@ -883,8 +912,11 @@ coord_t *form_get_coord_near(form_child_t *form, double x, double y)
 	}
 	if (min_index != -1)
 	{
-		coord = coord_construct_with_data(fcoords[min_index]->coord->x+form->endpoints[0][0],
-				fcoords[min_index]->coord->y+form->endpoints[0][1]);
+		coords_retrieve(fcoords[min_index]->coord, &coordx, &coordy);
+		//coord = coord_construct_with_data(fcoords[min_index]->coord->x+form->endpoints[0][0],
+		//		fcoords[min_index]->coord->y+form->endpoints[0][1]);
+		coord = coord_construct_with_data(coordx+form->endpoints[0][0],
+				coordy+form->endpoints[0][1]);
 		return coord;
 	}
 	return NULL;
@@ -898,8 +930,9 @@ void form_scale_from_center(form_child_t *form, double s_step)
 	double cx, cy;
 	if (!form)
 		return;
-	cx = pstate.center->x;
-	cy = pstate.center->y;
+	coords_retrieve(pstate.center, &cx, &cy);
+	//cx = pstate.center->x;
+	//cy = pstate.center->y;
 	for(i=0; i<2; i++)
 		coords_scale_coords_from_center(s_step, &form->endpoints[i][0], &form->endpoints[i][1], cx, cy);
 	form_update_line(form);
@@ -915,8 +948,9 @@ void form_rotate_around_center(form_child_t *form, double s_step)
 	double angle, hypo;
 	if (!form)
 		return;
-	cx = pstate.center->x;
-	cy = pstate.center->y;
+	coords_retrieve(pstate.center, &cx, &cy);
+	//cx = pstate.center->x;
+	//cy = pstate.center->y;
 	for(i=0; i<2; i++)
 	{
 		distx = cx - form->endpoints[i][0];
@@ -969,6 +1003,7 @@ form_child_t *form_copy(form_child_t *form)
 	form_child_t *newform;
 	form_parent_t *parent = form->parent;
 	int dot_num = form->dot_num;
+	double coordx, coordy;
 
 	//dot_num = form->dot_num;
 	newform = form_child_construct_with_size(parent, dot_num);
@@ -986,7 +1021,9 @@ form_child_t *form_copy(form_child_t *form)
 			//coords_set_managed_by_index(index, type);
 			coords_set_managed(pshow->sets->currset->coords[index], type);
 		}
-		memcpy(newform->fcoords[i]->coord, form->fcoords[i]->coord, sizeof(coord_t));
+		//memcpy(newform->fcoords[i]->coord, form->fcoords[i]->coord, sizeof(coord_t));
+		coords_retrieve(form->fcoords[i]->coord, &coordx, &coordy);
+		coords_set(newform->fcoords[i]->coord, coordx, coordy);
 	}
 	for(i=0; i<2; i++)
 	{

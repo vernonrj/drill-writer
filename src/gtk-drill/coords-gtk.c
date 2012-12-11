@@ -1,18 +1,21 @@
 #include "drillwriter-gtk.h"
 #include "../dr_fieldrel.h"
 #include "../drillwriter.h"
+#include "../coords.h"
 
 // Side-to-Side relations
 void coords_change_ss_entry_gtk(GtkWidget *widget)
 {
 	// change side-to-side
-	double cx = pstate.center->x;
-	double cy = pstate.center->y;
+	double cx; 
+	double cy;
 	int yardrel;
 	int fieldside;
 	double new_cx;
 	double ssStep;
 	const gchar *buffer;
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	select_t *select = pstate.select;
 	coord_t **coords = pshow->sets->currset->coords;
 	//char *newtext;
@@ -56,8 +59,9 @@ void coords_toggle_ssYdRel_gtk(GtkWidget *widget)
 	select_t *select = pstate.select;
 
 	//buffer = gtk_button_get_label(GTK_BUTTON(widget));
-	cx = pstate.center->x;
-	cy = pstate.center->y;
+	//cx = pstate.center->x;
+	//cy = pstate.center->y;
+	coords_retrieve(pstate.center, &cx, &cy);
 	ssStep = fieldrel_get_side_to_side(&cx, &cy);
 	ssStep = roundf(4*ssStep)/4;
 	yardrel = fieldrel_check_is_inside_yard(&cx, &cy, &fieldside);
@@ -88,9 +92,11 @@ void coords_toggle_ssSide_gtk(GtkWidget *widget)
 {
 	// change side from side 1 to side 2
 	// 	or side 2 to side 1
-	double cx;
+	double cx, cy;
 	coord_t **coords = pshow->sets->currset->coords;
-	cx = pstate.center->x;
+	//cx = pstate.center->x;
+	coords_retrieve(pstate.center, &cx, &cy);
+	
 
 	//coords_movexy(2*(80-cx), 0);
 	coords_selected_movexy(coords, pstate.select, 2*(80-cx), 0);
@@ -108,8 +114,8 @@ void coords_toggle_ssYdLine_gtk(GtkWidget *widget)
 void coords_change_fb_entry_gtk(GtkWidget *widget)
 {
 	// change front-to-back
-	double cx = pstate.center->x;
-	double cy = pstate.center->y;
+	double cx;
+	double cy;
 	//int yardrel;
 	//int fieldside;
 	double new_cy;
@@ -120,6 +126,9 @@ void coords_change_fb_entry_gtk(GtkWidget *widget)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
+
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	coord_t **coords = pshow->sets->currset->coords;
 
 	fbStep = fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel,
@@ -175,8 +184,9 @@ void coords_toggle_fbHashRel_gtk(GtkWidget *widget)
 	gchar *fb_frontback;
 	gchar *fb_hashside;
 	coord_t **coords = pshow->sets->currset->coords;
-	cx = pstate.center->x;
-	cy = pstate.center->y;
+	//cx = pstate.center->x;
+	//cy = pstate.center->y;
+	coords_retrieve(pstate.center, &cx, &cy);
 	fbStep = fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	if (!strcmp(fb_frontback, "front"))
@@ -236,9 +246,11 @@ void coords_toggle_fbFrontBack_gtk(GtkWidget *widget)
 	gchar *fb_hashrel;
 	gchar *fb_frontback;
 	gchar *fb_hashside;
+
+	coords_retrieve(pstate.center, &cx, &cy);
+	//cx = pstate.center->x;
+	//cy = pstate.center->y;
 	coord_t **coords = pshow->sets->currset->coords;
-	cx = pstate.center->x;
-	cy = pstate.center->y;
 	fbStep = fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	if (!strcmp(fb_hashside, "hash"))
@@ -296,8 +308,9 @@ void coords_toggle_HashSide_gtk(GtkWidget *widget)
 	gchar *fb_frontback;
 	gchar *fb_hashside;
 	coord_t **coords = pshow->sets->currset->coords;
-	cx = pstate.center->x;
-	cy = pstate.center->y;
+	coords_retrieve(pstate.center, &cx, &cy);
+	//cx = pstate.center->x;
+	//cy = pstate.center->y;
 	fieldrel_get_front_to_back(&cx, &cy, &fb_hashrel, 
 			&fb_frontback, &fb_hashside);
 	int fb;
@@ -332,8 +345,11 @@ void coords_toggle_HashSide_gtk(GtkWidget *widget)
 void coords_expand_form_gtk(GtkWidget *widget)
 {
 	// expand the form by 1 step
+	double cx, cy;
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	//coords_box_scale_form_from_center(1);
-	coords_constrained_resize_selection_from(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, 1);
+	coords_constrained_resize_selection_from(pshow->sets->currset, pstate.select, cx, cy, 1);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -341,8 +357,11 @@ void coords_expand_form_gtk(GtkWidget *widget)
 void coords_contract_form_gtk(GtkWidget *widget)
 {
 	// contract the form by 1 step
+	double cx, cy;
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	//coords_box_scale_form_from_center(-1);
-	coords_constrained_resize_selection_from(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, -1);
+	coords_constrained_resize_selection_from(pshow->sets->currset, pstate.select, cx, cy, -1);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -350,8 +369,11 @@ void coords_contract_form_gtk(GtkWidget *widget)
 void coords_rot_cw_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
+	double cx, cy;
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	//coords_rot_selected_around_center(M_PI/16);
-	coords_rot_selection_around(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, M_PI/16);
+	coords_rot_selection_around(pshow->sets->currset, pstate.select, cx, cy, M_PI/16);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -359,8 +381,11 @@ void coords_rot_cw_gtk(GtkWidget *widget)
 void coords_rot_countercw_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
+	double cx, cy;
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	//coords_rot_selected_around_center(-M_PI/16);
-	coords_rot_selection_around(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, -M_PI/16);
+	coords_rot_selection_around(pshow->sets->currset, pstate.select, cx, cy, -M_PI/16);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -368,8 +393,11 @@ void coords_rot_countercw_gtk(GtkWidget *widget)
 void coords_rot_cw_small_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
+	double cx, cy;
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	//coords_rot_selected_around_center(M_PI/64);
-	coords_rot_selection_around(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, M_PI/64);
+	coords_rot_selection_around(pshow->sets->currset, pstate.select, cx, cy, M_PI/64);
 	dr_canvas_refresh(drill);
 	return;
 }
@@ -377,8 +405,11 @@ void coords_rot_cw_small_gtk(GtkWidget *widget)
 void coords_rot_countercw_small_gtk(GtkWidget *widget)
 {
 	// rotate form clockwise
+	double cx, cy;
+
+	coords_retrieve(pstate.center, &cx, &cy);
 	//coords_rot_selected_around_center(-M_PI/64);
-	coords_rot_selection_around(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, -M_PI/64);
+	coords_rot_selection_around(pshow->sets->currset, pstate.select, cx, cy, -M_PI/64);
 	dr_canvas_refresh(drill);
 	return;
 }

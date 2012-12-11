@@ -19,7 +19,8 @@
 #include "../dr_select.h"
 #include "../structures.h"
 #include "../dr_forms.h"
-#include "../drillwriter.h"	// coords structure
+//#include "../drillwriter.h"	// coords structure
+#include "../coords.h"
 
 
 
@@ -74,8 +75,9 @@ int select_update_center(select_t *select)
 		miny = (formymin < miny || miny == -1 ? formymin : miny);
 		maxy = (formymax > maxy ? formymax : maxy);
 	}
-	pstate.center->x = ((maxx - minx) / 2) + minx;
-	pstate.center->y = ((maxy - miny) / 2) + miny;
+	coords_set(pstate.center, ((maxx - minx) / 2) + minx, ((maxy - miny) / 2) + miny);
+	//pstate.center->x = ((maxx - minx) / 2) + minx;
+	//pstate.center->y = ((maxy - miny) / 2) + miny;
 	select_head(select);
 	return 0;
 }

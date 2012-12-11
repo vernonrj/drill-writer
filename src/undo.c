@@ -1,4 +1,5 @@
 #include "drillwriter.h"
+#include "coords.h"
 
 int undo_destroy(undo_t **undlast_r, headset_t *dshow)
 {
@@ -182,11 +183,14 @@ int pushPerfDel(undo_t **stack_r, perf_t **oldperf_r,
 	for (i=0; last != NULL; i++, last = set_get_next(pshow->sets, i))
 	{
 		unredo->coords[i] = last->coords[index];
+		last->coords[index] = coord_construct_with_data(0, 0);
+		/*
 		last->coords[index] = (coord_t*)malloc(sizeof(coord_t));
 		if (!last->coords[index])
 			return -1;
 		last->coords[index]->x = 0;
 		last->coords[index]->y = 0;
+		*/
 	}
 
 	*oldperf_r = newperf;
@@ -416,7 +420,7 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			{
 				free(coords[index]);
 				coords[index] = sourcebr->coords[i];
-				printf("(x,y) @ %i = %.2f, %.2f\n", i, coords[index]->x, coords[index]->y);
+				//printf("(x,y) @ %i = %.2f, %.2f\n", i, coords[index]->x, coords[index]->y);
 				//currset = currset->next;
 				if ((currset = set_get_next(pshow->sets, i)) != NULL)
 					coords = currset->coords;
@@ -432,14 +436,16 @@ int popFromStack(headset_t *dshow, undo_t **sourcebr_r,
 			currset = dshow->sets->currset;
 			index = sourcebr->ud.pindex;
 			perfcurr = dshow->perfs[index];
-			xold = currset->coords[index]->x;
-			yold = currset->coords[index]->y;
+			coords_retrieve(currset->coords[index], &xold, &yold);
+			//xold = currset->coords[index]->x;
+			//yold = currset->coords[index]->y;
 			x = sourcebr->x;
 			y = sourcebr->y;
 			done = sourcePop(&sourcebr);
 			excode = pushPerfmv(&destbr, index, xold, yold, done);
-			currset->coords[index]->x = x;
-			currset->coords[index]->y = y;
+			coords_set(currset->coords[index], x, y);
+			//currset->coords[index]->x = x;
+			//currset->coords[index]->y = y;
 			break;
 		case 5:		// tempo changed
 				// changed tempo back
