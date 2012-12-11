@@ -69,6 +69,7 @@ form_child_t *form_child_destruct(form_child_t *form)
 	//int *dots;
 	bool is_selected = form_is_selected(form, pstate.select);
 	form_coord_t **fcoords;
+	coord_t **coords = pshow->sets->currset->coords;
 	if (is_selected)
 		pstate.select = form_flatten(form, pstate.select);
 
@@ -85,7 +86,8 @@ form_child_t *form_child_destruct(form_child_t *form)
 			//select_add_index(pstate.select, fcoords[i]->dot, false);
 			select_add_dot(pstate.select, fcoords[i]->dot);
 		}
-		coords_set_managed_by_index(fcoords[i]->dot, 0);
+		//coords_set_managed_by_index(fcoords[i]->dot, 0);
+		coords_set_managed(coords[fcoords[i]->dot], 0);
 		free(form->fcoords[i]->forms);
 		free(form->fcoords[i]->dot_type);
 		free(form->fcoords[i]->coord);
@@ -472,6 +474,7 @@ form_child_t *form_add_index_to_hole_with_coords(form_child_t *form, int index, 
 	form_coord_t **fcoords;
 	coord_t *coord;
 	double coordx, coordy;
+	coord_t **coords = pshow->sets->currset->coords;
 	if (!form)
 		return NULL;
 	dot_num = form->dot_num;
@@ -487,17 +490,24 @@ form_child_t *form_add_index_to_hole_with_coords(form_child_t *form, int index, 
 			fcoords[i]->dot = index;
 			if (i == 0 || i == dot_num - 1)
 			{
-				if (coords_check_managed_by_index(index) == 2)
+				//if (coords_check_managed_by_index(index) == 2)
+				if (coords_check_managed(coords[index]) == 2)
 				{
 					// pairing endpoints together
 					coords_retrieve_midset(pstate.setnum, index, &coordx, &coordy);
 					form_set_endpoint(form, form->endpoints[0][0], form->endpoints[0][1], coordx, coordy);
 				}
 				else
-					coords_set_managed_by_index(index, 2);
+				{
+					//coords_set_managed_by_index(index, 2);
+					coords_set_managed(coords[index], 2);
+				}
 			}
 			else
-				coords_set_managed_by_index(index, 1);
+			{
+				//coords_set_managed_by_index(index, 1);
+				coords_set_managed(coords[index], 1);
+			}
 			form_update_line(form);
 			return form;
 		}
@@ -534,38 +544,21 @@ form_child_t *form_build_line(form_parent_t *form_parent, select_t *select)
 	fcoords = form->fcoords;
 	form->type = 1;
 
-	//select = select_head;
-	// get endpoints, continue allocation
-	//for (i=0; i<size; i++)
 	i = 0;
 	while ((index = select_get_dot_advance(select)) != -1)
 	{
-		/*
-		if (select)
-		{
-		*/
-		//fcoords[i]->dot = select->index;
 		fcoords[i]->dot = index;
 		if (i != 0 && i != size - 1)
 		{
-			//coords_set_managed_by_index(select->index, 0x1);
-			coords_set_managed_by_index(index, 0x1);
+			//coords_set_managed_by_index(index, 0x1);
+			coords_set_managed(pshow->sets->currset->coords[index], 0x1);
 		}
 		else
 		{
-			//coords_set_managed_by_index(select->index, 0x2);
-			coords_set_managed_by_index(index, 0x2);
+			//coords_set_managed_by_index(index, 0x2);
+			coords_set_managed(pshow->sets->currset->coords[index], 0x2);
 		}
-		//select = select->next;
-		//select = select_get_next(select);
 		i++;
-		/*
-		}
-		else
-		{
-			fcoords[i]->dot = -1;
-		}
-		*/
 	}
 	form_update_line(form);
 	return form;
@@ -617,7 +610,8 @@ int form_update_line(form_child_t *form)
 				fcoord->coord->y = i*slopey;
 				if (fcoord->dot != -1)
 				{
-					coords_set_coord(pshow, fcoord->dot, fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+					//coords_set_coord(pshow, fcoord->dot, fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+					coords_set(pshow->sets->currset->coords[fcoord->dot], fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
 				}
 			}
 			break;
@@ -735,7 +729,10 @@ int form_movexy(form_child_t *form, double xoff, double yoff)
 		fcoord = form->fcoords[i];
 		dot = fcoord->dot;
 		if (dot != -1)
-			coords_set_coord(pshow, dot, fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+		{
+			//coords_set_coord(pshow, dot, fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+			coords_set(pshow->sets->currset->coords[dot], fcoord->coord->x+endpointx, fcoord->coord->y+endpointy);
+		}
 	}
 	return 0;
 }
@@ -757,7 +754,8 @@ int form_unmanage_dot(form_child_t *form, int index)
 		{
 			// found dot
 			fcoords[i]->dot = -1;
-			coords_set_managed_by_index(index, 0);
+			//coords_set_managed_by_index(index, 0);
+			coords_set_managed(pshow->sets->currset->coords[index], 0);
 			break;
 		}
 	}
@@ -985,7 +983,8 @@ form_child_t *form_copy(form_child_t *form)
 		if (index != -1)
 		{
 			type = (0 || (dot_num -1)) + 1;
-			coords_set_managed_by_index(index, type);
+			//coords_set_managed_by_index(index, type);
+			coords_set_managed(pshow->sets->currset->coords[index], type);
 		}
 		memcpy(newform->fcoords[i]->coord, form->fcoords[i]->coord, sizeof(coord_t));
 	}

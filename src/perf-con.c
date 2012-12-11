@@ -43,6 +43,17 @@ int perf_destroy(perf_t **perf_r)
 }
 
 
+void perf_set_valid(perf_t *perf)
+{
+	perf->valid = 1;
+	return;
+}
+
+void perf_set_invalid(perf_t *perf)
+{
+	perf->valid = 0;
+	return;
+}
 
 
 int perf_add(void)
@@ -197,13 +208,15 @@ void perf_revert(headset_t *dshow, int index)
 	if ((prevset = set_get_prev(pshow->sets, pstate.setnum))== NULL)
 	{
 		// first set
-		coords_set_coord(dshow, index, 0, 0);
+		//coords_set_coord(dshow, index, 0, 0);
+		coords_set(pshow->sets->currset->coords[index], 0, 0); 
 	}
 	else
 	{
 		// not first set; use previous dots
 		prevcoord = prevset->coords[index];
-		coords_set_coord(dshow, index, prevcoord->x, prevcoord->y);
+		//coords_set_coord(dshow, index, prevcoord->x, prevcoord->y);
+		coords_set(pshow->sets->currset->coords[index], prevcoord->x, prevcoord->y);
 	}
 	return;
 }

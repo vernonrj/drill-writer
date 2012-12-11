@@ -133,9 +133,15 @@ gboolean mouse_unclicked(GtkWidget *widget, GdkEventButton *event)
 					{
 						// move a selected dot 
 						if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
-							coords_movexy_grid(mouse_clickx, mouse_clicky);
+						{
+							//coords_movexy_grid(mouse_clickx, mouse_clicky);
+							coords_selected_movexy_grid(pshow->sets->currset->coords, pstate.select, mouse_clickx, mouse_clicky);
+						}
 						else
-							coords_movexy(mouse_clickx, mouse_clicky);
+						{
+							//coords_movexy(mouse_clickx, mouse_clicky);
+							coords_selected_movexy(pshow->sets->currset->coords, pstate.select, mouse_clickx, mouse_clicky);
+						}
 						select_update_center(pstate.select);
 						dr_canvas_refresh(drill);
 					}
@@ -276,7 +282,8 @@ gboolean mouse_clicked(GtkWidget *widget, GdkEventButton *event)
 				coordy = event->y;
 				pixel_to_field(&coordx, &coordy);
 				index = perf_add();
-				coords_set_coord(pshow, index, coordx, coordy);
+				//coords_set_coord(pshow, index, coordx, coordy);
+				coords_set(pshow->sets->currset->coords[index], coordx, coordy);
 				dr_canvas_refresh(drill);
 				break;
 			case ADDFORM:

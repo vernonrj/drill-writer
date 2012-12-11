@@ -2,6 +2,24 @@
 #include "../dr_forms.h"
 #include "../dr_select.h"
 
+void fieldrel_get_midpoint(double x1, double y1, double x2, double y2,
+		double *mx, double *my)
+{
+	*mx = ((x2 - x1) / 2) + x1;
+	*my = ((y2 - y1) / 2) + y1;
+}
+
+void fieldrel_get_mid_coords(coord_t *coord1, coord_t *coord2,
+		double *mx, double *my)
+{
+	double x1, y1, x2, y2;
+	coords_retrieve(coord1, &x1, &y1);
+	coords_retrieve(coord2, &x2, &y2);
+	fieldrel_get_midpoint(x1, y1, x2, y2, my, my);
+	return;
+}
+
+
 
 bool fieldrel_check_dots_within_range(double x1, double y1, double x2, double y2)
 {
@@ -337,13 +355,14 @@ select_t *field_get_in_area(double x, double y)
 	int i;
 	int min_index = -1;
 	int index, form_index;
-	form_child_t *form = pshow->sets->currset->forms;
+	//form_child_t *form = pshow->sets->currset->forms;
 	form_child_t *min_form = NULL;
 	form_child_t *selected_form;
 	int perfnum = pshow->perfnum;
 	double coordx, coordy;
 	double distance, distance_min = -1;
 	coord_t *coord;
+	coord_t **coords = pshow->sets->currset->coords;
 	//select_t *dot_select = NULL;
 	//select_t *form_select = NULL;
 	//select_t *select = NULL;
@@ -351,7 +370,8 @@ select_t *field_get_in_area(double x, double y)
 
 	for(i=0; i<perfnum; i++)
 	{
-		if (!coords_check_managed_by_index(i))
+		//if (!coords_check_managed_by_index(i))
+		if (!coords_check_managed(coords[i]))
 		{
 			coords_retrieve_midset(pstate.setnum, i, &coordx, &coordy);
 			if (fieldrel_check_dots_within_range(x, y, coordx, coordy))
@@ -377,7 +397,6 @@ select_t *field_get_in_area(double x, double y)
 		//while (select)
 		while ((index = select_get_dot_advance(select)) != -1)
 		{
-			//coords_retrieve_midset(pstate.setnum, select->index, &coordx, &coordy);
 			coords_retrieve_midset(pstate.setnum, index, &coordx, &coordy);
 			distance = pow((coordx-x),2) + pow((coordy-y),2);
 			if (distance < distance_min || distance_min == -1)
@@ -500,6 +519,7 @@ select_t *field_select_in_rectangle(select_t *select, double x1, double y1, doub
 	int i;
 	int perfnum = pshow->perfnum;
 	double x, y;
+	coord_t **coords = pshow->sets->currset->coords;
 
 	select_head(select);
 
@@ -508,7 +528,8 @@ select_t *field_select_in_rectangle(select_t *select, double x1, double y1, doub
 		coords_retrieve_midset(pstate.setnum, i, &x, &y);
 		if (field_check_dot_in_rectangle(x, y, x1, y1, x2, y2))
 		{
-			if (coords_check_managed_by_index(i) != 0x0)
+			if (coords_check_managed(coords[i]) != 0x0)
+			//if (coords_check_managed_by_index(i) != 0x0)
 			{
 				select_add_form(select, form_find_form_with_index(pshow->sets->currset->forms, i)->parent->index);
 			}

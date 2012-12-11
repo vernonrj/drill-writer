@@ -856,7 +856,8 @@ int draw_selected(GtkWidget *widget)
 		field_to_pixel(&x, &y);
 		drawing_method(selected, x, y);
 
-		if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed_by_index(index))
+		//if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed_by_index(index))
+		if ((fldstate.mouse_clicked & 0x2) == 0x2 && !coords_check_managed(pshow->sets->currset->coords[index]))
 		{
 			// show dots being moved
 			offsetx = fldstate.mouse_clickx - fldstate.mousex;

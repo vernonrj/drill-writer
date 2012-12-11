@@ -114,9 +114,11 @@ struct coord_proto
 	double x;
 	double y;
 
+	/*
 	int form_num;
 	int form_alloc;
 	form_child_t **forms;
+	*/
 };
 
 

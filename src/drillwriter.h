@@ -34,23 +34,28 @@ coord_t *coord_construct(void);
 coord_t *coord_construct_with_data(double x, double y);
 coord_t **coords_destruct(coord_t **coords, int perfs);
 // set/retrieve coordinates from coord struct
-int coords_set_coord(struct headset_proto *dshow, int index, double x, double y);
-int coords_set_coord_valid(coord_t **curr, int index, double x, double y);
+int coords_set(coord_t *coord, double x, double y);
+int coords_set_coord(struct headset_proto *dshow, int index, double x, double y)__attribute__((deprecated));	// use coords_set instead
+int coords_set_coord_valid(coord_t **curr, int index, double x, double y)__attribute__((deprecated));		// use coord_set_valid instead
 int coords_check_managed(coord_t *coord);
 int coords_set_managed(coord_t *coord, int state);
-int coords_check_managed_by_index(int index);
-int coords_set_managed_by_index(int index, int state);
-int coords_track_form(int index, form_child_t *form);
-int coords_untrack_form(int index, form_child_t *form);
+int coords_check_managed_by_index(int index)__attribute__((deprecated));					// use coord_check_managed instead
+int coords_set_managed_by_index(int index, int state)__attribute__((deprecated));				// use coord_set_managed instead
+//int coords_track_form(int index, form_child_t *form);
+//int coords_untrack_form(int index, form_child_t *form);
 int coords_retrieve(coord_t *curr, double *x, double *y);
-int coords_retrieve_midset(int setnum, int index, double *x_r, double *y_r);
-int coords_movexy(double xoff, double yoff);
-int coords_align_dots_to_grid(void);
-int coords_movexy_grid(double xoff, double yoff);
-void coords_box_scale_form_from_center(double s_step);
+int coords_retrieve_midset(int setnum, int index, double *x_r, double *y_r);//__attribute__((deprecated));		// use coords_get_midset instead
+int coords_selected_movexy(coord_t **coords, select_t *selects, double xoff, double yoff);
+int coords_movexy(double xoff, double yoff)__attribute__((deprecated));						// use coords_selected_movexy instead
+int coords_align_dots_to_grid(void)__attribute__((deprecated));							// use coords_align_selected_to_grid instead
+int coords_align_selected_to_grid(coord_t **coords, select_t *select);
+int coords_movexy_grid(double xoff, double yoff)__attribute__((deprecated));					// use coords_selected_movexy_grid instead
+int coords_selected_movexy_grid(coord_t **coords, select_t *select, double xoff, double yoff);
+void coords_constrained_resize_selection_from(set_t *set, select_t *last, double cx, double cy, double s_step);
+void coords_box_scale_form_from_center(double s_step)__attribute__((deprecated));				// use coords_constrained_resize_selection_from
 void coords_scale_coords_from_center(double s_step, double *x_ref, double *y_ref, double xc, double yc);
-void coords_scale_form_from_center(double s_step);
-void coords_rot_selected_around_center(double s_step);
+void coords_rot_selected_around_center(double s_step)__attribute__((deprecated));				// use coords_rot_selection_around
+void coords_rot_selection_around(set_t *set, select_t *last, double cx, double cy, double s_step);
 
 
 
@@ -78,6 +83,8 @@ int drillwriter_main (int argc, char *argv[]);
 // create container for performers
 perf_t *perf_construct(void);
 int perf_destroy(perf_t **perf_r);
+void perf_set_valid(perf_t *perf);
+void perf_set_invalid(perf_t *perf);
 int perf_add(void);
 void perf_revert_selected(struct headset_proto *dshow);
 void perf_revert(struct headset_proto *dshow, int index);

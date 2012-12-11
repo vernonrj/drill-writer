@@ -184,9 +184,7 @@ int drillwriter_main (int argc, char *argv[])
 {
 	// specific set
 	set_t *currset;
-	set_t *prevset;
 	// coords
-	coord_t *prevcr;
 	int excode;
 	int i;		// loop vars
 	form_child_t *form = NULL;
@@ -212,12 +210,20 @@ int drillwriter_main (int argc, char *argv[])
 		currset = pshow->sets->firstset;
 		currset->counts = 0;
 
-		coords_set_coord(pshow, 0, 32, 53);
-		coords_set_coord(pshow, 1, 36, 53);
-		coords_set_coord(pshow, 2, 40, 53);
-		coords_set_coord(pshow, 3, 34, 49);
-		coords_set_coord(pshow, 4, 38, 49);
-		coords_set_coord(pshow, 5, 36, 45);
+		//coords_set_coord(pshow, 0, 32, 53);
+		//coords_set_coord(pshow, 1, 36, 53);
+		//coords_set_coord(pshow, 2, 40, 53);
+		//coords_set_coord(pshow, 3, 34, 49);
+		//coords_set_coord(pshow, 4, 38, 49);
+		//coords_set_coord(pshow, 5, 36, 45);
+
+
+		coords_set(currset->coords[0], 32, 53);
+		coords_set(currset->coords[1], 36, 53);
+		coords_set(currset->coords[2], 40, 53);
+		coords_set(currset->coords[3], 34, 49);
+		coords_set(currset->coords[4], 38, 49);
+		coords_set(currset->coords[5], 36, 45);
 		//*
 		select = select_create();
 		for(i=0; i<6; i++)
@@ -234,13 +240,19 @@ int drillwriter_main (int argc, char *argv[])
 		form_add_to_current_set(form);
 		//*/
 
-		coords_set_coord(pshow, 6, 32, 70);
-		coords_set_coord(pshow, 7, 36, 70);
-		coords_set_coord(pshow, 8, 40, 70);
-		coords_set_coord(pshow, 9, 34, 66);
-		coords_set_coord(pshow, 10, 38, 66);
-		coords_set_coord(pshow, 11, 36, 62);
+		//coords_set_coord(pshow, 6, 32, 70);
+		//coords_set_coord(pshow, 7, 36, 70);
+		//coords_set_coord(pshow, 8, 40, 70);
+		//coords_set_coord(pshow, 9, 34, 66);
+		//coords_set_coord(pshow, 10, 38, 66);
+		//coords_set_coord(pshow, 11, 36, 62);
 
+		coords_set(currset->coords[6], 32, 70);
+		coords_set(currset->coords[7], 36, 70);
+		coords_set(currset->coords[8], 40, 70);
+		coords_set(currset->coords[9], 34, 66);
+		coords_set(currset->coords[10], 38, 66);
+		coords_set(currset->coords[11], 36, 62);
 		//*
 		select_clear(select);
 		for(i=6; i<12; i++)
