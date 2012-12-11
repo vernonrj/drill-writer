@@ -206,7 +206,7 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 		}
 	}
 	if (group)
-		group = group->next;
+		group = group_get_next(group);
 	else if (form)
 		form = form->next;
 	if (form_r)
@@ -300,7 +300,7 @@ groupcell_l *dr_sidebar_groups_update_from(GtkWidget *container, groupcell_l *he
 			last = LIST_NEXT(last, groupcell_entries);
 			index++;
 			if (group)
-				group = group->next;
+				group = group_get_next(group);
 			if (form)
 				form = form->next;
 

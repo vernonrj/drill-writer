@@ -6,7 +6,6 @@
 #include "../dr_select.h"
 
 
-
 static void dr_group_cell_class_init(DrGroupCellClass *klass);
 static void dr_group_cell_init(DrGroupCell *groupcell);
 
@@ -40,11 +39,15 @@ static void dr_group_cell_class_init(DrGroupCellClass *class)
 }
 static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 {
+	select_t *select;
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	form_child_t *form = NULL;
 	form_parent_t *parent_form = NULL;
-	form = form_build_line(parent_form, groupcell->priv->group->selects);
+	//form = form_build_line(parent_form, groupcell->priv->group->selects);
+	select = group_retrieve_dots(groupcell->priv->group);
+	form = form_build_line(parent_form, select);
+	select_destroy(select);
 	form->name = (char*)malloc(10*sizeof(char));
 	snprintf(form->name, 10, "New Form");
 	//form_add_to_current_set(form);
@@ -73,7 +76,8 @@ static void select_add_to_group_cell(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	select_add_multiple(groupcell->priv->group->selects, pstate.select);
+	//select_add_multiple(groupcell->priv->group->selects, pstate.select);
+	group_add_selects(groupcell->priv->group, pstate.select);
 	return;
 }
 
@@ -96,7 +100,7 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 		pshow->sets->currset->forms = form_remove_from(groupcell->priv->form, pshow->sets->currset->forms);
 		form_parent_remove_set(pshow->topforms, form_parent_find_with_form(pshow->topforms, groupcell->priv->form), pstate.setnum);
 	}
-	else if (groupcell->priv->group && groupcell->priv->group->local)
+	else if (groupcell->priv->group && group_is_local(groupcell->priv->group))
 	{
 		// local group
 		pshow->sets->currset->groups = group_remove_from(groupcell->priv->group, pshow->sets->currset->groups);
@@ -133,19 +137,21 @@ gint group_cell_toggle_group_scope(GtkWidget *widget, gpointer *data)
 {
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), -1);
-	if (groupcell->priv->group->local)
+	if (group_is_local(groupcell->priv->group))
 	{
 		// switch local group to global
 		pshow->sets->currset->groups = group_pop_from(groupcell->priv->group, pshow->sets->currset->groups);
 		group_add_global(groupcell->priv->group);
-		groupcell->priv->group->local = false;
+		group_set_global(groupcell->priv->group);
+		//groupcell->priv->group->local = false;
 	}
 	else if (!groupcell->priv->form)
 	{
 		// switch global group to local
 		pshow->topgroups = group_pop_from(groupcell->priv->group, pshow->topgroups);
 		group_add_to_set(groupcell->priv->group);
-		groupcell->priv->group->local = true;
+		group_set_local(groupcell->priv->group);
+		//groupcell->priv->group->local = true;
 	}
 	groupcell->priv->group = NULL;
 	dr_sidebar_update((DrSidebar*)sidebar);
@@ -189,8 +195,9 @@ gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 	strncpy(name, new_name, size);
 	if (dr_group_cell_get_container_type((GtkWidget*)data) == GROUP_CELL_TYPE_GROUP)
 	{
-		free(groupcell->priv->group->name);
-		groupcell->priv->group->name = name;
+		group_set_name(groupcell->priv->group, name);
+		//free(groupcell->priv->group->name);
+		//groupcell->priv->group->name = name;
 	}
 	else if (dr_group_cell_get_container_type((GtkWidget*)data) == GROUP_CELL_TYPE_FORM)
 	{
@@ -327,10 +334,13 @@ void dr_group_cell_set_group(GtkWidget *groupcell_widget, group_t *group)
 {
 	//select_t *select;
 	//group_t *newgroup;
+	char *name;
 	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	groupcell->priv->group = group;
-	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), group->name);
+	name = group_retrieve_name(group);
+	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), name);
+	free(name);
 	dr_group_cell_set_container_type(groupcell_widget, GROUP_CELL_TYPE_GROUP);
 	return;
 }

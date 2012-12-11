@@ -79,16 +79,6 @@ struct undo_proto
 
 /* Selection / Groups / Forms */
 
-// Groups
-struct group_proto
-{
-	// node with grouping information
-	char *name;		// name of group
-	select_t *selects;	// performers in group
-	bool local;		// toplevel/set-local status
-	group_t *next;
-};
-
 
 
 // tempo LLL node

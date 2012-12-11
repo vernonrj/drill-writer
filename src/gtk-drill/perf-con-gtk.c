@@ -158,7 +158,10 @@ int select_form_gtk(GtkWidget *widget, form_child_t *form)
 int select_group_gtk(GtkWidget *widget, group_t *group)
 {
 	//pstate.select = select_add_group(pstate.select, group);
-	select_add_multiple_dots(pstate.select, group->selects);
+	select_t *select = group_retrieve_dots(group);
+	select_add_multiple_dots(pstate.select, select);
+	//free(select);
+	select_destroy(select);
 	dr_canvas_refresh(drill);
 	return 0;
 }
@@ -173,12 +176,18 @@ int add_group_gtk (GtkWidget *widget)
 	last = group_add_selects(last, pstate.select);
 	//pshow->topgroups = group_add_selects(pshow->topgroups, pstate.select);
 	curr = pshow->topgroups;
+	/*
 	while (curr && curr->next)
 		curr = curr->next;
 	if (!curr)
 		pshow->topgroups = last;
 	else
 		curr->next = last;
+		*/
+	if (!curr)
+		pshow->topgroups = last;
+	else
+		group_add_to_groups(last, curr);
 	dr_sidebar_update((DrSidebar*)sidebar);
 	return 0;
 }

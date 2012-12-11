@@ -37,12 +37,21 @@ int save_file(char *filename);
 // group.c
 // grouping functions
 group_t *group_construct(void);
+group_t *group_destroy(group_t *group);
+select_t *group_retrieve_dots(group_t *group);
 group_t *group_add_selects(group_t *group, select_t *newsels);
 group_t *group_remove_selects(group_t *group, select_t *select);
 group_t *group_remove_from(group_t *group, group_t *curr);
 group_t *group_pop_from(group_t *group, group_t *curr);
+void group_add_to_groups(group_t *newgroup, group_t *list);
+group_t *group_get_next(group_t *group);
 void group_add_to_set(group_t *group);
 void group_add_global(group_t *group);
+bool group_is_local(group_t *group);
+void group_set_local(group_t *group);
+void group_set_global(group_t *group);
+void group_set_name(group_t *group, char *name);
+char *group_retrieve_name(group_t *group);
 //bool group_is_selected(group_t *group, select_t *select);
 
 // drillwriter.c

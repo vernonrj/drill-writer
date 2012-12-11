@@ -1,6 +1,16 @@
 #include "drillwriter.h"
 #include "dr_select.h"
 
+// Groups
+struct group_proto
+{
+	// node with grouping information
+	char *name;		// name of group
+	select_t *selects;	// performers in group
+	bool local;		// toplevel/set-local status
+	group_t *next;
+};
+
 
 group_t *group_construct(void)
 {
@@ -18,6 +28,21 @@ group_t *group_construct(void)
 	return group;
 }
 
+group_t *group_destroy(group_t *group)
+{
+	free(group->name);
+	free(group);
+	return NULL;
+}
+
+
+
+select_t *group_retrieve_dots(group_t *group)
+{
+	select_t *select = select_create();
+	select_add_multiple(select, group->selects);
+	return select;
+}
 
 
 group_t *group_add_selects(group_t *group, select_t *newsels)
@@ -145,6 +170,24 @@ group_t *group_pop_from(group_t *group, group_t *curr)
 }
 
 
+void group_add_to_groups(group_t *newgroup, group_t *list)
+{
+	if (!list)
+		return;
+	while (list->next)
+		list = list->next;
+	list->next = newgroup;
+	return;
+}
+
+
+group_t *group_get_next(group_t *group)
+{
+	if (!group)
+		return NULL;
+	return group->next;
+}
+
 void group_add_to_set(group_t *group)
 {
 	// add a group to the local set of groups
@@ -177,6 +220,38 @@ void group_add_global(group_t *group)
 		last = last->next;
 	last->next = group;
 	return;
+}
+
+bool group_is_local(group_t *group)
+{
+	return group->local;
+}
+
+
+void group_set_local(group_t *group)
+{
+	group->local = 1;
+}
+
+void group_set_global(group_t *group)
+{
+	group->local = 0;
+}
+
+void group_set_name(group_t *group, char *name)
+{
+	free(group->name);
+	group->name = (char*)malloc((strlen(name)+1)*sizeof(char));
+	strcpy(group->name, name);
+	return;
+}
+
+
+char *group_retrieve_name(group_t *group)
+{
+	char *name = (char*)malloc((strlen(group->name)+1)*sizeof(char));
+	strcpy(name, group->name);
+	return name;
 }
 
 /*
