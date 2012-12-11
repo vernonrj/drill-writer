@@ -82,33 +82,6 @@ coord_t **coords_destruct(coord_t **coords, int perfs)
 }
 
 
-// coords_set_coord is deprecated. Use coords_set instead
-__attribute__((deprecated))
-int coords_set_coord(headset_t *dshow, int index, double x, double y) 
-{
-	// set coordinates from the coord struct
-	coord_t *coord;
-	perf_t *perf;
-	coord = dshow->sets->currset->coords[index];
-	perf = dshow->perfs[index];
-	if (perf->valid == 0 || perf->valid == -1)
-		perf->valid = 1;
-	coord->x = x;
-	coord->y = y;
-	return 0;
-}
-
-// coords_set_coord_valid is deprecated. use perf_set_valid instead.
-__attribute__((deprecated))
-int coords_set_coord_valid(coord_t **curr, int index, double x, double y)
-{
-	// set coordinates and set performer valid
-	//coords_set_coord(pshow, index, x, y);
-	coords_set(curr[index], x, y);
-	return 0;
-}
-
-
 
 int coords_check_managed(coord_t *coord)
 {
@@ -124,27 +97,6 @@ int coords_set_managed(coord_t *coord, int state)
 		return -1;
 	coord->type = state;
 	return 0;
-}
-
-
-// coords_check_managed_by_index is deprecated. Use coords_check_managed instead.
-__attribute__((deprecated))
-int coords_check_managed_by_index(int index)
-{
-	if (index >= 0)
-		return coords_check_managed(pshow->sets->currset->coords[index]);
-	else
-		return -1;
-}
-
-// coords_set_managed_by_index is deprecated. Use coords_set_managed instead.
-__attribute__((deprecated))
-int coords_set_managed_by_index(int index, int state)
-{
-	if (index >= 0)
-		return coords_set_managed(pshow->sets->currset->coords[index], state);
-	else
-		return -1;
 }
 
 
@@ -274,20 +226,6 @@ int coords_selected_movexy(coord_t **coords, select_t *selects, double xoff, dou
 }
 
 
-// coords_movexy is deprecated. Use coords_selected_movexy instead.
-__attribute__((deprecated))
-int coords_movexy(double xoff, double yoff)
-{
-	return coords_selected_movexy(pshow->sets->currset->coords, pstate.select, xoff, yoff);
-}
-
-
-// coords_align_dots_to_grid is deprecated.
-__attribute__((deprecated))
-int coords_align_dots_to_grid(void)
-{
-	return coords_align_selected_to_grid(pshow->sets->currset->coords, pstate.select);
-}
 
 int coords_align_selected_to_grid(coord_t **coords, select_t *select)
 {
@@ -315,12 +253,6 @@ int coords_align_selected_to_grid(coord_t **coords, select_t *select)
 	return 0;
 }
 
-
-__attribute__((deprecated))
-int coords_movexy_grid(double xoff, double yoff)
-{
-	return coords_selected_movexy_grid(pshow->sets->currset->coords, pstate.select, xoff, yoff);
-}
 
 
 int coords_selected_movexy_grid(coord_t **coords, select_t *select, double xoff, double yoff)
@@ -351,12 +283,6 @@ int coords_selected_movexy_grid(coord_t **coords, select_t *select, double xoff,
 }
 
 
-// coords_box_scale_form_from_center is deprecated. Use coords_constrained_resize_selection_from instead
-__attribute__((deprecated))
-void coords_box_scale_form_from_center(double s_step)
-{
-	return coords_constrained_resize_selection_from(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, s_step);
-}
 
 void coords_constrained_resize_selection_from(set_t *set, select_t *last, double cx, double cy, double s_step)
 {
@@ -486,11 +412,6 @@ void coords_scale_coords_from_center(double s_step, double *x_ref, double *y_ref
 
 
 
-__attribute__((deprecated))
-void coords_rot_selected_around_center(double s_step)
-{
-	return coords_rot_selection_around(pshow->sets->currset, pstate.select, pstate.center->x, pstate.center->y, s_step);
-}
 
 
 void coords_rot_selection_around(set_t *set, select_t *last, double cx, double cy, double s_step)
