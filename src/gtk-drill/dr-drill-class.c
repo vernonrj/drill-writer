@@ -538,12 +538,13 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	int curr_step, counts;
 	int dot_num;
 	int i;
-	double slopex, slopey;
+	//double slopex, slopey;
 	//form_list_t *flist;
 	form_container_t *fcont;
 	form_parent_t *fparent;
 	bool form_animate = false;
 	form_child_t *next_form;
+	form_coord_attr_t form_attr;
 
 	//flist = pshow->topforms;
 	fcont = pshow->topforms;
@@ -562,10 +563,13 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	// show form being moved
 	offsetx = fldstate.mouse_clickx - fldstate.mousex;
 	offsety = fldstate.mouse_clicky - fldstate.mousey;
-	x1 = form->endpoints[0][0];
-	y1 = form->endpoints[0][1];
-	x2 = form->endpoints[1][0];
-	y2 = form->endpoints[1][1];
+	//x1 = form->endpoints[0][0];
+	//y1 = form->endpoints[0][1];
+	//x2 = form->endpoints[1][0];
+	//y2 = form->endpoints[1][1];
+	//form_child_get_attr(form, &form_attr);
+	form_child_get_coord(form, 0, &form_attr, &x1, &y1);
+	form_child_get_coord(form, form_attr.dot_alloc - 1, &form_attr, &x2, &y2);
 	if (!fieldrel_check_dots_within_range(x1, y1, fldstate.mouse_clickx, fldstate.mouse_clicky))
 	{
 		x2rel = x2 - offsetx;
@@ -590,8 +594,9 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	y = y1rel;
 	if (form_animate)
 	{
-		xnext = next_form->endpoints[0][0];
-		ynext = next_form->endpoints[0][1];
+		form_child_get_coord(next_form, 0, &form_attr, &xnext, &ynext);
+		//xnext = next_form->endpoints[0][0];
+		//ynext = next_form->endpoints[0][1];
 		xstep = (x-xnext) / counts;
 		ystep = (y-ynext) / counts;
 		x -= (xstep*curr_step);
@@ -603,8 +608,9 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	y = y2rel;
 	if (form_animate)
 	{
-		xnext = next_form->endpoints[0][0];
-		ynext = next_form->endpoints[0][1];
+		form_child_get_coord(next_form, 0, &form_attr, &xnext, &ynext);
+		//xnext = next_form->endpoints[0][0];
+		//ynext = next_form->endpoints[0][1];
 		xstep = (x-xnext) / counts;
 		ystep = (y-ynext) / counts;
 		x -= (xstep*curr_step);
@@ -613,15 +619,18 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	field_to_pixel(&x, &y);
 	cairo_line_to(cr, x, y);
 
-	dot_num = form->dot_num;
-	slopex = (x2rel - x1rel) / (dot_num - 1);
-	slopey = (y2rel - y1rel) / (dot_num - 1);
+	//dot_num = form->dot_num;
+	dot_num = form_attr.dot_alloc;
+	//slopex = (x2rel - x1rel) / (dot_num - 1);
+	//slopey = (y2rel - y1rel) / (dot_num - 1);
 	for(i=0; i<dot_num; i++)
 	{
-		x = i*slopex+x1rel;
-		y = i*slopey+y1rel;
+		//x = i*slopex+x1rel;
+		//y = i*slopey+y1rel;
+		form_child_get_coord(form, i, &form_attr, &x, &y);
 		field_to_pixel(&x, &y);
-		if (form->fcoords[i]->dot != -1)
+		//if (form->fcoords[i]->dot != -1)
+		if (form_attr.exists != -1)
 			drawing_method(cr, x, y);
 		else
 		{
@@ -642,6 +651,7 @@ int draw_forms(GtkWidget *widget)
 	//form_list_t *flist;
 	form_container_t *fcont;
 	form_parent_t *fparent;
+	form_coord_attr_t form_attr;
 	//fblock_t *block;
 	//farc_t *arc;
 	//select_t *select;
@@ -653,12 +663,12 @@ int draw_forms(GtkWidget *widget)
 	//int *dots;
 	//double **coords;
 	cairo_t *cr;
-	form_coord_t **fcoords;
-	coord_t *coord;
+	//form_coord_t **fcoords;
+	//coord_t *coord;
 	bool form_animate = false;
 	int counts = 1;
 	int curr_step = pstate.curr_step;
-	double coordx, coordy;
+	//double coordx, coordy;
 
 	canv_form = cairo_create(surface);
 	canvas_apply(canv_form);
@@ -672,29 +682,29 @@ int draw_forms(GtkWidget *widget)
 
 
 	form = pshow->sets->currset->forms;
-	//flist = pshow->topforms;
 	fcont = pshow->topforms;
 	while (form)
 	{
 		fparent = form_parent_find_with_form(fcont, form);
+		form_child_get_attr(form, &form_attr);
 		if (form_parent_contiguous(fparent, pstate.setnum))
 		{
 			// animate
 			form_animate = true;
 			next_form = form_parent_find_form_at_index(fparent, (pstate.setnum+1));
-			//counts = pshow->sets->currset->next->counts;
 			counts = (set_get_next(pshow->sets, pstate.setnum))->counts;
 		}
 		else
 			form_animate = false;
-		fcoords = form->fcoords;
+		//fcoords = form->fcoords;
 		if (form_is_selected(form, pstate.select))
 		{
 			cr = canv_form_select;
 			if ((fldstate.mouse_clicked & 0x2) == 0x2)
 			{
 				canv_form_select = draw_selected_form(canv_form_select, form);
-				form = form->next;
+				//form = form->next;
+				form = form_child_get_next(form);
 				continue;
 			}
 		}
@@ -702,15 +712,16 @@ int draw_forms(GtkWidget *widget)
 			cr = canv_form;
 		if (form_animate || !curr_step)
 		{
-			dot_num = form->dot_num;
-			//coords = form->coords;
-			//dots = form->dots;
-			x = form->endpoints[0][0];
-			y = form->endpoints[0][1];
+			//dot_num = form->dot_num;
+			dot_num = form_attr.dot_alloc;
+			form_child_get_coord(form, 0, &form_attr, &x, &y);
+			//x = form->endpoints[0][0];
+			//y = form->endpoints[0][1];
 			if (form_animate)
 			{
-				x2 = next_form->endpoints[0][0];
-				y2 = next_form->endpoints[0][1];
+				form_child_get_coord(next_form, 0, &form_attr, &x2, &y2);
+				//x2 = next_form->endpoints[0][0];
+				//y2 = next_form->endpoints[0][1];
 				xstep = (x-x2) / counts;
 				ystep = (y-y2) / counts;
 				x -= (xstep*curr_step);
@@ -718,12 +729,16 @@ int draw_forms(GtkWidget *widget)
 			}
 			field_to_pixel(&x, &y);
 			cairo_move_to(cr, x, y);
-			x = form->endpoints[1][0];
-			y = form->endpoints[1][1];
+			form_child_get_attr(form, &form_attr);
+			form_child_get_coord(form, form_attr.dot_alloc-1, &form_attr, &x, &y);
+			//x = form->endpoints[1][0];
+			//y = form->endpoints[1][1];
 			if (form_animate)
 			{
-				x2 = next_form->endpoints[1][0];
-				y2 = next_form->endpoints[1][1];
+				form_child_get_attr(next_form, &form_attr);
+				form_child_get_coord(next_form, form_attr.dot_alloc-1, &form_attr, &x2, &y2);
+				//x2 = next_form->endpoints[1][0];
+				//y2 = next_form->endpoints[1][1];
 				xstep = (x-x2) / counts;
 				ystep = (y-y2) / counts;
 				x -= (xstep*curr_step);
@@ -733,20 +748,23 @@ int draw_forms(GtkWidget *widget)
 			cairo_line_to(cr, x, y);
 			for(i=0; i<dot_num; i++)
 			{
-				coord = fcoords[i]->coord;
-				if (fcoords[i]->dot == -1)
+				form_child_get_coord(form, i, &form_attr, &x, &y);
+				//coord = fcoords[i]->coord;
+				//if (fcoords[i]->dot == -1)
+				if (form_attr.realindex == -1)
 				{
 					// hole in the form
-					coords_retrieve(coord, &coordx, &coordy);
-					x = coordx + form->endpoints[0][0];
-					y = coordy + form->endpoints[0][1];
+					//coords_retrieve(coord, &coordx, &coordy);
+					//x = coordx + form->endpoints[0][0];
+					//y = coordy + form->endpoints[0][1];
 					field_to_pixel(&x, &y);
 					cairo_new_sub_path(cr);
 					cairo_arc(cr, x, y, 2*fldstate.canv_step/3, 0, 360);
 				}
 			}
 		}
-		form = form->next;
+		//form = form->next;
+		form = form_child_get_next(form);
 	}
 
 	cairo_stroke(canv_form);

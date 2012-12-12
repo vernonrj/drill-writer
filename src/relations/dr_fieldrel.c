@@ -355,7 +355,7 @@ select_t *field_get_in_area(double x, double y)
 {
 	int i;
 	int min_index = -1;
-	int index, form_index;
+	int index;
 	//form_child_t *form = pshow->sets->currset->forms;
 	form_child_t *min_form = NULL;
 	form_child_t *selected_form;
@@ -364,6 +364,7 @@ select_t *field_get_in_area(double x, double y)
 	double distance, distance_min = -1;
 	coord_t *coord;
 	coord_t **coords = pshow->sets->currset->coords;
+	form_coord_attr_t form_attr;
 	//select_t *dot_select = NULL;
 	//select_t *form_select = NULL;
 	//select_t *select = NULL;
@@ -418,15 +419,16 @@ select_t *field_get_in_area(double x, double y)
 	//if (form_select)
 	if (!select_form_empty(select))
 	{
-		//select = form_select;
 		distance_min = -1;
-		//while (select)
+		select_head(select);
 		while ((index = select_get_form_advance(select)) != -1)
 		{
-			//index = form_find_index_with_coords(select->form, x, y);
 			selected_form = form_container_get_form_child(pshow->topforms, index);
-			form_index = form_find_index_with_coords(selected_form, x, y);
-			if (form_index == -1)
+			form_contains_coords(selected_form, &form_attr, x, y);
+			//form_index = form_find_index_with_coords(selected_form, x, y);
+			//form_index = form_child_get_index(selected_form);
+			//if (form_index == -1)
+			if (form_attr.exists == 0)
 			{
 				//coord = form_get_coord_near(select->form, x, y);
 				coord = form_get_coord_near(selected_form, x, y);
@@ -435,7 +437,10 @@ select_t *field_get_in_area(double x, double y)
 				//coordy = coord->y;
 			}
 			else
-				coords_retrieve_midset(pstate.setnum, form_index, &coordx, &coordy);
+			{
+				//coords_retrieve_midset(pstate.setnum, form_index, &coordx, &coordy);
+				coords_retrieve_midset(pstate.setnum, form_attr.realindex, &coordx, &coordy);
+			}
 			distance = pow((coordx-x),2) + pow((coordy-y),2);
 			if (distance < distance_min || distance_min == -1)
 			{
@@ -450,7 +455,10 @@ select_t *field_get_in_area(double x, double y)
 		//form_select = select_add_form(form_select, min_form, false);
 		select_clear_forms(select);
 		if (min_form)
-			select_add_form(select, min_form->parent->index);
+		{
+			//select_add_form(select, min_form->parent->index);
+			select_add_form(select, form_child_get_index(min_form));
+		}
 	}
 
 	/*
@@ -463,10 +471,20 @@ select_t *field_get_in_area(double x, double y)
 	select_head(select);
 	if (select_form_empty(select) || select_dot_empty(select))
 		return select;
-	else if ((index = select_get_form_advance(select)) != -1 && form_hole_contains_coords(form_container_get_form_child(pshow->topforms, index), x, y))
+	else if ((index = select_get_form_advance(select)) != -1 
+			//&& form_hole_contains_coords(form_container_get_form_child(pshow->topforms, index), x, y))
+			&& form_contains_coords(form_container_get_form_child(pshow->topforms, index), &form_attr, x, y))
 	{
-		select_clear_forms(select);
-		return select;
+		if (!form_attr.exists)
+		{
+			select_clear_forms(select);
+			return select;
+		}
+		else
+		{
+			select_clear_dots(select);
+			return select;
+		}
 	}
 	else
 	{
@@ -533,7 +551,8 @@ select_t *field_select_in_rectangle(select_t *select, double x1, double y1, doub
 			if (coords_check_managed(coords[i]) != 0x0)
 			//if (coords_check_managed_by_index(i) != 0x0)
 			{
-				select_add_form(select, form_find_form_with_index(pshow->sets->currset->forms, i)->parent->index);
+				//select_add_form(select, form_find_form_with_index(pshow->sets->currset->forms, i)->parent->index);
+				select_add_form(select, form_child_get_index(form_find_form_with_index(pshow->sets->currset->forms, i)));
 			}
 			//else if (!select_check_index_selected(i, select) && pshow->perfs[i]->valid)
 			else if (!select_check_dot(select, i) && pshow->perfs[i]->valid)

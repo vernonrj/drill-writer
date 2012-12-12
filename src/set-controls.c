@@ -46,6 +46,7 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 	int curr_step = pstate.curr_step;
 	int counts;
 	form_child_t *form = currset->forms, *newform;
+	form_parent_t *formparent;
 	int newsetnum;
 
 	if (curr_step)
@@ -88,12 +89,14 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 	setnum = setnum+1;
 	while (form)
 	{
-		form_parent_copy_to(form->parent, setnum, newsetnum);
-		//form_parent_copy_to(form->parent, setnum, setnum-1);
-		newform = form->parent->forms[newsetnum]; 
-		//form_add_to_set(newform, newsetnum);
+		//form_parent_copy_to(form->parent, setnum, newsetnum);
+		formparent = form_child_get_parent(form);
+		form_parent_copy_to(formparent, setnum, newsetnum);
+		//newform = form->parent->forms[newsetnum]; 
+		newform = formparent->forms[newsetnum]; 
 		form_add_to_set(newform, newset);
-		form = form->next;
+		//form = form->next;
+		form = form_child_get_next(form);
 	}
 	return set_container;
 }
@@ -173,6 +176,7 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 	int counts;
 	form_child_t *form = currset->forms;
 	form_child_t *newform;
+	form_parent_t *formparent;
 
 	if (curr_step)
 		nextset = set_container->setlist[setnum+1];
@@ -211,11 +215,13 @@ set_container_t *set_container_add_after(set_container_t *set_container, int set
 	}
 	while (form)
 	{
-		form_parent_copy_to(form->parent, setnum, setnum+1);
-		newform = form->parent->forms[setnum+1]; 
+		formparent = form_child_get_parent(form);
+		form_parent_copy_to(formparent, setnum, setnum+1);
+		newform = formparent->forms[setnum+1]; 
 		//form_add_to_set(newform, setnum+1);
 		form_add_to_set(newform, newset);
-		form = form->next;
+		//form = form->next;
+		form = form_child_get_next(form);
 	}
 
 	return set_container;

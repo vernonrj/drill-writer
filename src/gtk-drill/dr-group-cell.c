@@ -48,12 +48,13 @@ static void dr_group_cell_add_form(GtkWidget *widget, gpointer *data)
 	select = group_retrieve_dots(groupcell->priv->group);
 	form = form_build_line(parent_form, select);
 	select_destroy(select);
-	form->name = (char*)malloc(10*sizeof(char));
-	snprintf(form->name, 10, "New Form");
-	//form_add_to_current_set(form);
+	form_child_set_name(form, "New Form");
+	//form->name = (char*)malloc(10*sizeof(char));
+	//snprintf(form->name, 10, "New Form");
 	select_clear(pstate.select);
 	pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
-	select_add_form(pstate.select, form->parent->index);
+	//select_add_form(pstate.select, form->parent->index);
+	select_add_form(pstate.select, form_child_get_index(form));
 	select_head(pstate.select);
 	mouse_currentMode = ADDFORM;
 	return;
@@ -201,8 +202,9 @@ gint group_cell_set_name(GtkWidget *widget, gpointer *data)
 	}
 	else if (dr_group_cell_get_container_type((GtkWidget*)data) == GROUP_CELL_TYPE_FORM)
 	{
-		free(groupcell->priv->form->name);
-		groupcell->priv->form->name = name;
+		form_child_set_name(groupcell->priv->form, name);
+		//free(groupcell->priv->form->name);
+		//groupcell->priv->form->name = name;
 	}
 	return 0;
 }
@@ -359,7 +361,8 @@ void dr_group_cell_set_form(GtkWidget *groupcell_widget, form_child_t *form)
 	DrGroupCell *groupcell = (DrGroupCell*)groupcell_widget;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
 	groupcell->priv->form = form;
-	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), form->name);
+	//gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), form->name);
+	gtk_button_set_label(GTK_BUTTON(groupcell->priv->button_name), form_child_get_name(form));
 	dr_group_cell_set_container_type(groupcell_widget, GROUP_CELL_TYPE_FORM);
 	return;
 }

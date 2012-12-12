@@ -141,15 +141,8 @@ int select_all_gtk (GtkWidget *widget)
 
 int select_form_gtk(GtkWidget *widget, form_child_t *form)
 {
-	//select_t *select = group->selects;
-	select_add_form(pstate.select, form->parent->index);
-	/*
-	while (select)
-	{
-		pstate.select = select_add(pstate.select, select->index, false);
-		select = select->next;
-	}
-	*/
+	//select_add_form(pstate.select, form->parent->index);
+	select_add_form(pstate.select, form_child_get_index(form));
 	dr_canvas_refresh(drill);
 	return 0;
 }
@@ -284,15 +277,18 @@ form_child_t *dr_check_form_endpoints(GtkWidget *widget, GdkEventButton *event)
 form_child_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
 {
 	double coordx, coordy;
+	form_coord_attr_t form_attr;
 	form_child_t *form = pshow->sets->currset->forms;
+
 	coordx = event->x;
 	coordy = event->y;
 	pixel_to_field(&coordx, &coordy);
 	while (form)
 	{
-		if (form_contains_coords(form, coordx, coordy))
+		if (form_contains_coords(form, &form_attr, coordx, coordy))
 			return form;
-		form = form->next;
+		//form = form->next;
+		form = form_child_get_next(form);
 	}
 	return NULL;
 }
@@ -301,12 +297,21 @@ form_child_t *dr_check_form(GtkWidget *widget, GdkEventButton *event)
 
 form_child_t *check_endpoints(double coordx, double coordy, form_child_t *form)
 {
-
+	int dot_alloc;
+	int formindex;
+	form_coord_attr_t form_attr;
 	while (form)
 	{
-		if (form_endpoint_contains_coords(form, coordx, coordy))
-			return form;
-		form = form->next;
+		//if (form_endpoint_contains_coords(form, coordx, coordy))
+		if (form_contains_coords(form, &form_attr, coordx, coordy))
+		{
+			formindex = form_attr.formindex;
+			dot_alloc = form_attr.dot_alloc;
+			if (formindex == 0 || formindex == (dot_alloc - 1))
+				return form;
+		}
+		//form = form->next;
+		form = form_child_get_next(form);
 	}
 	return form;
 }

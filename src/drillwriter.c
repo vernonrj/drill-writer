@@ -235,11 +235,12 @@ int drillwriter_main (int argc, char *argv[])
 		}
 		form = form_build_line(NULL, select);
 		pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
-		free(form->name);
-		form->name = (char*)malloc(6*sizeof(char));
-		snprintf(form->name, 6, "Form1");
-		form_set_endpoint(form, 0, 0, 32, 53);
-		form_set_endpoint(form, 0, 0, 50, 53);
+		//free(form->name);
+		//form->name = (char*)malloc(6*sizeof(char));
+		//snprintf(form->name, 6, "Form1");
+		form_set_endpoint(form, 0, 0, 32, 53, 0.0);
+		form_set_endpoint(form, 0, 0, 50, 53, 0.0);
+		form_child_set_name(form, "Form1");
 		form_add_to_current_set(form);
 		//*/
 
@@ -266,11 +267,12 @@ int drillwriter_main (int argc, char *argv[])
 		form = form_build_line(NULL, select);
 		free(select);
 		pshow->topforms = form_parent_add_form(pshow->topforms, form, pstate.setnum);
-		free(form->name);
-		form->name = (char*)malloc(6*sizeof(char));
-		snprintf(form->name, 6, "Form2");
-		form_set_endpoint(form, 0, 0, 20, 70);
-		form_set_endpoint(form, 0, 0, 36, 62);
+		//free(form->name);
+		//form->name = (char*)malloc(6*sizeof(char));
+		//snprintf(form->name, 6, "Form2");
+		form_set_endpoint(form, 0, 0, 20, 70, 0.0);
+		form_set_endpoint(form, 0, 0, 36, 62, 0.0);
+		form_child_set_name(form, "Form2");
 		form_add_to_current_set(form);
 		//*/
 
@@ -283,7 +285,8 @@ int drillwriter_main (int argc, char *argv[])
 		while (form)
 		{
 			form_movexy(form, 4, 0);
-			form = form->next;
+			//form = form->next;
+			form = form_child_get_next(form);
 		}
 		/*
 		prevset = set_get_prev(pshow->sets, pstate.setnum);
@@ -303,7 +306,8 @@ int drillwriter_main (int argc, char *argv[])
 		while (form)
 		{
 			form_movexy(form, 0, -10);
-			form = form->next;
+			//form = form->next;
+			form = form_child_get_next(form);
 		}
 		/*
 		prevset = set_get_prev(pshow->sets, pstate.setnum);
