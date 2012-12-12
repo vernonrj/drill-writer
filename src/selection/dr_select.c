@@ -19,6 +19,7 @@
 #include "../dr_select.h"
 #include "../structures.h"
 #include "../dr_forms.h"
+#include "../dr_form_parent.h"
 //#include "../drillwriter.h"	// coords structure
 #include "../coords.h"
 #include "../dr_stepfield.h"
@@ -86,7 +87,10 @@ select_t *select_create(void)
 	int form_size;
 
 	dot_size = pshow->perfnum;
-	form_size = pshow->topforms ? pshow->topforms->size : 0;
+	//form_size = pshow->topforms ? pshow->topforms->size : 0;
+	form_size = pshow->topforms ? 
+		form_container_get_size(pshow->topforms) 
+		: 0;
 
 	return select_create_with_size(dot_size, form_size);
 }
@@ -96,7 +100,9 @@ int select_init(select_t *select)
 {
 	if (!select)
 		return -1;
-	select_init_with_size(select, pshow->perfnum, pshow->topforms->size);
+	//select_init_with_size(select, pshow->perfnum, pshow->topforms->size);
+	select_init_with_size(select, pshow->perfnum, 
+			form_container_get_size(pshow->topforms));
 	return 0;
 }
 

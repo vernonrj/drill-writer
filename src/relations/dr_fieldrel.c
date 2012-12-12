@@ -1,5 +1,6 @@
 #include "../drillwriter.h"
 #include "../dr_forms.h"
+#include "../dr_form_parent.h"
 #include "../dr_select.h"
 #include "../coords.h"
 

@@ -3,6 +3,7 @@
 #include "dr-sidebar.h"
 #include "dr-sidebar-groups.h"
 #include "../dr_forms.h"
+#include "../dr_form_parent.h"
 #include "../dr_select.h"
 
 

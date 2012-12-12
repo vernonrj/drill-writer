@@ -1,6 +1,7 @@
 // Functions that change sets go here
 #include "drillwriter.h"
 #include "dr_forms.h"
+#include "dr_form_parent.h"
 #include "coords.h"
 
 
@@ -92,7 +93,6 @@ set_container_t *set_container_add_before(set_container_t *set_container, int se
 		//form_parent_copy_to(form->parent, setnum, newsetnum);
 		formparent = form_child_get_parent(form);
 		form_parent_copy_to(formparent, setnum, newsetnum);
-		//newform = form->parent->forms[newsetnum]; 
 		newform = formparent->forms[newsetnum]; 
 		form_add_to_set(newform, newset);
 		//form = form->next;

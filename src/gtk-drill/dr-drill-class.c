@@ -5,6 +5,7 @@
 #include "dr-sidebar.h"
 #include "dr-perfbar.h"
 #include "../dr_forms.h"
+#include "../dr_form_parent.h"
 #include "../dr_select.h"
 #include "../dr_fieldrel.h"
 #include "../coords.h"

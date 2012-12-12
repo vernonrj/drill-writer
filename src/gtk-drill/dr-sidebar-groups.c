@@ -2,6 +2,7 @@
 #include "dr-sidebar-groups.h"
 #include "dr-group-cell.h"
 #include "../dr_forms.h"
+#include "../dr_form_parent.h"
 
 
 static void dr_sidebar_groups_class_init(DrSidebarGroupsClass *klass);
