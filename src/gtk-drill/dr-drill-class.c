@@ -540,15 +540,16 @@ cairo_t *draw_selected_form(cairo_t *cr, form_child_t *form)
 	int i;
 	//double slopex, slopey;
 	//form_list_t *flist;
-	form_container_t *fcont;
+	//form_container_t *fcont;
 	form_parent_t *fparent;
 	bool form_animate = false;
 	form_child_t *next_form;
 	form_coord_attr_t form_attr;
 
 	//flist = pshow->topforms;
-	fcont = pshow->topforms;
-	fparent = form_parent_find_with_form(fcont, form);
+	//fcont = pshow->topforms;
+	//fparent = form_parent_find_with_form(fcont, form);
+	fparent = form_child_get_parent(form);
 	curr_step = pstate.curr_step;
 	if (form_parent_contiguous(fparent, pstate.setnum))
 	{
@@ -649,7 +650,7 @@ int draw_forms(GtkWidget *widget)
 {
 	form_child_t *form, *next_form;
 	//form_list_t *flist;
-	form_container_t *fcont;
+	//form_container_t *fcont;
 	form_parent_t *fparent;
 	form_coord_attr_t form_attr;
 	//fblock_t *block;
@@ -682,10 +683,11 @@ int draw_forms(GtkWidget *widget)
 
 
 	form = pshow->sets->currset->forms;
-	fcont = pshow->topforms;
+	//fcont = pshow->topforms;
 	while (form)
 	{
-		fparent = form_parent_find_with_form(fcont, form);
+		//fparent = form_parent_find_with_form(fcont, form);
+		fparent = form_child_get_parent(form);
 		form_child_get_attr(form, &form_attr);
 		if (form_parent_contiguous(fparent, pstate.setnum))
 		{

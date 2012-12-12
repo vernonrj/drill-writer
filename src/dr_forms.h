@@ -116,7 +116,6 @@ form_container_t *form_parent_add_form(form_container_t *head, form_child_t *for
 int form_parent_add_set(form_container_t *head, form_parent_t *last, int index);
 int form_parent_copy_to(form_parent_t *last, int index, int transpose);
 int form_parent_remove_set(form_container_t *head, form_parent_t *last, int index);
-form_parent_t *form_parent_find_with_form(form_container_t *head, form_child_t *form);
 form_child_t *form_parent_find_form_at_index(form_parent_t *last, int index);
 bool form_parent_mapped_at_set(form_parent_t *last, int setnum);
 form_container_t *form_container_construct(void);

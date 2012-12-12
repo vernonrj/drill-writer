@@ -737,7 +737,6 @@ form_child_t *form_build_line(form_parent_t *form_parent, select_t *select)
 	//form_coord_t **fcoords;
 	//coord_t **coords;
 	form_child_t *form;
-	double coordx, coordy;
 	coord_t **coords = pshow->sets->currset->coords;
 
 	// get number of selects
@@ -1435,41 +1434,6 @@ int form_parent_remove_set(form_container_t *head, form_parent_t *last, int inde
 }
 
 
-
-form_parent_t *form_parent_find_with_form(form_container_t *head, form_child_t *form)
-{
-	//int i, j;
-	//form_child_t **forms;
-	//int size;
-	//form_parent_t *last;
-	//bool found_form = false;
-
-	if (!form)
-		return NULL;
-	return form->parent;
-	//last = LIST_FIRST(head);
-	/*
-	last = head->forms[0];
-	for(i=0; i<head->size; i++)
-	{
-		last = head->forms[i];
-		forms = last->forms;
-		size = pshow->sets->size;
-		for (j=0; j<size; j++)
-		{
-			if (forms[j] == form)
-			{
-				found_form = true;
-				break;
-			}
-		}
-		if (found_form)
-			break;
-		//last = LIST_NEXT(last, formlist_entries);
-	}
-	return last;
-	*/
-}
 
 
 

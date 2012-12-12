@@ -99,7 +99,8 @@ static void dr_group_cell_remove_cell(GtkWidget *widget, gpointer *data)
 	{
 		// form
 		pshow->sets->currset->forms = form_remove_from(groupcell->priv->form, pshow->sets->currset->forms);
-		form_parent_remove_set(pshow->topforms, form_parent_find_with_form(pshow->topforms, groupcell->priv->form), pstate.setnum);
+		//form_parent_remove_set(pshow->topforms, form_parent_find_with_form(pshow->topforms, groupcell->priv->form), pstate.setnum);
+		form_parent_remove_set(pshow->topforms, form_child_get_parent(groupcell->priv->form), pstate.setnum);
 	}
 	else if (groupcell->priv->group && group_is_local(groupcell->priv->group))
 	{
@@ -564,8 +565,8 @@ void dr_group_cell_transplant_cell(GtkWidget *widget, gpointer *data)
 	DrGroupCell *groupcell = (DrGroupCell*)data;
 	form_parent_t *fparent;
 	g_return_if_fail(IS_GROUP_CELL(groupcell));
-	//form = form_copy(groupcell->priv->form);
-	fparent = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
+	//fparent = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
+	fparent = form_child_get_parent(groupcell->priv->form);
 	excode = form_parent_add_set(pshow->topforms, fparent, pstate.setnum);
 	if (excode == 1)
 		mouse_currentMode = ADDFORM;
@@ -584,7 +585,8 @@ bool dr_group_cell_check_form_nonlocal(GtkWidget *widget)
 	g_return_val_if_fail(IS_GROUP_CELL(groupcell), false);
 	if (!groupcell->priv->form)
 		return false;
-	fparent = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
+	//fparent = form_parent_find_with_form(pshow->topforms, groupcell->priv->form);
+	fparent = form_child_get_parent(groupcell->priv->form);
 	if (!fparent)
 		return false;
 	return form_parent_mapped_at_set(fparent, pstate.setnum);

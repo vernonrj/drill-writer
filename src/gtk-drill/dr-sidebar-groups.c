@@ -149,7 +149,8 @@ groupcell_l *dr_sidebar_groups_update_append(GtkWidget *container, groupcell_l *
 	if (form_r)
 	{
 		form = *form_r;
-		fparent = form_parent_find_with_form(pshow->topforms, form);
+		//fparent = form_parent_find_with_form(pshow->topforms, form);
+		fparent = form_child_get_parent(form);
 	}
 	else
 	{
